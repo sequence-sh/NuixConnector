@@ -28,19 +28,22 @@ else
 
     caseStatistics = the_case.getStatistics()
 
-    dateRange = the_case.getCaseDateRange()
+    dateRange = caseStatistics.getCaseDateRange()
     
     puts "Date Range:#{dateRange.getEarliest()} to #{dateRange.getLatest()}"
 
 
     puts "Counting Terms:"
 
-    termStatistics = caseStatistics.getTermStatistics("", {sort: "on", deduplicate:"md5" })
+    termStatistics = caseStatistics.getTermStatistics("", {"sort" => "on", "deduplicate" => "md5", "minOccurs" => 10 }) #for some reason this takes strings rather than symbols
+
+    puts "#{termStatistics.length} terms"
 
     termStatistics.each do |term, count|
         puts "#{term}: #{count}"
     end
-
+    
+    puts "Counting Kinds"
 
     fields = {
     all: "",
