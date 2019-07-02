@@ -1,4 +1,4 @@
-﻿require 'optparse'
+require 'optparse'
 
 hash_options = {}
 OptionParser.new do |opts|
@@ -35,17 +35,17 @@ else
     spreadsheet: "kind:spreadsheet",
     presentation: "kind:presentation",
     drawing: "kind:drawing",
-    other-document: "kind:other-document",
+    otherDocument: "kind:other-document",
     image: "kind:image",
     multimedia: "kind:multimedia",
     database: "kind:database",
     container: "kind:container",
     system: "kind:system",
-    no-data: "kind:no-data",
+    noData: "kind:no-data",
     unrecognised: "kind:unrecognised",
     log: "kind:log",
-    chat-conversation: "kind:chat-conversation",
-    chat-message: "kind:chat-message",
+    chatConversation: "kind:chat-conversation",
+    chatMessage: "kind:chat-message",
     deleted: "flag:deleted",
     empty: "mime-type:application/x-empty"
     }
