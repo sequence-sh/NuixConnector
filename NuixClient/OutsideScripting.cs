@@ -14,13 +14,17 @@ namespace NuixClient
         /// Reports on the number of files of each type in a nuix case
         /// </summary>
         /// <param name="casePath">The path to the case</param>
+        /// <param name="outputFolderPath">The path to write the report files to</param>
         /// <returns>The output of report creation</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> CreateReport(string casePath)
+        public static async IAsyncEnumerable<ResultLine> CreateReport(
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase", 
+            string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
             var process = new CreateReportProcess
             {
-                CasePath = casePath
+                CasePath = casePath,
+                OutputFolder = outputFolderPath
             };
             await foreach (var r in process.Execute())
             {

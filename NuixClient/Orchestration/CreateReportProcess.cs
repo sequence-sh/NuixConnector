@@ -47,18 +47,14 @@ namespace NuixClient.Orchestration
         }
 
 
-        private bool _hasFailed;
         private readonly IDictionary<string, List<string>> _files = new Dictionary<string, List<string>>();
 
         private static readonly Regex OutputLineRegex = new Regex(@"\AOutput\s*(?<filename>\w+)\s*:(?<data>.*)\Z", RegexOptions.Compiled| RegexOptions.IgnoreCase);
 
         internal override bool HandleLine(ResultLine rl)
         {
-            if (!rl.IsSuccess)
-            {
-                _hasFailed = true;
-                return true;
-            }
+            if (!rl.IsSuccess)     
+                return true;            
 
             if (OutputLineRegex.TryMatch(rl.Line, out var match))
             {
@@ -78,18 +74,14 @@ namespace NuixClient.Orchestration
 
         internal override async void OnScriptFinish()
         {
-            if (!_hasFailed)
+            foreach (var (fileName, lines) in _files)
             {
-                foreach (var (fileName, lines) in _files)
-                {
-                    var filePath = Path.Combine(OutputFolder, fileName);
-                    await using var fileStream = File.CreateText(filePath);
+                var filePath = Path.Combine(OutputFolder, fileName + ".txt");
+                await using var fileStream = File.CreateText(filePath);
 
-                    foreach (var line in lines)
-                        fileStream.WriteLine(line);
-                }
+                foreach (var line in lines)
+                    fileStream.WriteLine(line);
             }
-
             base.OnScriptFinish();
         }
     }

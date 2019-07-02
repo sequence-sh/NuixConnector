@@ -67,6 +67,8 @@ namespace NuixClient.Orchestration
                 if(HandleLine(line))
                     yield return line;
             }
+
+            OnScriptFinish();
         }
 
         public override bool Equals(object? obj)
