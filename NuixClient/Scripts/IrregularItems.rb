@@ -44,8 +44,8 @@ else
         puts "OutputIrregular:#{key.to_s}\t#{items.length}"
 
         items.each do |i|
-            uri = i.getUri()
-            puts "Output#{key.to_s}:#{uri}" if uri != nil
+            path = i.getPathNames().join("/")
+            puts "Output#{key.to_s}:#{path}"
         end
     end
 
