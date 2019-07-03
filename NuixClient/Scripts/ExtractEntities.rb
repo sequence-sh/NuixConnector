@@ -31,13 +31,13 @@ else
     results = Hash.new { |h, k| h[k] = Hash.new { [] } }
 
     if entityTypes.length > 0
-        allItems = the_case.searchUnsorted("")    
+        allItems = the_case.searchUnsorted("named-entities:*")    
 
         allItems.each do |i|            
             entityTypes.each do |et|
                 entities = i.getEntities(et)
                 entities.each do |e|
-                    results[et][e].add(e.getGuid())
+                   results[et][e] =  results[et][e].push(i.getGuid())
                 end
             end
         end
@@ -57,7 +57,6 @@ else
                 end				                
             end
         end
-    end
     else
         puts "Case has no entities"
     end

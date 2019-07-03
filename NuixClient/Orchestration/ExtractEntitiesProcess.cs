@@ -19,7 +19,7 @@ namespace NuixClient.Orchestration
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        internal override string ScriptName => "ExtractEntitiesProcess.rb";
+        internal override string ScriptName => "ExtractEntities.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);
