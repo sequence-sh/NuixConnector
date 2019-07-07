@@ -32,7 +32,7 @@ namespace NuixClient
             if(useDongle)
                 arguments.Add("-licencesourcetype dongle");
             if(!string.IsNullOrWhiteSpace(scriptPath))
-                arguments.Add(@"C:\Users\MarkWainwright\Documents\NuixScripts\Script1.rb");
+                arguments.Add(scriptPath);
 
             arguments.AddRange(scriptArguments);
 
@@ -47,12 +47,15 @@ namespace NuixClient
                     Arguments = string.Join(' ', arguments),
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden, //don't display a window
                     CreateNoWindow = true
                 }
             };
 
             pProcess.Start();
+
+
             //Read the output one line at a time
             while (true)
             {
@@ -61,6 +64,16 @@ namespace NuixClient
                     break;
                 yield return line;
             }
+
+            //Read the error one line at a time
+            while (true)
+            {
+                var line = await pProcess.StandardError.ReadLineAsync();
+                if (line == null) //We've reached the end of the file
+                    break;
+                yield return line;
+            }
+
             pProcess.WaitForExit();
 
         }
@@ -75,16 +88,18 @@ namespace NuixClient
         /// <param name="investigator">Name of the investigator</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
-        public static async IAsyncEnumerable<string> CreateCase(string nuixConsoleExePath, 
-            string casePath,
-            string caseName, 
-            string description,
-            string investigator,
+        public static async IAsyncEnumerable<string> CreateCase(
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", 
+            string casePath= @"C:\Dev\Nuix\Cases\MyNewCase",
+            string caseName = "MyNewCase", 
+            string description= "Description",
+            string investigator = "Investigator",
             
             
             bool useDongle = true)
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = @"C:\Users\MarkWainwright\NetCoreApp\publish"; //for now
+            //var currentDirectory = Directory.GetCurrentDirectory();
             var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.rb");
 
             var args = new[]
