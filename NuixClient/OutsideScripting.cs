@@ -49,19 +49,21 @@ namespace NuixClient
             };
             pProcess.Start();
 
-            //Read the output one line at a time
-            while (true)
-            {
-                var line = await pProcess.StandardOutput.ReadLineAsync();
-                if (line == null) //We've reached the end of the file
-                    break;
-                yield return line;
-            }
+            
 
             //Read the error one line at a time
             while (true)
             {
                 var line = await pProcess.StandardError.ReadLineAsync();
+                if (line == null) //We've reached the end of the file
+                    break;
+                yield return line;
+            }
+
+            //Read the output one line at a time
+            while (true)
+            {
+                var line = await pProcess.StandardOutput.ReadLineAsync();
                 if (line == null) //We've reached the end of the file
                     break;
                 yield return line;
@@ -78,8 +80,11 @@ namespace NuixClient
             string investigator = "Investigator",
             bool useDongle = true)
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.py");
+            //var currentDirectory = Directory.GetCurrentDirectory();
+            //var currentDirectory = @"C:\Source\Repos\NuixClient";
+            //var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.py");
+
+            var scriptPath = @"C:\Source\Repos\NuixClient\Scripts\CreateCase.py";
 
             var args = new[]
             {
@@ -113,7 +118,8 @@ namespace NuixClient
             
             bool useDongle = true)
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
+            //var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = @"C:\Source\Repos\NuixClient";
             var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.rb");
 
             var args = new[]
