@@ -1,4 +1,4 @@
-﻿require 'optparse'
+require 'optparse'
 
 hash_options = {}
 OptionParser.new do |opts|
@@ -10,7 +10,7 @@ OptionParser.new do |opts|
     hash_options[:folderNameArg] = v
   end
   opts.on('-d [ARG]', '--folderDescriptionArg [ARG]', "Specify the Folder Description") do |v|
-    hash_options[:descriptionArg] = v
+    hash_options[:folderDescriptionArg] = v
   end
   opts.on('-c [ARG]', '--folderCustodianArg [ARG]', "Specify the Custodian") do |v|
     hash_options[:folderCustodianArg] = v
@@ -28,7 +28,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-requiredArguments = [:pathArg, :folderNameArg, :folderDescriptionArg, :folderCustodianArg :filePathArg]
+requiredArguments = [:pathArg, :folderNameArg, :folderDescriptionArg, :folderCustodianArg, :filePathArg]
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
@@ -58,7 +58,7 @@ else
     puts 'Starting processing.'
     processor.process
     puts 'Processing complete.'
-        the_case.close
+    the_case.close
     puts "Case Closed"
     
 end

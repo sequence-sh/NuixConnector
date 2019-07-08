@@ -174,17 +174,17 @@ namespace NuixClient
         /// <returns>The output of the case creation script</returns>
         public static async IAsyncEnumerable<string> AddFileToCase( //TODO remove default arguments
 
-            string casePath,
-            string folderName,
-            string description, 
-            string custodian,
-            string filePath,
+            string casePath = @"C:\Dev\Nuix\Cases\NewCase",
+            string folderName = "TestFolder",
+            string description = "nice", 
+            string custodian = "mark2",
+            string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {
             //var currentDirectory = Directory.GetCurrentDirectory();
             var currentDirectory = @"C:\Source\Repos\NuixClient";
-            var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.rb");
+            var scriptPath = Path.Combine(currentDirectory, "Scripts", "AddToCase.rb");
 
             var args = new[]
             {
