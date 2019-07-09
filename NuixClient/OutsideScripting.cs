@@ -12,6 +12,80 @@ namespace NuixClient
     public static class OutsideScripting
     {
         /// <summary>
+        /// Renumbers the items in the production set
+        /// </summary>
+        /// <returns></returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<Result<string>> RenumberProductionSet(string productionSetName,
+            ProductionSetSortOrder sortOrder,
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase")
+        {
+            var process = new NuixReorderProductionSet()
+            {
+                CasePath = casePath,
+                ProductionSetName = productionSetName,
+                SortOrder = sortOrder
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+
+        /// <summary>
+        /// Annotates a document ID list to add production set names to it.
+        /// </summary>
+        /// <param name="productionSetName">The name of the production set to import document ids to</param>
+        /// <param name="dataPath">Specifies the file path of the document ID list</param>
+        /// <param name="casePath">The path to the case</param>
+        /// <returns>The output of report creation</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<Result<string>> AnnotateDocumentIdList(string productionSetName,
+            string dataPath,
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase")
+        {
+            var process = new NuixAnnotateDocumentIdList
+            {
+                CasePath = casePath,
+                ProductionSetName = productionSetName,
+                DataPath = dataPath
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+        /// <summary>
+        /// Extracts entities from case
+        /// </summary>
+        /// <param name="productionSetName">The name of the production set to import document ids to</param>
+        /// <param name="dataPath">Specifies the file path of the document ID list</param>
+        /// <param name="areSourceProductionSetsInData">Specifies that the source production set name(s) are contained in the document ID list</param>
+        /// <param name="casePath">The path to the case</param>
+        /// <returns>The output of report creation</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<Result<string>> ImportDocumentIds(string productionSetName,
+            string dataPath,
+            bool areSourceProductionSetsInData,
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase")
+        {
+            var process = new NuixImportDocumentIds
+            {
+                CasePath = casePath,
+                ProductionSetName = productionSetName,
+                DataPath = dataPath,
+                AreSourceProductionSetsInData = areSourceProductionSetsInData
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+
+        /// <summary>
         /// Extracts entities from case
         /// </summary>
         /// <param name="casePath">The path to the case</param>
@@ -44,7 +118,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string? ocrProfileName = null)
         {
-            var process = new NuixPerformOCR()
+            var process = new NuixPerformOCR
             {
                 CasePath = casePath,
                 OCRProfileName = ocrProfileName
@@ -89,7 +163,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new NuixCreateTermList()
+            var process = new NuixCreateTermList
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -191,22 +265,30 @@ namespace NuixClient
         /// <summary>
         /// Add items to a production set in NUIX
         /// </summary>
+        /// <param name="description"></param>
         /// <param name="casePath">The path of the case to open</param>
         /// <param name="searchTerm">The term to search for</param>
         /// <param name="productionSetName">The production set to add the found items to. Will be created if it doesn't exist</param>
+        /// <param name="order"></param>
+        /// <param name="limit"></param>
         /// <returns>The output of the script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<Result<string>> AddToProductionSet( 
-
-            string casePath= @"C:\Dev\Nuix\Cases\NewCase",
+        public static async IAsyncEnumerable<Result<string>> AddToProductionSet(
+            string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
-            string productionSetName  = "ProdSet")
+            string productionSetName = "ProdSet",
+            string? description = "cool",
+            string? order = "name ASC",
+            int limit = 1000)
         {
             var process = new NuixAddToProductionSet
             {
                 CasePath = casePath,
                 SearchTerm = searchTerm,
-                ProductionSetName = productionSetName
+                ProductionSetName = productionSetName,
+                Description = description,
+                Order = order,
+                Limit = limit
             };
 
             await foreach (var line in process.Execute())
@@ -228,7 +310,7 @@ namespace NuixClient
             string description,
             string investigator)
         {
-            var process = new NuixCreateCase()
+            var process = new NuixCreateCase
             {
                 CaseName = caseName,
                 CasePath = casePath,
@@ -260,7 +342,7 @@ namespace NuixClient
             string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
             string? processingProfileName = null)
         {
-            var process = new NuixAddFile()
+            var process = new NuixAddFile
             {
                 CasePath = casePath,
                 Custodian = custodian,
@@ -297,7 +379,7 @@ namespace NuixClient
             string concordanceDateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             string concordanceProfileName = @"TestProfile")
         {
-            var process = new NuixAddConcordance()
+            var process = new NuixAddConcordance
             {
                 CasePath = casePath,
                 ConcordanceDateFormat = concordanceDateFormat,

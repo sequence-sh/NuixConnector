@@ -12,14 +12,15 @@ OptionParser.new do |opts|
   opts.on('-n [ARG]', '--productionSetName [ARG]', "Production Set Name") do |v|
     hash_options[:productionSetNameArg] = v
   end
+  opts.on('-d [ARG]', '--description [ARG]', "Production Set Description") do |v|
+    hash_options[:descriptionArg] = v
+  end
   opts.on('-o [ARG]', '--orderTerm [ARG]', "Order Term") do |v|
     hash_options[:orderArg] = v
   end
   opts.on('-l [ARG]', '--limit [ARG]', "Limit") do |v|
     hash_options[:limitArg] = v
-  end
-
-  
+  end  
 
   opts.on('--version', 'Display the version') do 
     puts "VERSION"
@@ -32,7 +33,7 @@ OptionParser.new do |opts|
 
 end.parse!
 
-requiredArguments = [:pathArg, :productionSetNameArg, :searchArg] #orderArg and limitArg are optional
+requiredArguments = [:pathArg, :productionSetNameArg, :searchArg] #descriptionArg, orderArg, and limitArg are optional
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
@@ -58,7 +59,11 @@ else
         productionSet = the_case.findProductionSetByName(hash_options[:productionSetNameArg])
 
         if(productionSet == nil)
-            productionSet = the_case.newProductionSet(hash_options[:productionSetNameArg])
+
+            options = {}
+            options[:description] = hash_options[:descriptionArg].to_i if hash_options[:descriptionArg] != nil
+
+            productionSet = the_case.newProductionSet(hash_options[:productionSetNameArg], options)
         
             puts "Production Set Created"
         else
