@@ -61,7 +61,7 @@ else
     :concordanceFile => hash_options[:filePathArg],
     :concordanceDateFormat => hash_options[:dateFormatArg]
     })
-    folder.setMetadataImportProfileName(:profileNameArg)
+    folder.setMetadataImportProfileName(hash_options[:profileNameArg])
     folder.save
 
     puts 'Starting processing.'
