@@ -133,10 +133,12 @@ namespace NuixClient
         [UsedImplicitly]
         public static async IAsyncEnumerable<Result<string>> SearchAndTag( 
 
-            string casePath= @"C:\Dev\Nuix\Cases\NewCase",
+            string casePath= @"D:\Dev\Nuix\Cases\MarksCase",
             string searchTerm = "night",
-            string tag  = "Nocturnal")
+            string tag  = "Bad")
         {
+            //TODO the term 'NOT' in the search string seems to mess things up - sort this out
+
             var process = new NuixSearchAndTag
             {
                 CasePath = casePath,
