@@ -23,6 +23,9 @@ OptionParser.new do |opts|
   opts.on('-z [ARG]', '--dateformat [ARG]', "Specify the concordance date format") do |v|
     hash_options[:dateFormatArg] = v
   end
+  opts.on('-t [ARG]', '--profileName [ARG]', "Specify the concordance profileName") do |v|
+    hash_options[:profileNameArg] = v
+  end
 
   opts.on('--version', 'Display the version') do 
     puts "VERSION"
@@ -34,7 +37,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-requiredArguments = [:pathArg, :folderNameArg, :folderDescriptionArg, :folderCustodianArg, :filePathArg, :dateFormatArg]
+requiredArguments = [:pathArg, :folderNameArg, :folderDescriptionArg, :folderCustodianArg, :filePathArg, :dateFormatArg, :profileNameArg]
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
@@ -55,10 +58,10 @@ else
     folder.description = hash_options[:folderDescriptionArg]
     folder.initial_custodian = hash_options[:folderCustodianArg]
     folder.addLoadFile({
-    :concordanceFile => hash_options[:folderNameArg]
+    :concordanceFile => hash_options[:filePathArg],
     :concordanceDateFormat => hash_options[:dateFormatArg]
     })
-
+    folder.setMetadataImportProfileName(:profileNameArg)
     folder.save
 
     puts 'Starting processing.'

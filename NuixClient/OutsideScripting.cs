@@ -169,7 +169,7 @@ namespace NuixClient
         //"yyyy-MM-dd'T'HH:mm:ss.SSSZ" 
 
         /// <summary>
-        /// Creates a new Case in NUIX
+        /// Add file to a Case in NUIX
         /// </summary>
         /// <param name="nuixConsoleExePath">Path to the console exe</param>
         /// <param name="casePath">Path of the case to open</param>
@@ -206,17 +206,19 @@ namespace NuixClient
             await foreach (var line in result)
                 yield return line;
         }
-        
-        
+
+
         /// <summary>
-        /// Creates a new Case in NUIX
+        /// Add concordance to a case in NUIX
         /// </summary>
         /// <param name="nuixConsoleExePath">Path to the console exe</param>
+        /// <param name="concordanceProfileName">Name of the concordance profile to use</param>
         /// <param name="casePath">Path of the case to open</param>
         /// <param name="folderName">The name of the folder to create</param>
         /// <param name="description">Description of the new folder</param>
         /// <param name="custodian">Custodian for the new folder</param>
         /// <param name="filePath">The path of the file to add</param>
+        /// <param name="concordanceDateFormat">Concordance date format to use</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
         public static async IAsyncEnumerable<string> AddConcordanceToCase( //TODO remove default arguments
@@ -228,6 +230,7 @@ namespace NuixClient
             string filePath = @"C:\Dev\Nuix\Exports\Export1\loadfile.dat",
             string concordanceDateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            string concordanceProfileName = @"TestProfile",
             bool useDongle = true)
         {
             //var currentDirectory = Directory.GetCurrentDirectory();
@@ -241,7 +244,8 @@ namespace NuixClient
                 "-d", description,
                 "-c", custodian,
                 "-f", filePath,
-                "z", concordanceDateFormat
+                "-z", concordanceDateFormat,
+                "-t", concordanceProfileName
             };
             var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
 
