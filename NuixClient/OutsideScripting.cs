@@ -260,16 +260,16 @@ namespace NuixClient
         /// <param name="casePath">Path of the case to open</param>
         /// <param name="exportPath">The path to export to</param>
         /// <param name="productionSetName">The name of the production set to export</param>
-        /// <param name="metadataProfileName">Optional name of the metadata profile to use. Note this is NOT a metadata export profile</param>
+        /// <param name="metadataProfileName">Optional name of the metadata profile to use. Case sensitive. Note this is NOT a metadata export profile</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// ///
         /// <returns>The output of the case creation script</returns>
         public static async IAsyncEnumerable<string> ExportProductionSetConcordance( //TODO remove default arguments
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
-            string exportPath = @"C:\Dev\Nuix\Exports\Export3",
-            string productionSetName = @"MyProductionSet",
-            string metadataProfileName = null,
+            string exportPath = @"C:\Dev\Nuix\Exports\Export6",
+            string productionSetName = @"Night",
+            string metadataProfileName = "Default",
             bool useDongle = true)
         {
             //var currentDirectory = Directory.GetCurrentDirectory();

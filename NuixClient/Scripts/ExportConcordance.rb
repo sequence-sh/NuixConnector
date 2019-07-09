@@ -53,12 +53,12 @@ else
 
         batchExporter.addProduct("native", {
         :naming=> "full",
-        :path, "Native"
+        :path => "Native"
         })
 
         batchExporter.addProduct("text", {
         :naming=> "full",
-        :path, "Text"
+        :path => "Text"
         })
 
 
