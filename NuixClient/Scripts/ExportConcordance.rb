@@ -48,7 +48,7 @@ else
         batchExporter = utilities.createBatchExporter(hash_options[:exportPathArg])
 
         batchExporter.addLoadFile("concordance",{
-        metadataProfile => hash_options[:metadataProfileArg]
+        :metadataProfile => hash_options[:metadataProfileArg]
 		})
 
 
