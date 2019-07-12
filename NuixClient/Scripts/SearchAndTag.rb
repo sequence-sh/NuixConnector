@@ -50,7 +50,7 @@ else
     searchOptions[:limit] = hash_options[:limitArg].to_i if hash_options[:limitArg] != nil
 
 
-    searchResults = the_case.search(hash_options[:searchArg], searchOptions)
+    items = the_case.search(hash_options[:searchArg], searchOptions)
 
     puts "#{items.length} found"
 

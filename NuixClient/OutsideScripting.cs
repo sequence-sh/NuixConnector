@@ -85,8 +85,7 @@ namespace NuixClient
         /// <returns>The output of the case creation script</returns>
         public static async IAsyncEnumerable<string> SearchAndTag( 
 
-            string casePath= @"C:\Dev\Nuix\Cases\MyNewCase",
-            string caseName = "MyNewCase", 
+            string casePath= @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
             string tag  = "Nocturnal",
             string order = null,
@@ -95,7 +94,7 @@ namespace NuixClient
             bool useDongle = true)
         {
             var currentDirectory = Directory.GetCurrentDirectory();
-            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "CreateCase.rb");
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTag.rb");
 
             var args = new List<string>
             {
