@@ -12,22 +12,16 @@ namespace NuixClient
     /// </summary>
     public static class ProcessRunner
     {
-        /// <summary>
-        /// Run process defined in Json
-        /// </summary>
-        /// <param name="jsonPath">Path to the JSON</param>
-        /// <returns></returns>
-        public static async IAsyncEnumerable<ResultLine> RunProcessFromJson(string jsonPath)
+
+
+        public static async IAsyncEnumerable<ResultLine> RunProcessFromJsonString(string jsonString)
         {
-
             Process? process = null;
-
             ResultLine? errorLine;
+            var text = jsonString;
 
             try
-            {
-                var text = File.ReadAllText(jsonPath);
-
+            {           
                 process = JsonConvert.DeserializeObject<Process>(text,
                     new ProcessJsonConverter(),
                     new ConditionJsonConverter());
@@ -42,9 +36,9 @@ namespace NuixClient
             {
                 yield return errorLine;
             }
-            else if(process == null)
+            else if (process == null)
             {
-                yield return  new ResultLine(false, "Process is null");
+                yield return new ResultLine(false, "Process is null");
             }
             else
             {
@@ -63,6 +57,40 @@ namespace NuixClient
                 await foreach (var resultLine in resultLines)
                 {
                     yield return resultLine;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Run process defined in Json
+        /// </summary>
+        /// <param name="jsonPath">Path to the JSON</param>
+        /// <returns></returns>
+        public static async IAsyncEnumerable<ResultLine> RunProcessFromJson(string jsonPath)
+        {
+            string text;
+            ResultLine? errorLine = null;
+            try
+            {
+                text = File.ReadAllText(jsonPath);                
+            }
+            catch (Exception e)
+            {
+                errorLine = new ResultLine(false, e.Message);
+                text = null;
+            }
+
+            if (errorLine != null)
+            {
+                yield return errorLine;
+                yield break;
+            }
+            else
+            {
+                var r = RunProcessFromJsonString(text);
+                await foreach(var rl in r)
+                {
+                    yield return rl;
                 }
             }
         }

@@ -11,6 +11,8 @@ namespace NuixClientAPI.Controllers
     [Route("[controller]")]
     public class NuixScriptController : ControllerBase
     {
+
+        //TODO gRPC
         private static IActionResult ConvertToActionResult(IAsyncEnumerable<ResultLine> asyncEnumerable)
         {
             
@@ -51,7 +53,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="limit">Optional maximum number of items to tag.</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/SearchAndTagProcess")]
-        public static IActionResult SearchAndTag(
+        public IActionResult SearchAndTag(
             string casePath,
             string searchTerm,
             string tag,

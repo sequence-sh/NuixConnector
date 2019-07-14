@@ -109,7 +109,7 @@ namespace NuixClient
 
 
             var currentDirectory = Directory.GetCurrentDirectory();
-            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTagProcess.rb");
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTag.rb");
 
             var args = new List<string>
             {
