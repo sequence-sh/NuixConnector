@@ -43,15 +43,14 @@ else
     
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
-    productionSet = findProductionSetByName(hash_options[:productionSetNameArg])
+    productionSet = the_case.findProductionSetByName(hash_options[:productionSetNameArg])
 
-    if(productionSet == nil){
+    if(productionSet == nil)
         productionSet = the_case.newProductionSet(hash_options[:productionSetNameArg])
         
         puts "Production Set Created"
-    }else{
+    else
         puts "Production Set Found"
-    }
     end    
 
     puts "Searching"
