@@ -553,7 +553,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class V1Client : IV1Client
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -4292,7 +4292,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class AsyncFunctionSingleItemQueueClient : IAsyncFunctionSingleItemQueueClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -4703,7 +4703,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class AsyncFunctionsClient : IAsyncFunctionsClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -5386,7 +5386,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class AuthenticatedUsersClient : IAuthenticatedUsersClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -6982,7 +6982,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class CasesClient : ICasesClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -15510,7 +15510,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ClusterRunsClient : IClusterRunsClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -16003,7 +16003,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class EvidenceClient : IEvidenceClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -17655,7 +17655,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ItemSetsClient : IItemSetsClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -18765,7 +18765,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ItemsClient : IItemsClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -20743,7 +20743,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ItemClient : IItemClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -21056,7 +21056,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ProductionSetsClient : IProductionSetsClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -21605,7 +21605,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ReviewJobsClient : IReviewJobsClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -22186,7 +22186,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class InventoryClient : IInventoryClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -22513,7 +22513,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ResourcesClient : IResourcesClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -22815,7 +22815,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class SystemClient : ISystemClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -23464,7 +23464,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ValidationClient : IValidationClient
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -23715,7 +23715,7 @@ namespace NuixAPI
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.2.0 (NJsonSchema v10.1.4.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class V2Client : IV2Client
     {
-        private string _baseUrl = "localhost:8080/nuix-restful-service/svc";
+        private string _baseUrl = "http://localhost:8080/nuix-restful-service/svc";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
