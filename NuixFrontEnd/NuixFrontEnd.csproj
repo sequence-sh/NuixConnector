@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\blazor-experiment\Razor_Components\Razor_Components.csproj" />
     <ProjectReference Include="..\NuixClient\NuixClient.csproj" />
   </ItemGroup>
 
