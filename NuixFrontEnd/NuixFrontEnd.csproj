@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NuixClient\NuixClient.csproj" />
+    <ProjectReference Include="..\Razor_Components\Razor_Components.csproj" />
   </ItemGroup>
 
 </Project>

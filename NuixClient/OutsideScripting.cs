@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Newtonsoft.Json.Linq;
 
 namespace NuixClient
 {
@@ -16,7 +14,6 @@ namespace NuixClient
         /// Returns the output one line at a time
         /// </summary>
         /// <param name="nuixConsoleExePath">The path to the nuix_console executable</param>
-        /// <param name="caseDirectory">The directory of the case</param>
         /// <param name="scriptPath">The path to the script</param>
         /// <param name="useDongle"></param>
         /// <param name="scriptArguments">Arguments to the script</param>
@@ -72,7 +69,6 @@ namespace NuixClient
         /// Creates a new Case in NUIX
         /// </summary>
         /// <param name="nuixConsoleExePath">Path to the console exe</param>
-        /// <param name="caseDirectory">Path to the case directory</param>
         /// <param name="casePath">Where to create the new case</param>
         /// <param name="caseName">The name of the new case</param>
         /// <param name="description">Description of the case</param>
@@ -80,7 +76,6 @@ namespace NuixClient
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
         public static async IAsyncEnumerable<string> CreateCase(string nuixConsoleExePath, 
-            string caseDirectory,
             string casePath,
             string caseName, 
             string description,
