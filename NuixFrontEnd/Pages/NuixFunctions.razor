@@ -1,0 +1,15 @@
+﻿@page "/nuix"
+
+@using Razor_Components
+@using NuixAPI
+
+<h3>Nuix</h3>
+
+@foreach (var fun in typeof(NuixClient.OutsideScripting).GetMethods().Where(x=>x.IsStatic))
+{
+    <FunctionPage Method="@fun" ObjectInstance="null" ProcessesPagePath="\processes"></FunctionPage>
+}
+
+@code
+{
+}

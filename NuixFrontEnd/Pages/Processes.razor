@@ -1,0 +1,16 @@
+﻿@page "/processes"
+@using Razor_Components
+
+@inject ProcessContext Processes1
+
+@foreach (var p in Processes1.Reverse())
+{
+    <table border=1>
+        <ProcessPage Process="p" />
+    </table>
+    <br />
+}
+
+@code {
+
+}

@@ -1,0 +1,121 @@
+﻿@using System.Collections.Concurrent
+@using System.Collections.ObjectModel
+@using System.Diagnostics
+@using System.Threading
+@using Namotion.Reflection
+
+@inject ProcessContext ProcessContext
+@inject NavigationManager NavigationManager
+<div>
+    <h2>
+        @Method?.Name
+    </h2>
+    <text>@XmlComment</text>
+    <br />
+
+    @* ReSharper disable once Html.Obsolete *@
+    @if (ParameterInputs != null)
+    {
+        <table sortable="True" cols="3" border="1">
+            @foreach (var param in ParameterInputs)
+            {
+                <ParameterBox ParameterInput="@param" ParameterDictionary="@ParameterDictionary" />
+            }
+        </table>
+        <br />
+        <button name="Go" @onclick="Invoke">Go</button>
+        <br />
+    }
+
+    @if (!string.IsNullOrWhiteSpace(ResultText))
+    {
+        <h3>@ResultText</h3>
+    }
+    <br />
+    <br />
+</div>
+
+@code {
+
+    /// <summary>
+    /// The method to run
+    /// </summary>
+    [Parameter]
+    public System.Reflection.MethodInfo? Method { get; set; }
+
+    /// <summary>
+    /// The instance of the object to run the method on. If the method is static, this can be null
+    /// </summary>
+    [Parameter]
+    public object? ObjectInstance { get; set; }
+
+
+    /// <summary>
+    /// The relative path to the processes page
+    /// </summary>
+    [Parameter]
+    public string? ProcessesPagePath { get; set; }
+
+    internal IReadOnlyCollection<IParameterInput>? ParameterInputs { get; set; }
+
+    internal string? XmlComment { get; set; }
+
+    internal ConcurrentDictionary<string, object?>? ParameterDictionary { get; set; }
+
+    internal string? ResultText { get; set; }
+
+    internal CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
+
+    /// <summary>
+    /// Is run after the parameters have been set
+    /// </summary>
+    protected override void OnParametersSet()
+    {
+        ParameterDictionary = new ConcurrentDictionary<string, object?>();
+
+        Debug.Assert(Method != null, nameof(Method) + " != null");
+
+        foreach (var param in Method.GetParameters())
+        {
+            if (param.Name != null)
+            {
+                if (param.ParameterType == typeof(CancellationToken))
+                {//TODO other special cases
+                    ParameterDictionary.TryAdd(param.Name, CancellationTokenSource.Token);
+                }
+                else
+                {
+                    //TODO cache previous values of parameters
+                    ParameterDictionary.TryAdd(param.Name, param.DefaultValue);
+                }
+            }
+        }
+
+
+        XmlComment = Method.GetXmlDocsSummary();
+
+        ParameterInputs = Method.GetParameters().Select(ParameterExtensions.GetBoxType).ToList();
+    }
+
+
+    internal void Invoke()
+    {
+        var dictionary = new ReadOnlyDictionary<string, object?>(
+            ParameterDictionary.ToDictionary(x => x.Key, x => x.Value));
+
+        Debug.Assert(Method != null, nameof(Method) + " != null");
+        var process = new Process(Method,
+            ObjectInstance,
+            dictionary,
+            CancellationTokenSource);
+
+        //todo log?
+
+        ProcessContext.AddProcess(process);
+
+        process.Run(); //Process will actually run on another thread
+
+        if(ProcessesPagePath != null)
+            NavigationManager.NavigateTo(ProcessesPagePath);
+    }
+}
