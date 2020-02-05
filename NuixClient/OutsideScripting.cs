@@ -49,7 +49,14 @@ namespace NuixClient
             };
             pProcess.Start();
 
-            
+            //Read the output one line at a time //TODO find a way to get the full output and the full error
+            while (true)
+            {
+                var line = await pProcess.StandardOutput.ReadLineAsync();
+                if (line == null) //We've reached the end of the file
+                    break;
+                yield return line;
+            }
 
             //Read the error one line at a time
             while (true)
@@ -60,19 +67,36 @@ namespace NuixClient
                 yield return line;
             }
 
-            //Read the output one line at a time
-            while (true)
-            {
-                var line = await pProcess.StandardOutput.ReadLineAsync();
-                if (line == null) //We've reached the end of the file
-                    break;
-                yield return line;
-            }
-
             pProcess.WaitForExit();
         }
 
-        public static async IAsyncEnumerable<string> CreateCasePython(
+        public static async IAsyncEnumerable<string> CreateCaseECMA(
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            string casePath = @"C:\Dev\Nuix\Cases\MyNewCase2",
+            string caseName = "MyNewCase2",
+            string description = "Description",
+            string investigator = "Investigator",
+            bool useDongle = true)
+        {
+
+            var scriptPath = @"C:\Source\Repos\NuixClient\Scripts\CreateCase.js";
+
+            var args = new[]
+            {
+                "-p", casePath,
+                "-n", caseName,
+                "-d", description,
+                "-i", investigator
+            };
+            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
+
+            await foreach (var line in result)
+                yield return line;
+        }
+
+
+        //this doesn't work because I can't find out how to pass the arguments
+        private static async IAsyncEnumerable<string> CreateCasePython(
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             string casePath = @"C:\Dev\Nuix\Cases\MyNewCase2",
             string caseName = "MyNewCase2",
