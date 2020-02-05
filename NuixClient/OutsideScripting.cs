@@ -18,17 +18,12 @@ namespace NuixClient
         /// <param name="useDongle"></param>
         /// <param name="scriptArguments">Arguments to the script</param>
         public static async IAsyncEnumerable<string> RunScript(string nuixConsoleExePath,
-            //string caseDirectory,
             string scriptPath,
             bool useDongle,
             IEnumerable<string> scriptArguments)
         {
-            //Nuix_Console.exe -Dcase_dir="path" -licencesourcetype dongle C:\Users\MarkWainwright\Documents\NuixScripts\Script1.rb
-
             var arguments = new List<string>();
 
-            //if (!string.IsNullOrWhiteSpace(caseDirectory))
-            //    arguments.Add($"-Dcase_dir=\"{caseDirectory}\"");
             if(useDongle)
                 arguments.Add("-licencesourcetype dongle");
             if(!string.IsNullOrWhiteSpace(scriptPath))
@@ -52,9 +47,7 @@ namespace NuixClient
                     CreateNoWindow = true
                 }
             };
-
             pProcess.Start();
-
 
             //Read the output one line at a time
             while (true)
@@ -75,20 +68,42 @@ namespace NuixClient
             }
 
             pProcess.WaitForExit();
-
         }
 
-        /// <summary>
-        /// Creates a new Case in NUIX
-        /// </summary>
-        /// <param name="nuixConsoleExePath">Path to the console exe</param>
-        /// <param name="casePath">Where to create the new case</param>
-        /// <param name="caseName">The name of the new case</param>
-        /// <param name="description">Description of the case</param>
-        /// <param name="investigator">Name of the investigator</param>
-        /// <param name="useDongle">Use a dongle for licensing</param>
-        /// <returns>The output of the case creation script</returns>
-        public static async IAsyncEnumerable<string> CreateCase(
+        public static async IAsyncEnumerable<string> CreateCasePython(
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            string casePath = @"C:\Dev\Nuix\Cases\MyNewCase2",
+            string caseName = "MyNewCase2",
+            string description = "Description",
+            string investigator = "Investigator",
+            bool useDongle = true)
+        {
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.py");
+
+            var args = new[]
+            {
+                "-p", casePath,
+                "-n", caseName,
+                "-d", description,
+                "-i", investigator
+            };
+            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
+
+            await foreach (var line in result)
+                yield return line;
+        }
+    /// <summary>
+    /// Creates a new Case in NUIX
+    /// </summary>
+    /// <param name="nuixConsoleExePath">Path to the console exe</param>
+    /// <param name="casePath">Where to create the new case</param>
+    /// <param name="caseName">The name of the new case</param>
+    /// <param name="description">Description of the case</param>
+    /// <param name="investigator">Name of the investigator</param>
+    /// <param name="useDongle">Use a dongle for licensing</param>
+    /// <returns>The output of the case creation script</returns>
+    public static async IAsyncEnumerable<string> CreateCaseRuby( //TODO remove default arguments
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", 
             string casePath= @"C:\Dev\Nuix\Cases\MyNewCase",
             string caseName = "MyNewCase", 
@@ -98,8 +113,7 @@ namespace NuixClient
             
             bool useDongle = true)
         {
-            var currentDirectory = @"C:\Users\MarkWainwright\NetCoreApp\publish"; //for now
-            //var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = Directory.GetCurrentDirectory();
             var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.rb");
 
             var args = new[]
