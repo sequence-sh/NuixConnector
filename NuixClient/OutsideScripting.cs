@@ -24,14 +24,14 @@ namespace NuixClient
         {
             var arguments = new List<string>();
 
-            if(useDongle)
+            if (useDongle)
                 arguments.Add("-licencesourcetype dongle");
-            if(!string.IsNullOrWhiteSpace(scriptPath))
+            if (!string.IsNullOrWhiteSpace(scriptPath))
                 arguments.Add(scriptPath);
 
             arguments.AddRange(scriptArguments);
 
-            if(!File.Exists(nuixConsoleExePath))
+            if (!File.Exists(nuixConsoleExePath))
                 throw new Exception($"Could not find '{nuixConsoleExePath}'");
 
             using var pProcess = new System.Diagnostics.Process
@@ -98,11 +98,11 @@ namespace NuixClient
 
         //this doesn't work because I can't find out how to pass the arguments
         private static async IAsyncEnumerable<string> CreateCasePython(
-            string nuixConsoleExePath,// = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
-            string casePath,// = @"C:\Dev\Nuix\Cases\MyNewCase2",
-            string caseName,// = "MyNewCase2",
-            string description,// = "Description",
-            string investigator,// = "Investigator",
+            string casePath, // = @"C:\Dev\Nuix\Cases\MyNewCase2",
+            string caseName, // = "MyNewCase2",
+            string description, // = "Description",
+            string investigator, // = "Investigator",
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {
             //var currentDirectory = Directory.GetCurrentDirectory();
@@ -123,37 +123,79 @@ namespace NuixClient
             await foreach (var line in result)
                 yield return line;
         }
-    /// <summary>
-    /// Creates a new Case in NUIX
-    /// </summary>
-    /// <param name="nuixConsoleExePath">Path to the console exe</param>
-    /// <param name="casePath">Where to create the new case</param>
-    /// <param name="caseName">The name of the new case</param>
-    /// <param name="description">Description of the case</param>
-    /// <param name="investigator">Name of the investigator</param>
-    /// <param name="useDongle">Use a dongle for licensing</param>
-    /// <returns>The output of the case creation script</returns>
-    public static async IAsyncEnumerable<string> CreateCaseRuby( //TODO remove default arguments
-            string nuixConsoleExePath,// = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", 
-            string casePath,//= @"C:\Dev\Nuix\Cases\MyNewCase",
-            string caseName,// = "MyNewCase", 
-            string description,//= "Description",
-            string investigator,// = "Investigator",
+
+        /// <summary>
+        /// Creates a new Case in NUIX
+        /// </summary>
+        /// <param name="nuixConsoleExePath">Path to the console exe</param>
+        /// <param name="casePath">Where to create the new case</param>
+        /// <param name="caseName">The name of the new case</param>
+        /// <param name="description">Description of the case</param>
+        /// <param name="investigator">Name of the investigator</param>
+        /// <param name="useDongle">Use a dongle for licensing</param>
+        /// <returns>The output of the case creation script</returns>
+        public static async IAsyncEnumerable<string> CreateCaseRuby( //TODO remove default arguments
+
+            string casePath, //= @"C:\Dev\Nuix\Cases\MyNewCase",
+            string caseName, // = "MyNewCase", 
+            string description, //= "Description",
+            string investigator, // = "Investigator",
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {   
             var currentDirectory = Directory.GetCurrentDirectory();
             var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "CreateCase.rb");
 
             var args = new[]
-                {
+            {
                 "-p", casePath,
                 "-n", caseName,
                 "-d", description,
                 "-i", investigator
-                };
+            };
             var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
 
-            await foreach(var line in result)
+            await foreach (var line in result)
+                yield return line;
+        }
+
+
+        /// <summary>
+        /// Creates a new Case in NUIX
+        /// </summary>
+        /// <param name="nuixConsoleExePath">Path to the console exe</param>
+        /// <param name="casePath">Path of the case to open</param>
+        /// <param name="folderName">The name of the folder to create</param>
+        /// <param name="description">Description of the new folder</param>
+        /// <param name="custodian">Custodian for the new folder</param>
+        /// <param name="filePath">The path of the file to add</param>
+        /// <param name="useDongle">Use a dongle for licensing</param>
+        /// <returns>The output of the case creation script</returns>
+        public static async IAsyncEnumerable<string> AddFileToCase( //TODO remove default arguments
+
+            string casePath = @"C:\Dev\Nuix\Cases\NewCase",
+            string folderName = "TestFolder",
+            string description = "nice", 
+            string custodian = "mark2",
+            string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            bool useDongle = true)
+        {
+            //var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = @"C:\Source\Repos\NuixClient";
+            var scriptPath = Path.Combine(currentDirectory, "Scripts", "AddToCase.rb");
+
+            var args = new[]
+            {
+                "-p", casePath,
+                "-n", folderName,
+                "-d", description,
+                "-c", custodian,
+                "-f", filePath
+            };
+            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
+
+            await foreach (var line in result)
                 yield return line;
         }
 
