@@ -6,6 +6,7 @@
 
 @if (ParameterInput != null && ParameterDictionary != null)
 {
+    //TODO typeahead
     @switch (ParameterInput)
     {
         case NoInput _:
@@ -108,4 +109,10 @@
     /// </summary>
     [Parameter]
     public ConcurrentDictionary<string, object?>? ParameterDictionary { get; set; }
+    
+    /// <summary>
+    /// User metadata about this parameter
+    /// </summary>
+    [Parameter]
+    public ParameterMetadata ParameterMetadata { get; set; }
 }

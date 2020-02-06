@@ -70,7 +70,8 @@ namespace NuixClient
             pProcess.WaitForExit();
         }
 
-        public static async IAsyncEnumerable<string> CreateCaseECMA(
+        //This doesn't work because I can't figure out how to pass arguments
+        private static async IAsyncEnumerable<string> CreateCaseECMA(
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             string casePath = @"C:\Dev\Nuix\Cases\MyNewCase2",
             string caseName = "MyNewCase2",
@@ -97,11 +98,11 @@ namespace NuixClient
 
         //this doesn't work because I can't find out how to pass the arguments
         private static async IAsyncEnumerable<string> CreateCasePython(
-            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
-            string casePath = @"C:\Dev\Nuix\Cases\MyNewCase2",
-            string caseName = "MyNewCase2",
-            string description = "Description",
-            string investigator = "Investigator",
+            string nuixConsoleExePath,// = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            string casePath,// = @"C:\Dev\Nuix\Cases\MyNewCase2",
+            string caseName,// = "MyNewCase2",
+            string description,// = "Description",
+            string investigator,// = "Investigator",
             bool useDongle = true)
         {
             //var currentDirectory = Directory.GetCurrentDirectory();
@@ -133,13 +134,11 @@ namespace NuixClient
     /// <param name="useDongle">Use a dongle for licensing</param>
     /// <returns>The output of the case creation script</returns>
     public static async IAsyncEnumerable<string> CreateCaseRuby( //TODO remove default arguments
-            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", 
-            string casePath= @"C:\Dev\Nuix\Cases\MyNewCase",
-            string caseName = "MyNewCase", 
-            string description= "Description",
-            string investigator = "Investigator",
-            
-            
+            string nuixConsoleExePath,// = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", 
+            string casePath,//= @"C:\Dev\Nuix\Cases\MyNewCase",
+            string caseName,// = "MyNewCase", 
+            string description,//= "Description",
+            string investigator,// = "Investigator",
             bool useDongle = true)
         {
             //var currentDirectory = Directory.GetCurrentDirectory();

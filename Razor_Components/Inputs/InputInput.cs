@@ -14,6 +14,10 @@
 
         public string ParameterName { get; }
         public string Remarks { get; }
+        public object? ConvertFromString(string s)
+        {
+            return s;
+        }
 
         public IConverter Converter { get; }
     }
@@ -34,6 +38,10 @@
 
         public string ParameterName { get; }
         public string Remarks { get; }
+        public object? ConvertFromString(string s)
+        {
+            return s;
+        }
 
         public IConverter Converter { get; }
 

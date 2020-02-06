@@ -3,12 +3,20 @@
 @using Razor_Components
 @using NuixAPI
 
+@inject TG.Blazor.IndexedDB.IndexedDBManager DbManager
+
 <h3>Nuix</h3>
 
-@foreach (var fun in typeof(NuixClient.OutsideScripting).GetMethods().Where(x=>x.IsStatic))
-{
-    <FunctionPage Method="@fun" ObjectInstance="null" ProcessesPagePath="\processes"></FunctionPage>
+@{
+    var dataStore = new Datastore(DbManager);
+
+    @foreach (var fun in typeof(NuixClient.OutsideScripting).GetMethods().Where(x => x.IsStatic))
+    {
+        <FunctionPage Method="@fun" ObjectInstance="null" ProcessesPagePath="\processes" Datastore="dataStore"></FunctionPage>
+    }
 }
+
+
 
 @code
 {

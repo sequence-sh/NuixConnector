@@ -7,34 +7,44 @@
 
 @inject ProcessContext ProcessContext
 @inject NavigationManager NavigationManager
-<div>
-    <h2>
-        @Method?.Name
-    </h2>
-    <text>@XmlComment</text>
-    <br />
-
-    @* ReSharper disable once Html.Obsolete *@
-    @if (ParameterInputs != null)
-    {
-        <table sortable="True" cols="3" border="1">
-            @foreach (var param in ParameterInputs)
-            {
-                <ParameterBox ParameterInput="@param" ParameterDictionary="@ParameterDictionary" />
-            }
-        </table>
+    <div>
+        <h2>
+            @Method?.Name
+        </h2>
+        <text>@XmlComment</text>
         <br />
-        <button name="Go" @onclick="Invoke">Go</button>
-        <br />
-    }
 
-    @if (!string.IsNullOrWhiteSpace(ResultText))
-    {
-        <h3>@ResultText</h3>
-    }
-    <br />
-    <br />
-</div>
+        @if (MethodMetadata != null)
+        {
+            <input @bind="@MethodMetadata.Notes"  /> //TODO this won't be updated unless you actually call the method
+            <br />
+        }
+
+        @* ReSharper disable once Html.Obsolete *@
+        @if (ParameterInputs != null)
+        {
+            <table sortable="True" cols="3" border="1">
+                @foreach (var param in ParameterInputs)
+                {
+                    var metadata = ParameterMetadataDictionary != null
+                                   && ParameterMetadataDictionary.TryGetValue(param.ParameterName, out var pm) ?
+                        pm : null;
+
+                    <ParameterBox ParameterInput="@param" ParameterDictionary="@ParameterDictionary" ParameterMetadata="@metadata" />
+                }
+            </table>
+            <br />
+            <button name="Go" @onclick="Invoke">Go</button>
+            <br />
+        }
+
+        @if (!string.IsNullOrWhiteSpace(ResultText))
+        {
+            <h3>@ResultText</h3>
+        }
+        <br />
+        <br />
+    </div>
 
 @code {
 
@@ -57,6 +67,12 @@
     [Parameter]
     public string? ProcessesPagePath { get; set; }
 
+    /// <summary>
+    /// Datastore containing user metadata about methods
+    /// </summary>
+    [Parameter]
+    public IDatastore? Datastore { get; set; }
+
     internal IReadOnlyCollection<IParameterInput>? ParameterInputs { get; set; }
 
     internal string? XmlComment { get; set; }
@@ -67,17 +83,40 @@
 
     internal CancellationTokenSource CancellationTokenSource { get; set; } = new CancellationTokenSource();
 
+    private IDictionary<string, ParameterMetadata>? ParameterMetadataDictionary { get; set; }
+
+    private MethodMetadata? MethodMetadata { get; set; }
+
     /// <summary>
     /// Is run after the parameters have been set
     /// </summary>
-    protected override void OnParametersSet()
+    protected override async void OnParametersSet()
     {
         ParameterDictionary = new ConcurrentDictionary<string, object?>();
 
         Debug.Assert(Method != null, nameof(Method) + " != null");
 
+        if (Datastore == null || Method.DeclaringType == null)
+        {
+            MethodMetadata = null;
+            ParameterMetadataDictionary = null;
+        }
+        else
+        {
+            var (method, parameters) = await Datastore.GetMetadata(Method.DeclaringType.Name + Method.Name);
+            ParameterMetadataDictionary = parameters?.ToDictionary(x => x.Key, x => x.Value)
+                                          ?? new Dictionary<string, ParameterMetadata>();
+            MethodMetadata = method;
+        }
+
+        var parameterInputsTemp = new List<IParameterInput>();
+
         foreach (var param in Method.GetParameters())
         {
+            var parameterInfo = ParameterExtensions.GetParameterInfo(param);
+
+            parameterInputsTemp.Add(parameterInfo);
+
             if (param.Name != null)
             {
                 if (param.ParameterType == typeof(CancellationToken))
@@ -86,29 +125,83 @@
                 }
                 else
                 {
-                    //TODO cache previous values of parameters
                     var defaultValue = param.DefaultValue;
                     if (defaultValue == DBNull.Value)
-                        defaultValue = param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null;
+                    {
+                        if (ParameterMetadataDictionary != null &&
+                            ParameterMetadataDictionary.TryGetValue(param.Name, out var pm)
+                            && pm.MostRecentValueString != null)
+                        {
+                            var defaultValueString = pm.MostRecentValueString;
+                            defaultValue = parameterInfo.ConvertFromString(defaultValueString);
+                        }
+                        else
+                        {
+                            defaultValue = param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null;
+                        }
+                    }
 
                     ParameterDictionary.TryAdd(param.Name, defaultValue);
                 }
             }
         }
 
-
         XmlComment = Method.GetXmlDocsSummary();
+        ParameterInputs = parameterInputsTemp.ToList();
 
-        ParameterInputs = Method.GetParameters().Select(ParameterExtensions.GetBoxType).ToList();
+        this.StateHasChanged();
     }
 
 
-    internal void Invoke()
+    internal async void Invoke()
     {
         var dictionary = new ReadOnlyDictionary<string, object?>(
             ParameterDictionary.ToDictionary(x => x.Key, x => x.Value));
 
         Debug.Assert(Method != null, nameof(Method) + " != null");
+
+        var tasks = new List<Task>();
+
+        if (Datastore != null && Method.DeclaringType != null)// && MethodMetadata != null && ParameterMetadataDictionary != null)
+        {
+            if (MethodMetadata == null)
+            {
+                MethodMetadata = new MethodMetadata()
+                {
+                    ClassAndMethod = Method.DeclaringType.Name + Method.Name
+                };
+            }
+            if(ParameterMetadataDictionary == null)
+                ParameterMetadataDictionary = new Dictionary<string, ParameterMetadata>();
+
+            MethodMetadata.LastCalled = DateTime.Now;
+
+            foreach (var (key, value) in dictionary)
+            {
+                if (!ParameterMetadataDictionary.TryGetValue(key, out var pm))
+                {
+                    pm = new ParameterMetadata()
+                    {
+                        PClassAndMethod = Method.DeclaringType.Name + Method.Name,
+                        ParameterName = key
+                    };
+                    ParameterMetadataDictionary.Add(key, pm);
+                }
+
+                var newValueString = value?.ToString();
+
+                pm.MostRecentValueString = newValueString;
+                if (string.IsNullOrEmpty(pm.PreviousValueStrings))
+                {
+                    pm.PreviousValueStrings = newValueString;
+                }
+                else if(!pm.PreviousValueStrings.Split("\r\n").Contains(newValueString))
+                    pm.PreviousValueStrings += "\r\n" +  newValueString;
+            }
+
+            tasks.Add( Datastore.AddOrUpdate(MethodMetadata, ParameterMetadataDictionary.Values));
+        }
+
         var process = new Process(Method,
             ObjectInstance,
             dictionary,
@@ -119,6 +212,8 @@
         ProcessContext.AddProcess(process);
 
         process.Run(); //Process will actually run on another thread
+
+        await Task.WhenAll(tasks);
 
         if(ProcessesPagePath != null)
             NavigationManager.NavigateTo(ProcessesPagePath);

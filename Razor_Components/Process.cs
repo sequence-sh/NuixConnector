@@ -151,7 +151,6 @@ namespace Razor_Components
 
                         DateFinished = DateTime.Now;
                         Update?.Invoke(UpdateEventArgs);
-
                     }
 
                 }

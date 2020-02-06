@@ -13,6 +13,10 @@
         }
         public string ParameterName { get; }
         public string Remarks { get; }
+        public object? ConvertFromString(string s)
+        {
+            return null;
+        }
 
         public string Error { get; }
     }

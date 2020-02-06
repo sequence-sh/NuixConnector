@@ -15,6 +15,11 @@ namespace Razor_Components.Inputs
 
         public string ParameterName { get; }
         public string Remarks { get; }
+        public object? ConvertFromString(string s)
+        {
+            var (success, result) = Converter.FromString(s);
+            return success ? result : null;
+        }
 
         public EnumConverter Converter { get; }
 

@@ -11,7 +11,7 @@ namespace Razor_Components
 {
     internal static class ParameterExtensions
     {
-        internal static IParameterInput GetBoxType(ParameterInfo parameterInfo)
+        internal static IParameterInput GetParameterInfo(ParameterInfo parameterInfo)
         {
             //TODO handle other parameters
             //TODO collections

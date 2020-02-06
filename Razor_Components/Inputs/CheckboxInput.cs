@@ -11,6 +11,10 @@
 
         public string ParameterName { get; }
         public string Remarks { get; }
+        public object? ConvertFromString(string s)
+        {
+            return bool.TryParse(s, out var t) ? t : null as bool?;
+        }
 
         public bool Nullable { get; }
     }
