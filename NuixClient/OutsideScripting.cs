@@ -140,10 +140,9 @@ namespace NuixClient
             string description,//= "Description",
             string investigator,// = "Investigator",
             bool useDongle = true)
-        {
-            //var currentDirectory = Directory.GetCurrentDirectory();
-            var currentDirectory = @"C:\Source\Repos\NuixClient";
-            var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.rb");
+        {   
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "CreateCase.rb");
 
             var args = new[]
                 {
