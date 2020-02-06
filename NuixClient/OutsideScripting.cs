@@ -70,6 +70,8 @@ namespace NuixClient
             pProcess.WaitForExit();
         }
 
+        #region obsolete
+
         //This doesn't work because I can't figure out how to pass arguments
         private static async IAsyncEnumerable<string> CreateCaseECMA(
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
@@ -124,6 +126,10 @@ namespace NuixClient
                 yield return line;
         }
 
+        #endregion obsolete
+
+
+
         /// <summary>
         /// Creates a new Case in NUIX
         /// </summary>
@@ -160,6 +166,8 @@ namespace NuixClient
         }
 
 
+        //"yyyy-MM-dd'T'HH:mm:ss.SSSZ" 
+
         /// <summary>
         /// Creates a new Case in NUIX
         /// </summary>
@@ -192,6 +200,48 @@ namespace NuixClient
                 "-d", description,
                 "-c", custodian,
                 "-f", filePath
+            };
+            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
+
+            await foreach (var line in result)
+                yield return line;
+        }
+        
+        
+        /// <summary>
+        /// Creates a new Case in NUIX
+        /// </summary>
+        /// <param name="nuixConsoleExePath">Path to the console exe</param>
+        /// <param name="casePath">Path of the case to open</param>
+        /// <param name="folderName">The name of the folder to create</param>
+        /// <param name="description">Description of the new folder</param>
+        /// <param name="custodian">Custodian for the new folder</param>
+        /// <param name="filePath">The path of the file to add</param>
+        /// <param name="useDongle">Use a dongle for licensing</param>
+        /// <returns>The output of the case creation script</returns>
+        public static async IAsyncEnumerable<string> AddConcordanceToCase( //TODO remove default arguments
+
+            string casePath = @"C:\Dev\Nuix\Cases\NewCase",
+            string folderName = "BestFolder",
+            string description = "nice", 
+            string custodian = "mw",
+            string filePath = @"C:\Dev\Nuix\Exports\Export1\loadfile.dat",
+            string concordanceDateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            bool useDongle = true)
+        {
+            //var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = @"C:\Source\Repos\NuixClient";
+            var scriptPath = Path.Combine(currentDirectory, "Scripts", "AddConcordanceToCase.rb");
+
+            var args = new[]
+            {
+                "-p", casePath,
+                "-n", folderName,
+                "-d", description,
+                "-c", custodian,
+                "-f", filePath,
+                "z", concordanceDateFormat
             };
             var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
 
