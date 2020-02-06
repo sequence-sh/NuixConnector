@@ -3,6 +3,7 @@
 @using System.Diagnostics
 @using System.Threading
 @using Namotion.Reflection
+@using Razor_Components.Inputs
 
 @inject ProcessContext ProcessContext
 @inject NavigationManager NavigationManager
@@ -86,7 +87,11 @@
                 else
                 {
                     //TODO cache previous values of parameters
-                    ParameterDictionary.TryAdd(param.Name, param.DefaultValue);
+                    var defaultValue = param.DefaultValue;
+                    if (defaultValue == DBNull.Value)
+                        defaultValue = param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null;
+
+                    ParameterDictionary.TryAdd(param.Name, defaultValue);
                 }
             }
         }

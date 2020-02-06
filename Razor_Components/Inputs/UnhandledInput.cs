@@ -1,4 +1,4 @@
-﻿namespace Razor_Components
+﻿namespace Razor_Components.Inputs
 {
     /// <summary>
     /// Don't know how to handle this input

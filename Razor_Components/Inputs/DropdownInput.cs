@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Razor_Components
+namespace Razor_Components.Inputs
 {
     internal class DropdownInput : IParameterInput
     {

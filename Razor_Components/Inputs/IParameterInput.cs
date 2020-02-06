@@ -1,4 +1,4 @@
-﻿namespace Razor_Components
+﻿namespace Razor_Components.Inputs
 {
     /// <summary>
     /// A method parameter

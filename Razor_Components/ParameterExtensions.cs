@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Namotion.Reflection;
+using Razor_Components.Inputs;
 
 namespace Razor_Components
 {
@@ -13,10 +14,8 @@ namespace Razor_Components
         internal static IParameterInput GetBoxType(ParameterInfo parameterInfo)
         {
             //TODO handle other parameters
-            //TODO cancellation tokens
             //TODO collections
-
-
+            
             var remarks = parameterInfo.GetXmlDocs(); //Note: for remarks to work, you may need to modify the csproj file
 
             var type = parameterInfo.ParameterType;
@@ -35,8 +34,7 @@ namespace Razor_Components
             {
                 return new NoInput(parameterInfo.Name, remarks);
             }
-
-            if (type == typeof(bool))
+            else if (type == typeof(bool))
             {
                 return new CheckboxInput(parameterInfo.Name, remarks, isNullable);
             }
@@ -51,6 +49,10 @@ namespace Razor_Components
 
                 return new DropdownInput(parameterInfo.Name, remarks, enumConverter, enumValues, isNullable);
             }
+            else if (type.IsAssignableFrom(typeof(List<string>)))
+            {
+                return new TextAreaInput(parameterInfo.Name, remarks, new StringListConverter());
+            }
 
             return new UnhandledInput(parameterInfo.Name, remarks, $"Could not handle parameter of type '{type}'");
         }
@@ -60,8 +62,7 @@ namespace Razor_Components
             typeof(CancellationToken)
         };
 
-        private static readonly IReadOnlyDictionary<Type, IConverter> ParameterConverterDictionary = 
-            
+        private static readonly IReadOnlyDictionary<Type, IConverter> ParameterConverterDictionary =
 
             new ReadOnlyDictionary<Type, IConverter>(
                 new IConverter[]

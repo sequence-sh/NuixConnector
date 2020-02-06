@@ -1,4 +1,6 @@
-﻿var theCase = utilities.caseFactory.create('C:/Dev/Nuix/Cases/MyNewCase5');
+﻿print(arguments);
+
+var theCase = utilities.caseFactory.create('C:/Dev/Nuix/Cases/MyNewCase5');
 try {
     theCase.name = 'New case';
     theCase.description = 'Description of the new case';
@@ -6,6 +8,7 @@ try {
 
     print('Created');
 
+   
     print(theCase.name);
     print(theCase.description);
     print(theCase.investigator);
