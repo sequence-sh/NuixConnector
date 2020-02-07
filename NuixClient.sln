@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixFrontEnd", "NuixFrontEn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Razor_Components", "Razor_Components\Razor_Components.csproj", "{6B91230F-09C3-4DD3-94B5-1B51086212C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuixClientAPI", "NuixClientAPI\NuixClientAPI.csproj", "{576BDEE0-880E-4195-9F50-EB2D559FA4A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClientAPI", "NuixClientAPI\NuixClientAPI.csproj", "{576BDEE0-880E-4195-9F50-EB2D559FA4A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClientConsole", "NuixClientConsole\NuixClientConsole.csproj", "{BB8118A4-043C-48A3-B90D-070D3885129E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{576BDEE0-880E-4195-9F50-EB2D559FA4A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{576BDEE0-880E-4195-9F50-EB2D559FA4A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{576BDEE0-880E-4195-9F50-EB2D559FA4A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB8118A4-043C-48A3-B90D-070D3885129E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB8118A4-043C-48A3-B90D-070D3885129E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB8118A4-043C-48A3-B90D-070D3885129E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB8118A4-043C-48A3-B90D-070D3885129E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
