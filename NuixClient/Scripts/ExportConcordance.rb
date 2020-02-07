@@ -12,6 +12,9 @@ OptionParser.new do |opts|
   opts.on('-n [ARG]', '--productionSetName [ARG]', "Production set name") do |v|
     hash_options[:productionSetNameArg] = v
   end
+  opts.on('-m [ARG]', '--metadataProfile [ARG]', "Metadata Profile Name") do |v| #this is actually optional
+    hash_options[:metadataProfileArg] = v 
+  end
 
   opts.on('--version', 'Display the version') do 
     puts "VERSION"
@@ -21,6 +24,7 @@ OptionParser.new do |opts|
     puts opts
     exit
   end
+
 end.parse!
 
 requiredArguments = [:pathArg, :exportPathArg, :productionSetNameArg]
@@ -42,6 +46,11 @@ else
 
     else
         batchExporter = utilities.createBatchExporter(hash_options[:exportPathArg])
+
+        batchExporter.addLoadFile("concordance",{
+        metadataProfile => hash_options[:metadataProfileArg]
+		})
+
 
         puts 'Starting export.'
         batchExporter.exportItems(productionSet)        
