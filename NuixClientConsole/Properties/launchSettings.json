@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NuixClientConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "CreateCaseRuby -casePath C:\\Dev\\Nuix\\Cases\\ -caseName NewCase -description \"two words\" "
+    }
+  }
+}

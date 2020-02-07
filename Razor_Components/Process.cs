@@ -122,6 +122,8 @@ namespace Razor_Components
                                     ResultStrings.Add(obj.ToString() ?? string.Empty);
                                     if (DateTime.Now.Subtract(lastUpdate).TotalMilliseconds > debounceInterval)
                                         Update?.Invoke(UpdateEventArgs); //only update if some time has passed since last update
+
+                                    lastUpdate = DateTime.Now;
                                 }
                                 break;
                             }
