@@ -48,8 +48,18 @@ else
         batchExporter = utilities.createBatchExporter(hash_options[:exportPathArg])
 
         batchExporter.addLoadFile("concordance",{
-        metadataProfile => hash_options[:metadataProfileArg]
+        metadataProfile => hash_options[:metadataProfileArg] 
 		})
+
+        batchExporter.addProduct("native", {
+        :naming=> "full",
+        :path, "Native"
+        })
+
+        batchExporter.addProduct("text", {
+        :naming=> "full",
+        :path, "Text"
+        })
 
 
         puts 'Starting export.'

@@ -260,7 +260,7 @@ namespace NuixClient
         /// <param name="casePath">Path of the case to open</param>
         /// <param name="exportPath">The path to export to</param>
         /// <param name="productionSetName">The name of the production set to export</param>
-        /// <param name="metadataProfileName">Optional name of the metadata profile to use</param>
+        /// <param name="metadataProfileName">Optional name of the metadata profile to use. Note this is NOT a metadata export profile</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// ///
         /// <returns>The output of the case creation script</returns>
