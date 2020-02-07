@@ -148,7 +148,7 @@ namespace NuixClient
             string investigator, // = "Investigator",
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
-        {   
+        {
             var currentDirectory = Directory.GetCurrentDirectory();
             var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "CreateCase.rb");
 
@@ -183,7 +183,7 @@ namespace NuixClient
 
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string folderName = "TestFolder",
-            string description = "nice", 
+            string description = "nice",
             string custodian = "mark2",
             string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
@@ -225,7 +225,7 @@ namespace NuixClient
 
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string folderName = "BestFolder",
-            string description = "nice", 
+            string description = "nice",
             string custodian = "mw",
             string filePath = @"C:\Dev\Nuix\Exports\Export1\loadfile.dat",
             string concordanceDateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
@@ -253,6 +253,44 @@ namespace NuixClient
                 yield return line;
         }
 
+        /// <summary>
+        /// Export concordance from a production set in NUIX
+        /// </summary>
+        /// <param name="nuixConsoleExePath">Path to the nuix console exe</param>
+        /// <param name="casePath">Path of the case to open</param>
+        /// <param name="useDongle">Use a dongle for licensing</param>
+        /// /// <param name="productionSetName">The name of the production set to export</param>
+        /// <param name="exportPath">The path to export to</param>
+        /// <returns>The output of the case creation script</returns>
+        public static async IAsyncEnumerable<string> ExportProductionSetConcordance( //TODO remove default arguments
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            string casePath = @"C:\Dev\Nuix\Cases\NewCase",
+            string exportPath = @"C:\Dev\Nuix\Exports\Export3",
+            string productionSetName = @"MyProductionSet",
+            bool useDongle = true)
+        {
+            //var currentDirectory = Directory.GetCurrentDirectory();
+            var currentDirectory = @"C:\Source\Repos\NuixClient";
+            var scriptPath = Path.Combine(currentDirectory, "Scripts", "ExportConcordance.rb");
+
+            var args = new[]
+            {
+                "-p", casePath,
+                "-x", exportPath,
+                "-n", productionSetName
+            };
+            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
+
+            await foreach (var line in result)
+                yield return line;
+        }
+
 
     }
+
+
+    
+
+
 }
+
