@@ -70,66 +70,6 @@ namespace NuixClient
             pProcess.WaitForExit();
         }
 
-        #region obsolete
-
-        //This doesn't work because I can't figure out how to pass arguments
-        private static async IAsyncEnumerable<string> CreateCaseECMA(
-            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
-            string casePath = @"C:\Dev\Nuix\Cases\MyNewCase2",
-            string caseName = "MyNewCase2",
-            string description = "Description",
-            string investigator = "Investigator",
-            bool useDongle = true)
-        {
-
-            var scriptPath = @"C:\Source\Repos\NuixClient\Scripts\CreateCase.js";
-
-            var args = new[]
-            {
-                "-p", casePath,
-                "-n", caseName,
-                "-d", description,
-                "-i", investigator
-            };
-            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
-
-            await foreach (var line in result)
-                yield return line;
-        }
-
-
-        //this doesn't work because I can't find out how to pass the arguments
-        private static async IAsyncEnumerable<string> CreateCasePython(
-            string casePath, // = @"C:\Dev\Nuix\Cases\MyNewCase2",
-            string caseName, // = "MyNewCase2",
-            string description, // = "Description",
-            string investigator, // = "Investigator",
-            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
-            bool useDongle = true)
-        {
-            //var currentDirectory = Directory.GetCurrentDirectory();
-            //var currentDirectory = @"C:\Source\Repos\NuixClient";
-            //var scriptPath = Path.Combine(currentDirectory, "Scripts", "CreateCase.py");
-
-            var scriptPath = @"C:\Source\Repos\NuixClient\Scripts\CreateCase.py";
-
-            var args = new[]
-            {
-                "-p", casePath,
-                "-n", caseName,
-                "-d", description,
-                "-i", investigator
-            };
-            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
-
-            await foreach (var line in result)
-                yield return line;
-        }
-
-        #endregion obsolete
-
-
-
         /// <summary>
         /// Creates a new Case in NUIX
         /// </summary>
@@ -169,7 +109,7 @@ namespace NuixClient
         //"yyyy-MM-dd'T'HH:mm:ss.SSSZ" 
 
         /// <summary>
-        /// Add file to a Case in NUIX
+        /// Add file or folder to a Case in NUIX
         /// </summary>
         /// <param name="nuixConsoleExePath">Path to the console exe</param>
         /// <param name="casePath">Path of the case to open</param>
@@ -229,8 +169,9 @@ namespace NuixClient
             string custodian = "mw",
             string filePath = @"C:\Dev\Nuix\Exports\Export1\loadfile.dat",
             string concordanceDateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
-            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             string concordanceProfileName = @"TestProfile",
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            
             bool useDongle = true)
         {
             //var currentDirectory = Directory.GetCurrentDirectory();
@@ -265,11 +206,12 @@ namespace NuixClient
         /// ///
         /// <returns>The output of the case creation script</returns>
         public static async IAsyncEnumerable<string> ExportProductionSetConcordance( //TODO remove default arguments
-            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string exportPath = @"C:\Dev\Nuix\Exports\Export6",
             string productionSetName = @"Night",
             string metadataProfileName = "Default",
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {
             //var currentDirectory = Directory.GetCurrentDirectory();
