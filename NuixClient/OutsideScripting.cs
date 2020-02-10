@@ -70,6 +70,59 @@ namespace NuixClient
             pProcess.WaitForExit();
         }
 
+
+        /// <summary>
+        /// Creates a new Case in NUIX
+        /// </summary>
+        /// <param name="nuixConsoleExePath">Path to the console exe</param>
+        /// <param name="casePath">Where to create the new case</param>
+        /// <param name="caseName">The name of the new case</param>
+        /// <param name="useDongle">Use a dongle for licensing</param>
+        /// <param name="searchTerm"></param>
+        /// <param name="tag"></param>
+        /// <param name="order">Order by term e.g. name ASC</param>
+        /// <param name="limit">Optional maximum number of items to tag.</param>
+        /// <returns>The output of the case creation script</returns>
+        public static async IAsyncEnumerable<string> SearchAndTag( 
+
+            string casePath= @"C:\Dev\Nuix\Cases\MyNewCase",
+            string caseName = "MyNewCase", 
+            string searchTerm = "night",
+            string tag  = "Nocturnal",
+            string order = null,
+            int? limit = null,
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            bool useDongle = true)
+        {
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "CreateCase.rb");
+
+            var args = new List<string>
+            {
+                "-p", casePath,
+                "-s", searchTerm,
+                "-t", tag,
+                
+            };
+            if (order != null)
+            {
+                args.Add("-o ");
+                args.Add(order);
+            }
+
+            if (limit.HasValue)
+            {
+                args.Add("-l");
+                args.Add(limit.Value.ToString());
+            }
+
+            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
+
+            await foreach (var line in result)
+                yield return line;
+        }
+
+
         /// <summary>
         /// Creates a new Case in NUIX
         /// </summary>
@@ -104,10 +157,7 @@ namespace NuixClient
             await foreach (var line in result)
                 yield return line;
         }
-
-
-        //"yyyy-MM-dd'T'HH:mm:ss.SSSZ" 
-
+        
         /// <summary>
         /// Add file or folder to a Case in NUIX
         /// </summary>
