@@ -76,10 +76,9 @@ namespace NuixClient
         /// </summary>
         /// <param name="nuixConsoleExePath">Path to the console exe</param>
         /// <param name="casePath">Where to create the new case</param>
-        /// <param name="caseName">The name of the new case</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
-        /// <param name="searchTerm"></param>
-        /// <param name="tag"></param>
+        /// <param name="searchTerm">The term to search for</param>
+        /// <param name="tag">The tag to apply to the found terms</param>
         /// <param name="order">Order by term e.g. name ASC</param>
         /// <param name="limit">Optional maximum number of items to tag.</param>
         /// <returns>The output of the case creation script</returns>

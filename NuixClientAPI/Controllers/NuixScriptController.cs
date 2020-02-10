@@ -43,6 +43,28 @@ namespace NuixClientAPI.Controllers
         /// Creates a new Case in NUIX
         /// </summary>
         /// <param name="casePath">Where to create the new case</param>
+        /// <param name="searchTerm">The term to search for</param>
+        /// <param name="tag">The tag to add to the case</param>
+        /// <param name="order">Order by term e.g. name ASC</param>
+        /// <param name="limit">Optional maximum number of items to tag.</param>
+        /// <returns>The output of the case creation script</returns>
+        [HttpPost("/SearchAndTag")]
+        public IActionResult SearchAndTag(
+            string casePath,
+            string searchTerm,
+            string tag,
+            string order,
+            int? limit)
+        {
+            var r = NuixClient.OutsideScripting.SearchAndTag(casePath, searchTerm, tag, order, limit);
+
+            return ConvertToActionResult(r);
+        }
+
+        /// <summary>
+        /// Creates a new Case in NUIX
+        /// </summary>
+        /// <param name="casePath">Where to create the new case</param>
         /// <param name="caseName">The name of the new case</param>
         /// <param name="description">Description of the case</param>
         /// <param name="investigator">Name of the investigator</param>
