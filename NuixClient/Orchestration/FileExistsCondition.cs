@@ -1,34 +1,30 @@
-﻿namespace NuixClient.Orchestration
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+
+namespace NuixClient.Orchestration
 {
     /// <summary>
     /// A condition that requires that a particular file exists
     /// </summary>
-    public class FileExistsCondition : ICondition
+    public class FileExistsCondition : Condition
     {
-        /// <summary>
-        /// Create a new file-exists condition
-        /// </summary>
-        /// <param name="filePath"></param>
-        public FileExistsCondition(string filePath)
-        {
-            FilePath = filePath;
-        }
-
         /// <summary>
         /// The path of the file to check
         /// </summary>
-        public string FilePath { get; }
+        [DataMember]
+        [Required]
+        public string FilePath { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Description => $"{FilePath} exists";
+        public override string GetDescription() => $"{FilePath} exists";
 
         /// <summary>
         /// Does the file exist
         /// </summary>
         /// <returns></returns>
-        public bool IsMet()
+        public override bool IsMet()
         {
             return System.IO.File.Exists(FilePath);
         }

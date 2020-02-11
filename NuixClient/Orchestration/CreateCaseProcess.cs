@@ -7,18 +7,18 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which creates a new case
     /// </summary>
-    public class CreateCaseProcess : IProcess
+    public class CreateCaseProcess : Process
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public string Name => $"Create Case '{CaseName}'";
+        public override string GetName() => $"Create Case '{CaseName}'";
 
         /// <summary>
         /// Execute this process
         /// </summary>
         /// <returns></returns>
-        public IAsyncEnumerable<ResultLine> Execute()
+        public override IAsyncEnumerable<ResultLine> Execute()
         {
             var r = OutsideScripting.CreateCaseRuby(CasePath, CaseName, Description, Investigator);
 
@@ -55,10 +55,6 @@ namespace NuixClient.Orchestration
         [DataMember]
         public string Description { get; set; }
 
-        /// <summary>
-        /// Conditions under which this process will execute
-        /// </summary>
-        public IReadOnlyCollection<ICondition> Conditions { get; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }
 }

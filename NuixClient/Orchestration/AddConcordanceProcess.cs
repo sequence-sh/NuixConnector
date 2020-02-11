@@ -7,18 +7,21 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which adds concordance to a case
     /// </summary>
-    public class AddConcordanceProcess : IProcess
+    public class AddConcordanceProcess : Process
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public string Name => $"Add concordance from '{FilePath}'";
+        public override string GetName()
+        {
+            return $"Add concordance from '{FilePath}'";
+        }
 
         /// <summary>
         /// Execute this process
         /// </summary>
         /// <returns></returns>
-        public IAsyncEnumerable<ResultLine> Execute()
+        public override IAsyncEnumerable<ResultLine> Execute()
         {
             var r = OutsideScripting.AddConcordanceToCase(CasePath, FolderName, Description, Custodian, FilePath,
                 ConcordanceDateFormat, ConcordanceProfileName);
@@ -75,11 +78,6 @@ namespace NuixClient.Orchestration
         [Required]
         [DataMember]
         public string CasePath { get; set; }
-
-        /// <summary>
-        /// Conditions under which this process will execute
-        /// </summary>
-        public IReadOnlyCollection<ICondition> Conditions { get; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }

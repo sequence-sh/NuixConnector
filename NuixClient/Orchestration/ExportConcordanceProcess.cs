@@ -1,25 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-// ReSharper disable UnassignedGetOnlyAutoProperty
 
 namespace NuixClient.Orchestration
 {
     /// <summary>
     /// A process which exports concordance for a particular production set
     /// </summary>
-    public class ExportConcordance : IProcess
+    public class ExportConcordanceProcess : Process
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public string Name => $"Export {ProductionSetName}";
+        public override string GetName() => $"Export {ProductionSetName}";
 
         /// <summary>
         /// Execute this process
         /// </summary>
         /// <returns></returns>
-        public IAsyncEnumerable<ResultLine> Execute()
+        public override IAsyncEnumerable<ResultLine> Execute()
         {
             var r = OutsideScripting.ExportProductionSetConcordance(CasePath, ExportPath, ProductionSetName,
                 MetadataProfileName?? "Default");
@@ -56,10 +55,5 @@ namespace NuixClient.Orchestration
         [Required]
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-        /// <summary>
-        /// Conditions under which this process will execute
-        /// </summary>
-        public IReadOnlyCollection<ICondition>? Conditions { get; }
     }
 }

@@ -109,7 +109,7 @@ namespace NuixClient
 
 
             var currentDirectory = Directory.GetCurrentDirectory();
-            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTag.rb");
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTagProcess.rb");
 
             var args = new List<string>
             {
@@ -280,7 +280,7 @@ namespace NuixClient
         {
             //var currentDirectory = Directory.GetCurrentDirectory();
             var currentDirectory = @"C:\Source\Repos\NuixClient";
-            var scriptPath = Path.Combine(currentDirectory, "Scripts", "ExportConcordance.rb");
+            var scriptPath = Path.Combine(currentDirectory, "Scripts", "ExportConcordanceProcess.rb");
 
             var args = new[]
             {

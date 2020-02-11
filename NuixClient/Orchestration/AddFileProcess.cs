@@ -7,18 +7,18 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// Adds a file or folder to a Nuix Case
     /// </summary>
-    public class AddFileProcess : IProcess
+    public class AddFileProcess : Process
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public string Name => $"Add '{FilePath}'";
+        public override string GetName() => $"Add '{FilePath}'";
 
         /// <summary>
         /// Execute this process
         /// </summary>
         /// <returns></returns>
-        public IAsyncEnumerable<ResultLine> Execute()
+        public override IAsyncEnumerable<ResultLine> Execute()
         {
             var r = OutsideScripting.AddFileToCase(CasePath, FolderName, Description, Custodian, FilePath);
             return r;
@@ -59,11 +59,6 @@ namespace NuixClient.Orchestration
         [Required]
         [DataMember]
         public string CasePath { get; set; }
-
-        /// <summary>
-        /// Conditions under which this process will execute
-        /// </summary>
-        public IReadOnlyCollection<ICondition> Conditions { get; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }

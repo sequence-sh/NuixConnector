@@ -6,47 +6,37 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process containing multiple steps
     /// </summary>
-    public class MultiStepProcess : IProcess
+    public class MultiStepProcess : Process
     {
-        /// <summary>
-        /// Create a new multi-step process
-        /// </summary>
-        /// <param name="name">The name of this process</param>
-        /// <param name="steps"></param>
-        /// <param name="conditions">Conditions which must be met for this process to be executed</param>
-        public MultiStepProcess(string name, IEnumerable<IProcess> steps, IEnumerable<ICondition> conditions)
-        {
-            Name = name;
-            Steps = steps.ToList();
-            Conditions = conditions.ToList();
-        }
-
         /// <summary>
         /// The name of this process
         /// </summary>
-        public string Name { get; }
+        public override string GetName()
+        {
+            return string.Join(" then ", Steps.Select(s=>s.GetName()));
+        }
 
         /// <summary>
         /// Execute the steps in this process until a condition is not met or a step fails 
         /// </summary>
         /// <returns></returns>
-        public async IAsyncEnumerable<ResultLine> Execute() 
+        public override async IAsyncEnumerable<ResultLine> Execute() 
         {
 
             foreach (var process in Steps)
             {
-                foreach (var processCondition in process.Conditions?? Enumerable.Empty<ICondition>())
+                foreach (var processCondition in process.Conditions?? Enumerable.Empty<Condition>())
                 {
                     if (processCondition.IsMet())
-                        yield return new ResultLine(true, processCondition.Description);
+                        yield return new ResultLine(true, processCondition.GetDescription());
                     else
                     {
-                        yield return new ResultLine(false, $"CONDITION NOT MET: [{processCondition.Description}]");
+                        yield return new ResultLine(false, $"CONDITION NOT MET: [{processCondition.GetDescription()}]");
                         yield break;
                     }
                 }
 
-                yield return new ResultLine(true, $"Executing '{process.Name}'");
+                yield return new ResultLine(true, $"Executing '{process.GetName()}'");
                 var allGood = true;
                 var resultLines = process.Execute();
                 await foreach (var resultLine in resultLines)
@@ -61,13 +51,8 @@ namespace NuixClient.Orchestration
         }
 
         /// <summary>
-        /// This process should only be executed if these conditions are met
-        /// </summary>
-        public IReadOnlyCollection<ICondition> Conditions { get; }
-
-        /// <summary>
         /// Steps that make up this process. To be executed in order
         /// </summary>
-        public List<IProcess> Steps { get; }
+        public List<Process> Steps { get; set; }
     }
 }

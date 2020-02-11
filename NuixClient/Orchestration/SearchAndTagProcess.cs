@@ -7,18 +7,18 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which searches a case with a particular search string and tags all files it finds
     /// </summary>
-    public class SearchAndTag : IProcess
+    public class SearchAndTagProcess : Process
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public string Name => $"Search and Tag with '{Tag}'"; 
+        public override string GetName() => $"Search and Tag with '{Tag}'";
 
         /// <summary>
         /// Execute this process
         /// </summary>
         /// <returns></returns>
-        public IAsyncEnumerable<ResultLine> Execute()
+        public override IAsyncEnumerable<ResultLine> Execute()
         {
             var r = OutsideScripting.SearchAndTag(CasePath, SearchTerm, Tag);
 
@@ -48,10 +48,6 @@ namespace NuixClient.Orchestration
         [Required]
         public string CasePath { get; set; }
 
-        /// <summary>
-        /// Conditions under which this process will execute
-        /// </summary>
-        public IReadOnlyCollection<ICondition> Conditions { get; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }
 }

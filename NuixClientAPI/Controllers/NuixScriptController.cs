@@ -50,7 +50,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="order">Order by term e.g. name ASC</param>
         /// <param name="limit">Optional maximum number of items to tag.</param>
         /// <returns>The output of the case creation script</returns>
-        [HttpPost("/SearchAndTag")]
+        [HttpPost("/SearchAndTagProcess")]
         public static IActionResult SearchAndTag(
             string casePath,
             string searchTerm,
@@ -152,7 +152,7 @@ namespace NuixClientAPI.Controllers
         
         /// ///
         /// <returns>The output of the case creation script</returns>
-        [HttpPost("/ExportConcordance")]
+        [HttpPost("/ExportConcordanceProcess")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult ExportProductionSetConcordance(
             string casePath,
