@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using NuixClient;
 
 namespace NuixClientAPI.Controllers
 {
@@ -10,18 +11,27 @@ namespace NuixClientAPI.Controllers
     [Route("[controller]")]
     public class NuixScriptController : ControllerBase
     {
-        private static IActionResult ConvertToActionResult(IAsyncEnumerable<string> asyncEnumerable)
+        private static IActionResult ConvertToActionResult(IAsyncEnumerable<ResultLine> asyncEnumerable)
         {
+            
+
             var enumerator = asyncEnumerable.GetAsyncEnumerator();
             var sb = new StringBuilder();
+            var allGood = true;
             try
             {
                 while (enumerator.MoveNextAsync().Result)
                 {
-                    sb.AppendLine(enumerator.Current);
+                    sb.AppendLine(enumerator.Current.Line);
+                    allGood &= enumerator.Current.IsSuccess;
                 }
 
-                return new ContentResult{Content = sb.ToString()};
+                if(allGood)
+                    return new ContentResult{Content = sb.ToString()};
+                else
+                {
+                    return new BadRequestObjectResult(sb.ToString());
+                }
             }
 #pragma warning disable CA1031 //We don't know what kind of exception could be thrown here
             catch (Exception e)

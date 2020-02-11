@@ -42,7 +42,6 @@ namespace NuixClientTests
             var actual = result.AsString;
 
             Assert.AreEqual(testCase.Expected, actual);
-
         }
         
         public static readonly IReadOnlyList<ErrorTestCase> ErrorTestCases = new List<ErrorTestCase>()
