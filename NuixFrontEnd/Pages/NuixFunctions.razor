@@ -10,7 +10,7 @@
 @{
     var dataStore = new Datastore(DbManager);
 
-    @foreach (var fun in typeof(NuixClient.OutsideScripting).GetMethods().Where(x => x.IsStatic))
+    @foreach (var fun in typeof(NuixClient.OutsideScripting).GetMethods().Concat(typeof(NuixClient.ProcessRunner).GetMethods()).Where(x => x.IsStatic))
     {
         <FunctionPage Method="@fun" ObjectInstance="null" ProcessesPagePath="\processes" Datastore="dataStore"></FunctionPage>
     }

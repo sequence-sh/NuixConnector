@@ -17,7 +17,7 @@ namespace NuixClient
         /// <param name="scriptPath">The path to the script</param>
         /// <param name="useDongle"></param>
         /// <param name="scriptArguments">Arguments to the script</param>
-        public static async IAsyncEnumerable<string> RunScript(string nuixConsoleExePath,
+        public static async IAsyncEnumerable<ResultLine> RunScript(string nuixConsoleExePath,
             string scriptPath,
             bool useDongle,
             IEnumerable<string> scriptArguments)
@@ -55,7 +55,7 @@ namespace NuixClient
                 var line = await pProcess.StandardOutput.ReadLineAsync();
                 if (line == null) //We've reached the end of the file
                     break;
-                yield return line;
+                yield return new ResultLine(true, line);
             }
 
             //Read the error one line at a time
@@ -64,7 +64,7 @@ namespace NuixClient
                 var line = await pProcess.StandardError.ReadLineAsync();
                 if (line == null) //We've reached the end of the file
                     break;
-                yield return line;
+                yield return new ResultLine(false, line);
             }
 
             pProcess.WaitForExit();
@@ -82,7 +82,7 @@ namespace NuixClient
         /// <param name="order">Order by term e.g. name ASC</param>
         /// <param name="limit">Optional maximum number of items to tag.</param>
         /// <returns>The output of the case creation script</returns>
-        public static async IAsyncEnumerable<string> SearchAndTag( 
+        public static async IAsyncEnumerable<ResultLine> SearchAndTag( 
 
             string casePath= @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
@@ -96,20 +96,20 @@ namespace NuixClient
 
             if (!searchTermParseSuccess || searchTermParsed == null)
             {
-                yield return "Error parsing search term";
+                yield return new ResultLine(false, "Error parsing search term");
                 if(searchTermParseError != null)
-                    yield return searchTermParseError;
+                    yield return new ResultLine(false, searchTermParseError);
                 yield break;
             }
 
             if (searchTermParsed.AsString != searchTerm)
             {
-                yield return $"Search term simplified to '{searchTermParsed.AsString}'";
+                yield return new ResultLine(true, $"Search term simplified to '{searchTermParsed.AsString}'"); ;
             }
 
 
             var currentDirectory = Directory.GetCurrentDirectory();
-            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTag.rb");
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTagProcess.rb");
 
             var args = new List<string>
             {
@@ -147,7 +147,7 @@ namespace NuixClient
         /// <param name="investigator">Name of the investigator</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
-        public static async IAsyncEnumerable<string> CreateCaseRuby( //TODO remove default arguments
+        public static async IAsyncEnumerable<ResultLine> CreateCaseRuby( //TODO remove default arguments
 
             string casePath, //= @"C:\Dev\Nuix\Cases\MyNewCase",
             string caseName, // = "MyNewCase", 
@@ -183,7 +183,7 @@ namespace NuixClient
         /// <param name="filePath">The path of the file to add</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
-        public static async IAsyncEnumerable<string> AddFileToCase( //TODO remove default arguments
+        public static async IAsyncEnumerable<ResultLine> AddFileToCase( //TODO remove default arguments
 
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string folderName = "TestFolder",
@@ -225,7 +225,7 @@ namespace NuixClient
         /// <param name="concordanceDateFormat">Concordance date format to use</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
-        public static async IAsyncEnumerable<string> AddConcordanceToCase( //TODO remove default arguments
+        public static async IAsyncEnumerable<ResultLine> AddConcordanceToCase( //TODO remove default arguments
 
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string folderName = "BestFolder",
@@ -269,7 +269,7 @@ namespace NuixClient
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// ///
         /// <returns>The output of the case creation script</returns>
-        public static async IAsyncEnumerable<string> ExportProductionSetConcordance( //TODO remove default arguments
+        public static async IAsyncEnumerable<ResultLine> ExportProductionSetConcordance( //TODO remove default arguments
             
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string exportPath = @"C:\Dev\Nuix\Exports\Export6",
@@ -280,7 +280,7 @@ namespace NuixClient
         {
             //var currentDirectory = Directory.GetCurrentDirectory();
             var currentDirectory = @"C:\Source\Repos\NuixClient";
-            var scriptPath = Path.Combine(currentDirectory, "Scripts", "ExportConcordance.rb");
+            var scriptPath = Path.Combine(currentDirectory, "Scripts", "ExportConcordanceProcess.rb");
 
             var args = new[]
             {
