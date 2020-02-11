@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Superpower;
 using Superpower.Display;
+using Superpower.Model;
 using Superpower.Parsers;
 using Superpower.Tokenizers;
 
@@ -67,6 +68,9 @@ namespace NuixClient.Search
                 }
                 else
                     errors.Add(result.ToString());
+
+                if(tokens.Count() == result.Remainder.Count())
+                    break; //If the list has not got any shorter, then stop iterating
 
                 tokens = result.Remainder;
             } while (tokens.Any());

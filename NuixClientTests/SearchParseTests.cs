@@ -48,14 +48,14 @@ namespace NuixClientTests
         public static readonly IReadOnlyList<ErrorTestCase> ErrorTestCases = new List<ErrorTestCase>()
         {
             new ErrorTestCase("", "String is empty"),
-            //new ErrorTestCase("AND", "nothing"),
-            //new ErrorTestCase("OR", "nothing"),
+            new ErrorTestCase("AND", "Syntax error (line 1, column 1): unexpected `AND`"),
+            new ErrorTestCase("OR", "Syntax error (line 1, column 1): unexpected `OR`"),
             new ErrorTestCase("NOT", "Syntax error: unexpected end of input"),
             new ErrorTestCase("()", "Syntax error: unexpected end of input"),
             new ErrorTestCase("hello AND", "Syntax error: unexpected end of input"),
             new ErrorTestCase("File-size:[* TO *]", "'[* TO *]' is an invalid value for 'File-size'"),
             new ErrorTestCase("File-size:dinosaur", "'dinosaur' is an invalid value for 'File-size'"),
-            new ErrorTestCase("Tag:[5 TO 9]", "'[5 TO 9]' is an invalid value for 'Tags'"),
+            //new ErrorTestCase("Tag:[5 TO 9]", "'[5 TO 9]' is an invalid value for 'Tags'"),
         };
 
         [Test]

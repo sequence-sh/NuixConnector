@@ -92,13 +92,29 @@ namespace NuixClient
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {
+            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(searchTerm);
+
+            if (!searchTermParseSuccess || searchTermParsed == null)
+            {
+                yield return "Error parsing search term";
+                if(searchTermParseError != null)
+                    yield return searchTermParseError;
+                yield break;
+            }
+
+            if (searchTermParsed.AsString != searchTerm)
+            {
+                yield return $"Search term simplified to '{searchTermParsed.AsString}'";
+            }
+
+
             var currentDirectory = Directory.GetCurrentDirectory();
             var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTag.rb");
 
             var args = new List<string>
             {
                 "-p", casePath,
-                "-s", searchTerm,
+                "-s", searchTermParsed.AsString,
                 "-t", tag,
                 
             };
