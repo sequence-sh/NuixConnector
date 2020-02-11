@@ -39,8 +39,10 @@ namespace Razor_Components
         /// Indexed
         /// </summary>
         [Required]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string ClassAndMethod { get; set; }
-    
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
 
         ///// <summary>
         ///// The class this method belongs to
@@ -82,25 +84,17 @@ namespace Razor_Components
         /// Indexed search property
         /// </summary>
         [Required]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string PClassAndMethod {get; set; }
-
-        ///// <summary>
-        ///// The class this parameter's method is on
-        ///// </summary>
-        //[Required]
-        //public string ClassName { get; set; }
-
-        ///// <summary>
-        ///// The method this parameter belongs to
-        ///// </summary>
-        //[Required]
-        //public string MethodName { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
         /// The name of the parameter
         /// </summary>
         [Required]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string ParameterName { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
         /// The most recent value - as a string

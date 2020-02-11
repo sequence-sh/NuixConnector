@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace NuixClientAPI.Controllers
 {
@@ -11,13 +10,6 @@ namespace NuixClientAPI.Controllers
     [Route("[controller]")]
     public class NuixScriptController : ControllerBase
     {
-        private readonly ILogger<NuixScriptController> _logger;
-
-        public NuixScriptController(ILogger<NuixScriptController> logger)
-        {
-            _logger = logger;
-        }
-
         private static IActionResult ConvertToActionResult(IAsyncEnumerable<string> asyncEnumerable)
         {
             var enumerator = asyncEnumerable.GetAsyncEnumerator();
@@ -49,7 +41,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="limit">Optional maximum number of items to tag.</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/SearchAndTag")]
-        public IActionResult SearchAndTag(
+        public static IActionResult SearchAndTag(
             string casePath,
             string searchTerm,
             string tag,
@@ -70,6 +62,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="investigator">Name of the investigator</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/CreateCase")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult CreateCase(string casePath,
             string caseName, 
             string description,
@@ -90,6 +83,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="filePath">The path of the file to add</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/AddFile")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult AddFileToCase(
             string casePath,
             string folderName,
@@ -120,6 +114,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="concordanceDateFormat">Concordance date format to use</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/AddConcordance")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult AddConcordanceToCase(
             string casePath,
             string folderName,
@@ -148,6 +143,7 @@ namespace NuixClientAPI.Controllers
         /// ///
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/ExportConcordance")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult ExportProductionSetConcordance(
             string casePath,
             string exportPath ,
@@ -159,9 +155,5 @@ namespace NuixClientAPI.Controllers
 
             return ConvertToActionResult(r);
         }
-
     }
-
-    
-    
 }

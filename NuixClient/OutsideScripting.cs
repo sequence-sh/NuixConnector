@@ -87,7 +87,7 @@ namespace NuixClient
             string casePath= @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
             string tag  = "Nocturnal",
-            string order = null,
+            string? order = null,
             int? limit = null,
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
