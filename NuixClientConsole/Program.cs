@@ -7,7 +7,10 @@ namespace NuixClientConsole
     {
         static void Main(string[] args)
         {
-            var methods = typeof(NuixClient.OutsideScripting).GetMethods().Where(x=>x.IsStatic);
+            var methods = 
+                typeof(NuixClient.OutsideScripting).GetMethods()
+                    .Concat(typeof(NuixClient.ProcessRunner).GetMethods())
+                    .Where(x=>x.IsStatic);
 
             var lines = ConsoleView.Run(args, methods);
 
