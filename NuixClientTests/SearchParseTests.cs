@@ -47,7 +47,7 @@ namespace NuixClientTests
         
         public static readonly IReadOnlyList<ErrorTestCase> ErrorTestCases = new List<ErrorTestCase>()
         {
-            new ErrorTestCase("", "String is empty"),
+            new ErrorTestCase("", "Syntax error: unexpected end of input"),
             new ErrorTestCase("AND", "Syntax error (line 1, column 1): unexpected `AND`"),
             new ErrorTestCase("OR", "Syntax error (line 1, column 1): unexpected `OR`"),
             new ErrorTestCase("NOT", "Syntax error: unexpected end of input"),
@@ -87,6 +87,8 @@ namespace NuixClientTests
 
         public override string ToString()
         {
+            if (string.IsNullOrWhiteSpace(Input))
+                return "[EMPTY]";
             return Input;
         }
     }
@@ -105,6 +107,9 @@ namespace NuixClientTests
 
         public override string ToString()
         {
+            if (string.IsNullOrWhiteSpace(Input))
+                return "[EMPTY]";
+
             return Input;
         }
     }
