@@ -12,8 +12,11 @@ namespace NuixClient
     /// </summary>
     public static class ProcessRunner
     {
-
-
+        /// <summary>
+        /// Run process defined in Json
+        /// </summary>
+        /// <param name="jsonString">Json representing the process</param>
+        /// <returns></returns>
         public static async IAsyncEnumerable<ResultLine> RunProcessFromJsonString(string jsonString)
         {
             Process? process = null;
@@ -62,7 +65,7 @@ namespace NuixClient
         }
 
         /// <summary>
-        /// Run process defined in Json
+        /// Run process defined in Json found at a particular path
         /// </summary>
         /// <param name="jsonPath">Path to the JSON</param>
         /// <returns></returns>

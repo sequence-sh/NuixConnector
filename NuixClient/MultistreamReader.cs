@@ -9,7 +9,7 @@ namespace NuixClient
     /// <summary>
     /// Anything that implements ReadLineAsync
     /// </summary>
-    public interface IStreamReader
+    internal interface IStreamReader
     {
         /// <summary>
         /// Reads a line of characters asynchronously and returns the data as a string
@@ -36,7 +36,7 @@ namespace NuixClient
     /// <summary>
     /// Reads lines from several StreamReaders in the order that they arrive
     /// </summary>
-    public class MultiStreamReader : IStreamReader
+    internal class MultiStreamReader : IStreamReader
     {
         private readonly List<(IStreamReader streamReader, Task<string?>? task)> _streamReaderTaskPairs;
 

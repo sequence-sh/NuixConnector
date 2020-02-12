@@ -9,48 +9,93 @@ namespace NuixClientTests
     {
 
         [Test]
-        public async Task TestMultiStreamReader()
+        public async Task TestReadingEmptyStream()
+        {
+            var reader1 = new Mock<IStreamReader>(MockBehavior.Strict);
+            var multiStreamReader = new MultiStreamReader(new[] { reader1.Object });
+
+            reader1.Setup(m => m.ReadLineAsync()).ReturnsAsync(null as string);
+
+            var n1 = await multiStreamReader.ReadLineAsync();
+            Assert.IsNull(n1);
+
+            var n2 = await multiStreamReader.ReadLineAsync();
+            Assert.IsNull(n2);
+
+            reader1.VerifyAll();
+        }
+
+        [Test]
+        public async Task TestReadingTextFromStream()
+        {
+            var reader1 = new Mock<IStreamReader>(MockBehavior.Strict);
+            var multiStreamReader = new MultiStreamReader(new[] { reader1.Object });
+
+            foreach (var str in new[]{String1, String2, String3})
+            {
+                reader1.Setup(m => m.ReadLineAsync()).ReturnsAsync(str);
+                var a = await multiStreamReader.ReadLineAsync();
+                Assert.AreEqual(str, a);
+                reader1.VerifyAll();
+            }
+
+            reader1.Setup(m => m.ReadLineAsync()).ReturnsAsync(null as string);
+            var n1 = await multiStreamReader.ReadLineAsync();
+            Assert.IsNull(n1);
+
+            var n2 = await multiStreamReader.ReadLineAsync();
+            Assert.IsNull(n2);
+
+            reader1.VerifyAll();
+        }
+
+        private const string String1 = "string 1";
+        private const string String2 = "string 2";
+        private const string String3 = "string 3";
+
+        [Test]
+        public async Task TestReadingTwoStreams()
         {
 
             var reader1 = new Mock<IStreamReader>(MockBehavior.Strict);
             var reader2 = new Mock<IStreamReader>(MockBehavior.Strict);
 
 
-            const string string1 = "string 1";
-            const string string2 = "string 2";
-            const string string3 = "string 3";
+            reader2.Setup(m => m.ReadLineAsync())
+                .Returns(() => ReturnStringAfter(String3, 100));
 
             reader1.Setup(m => m.ReadLineAsync())
-                .Returns(() => ReturnStringAfter(string1, 1));
+                .Returns(() => ReturnStringAfter(String1, 1));
             
             
-            reader2.Setup(m => m.ReadLineAsync())
-                .Returns(() => ReturnStringAfter(string3, 3000));
+            
+
 
             var multiStreamReader = new MultiStreamReader(new[] {reader1.Object, reader2.Object});
 
             var r1 = await multiStreamReader.ReadLineAsync();
-            Assert.AreEqual(string1, r1);
-            reader1.Verify();
-            reader2.Verify();
+            Assert.AreEqual(String1, r1);
 
-            
+            reader1.VerifyAll();
+            reader2.VerifyAll();
+
+
             reader1.Setup(m => m.ReadLineAsync())
-                .Returns(() => ReturnStringAfter(string2, 1));
+                .Returns(() => ReturnStringAfter(String2, 1));
 
             var r2 = await multiStreamReader.ReadLineAsync();
-            Assert.AreEqual(string2, r2);
-            reader1.Verify();
-            reader2.Verify();
+            Assert.AreEqual(String2, r2);
+            reader1.VerifyAll();
+            reader2.VerifyAll();
 
             reader1.Setup(m => m.ReadLineAsync())
                 .Returns(() => ReturnStringAfter(null, 1));
 
             var r3 = await multiStreamReader.ReadLineAsync();
 
-            Assert.AreEqual(string3, r3);
-            reader1.Verify();
-            reader2.Verify();
+            Assert.AreEqual(String3, r3);
+            reader1.VerifyAll();
+            reader2.VerifyAll();
 
             reader2.Setup(m => m.ReadLineAsync())
                 .Returns(() => ReturnStringAfter(null, 1));
