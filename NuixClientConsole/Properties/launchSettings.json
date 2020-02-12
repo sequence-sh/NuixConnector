@@ -2,7 +2,7 @@
   "profiles": {
     "NuixClientConsole": {
       "commandName": "Project",
-      "commandLineArgs": "CreateCaseRuby -casePath C:\\Dev\\Nuix\\Cases\\ -caseName NewCase -description \"two words\"  -investigator abcd"
+      "commandLineArgs": "CreateCaseRuby -casePath C:\\Dev\\Nuix\\Cases\\ -caseName NewCase -description \"two words\"  -investigator mark"
     }
   }
 }
