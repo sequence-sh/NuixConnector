@@ -49,22 +49,19 @@ namespace NuixClient
             };
             pProcess.Start();
 
-            //Read the output one line at a time //TODO find a way to get the full output and the full error
+            var multiStreamReader = new MultiStreamReader(new []
+            {
+                new WrappedStreamReader(pProcess.StandardOutput), 
+                new WrappedStreamReader(pProcess.StandardError), 
+            });
+
+            //Read the output one line at a time
             while (true)
             {
-                var line = await pProcess.StandardOutput.ReadLineAsync();
+                var line = await multiStreamReader.ReadLineAsync();
                 if (line == null) //We've reached the end of the file
                     break;
                 yield return new ResultLine(true, line);
-            }
-
-            //Read the error one line at a time
-            while (true)
-            {
-                var line = await pProcess.StandardError.ReadLineAsync();
-                if (line == null) //We've reached the end of the file
-                    break;
-                yield return new ResultLine(false, line);
             }
 
             pProcess.WaitForExit();
