@@ -140,6 +140,72 @@ namespace NuixClient
         /// </summary>
         /// <param name="nuixConsoleExePath">Path to the console exe</param>
         /// <param name="casePath">Where to create the new case</param>
+        /// <param name="useDongle">Use a dongle for licensing</param>
+        /// <param name="searchTerm">The term to search for</param>
+        /// <param name="productionSetName">The production set to add the found items to. Will be created if it doesn't exist</param>
+        /// <param name="order">Order by term e.g. name ASC</param>
+        /// <param name="limit">Optional maximum number of items to tag.</param>
+        /// <returns>The output of the case creation script</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<ResultLine> AddToProductionSet( 
+
+            string casePath= @"C:\Dev\Nuix\Cases\NewCase",
+            string searchTerm = "night",
+            string productionSetName  = "ProdSet",
+            string? order = null,
+            int? limit = null,
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            bool useDongle = true)
+        {
+            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(searchTerm);
+
+            if (!searchTermParseSuccess || searchTermParsed == null)
+            {
+                yield return new ResultLine(false, "Error parsing search term");
+                if(searchTermParseError != null)
+                    yield return new ResultLine(false, searchTermParseError);
+                yield break;
+            }
+
+            if (searchTermParsed.AsString != searchTerm)
+            {
+                yield return new ResultLine(true, $"Search term simplified to '{searchTermParsed.AsString}'");
+            }
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "AddToProductionSet.rb");
+
+            var args = new List<string>
+            {
+                "-p", casePath,
+                "-s", searchTermParsed.AsString,
+                "-n", productionSetName,
+                
+            };
+            if (order != null)
+            {
+                args.Add("-o ");
+                args.Add(order);
+            }
+
+            if (limit.HasValue)
+            {
+                args.Add("-l");
+                args.Add(limit.Value.ToString());
+            }
+
+            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
+
+            await foreach (var line in result)
+                yield return line;
+        }
+
+
+        /// <summary>
+        /// Creates a new Case in NUIX
+        /// </summary>
+        /// <param name="nuixConsoleExePath">Path to the console exe</param>
+        /// <param name="casePath">Where to create the new case</param>
         /// <param name="caseName">The name of the new case</param>
         /// <param name="description">Description of the case</param>
         /// <param name="investigator">Name of the investigator</param>

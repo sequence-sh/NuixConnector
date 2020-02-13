@@ -38,6 +38,31 @@ namespace NuixClientAPI.Controllers
 #pragma warning restore CA1031 // Do not catch general exception types
         }
 
+
+        /// <summary>
+        /// Creates a new Case in NUIX
+        /// </summary>
+        /// <param name="casePath">Where to create the new case</param>
+        /// <param name="searchTerm">The term to search for</param>
+        /// <param name="productionSetName">The production set to add the found items to. Will be created if it doesn't exist</param>
+        /// <param name="order">Order by term e.g. name ASC</param>
+        /// <param name="limit">Optional maximum number of items to tag.</param>
+        /// <returns>The output of the case creation script</returns>
+        [HttpPost("/SearchAndTagProcess")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
+        public IActionResult AddToProductionSet(
+            string casePath,
+            string searchTerm,
+            string productionSetName,
+            string order,
+            int? limit)
+        {
+            var r = OutsideScripting.AddToProductionSet(casePath, searchTerm, productionSetName, order, limit);
+
+            return ConvertToActionResult(r);
+        }
+
+
         /// <summary>
         /// Creates a new Case in NUIX
         /// </summary>
