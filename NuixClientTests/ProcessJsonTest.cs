@@ -66,6 +66,13 @@ namespace NuixClientTests
                 Tag = "Dinosaurs"
             }),
 
+            new JsonProcessTest(new AddToProductionSetProcess()
+            {
+                CasePath = "C:/Cases/MyCase",
+                SearchTerm = "Raptor",
+                ProductionSetName = "Dinosaurs"
+            }),
+
             new JsonProcessTest(new MultiStepProcess
             {
                 Steps = new List<Process>

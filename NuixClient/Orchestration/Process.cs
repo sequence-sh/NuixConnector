@@ -17,7 +17,8 @@ namespace NuixClient.Orchestration
             typeof(CreateCaseProcess),
             typeof(ExportConcordanceProcess),
             typeof(MultiStepProcess),
-            typeof(SearchAndTagProcess)
+            typeof(SearchAndTagProcess),
+            typeof(AddToProductionSetProcess)
         }.ToDictionary(x => x.Name, StringComparer.OrdinalIgnoreCase);
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
