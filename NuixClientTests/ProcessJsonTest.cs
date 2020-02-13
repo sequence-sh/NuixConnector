@@ -80,19 +80,55 @@ namespace NuixClientTests
                     new CreateCaseProcess
                     {
                         CasePath = "C:/Cases/MyCase",
-                        Conditions = new List<Condition>
-                        {
-                            new FileExistsCondition {FilePath = "C:/MyFile"}
-                        },
-                        Description = "Interesting",
+                        Description = "My new case",
                         CaseName = "My Case",
                         Investigator = "Mark"
+                    },
+                    new AddFileProcess
+                    {
+                        CasePath = "C:/Cases/MyCase",
+                        Custodian = "Mark",
+                        Conditions = new List<Condition>
+                        {
+                            new FileExistsCondition {FilePath = "C:/MyFolder"}
+                        },
+                        Description = "Evidence from file",
+                        FilePath = "C:/MyFolder",
+                        FolderName = "Evidence Folder 1"
+                    },
+
+                    new AddConcordanceProcess
+                    {
+                        CasePath = "C:/Cases/MyCase",
+                        Custodian = "Mark",
+                        Conditions = new List<Condition>
+                        {
+                            new FileExistsCondition {FilePath = "C:/MyConcordance.dat"}
+                        },
+                        Description = "Evidence from concordance",
+                        FilePath = "C:/MyConcordance.dat",
+                        FolderName = "Evidence Folder 2",
+                        ConcordanceDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                        ConcordanceProfileName = "Default"
                     },
                     new SearchAndTagProcess
                     {
                         CasePath = "C:/Cases/MyCase",
                         SearchTerm = "Raptor",
                         Tag = "Dinosaurs"
+                    },
+                    new AddToProductionSetProcess()
+                    {
+                        CasePath = "C:/Cases/MyCase",
+                        SearchTerm = "Raptor",
+                        ProductionSetName = "Dinosaurs"
+                    },
+                    new ExportConcordanceProcess
+                    {
+                        CasePath = "C:/Cases/MyCase",
+                        ExportPath = "C:/Exports",
+                        MetadataProfileName = "Default",
+                        ProductionSetName = "Dinosaurs"
                     }
                 }
             }),
