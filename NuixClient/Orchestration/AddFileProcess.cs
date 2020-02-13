@@ -22,7 +22,7 @@ namespace NuixClient.Orchestration
         /// <returns></returns>
         public override IAsyncEnumerable<ResultLine> Execute()
         {
-            var r = OutsideScripting.AddFileToCase(CasePath, FolderName, Description, Custodian, FilePath);
+            var r = OutsideScripting.AddFileToCase(CasePath, FolderName, Description, Custodian, FilePath, ProcessingProfileName);
             return r;
         }
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -67,6 +67,14 @@ namespace NuixClient.Orchestration
         [JsonProperty(Order = 7)]
         public string CasePath { get; set; }
 
+
+        /// <summary>
+        /// The name of the processing profile to use - can be null
+        /// </summary>
+        [DataMember]
+        [JsonProperty(Order = 7)]
+        public string ProcessingProfileName { get; set; }
+
         public override bool Equals(object? obj)
         {
             var r = obj is AddFileProcess afp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(afp.Conditions ?? Enumerable.Empty<Condition>())
@@ -74,7 +82,8 @@ namespace NuixClient.Orchestration
                                                  && Custodian == afp.Custodian
                                                  && Description == afp.Description
                                                  && FolderName == afp.FolderName
-                                                 && CasePath == afp.CasePath;
+                                                 && CasePath == afp.CasePath
+                                                 && ProcessingProfileName == afp.ProcessingProfileName;
 
             return r;
         }

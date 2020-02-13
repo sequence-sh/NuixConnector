@@ -89,6 +89,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="description">Description of the new folder</param>
         /// <param name="custodian">Custodian for the new folder</param>
         /// <param name="filePath">The path of the file to add</param>
+        /// <param name="processingProfileName">The name of the processing profile to use. Can be null.</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/AddFile")]
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
@@ -97,7 +98,9 @@ namespace NuixClientAPI.Controllers
             string folderName,
             string description,
             string custodian,
-            string filePath)
+            string filePath,
+            string processingProfileName
+            )
         {
             var r = 
                 OutsideScripting.AddFileToCase(
@@ -105,7 +108,8 @@ namespace NuixClientAPI.Controllers
                 folderName, 
                 description, 
                 custodian, 
-                filePath);
+                filePath,
+                processingProfileName);
 
             return ConvertToActionResult(r);
         }

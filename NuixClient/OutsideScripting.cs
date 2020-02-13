@@ -179,6 +179,7 @@ namespace NuixClient
         /// <param name="description">Description of the new folder</param>
         /// <param name="custodian">Custodian for the new folder</param>
         /// <param name="filePath">The path of the file to add</param>
+        /// <param name="processingProfileName">The name of the processing profile to use. Can be null</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
         [UsedImplicitly]
@@ -189,6 +190,7 @@ namespace NuixClient
             string description = "nice",
             string custodian = "mark2",
             string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
+            string processingProfileName = null,
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {
@@ -201,7 +203,8 @@ namespace NuixClient
                 "-n", folderName,
                 "-d", description,
                 "-c", custodian,
-                "-f", filePath
+                "-f", filePath,
+                "-r", processingProfileName
             };
             var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
 

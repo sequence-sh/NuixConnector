@@ -18,6 +18,9 @@ OptionParser.new do |opts|
   opts.on('-f [ARG]', '--filePath [ARG]', "Specify the File to add path") do |v|
     hash_options[:filePathArg] = v
   end
+  opts.on('-r [ARG]', '--processingProfileName [ARG]', "Specify the name of the processing profile") do |v|
+    hash_options[:processingProfileNameArg] = v
+  end
   opts.on('--version', 'Display the version') do 
     puts "VERSION"
     exit
@@ -28,7 +31,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-requiredArguments = [:pathArg, :folderNameArg, :folderDescriptionArg, :folderCustodianArg, :filePathArg]
+requiredArguments = [:pathArg, :folderNameArg, :folderDescriptionArg, :folderCustodianArg, :filePathArg] #processingProfileName is optional
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
@@ -44,14 +47,14 @@ else
                                     :additional_digests      => [ 'SHA-1' ] }
 
 
+    processor.setProcessingProfile(hash_options[:processingProfileNameArg]) if hash_options[:processingProfileNameArg] is not nil
+
+
     folder = processor.new_evidence_container(hash_options[:folderNameArg])
 
     folder.description = hash_options[:folderDescriptionArg]
     folder.initial_custodian = hash_options[:folderCustodianArg]
-    #TODO other options
-    #folder.encoding = 'UTF-8'
-    #folder.timeZone = 'Pacific/Honolulu'
-    #folder.custom_metadata = { 'Barcode' => '1234-567-890' }
+
     folder.add_file(hash_options[:filePathArg])
     folder.save
 
