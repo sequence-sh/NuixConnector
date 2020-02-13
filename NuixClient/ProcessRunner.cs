@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using NuixClient.Orchestration;
 
@@ -17,6 +18,7 @@ namespace NuixClient
         /// </summary>
         /// <param name="jsonString">Json representing the process</param>
         /// <returns></returns>
+        [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> RunProcessFromJsonString(string jsonString)
         {
             Process? process = null;
@@ -69,9 +71,10 @@ namespace NuixClient
         /// </summary>
         /// <param name="jsonPath">Path to the JSON</param>
         /// <returns></returns>
+        [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> RunProcessFromJson(string jsonPath)
         {
-            string text;
+            string? text;
             ResultLine? errorLine = null;
             try
             {
@@ -86,15 +89,18 @@ namespace NuixClient
             if (errorLine != null)
             {
                 yield return errorLine;
-                yield break;
             }
-            else
+            else if (!string.IsNullOrWhiteSpace(text))
             {
                 var r = RunProcessFromJsonString(text);
                 await foreach(var rl in r)
                 {
                     yield return rl;
                 }
+            }
+            else
+            {
+                yield return new ResultLine(false, "File is empty");
             }
         }
 

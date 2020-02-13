@@ -20,7 +20,7 @@ namespace NuixClient.Orchestration
         /// <returns></returns>
         public override IAsyncEnumerable<ResultLine> Execute()
         {
-            var r = OutsideScripting.CreateCaseRuby(CasePath, CaseName, Description, Investigator);
+            var r = OutsideScripting.CreateCase(CasePath, CaseName, Description, Investigator);
 
             return r;
         }

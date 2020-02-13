@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using JetBrains.Annotations;
 
 namespace NuixClient
 {
@@ -17,7 +18,7 @@ namespace NuixClient
         /// <param name="scriptPath">The path to the script</param>
         /// <param name="useDongle"></param>
         /// <param name="scriptArguments">Arguments to the script</param>
-        public static async IAsyncEnumerable<ResultLine> RunScript(string nuixConsoleExePath,
+        private static async IAsyncEnumerable<ResultLine> RunScript(string nuixConsoleExePath,
             string scriptPath,
             bool useDongle,
             IEnumerable<string> scriptArguments)
@@ -79,6 +80,7 @@ namespace NuixClient
         /// <param name="order">Order by term e.g. name ASC</param>
         /// <param name="limit">Optional maximum number of items to tag.</param>
         /// <returns>The output of the case creation script</returns>
+        [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> SearchAndTag( 
 
             string casePath= @"C:\Dev\Nuix\Cases\NewCase",
@@ -101,9 +103,8 @@ namespace NuixClient
 
             if (searchTermParsed.AsString != searchTerm)
             {
-                yield return new ResultLine(true, $"Search term simplified to '{searchTermParsed.AsString}'"); ;
+                yield return new ResultLine(true, $"Search term simplified to '{searchTermParsed.AsString}'");
             }
-
 
             var currentDirectory = Directory.GetCurrentDirectory();
             var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "SearchAndTag.rb");
@@ -144,8 +145,8 @@ namespace NuixClient
         /// <param name="investigator">Name of the investigator</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
-        public static async IAsyncEnumerable<ResultLine> CreateCaseRuby( //TODO remove default arguments
-
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<ResultLine> CreateCase(
             string casePath, //= @"C:\Dev\Nuix\Cases\MyNewCase",
             string caseName, // = "MyNewCase", 
             string description, //= "Description",
@@ -168,7 +169,7 @@ namespace NuixClient
             await foreach (var line in result)
                 yield return line;
         }
-        
+
         /// <summary>
         /// Add file or folder to a Case in NUIX
         /// </summary>
@@ -180,6 +181,7 @@ namespace NuixClient
         /// <param name="filePath">The path of the file to add</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
+        [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> AddFileToCase( //TODO remove default arguments
 
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
@@ -190,9 +192,8 @@ namespace NuixClient
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {
-            //var currentDirectory = Directory.GetCurrentDirectory();
-            var currentDirectory = @"C:\Source\Repos\NuixClient";
-            var scriptPath = Path.Combine(currentDirectory, "Scripts", "AddToCase.rb");
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "AddToCase.rb");
 
             var args = new[]
             {
@@ -222,6 +223,7 @@ namespace NuixClient
         /// <param name="concordanceDateFormat">Concordance date format to use</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
         /// <returns>The output of the case creation script</returns>
+        [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> AddConcordanceToCase( //TODO remove default arguments
 
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
@@ -235,9 +237,8 @@ namespace NuixClient
             
             bool useDongle = true)
         {
-            //var currentDirectory = Directory.GetCurrentDirectory();
-            var currentDirectory = @"C:\Source\Repos\NuixClient";
-            var scriptPath = Path.Combine(currentDirectory, "Scripts", "AddConcordanceToCase.rb");
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "AddConcordanceToCase.rb");
 
             var args = new[]
             {
@@ -264,8 +265,8 @@ namespace NuixClient
         /// <param name="productionSetName">The name of the production set to export</param>
         /// <param name="metadataProfileName">Optional name of the metadata profile to use. Case sensitive. Note this is NOT a metadata export profile</param>
         /// <param name="useDongle">Use a dongle for licensing</param>
-        /// ///
         /// <returns>The output of the case creation script</returns>
+        [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> ExportProductionSetConcordance( //TODO remove default arguments
             
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
@@ -275,9 +276,8 @@ namespace NuixClient
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {
-            //var currentDirectory = Directory.GetCurrentDirectory();
-            var currentDirectory = @"C:\Source\Repos\NuixClient";
-            var scriptPath = Path.Combine(currentDirectory, "Scripts", "ExportConcordanceProcess.rb");
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "ExportConcordanceProcess.rb");
 
             var args = new[]
             {
@@ -291,13 +291,5 @@ namespace NuixClient
             await foreach (var line in result)
                 yield return line;
         }
-
-
     }
-
-
-    
-
-
 }
-

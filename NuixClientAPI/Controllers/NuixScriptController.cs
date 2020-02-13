@@ -80,7 +80,7 @@ namespace NuixClientAPI.Controllers
             string description,
             string investigator)
         {
-            var r =NuixClient.OutsideScripting.CreateCaseRuby(casePath, caseName, description, investigator);
+            var r =NuixClient.OutsideScripting.CreateCase(casePath, caseName, description, investigator);
 
             return ConvertToActionResult(r);
         }
