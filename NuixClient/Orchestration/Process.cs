@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace NuixClient.Orchestration
 {
-    public class ProcessJsonConverter : JsonConverter
+    internal class ProcessJsonConverter : JsonConverter
     {
 
         private static readonly IReadOnlyDictionary<string, Type> ProcessTypeDictionary = new[]
@@ -62,7 +61,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process. Can contain one or more steps
     /// </summary>
-    public abstract class Process
+    internal abstract class Process
     {
         /// <summary>
         /// The type of this process
@@ -73,7 +72,7 @@ namespace NuixClient.Orchestration
         /// <summary>
         /// Conditions which must be true for this process to be executed
         /// </summary>
-        [JsonProperty(Order = 2)]
+        [JsonProperty(Order = 2, DefaultValueHandling = DefaultValueHandling.Ignore)]
         public List<Condition>? Conditions { get; set; }
 
         /// <summary>

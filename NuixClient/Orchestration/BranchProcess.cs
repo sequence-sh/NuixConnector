@@ -1,27 +1,32 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace NuixClient.Orchestration
 {
     /// <summary>
     /// A process which executes all sub-processes whose conditions are met
     /// </summary>
-    public class BranchProcess : Process
+    internal class BranchProcess : Process
     {
-        private readonly string _name;
+        /// <summary>
+        /// The name of this process
+        /// </summary>
+        public override string GetName()
+        {
+            return string.Join(" or ", Options.Select(s => s.GetName()));
+        }
+
 
         /// <summary>
-        /// Create a new branch process
+        /// Processes which will be executed as part of this process if their conditions are met
         /// </summary>
-        /// <param name="name">The name of this process</param>
-        /// <param name="options">Processes. Those whose conditions are met will be executed in order</param>
-        /// <param name="conditions">Conditions which must be met for this process to be executed</param>
-        public BranchProcess(string name, IEnumerable<Process> options, IEnumerable<Condition> conditions)
-        {
-            _name = name;
-            Options = options;
-            conditions.ToList();
-        }
+        [Required]
+        [DataMember]
+        [JsonProperty(Order = 3)]
+        public List<Process> Options { get; set; }
 
         /// <summary>
         /// Execute this process.
@@ -48,17 +53,18 @@ namespace NuixClient.Orchestration
             }
         }
 
-        /// <summary>
-        /// The name of this process
-        /// </summary>
-        public override string GetName()
+
+        public override bool Equals(object? obj)
         {
-            return _name;
+            var r = obj is BranchProcess bp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(bp.Conditions ?? Enumerable.Empty<Condition>())
+                                                       && Options.SequenceEqual(bp.Options);
+
+            return r;
         }
 
-        /// <summary>
-        /// Processes which will be executed as part of this process if their conditions are met
-        /// </summary>
-        public IEnumerable<Process> Options { get; }
+        public override int GetHashCode()
+        {
+            return GetName().GetHashCode();
+        }
     }
 }

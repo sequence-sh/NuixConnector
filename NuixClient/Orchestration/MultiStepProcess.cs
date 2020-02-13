@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace NuixClient.Orchestration
 {
     /// <summary>
     /// A process containing multiple steps
     /// </summary>
-    public class MultiStepProcess : Process
+    internal class MultiStepProcess : Process
     {
         /// <summary>
         /// The name of this process
@@ -17,12 +21,19 @@ namespace NuixClient.Orchestration
         }
 
         /// <summary>
+        /// Steps that make up this process. To be executed in order
+        /// </summary>
+        [Required]
+        [DataMember]
+        [JsonProperty(Order = 3)]
+        public List<Process> Steps { get; set; }
+
+        /// <summary>
         /// Execute the steps in this process until a condition is not met or a step fails 
         /// </summary>
         /// <returns></returns>
         public override async IAsyncEnumerable<ResultLine> Execute() 
         {
-
             foreach (var process in Steps)
             {
                 foreach (var processCondition in process.Conditions?? Enumerable.Empty<Condition>())
@@ -46,13 +57,20 @@ namespace NuixClient.Orchestration
                 }
                 if(!allGood)
                     yield break;
-
             }
         }
 
-        /// <summary>
-        /// Steps that make up this process. To be executed in order
-        /// </summary>
-        public List<Process> Steps { get; set; }
+        public override bool Equals(object? obj)
+        {
+            var r = obj is MultiStepProcess msp && (Conditions??Enumerable.Empty<Condition>()).SequenceEqual(msp.Conditions??Enumerable.Empty<Condition>())
+                                                       && Steps.SequenceEqual(msp.Steps);
+
+            return r;
+        }
+
+        public override int GetHashCode()
+        {
+            return GetName().GetHashCode();
+        }
     }
 }

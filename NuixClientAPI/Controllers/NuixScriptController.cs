@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using NuixClient;
@@ -11,12 +12,9 @@ namespace NuixClientAPI.Controllers
     [Route("[controller]")]
     public class NuixScriptController : ControllerBase
     {
-
         //TODO gRPC
         private static IActionResult ConvertToActionResult(IAsyncEnumerable<ResultLine> asyncEnumerable)
         {
-            
-
             var enumerator = asyncEnumerable.GetAsyncEnumerator();
             var sb = new StringBuilder();
             var allGood = true;
@@ -30,10 +28,7 @@ namespace NuixClientAPI.Controllers
 
                 if(allGood)
                     return new ContentResult{Content = sb.ToString()};
-                else
-                {
-                    return new BadRequestObjectResult(sb.ToString());
-                }
+                return new BadRequestObjectResult(sb.ToString());
             }
 #pragma warning disable CA1031 //We don't know what kind of exception could be thrown here
             catch (Exception e)
@@ -53,6 +48,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="limit">Optional maximum number of items to tag.</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/SearchAndTagProcess")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult SearchAndTag(
             string casePath,
             string searchTerm,
@@ -60,7 +56,7 @@ namespace NuixClientAPI.Controllers
             string order,
             int? limit)
         {
-            var r = NuixClient.OutsideScripting.SearchAndTag(casePath, searchTerm, tag, order, limit);
+            var r = OutsideScripting.SearchAndTag(casePath, searchTerm, tag, order, limit);
 
             return ConvertToActionResult(r);
         }
@@ -74,13 +70,13 @@ namespace NuixClientAPI.Controllers
         /// <param name="investigator">Name of the investigator</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/CreateCase")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult CreateCase(string casePath,
             string caseName, 
             string description,
             string investigator)
         {
-            var r =NuixClient.OutsideScripting.CreateCase(casePath, caseName, description, investigator);
+            var r = OutsideScripting.CreateCase(casePath, caseName, description, investigator);
 
             return ConvertToActionResult(r);
         }
@@ -95,7 +91,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="filePath">The path of the file to add</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/AddFile")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult AddFileToCase(
             string casePath,
             string folderName,
@@ -104,7 +100,7 @@ namespace NuixClientAPI.Controllers
             string filePath)
         {
             var r = 
-                NuixClient.OutsideScripting.AddFileToCase(
+                OutsideScripting.AddFileToCase(
                 casePath, 
                 folderName, 
                 description, 
@@ -126,7 +122,7 @@ namespace NuixClientAPI.Controllers
         /// <param name="concordanceDateFormat">Concordance date format to use</param>
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/AddConcordance")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult AddConcordanceToCase(
             string casePath,
             string folderName,
@@ -136,7 +132,7 @@ namespace NuixClientAPI.Controllers
             string concordanceDateFormat,
             string concordanceProfileName)
         {
-            var r = NuixClient.OutsideScripting.AddConcordanceToCase(
+            var r = OutsideScripting.AddConcordanceToCase(
                 casePath, folderName, description, custodian,
                 filePath, concordanceDateFormat, concordanceProfileName);
 
@@ -155,14 +151,14 @@ namespace NuixClientAPI.Controllers
         /// ///
         /// <returns>The output of the case creation script</returns>
         [HttpPost("/ExportConcordanceProcess")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Swagger UI can't see static methods")]
         public IActionResult ExportProductionSetConcordance(
             string casePath,
             string exportPath ,
             string productionSetName,
             string metadataProfileName)
         {
-            var r = NuixClient.OutsideScripting.ExportProductionSetConcordance(casePath, exportPath, productionSetName,
+            var r = OutsideScripting.ExportProductionSetConcordance(casePath, exportPath, productionSetName,
                 metadataProfileName);
 
             return ConvertToActionResult(r);

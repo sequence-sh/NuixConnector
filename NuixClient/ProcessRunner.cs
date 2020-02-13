@@ -32,10 +32,12 @@ namespace NuixClient
                     new ConditionJsonConverter());
                 errorLine = null;
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
             {
                 errorLine = new ResultLine(false, e.Message);
             }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             if (errorLine != null)
             {
@@ -80,11 +82,13 @@ namespace NuixClient
             {
                 text = File.ReadAllText(jsonPath);                
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
             {
                 errorLine = new ResultLine(false, e.Message);
                 text = null;
             }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             if (errorLine != null)
             {

@@ -6,7 +6,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A condition that requires that a particular file exists
     /// </summary>
-    public class FileExistsCondition : Condition
+    internal class FileExistsCondition : Condition
     {
         /// <summary>
         /// The path of the file to check
@@ -27,6 +27,16 @@ namespace NuixClient.Orchestration
         public override bool IsMet()
         {
             return System.IO.File.Exists(FilePath);
+        }
+
+        public override int GetHashCode()
+        {
+            return GetDescription().GetHashCode();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is FileExistsCondition fec && FilePath == fec.FilePath;
         }
     }
 }

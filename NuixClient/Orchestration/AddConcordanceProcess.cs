@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace NuixClient.Orchestration
 {
     /// <summary>
     /// A process which adds concordance to a case
     /// </summary>
-    public class AddConcordanceProcess : Process
+    internal class AddConcordanceProcess : Process
     {
         /// <summary>
         /// The name of this process
@@ -35,6 +37,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
+        [JsonProperty(Order = 3)]
         public string ConcordanceProfileName { get; set; }
 
         /// <summary>
@@ -42,6 +45,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
+        [JsonProperty(Order = 4)]
         public string ConcordanceDateFormat { get; set; }
 
         /// <summary>
@@ -49,6 +53,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
+        [JsonProperty(Order = 5)]
         public string FilePath { get; set; }
 
         /// <summary>
@@ -56,6 +61,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
+        [JsonProperty(Order = 6)]
         public string Custodian { get; set; }
 
         /// <summary>
@@ -63,6 +69,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
+        [JsonProperty(Order = 7)]
         public string Description { get; set; }
 
         /// <summary>
@@ -70,6 +77,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
+        [JsonProperty(Order = 8)]
         public string FolderName { get; set; }
 
         /// <summary>
@@ -77,7 +85,27 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
+        [JsonProperty(Order = 9)]
         public string CasePath { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            var r = obj is AddConcordanceProcess acp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(acp.Conditions ?? Enumerable.Empty<Condition>())
+                                                    && ConcordanceProfileName == acp.ConcordanceProfileName
+                                                    && ConcordanceDateFormat == acp.ConcordanceDateFormat
+                                                    && FilePath == acp.FilePath
+                                                    && Custodian == acp.Custodian
+                                                    && Description == acp.Description
+                                                    && FolderName == acp.FolderName
+                                                    && CasePath == acp.CasePath;
+
+            return r;
+        }
+
+        public override int GetHashCode()
+        {
+            return GetName().GetHashCode();
+        }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }

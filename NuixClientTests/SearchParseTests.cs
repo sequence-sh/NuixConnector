@@ -37,7 +37,9 @@ namespace NuixClientTests
 
             Assert.IsTrue(success, error);
             Assert.IsNotNull(result);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             Assert.IsEmpty(result.ErrorMessages);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             var actual = result.AsString;
 

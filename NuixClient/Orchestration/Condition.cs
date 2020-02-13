@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace NuixClient.Orchestration
 {
-    public class ConditionJsonConverter : JsonConverter
+    internal class ConditionJsonConverter : JsonConverter
     {
         private static readonly IReadOnlyDictionary<string, Type> ConditionTypeDictionary = new[]
         {
@@ -54,7 +54,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A condition that is required for the process to execute
     /// </summary>
-    public abstract class Condition
+    internal abstract class Condition
     {
         /// <summary>
         /// The type of this condition
