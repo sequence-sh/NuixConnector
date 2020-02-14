@@ -155,6 +155,55 @@ namespace NuixClientTests
         };
 
         [Test]
+        public void TestYamlAnchors()
+        {
+            var yaml = @"!MultiStepProcess
+Steps:
+- !CreateCaseProcess
+  CaseName: My Case
+  CasePath: &casePath C:/Cases/MyCase
+  Investigator: Mark
+  Description: &description desc
+- !AddFileProcess
+  FilePath: C:/MyFolder
+  Custodian: Mark
+  Description: *description
+  FolderName: Evidence Folder 1
+  CasePath: *casePath";
+
+
+            var expectedProcess = new MultiStepProcess()
+            {
+
+                Steps = new List<Process>()
+                {
+                    new CreateCaseProcess()
+                    {
+                        CaseName = "My Case",
+                        CasePath = "C:/Cases/MyCase",
+                        Investigator = "Mark",
+                        Description = "desc"
+                    },
+                    new AddFileProcess()
+                    {
+                        FilePath = "C:/MyFolder",
+                        Custodian = "Mark",
+                        Description = "desc",
+                        FolderName = "Evidence Folder 1",
+                        CasePath = "C:/Cases/MyCase"
+                    }
+                }
+            };
+
+            var success = YamlHelper.TryMakeFromYaml(yaml, out var p, out var e);
+
+            Assert.IsTrue(success, e);
+
+            Assert.AreEqual(expectedProcess, p);
+
+        }
+
+        [Test]
         [TestCaseSource(nameof(Tests))]
         public void TestYaml(YamlProcessTest yamlProcessTest)
         {
