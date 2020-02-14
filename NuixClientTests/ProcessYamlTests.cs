@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 using NuixClient.Orchestration;
 using NUnit.Framework;
 
 namespace NuixClientTests
 {
-    public class ProcessJsonTest
+    public class ProcessYamlTest
     {
 
-        public static readonly List<JsonProcessTest> Tests = new List<JsonProcessTest>
+        public static readonly List<YamlProcessTest> Tests = new List<YamlProcessTest>
         {
-            new JsonProcessTest(new AddFileProcess
+            new YamlProcessTest(new AddFileProcess
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
@@ -24,7 +23,7 @@ namespace NuixClientTests
             }),
 
 
-            new JsonProcessTest(new AddConcordanceProcess
+            new YamlProcessTest(new AddConcordanceProcess
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
@@ -39,7 +38,7 @@ namespace NuixClientTests
                 ConcordanceProfileName = "Default"
             }),
 
-            new JsonProcessTest(new CreateCaseProcess
+            new YamlProcessTest(new CreateCaseProcess
             {
                 CasePath = "C:/Cases/MyCase",
                 Conditions = new List<Condition>
@@ -51,7 +50,7 @@ namespace NuixClientTests
                 Investigator = "Mark"
             }),
 
-            new JsonProcessTest(new ExportConcordanceProcess
+            new YamlProcessTest(new ExportConcordanceProcess
             {
                 CasePath = "C:/Cases/MyCase",
                 ExportPath = "C:/Exports",
@@ -59,21 +58,21 @@ namespace NuixClientTests
                 ProductionSetName = "Stuff"
             }),
 
-            new JsonProcessTest(new SearchAndTagProcess
+            new YamlProcessTest(new SearchAndTagProcess
             {
                 CasePath = "C:/Cases/MyCase",
                 SearchTerm = "Raptor",
                 Tag = "Dinosaurs"
             }),
 
-            new JsonProcessTest(new AddToProductionSetProcess()
+            new YamlProcessTest(new AddToProductionSetProcess()
             {
                 CasePath = "C:/Cases/MyCase",
                 SearchTerm = "Raptor",
                 ProductionSetName = "Dinosaurs"
             }),
 
-            new JsonProcessTest(new MultiStepProcess
+            new YamlProcessTest(new MultiStepProcess
             {
                 Steps = new List<Process>
                 {
@@ -133,7 +132,7 @@ namespace NuixClientTests
                 }
             }),
 
-            new JsonProcessTest(new BranchProcess{Options = new List<Process>
+            new YamlProcessTest(new BranchProcess{Options = new List<Process>
             {
                 new CreateCaseProcess
                 {
@@ -157,15 +156,15 @@ namespace NuixClientTests
 
         [Test]
         [TestCaseSource(nameof(Tests))]
-        public void TestJson(JsonProcessTest jsonProcessTest)
+        public void TestYaml(YamlProcessTest yamlProcessTest)
         {
-            var json = JsonConvert.SerializeObject(jsonProcessTest.Process);
+            var yaml = YamlHelper.ConvertToYaml(yamlProcessTest.Process);
 
-            var obj = JsonConvert.DeserializeObject<Process>(json,
-                new ProcessJsonConverter(),
-                new ConditionJsonConverter());
+            var success = YamlHelper.TryMakeFromYaml(yaml, out var p, out var e);
 
-            Assert.AreEqual(jsonProcessTest.Process, obj);
+            Assert.IsTrue(success, e);
+
+            Assert.AreEqual(yamlProcessTest.Process, p);
         }
 
     }
@@ -173,9 +172,9 @@ namespace NuixClientTests
     /// <summary>
     /// Tests serialization and deserialization of a process
     /// </summary>
-    public class JsonProcessTest
+    public class YamlProcessTest
     {
-        internal JsonProcessTest(Process process)
+        internal YamlProcessTest(Process process)
         {
             Process = process;
         }
@@ -190,5 +189,4 @@ namespace NuixClientTests
             return Process.GetName();
         }
     }
-
 }

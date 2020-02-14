@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace NuixClient.Orchestration
 {
@@ -32,7 +32,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 3)]
+        [YamlMember(Order = 3)]
         public string FilePath { get; set; }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 4)]
+        [YamlMember(Order = 4)]
         public string Custodian { get; set; }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 5)]
+        [YamlMember(Order = 5)]
         public string Description { get; set; }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 6)]
+        [YamlMember(Order = 6)]
         public string FolderName { get; set; }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 7)]
+        [YamlMember(Order = 7)]
         public string CasePath { get; set; }
 
 
@@ -72,7 +72,7 @@ namespace NuixClient.Orchestration
         /// The name of the processing profile to use - can be null
         /// </summary>
         [DataMember]
-        [JsonProperty(Order = 7)]
+        [YamlMember(Order = 7)]
         public string ProcessingProfileName { get; set; }
 
         public override bool Equals(object? obj)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using NuixClient.Orchestration;
 
 namespace NuixClient
@@ -14,38 +13,17 @@ namespace NuixClient
     public static class ProcessRunner
     {
         /// <summary>
-        /// Run process defined in Json
+        /// Run process defined in yaml
         /// </summary>
-        /// <param name="jsonString">Json representing the process</param>
+        /// <param name="yamlString">Yaml representing the process</param>
         /// <returns></returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> RunProcessFromJsonString(string jsonString)
+        public static async IAsyncEnumerable<ResultLine> RunProcessFromYamlString(string yamlString)
         {
-            Process? process = null;
-            ResultLine? errorLine;
-            var text = jsonString;
 
-            try
-            {           
-                process = JsonConvert.DeserializeObject<Process>(text,
-                    new ProcessJsonConverter(),
-                    new ConditionJsonConverter());
-                errorLine = null;
-            }
-#pragma warning disable CA1031 // Do not catch general exception types
-            catch (Exception e)
+            if (!YamlHelper.TryMakeFromYaml(yamlString, out var process, out var e))
             {
-                errorLine = new ResultLine(false, e.Message);
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
-
-            if (errorLine != null)
-            {
-                yield return errorLine;
-            }
-            else if (process == null)
-            {
-                yield return new ResultLine(false, "Process is null");
+                yield return new ResultLine(false, e);
             }
             else
             {
@@ -69,18 +47,18 @@ namespace NuixClient
         }
 
         /// <summary>
-        /// Run process defined in Json found at a particular path
+        /// Run process defined in yaml found at a particular path
         /// </summary>
-        /// <param name="jsonPath">Path to the JSON</param>
+        /// <param name="yamlPath">Path to the yaml</param>
         /// <returns></returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> RunProcessFromJson(string jsonPath)
+        public static async IAsyncEnumerable<ResultLine> RunProcessFromYaml(string yamlPath)
         {
             string? text;
             ResultLine? errorLine = null;
             try
             {
-                text = File.ReadAllText(jsonPath);                
+                text = File.ReadAllText(yamlPath);                
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
@@ -96,7 +74,7 @@ namespace NuixClient
             }
             else if (!string.IsNullOrWhiteSpace(text))
             {
-                var r = RunProcessFromJsonString(text);
+                var r = RunProcessFromYamlString(text);
                 await foreach(var rl in r)
                 {
                     yield return rl;
