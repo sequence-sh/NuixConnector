@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace NuixClient.Orchestration
 {
@@ -25,7 +25,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 3)]
+        [YamlMember(Order = 3)]
         public List<Process> Options { get; set; }
 
         /// <summary>

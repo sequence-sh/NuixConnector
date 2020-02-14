@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace NuixClient.Orchestration
 {
@@ -32,7 +32,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 3)]
+        [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CaseName { get; set; }
 
@@ -42,7 +42,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 4)]
+        [YamlMember(Order = 4)]
         public string CasePath { get; set; }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 5)]
+        [YamlMember(Order = 5)]
         public string Investigator { get; set; }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [Required]
         [DataMember]
-        [JsonProperty(Order = 6)]
+        [YamlMember(Order = 6)]
         public string Description { get; set; }
 
 

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace NuixClient.Orchestration
 {
@@ -32,7 +32,7 @@ namespace NuixClient.Orchestration
         /// The name of the metadata profile to use - "Default" by default
         /// </summary>
         [DataMember]
-        [JsonProperty(Order = 3)]
+        [YamlMember(Order = 3)]
         public string? MetadataProfileName { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -41,7 +41,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [DataMember]
         [Required]
-        [JsonProperty(Order = 4)]
+        [YamlMember(Order = 4)]
         public string ProductionSetName { get; set; }
 
 
@@ -50,7 +50,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [DataMember]
         [Required]
-        [JsonProperty(Order = 5)]
+        [YamlMember(Order = 5)]
         public string ExportPath { get; set; }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [DataMember]
         [Required]
-        [JsonProperty(Order = 6)]
+        [YamlMember(Order = 6)]
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
