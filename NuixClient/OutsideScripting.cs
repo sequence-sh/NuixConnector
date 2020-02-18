@@ -185,7 +185,7 @@ namespace NuixClient
             }
 
             var currentDirectory = Directory.GetCurrentDirectory();
-            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "AddToItemSet.rb");
+            var scriptPath = Path.Combine(currentDirectory, "..", "nuixclient", "NuixClient", "Scripts", "AddToItemSet.rb");
 
             var args = new List<string>
             {
