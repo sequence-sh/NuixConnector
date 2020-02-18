@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scripts\AddToItemSet.rb" />
     <None Remove="Scripts\CreateCase.rb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Scripts\AddToItemSet.rb" />
   </ItemGroup>
 
   <ItemGroup>

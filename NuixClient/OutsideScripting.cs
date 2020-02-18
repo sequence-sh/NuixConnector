@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
+using NuixClient.enums;
 
 namespace NuixClient
 {
@@ -26,6 +27,7 @@ namespace NuixClient
             var arguments = new List<string>();
 
             if (useDongle)
+                // ReSharper disable once StringLiteralTypo
                 arguments.Add("-licencesourcetype dongle");
             if (!string.IsNullOrWhiteSpace(scriptPath))
                 arguments.Add(scriptPath);
@@ -134,9 +136,109 @@ namespace NuixClient
                 yield return line;
         }
 
+        /// <summary>
+        /// Add items to an item set in NUIX
+        /// </summary>
+        /// <param name="casePath">Where to create the new case</param>
+        /// <param name="searchTerm">The term to search for</param>
+        /// <param name="itemSetName">The item set to add the found items to. Will be created if it doesn't exist</param>
+        /// <param name="order">Order by term e.g. name ASC</param>
+        /// <param name="limit">Optional maximum number of items to tag.</param>
+        /// <param name="itemSetDeduplication">The means of deduplicating items by key and prioritizing originals in a tie-break. </param>
+        /// <param name="itemSetDescription">The description of the item set as a string.</param>
+        /// <param name="deduplicateBy">Whether to deduplicate as a family or individual</param>
+        /// <param name="custodianRanking">A list of custodian names ordered from highest ranked to lowest ranked. If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.</param>
+        /// <param name="nuixConsoleExePath">Path to the console exe</param>
+        /// <param name="useDongle">Use a dongle for licensing</param>
+
+        /// <returns>The output of the case creation script</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<ResultLine> AddToItemSet(
+            string casePath = @"C:\Dev\Nuix\Cases\NewCase",
+            string searchTerm = "night",
+            string itemSetName = "ProdSet",
+            string? order = null,
+            int? limit = null,
+            ItemSetDeduplication itemSetDeduplication = ItemSetDeduplication.Default,
+            string? itemSetDescription = null,
+            DeduplicateBy deduplicateBy = DeduplicateBy.Individual,
+            string[]? custodianRanking = null,
+            string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
+            bool useDongle = true
+        )
+        {
+            //TODO check other arguments are valid
+
+            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(searchTerm);
+
+            if (!searchTermParseSuccess || searchTermParsed == null)
+            {
+                yield return new ResultLine(false, "Error parsing search term");
+                if (searchTermParseError != null)
+                    yield return new ResultLine(false, searchTermParseError);
+                yield break;
+            }
+
+            if (searchTermParsed.AsString != searchTerm)
+            {
+                yield return new ResultLine(true, $"Search term simplified to '{searchTermParsed.AsString}'");
+            }
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var scriptPath = Path.Combine(currentDirectory, "..", "NuixClient", "Scripts", "AddToItemSet.rb");
+
+            var args = new List<string>
+            {
+                "-p", casePath,
+                "-s", searchTermParsed.AsString,
+                "-n", itemSetName,
+
+            };
+            if (order != null)
+            {
+                args.Add("-o ");
+                args.Add(order);
+            }
+
+            if (limit.HasValue)
+            {
+                args.Add("-l");
+                args.Add(limit.Value.ToString());
+            }
+
+            if (itemSetDeduplication != ItemSetDeduplication.Default)
+            {
+                args.Add("-d");
+                args.Add(itemSetDeduplication.GetDescription());
+            }
+
+            if (itemSetDescription != null)
+            {
+                args.Add("-r");
+                args.Add(itemSetDescription);
+            }
+
+            if (deduplicateBy != DeduplicateBy.Individual)
+            {
+                args.Add("-b");
+                args.Add(deduplicateBy.GetDescription());
+            }
+
+            if (custodianRanking != null)
+            {
+                args.Add("-c");
+                args.Add(string.Join(",", custodianRanking));
+            }
+
+            var result = RunScript(nuixConsoleExePath, scriptPath, useDongle, args);
+
+            await foreach (var line in result)
+                yield return line;
+        }
+
 
         /// <summary>
-        /// Creates a new Case in NUIX
+        /// Add items to a production set in NUIX
         /// </summary>
         /// <param name="nuixConsoleExePath">Path to the console exe</param>
         /// <param name="casePath">Where to create the new case</param>
@@ -256,7 +358,7 @@ namespace NuixClient
             string description = "nice",
             string custodian = "mark2",
             string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
-            string processingProfileName = null,
+            string? processingProfileName = null,
             string nuixConsoleExePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe",
             bool useDongle = true)
         {
