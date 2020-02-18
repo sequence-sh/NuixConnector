@@ -7,7 +7,8 @@ using YamlDotNet.Serialization;
 namespace NuixClient.Orchestration
 {
     /// <summary>
-    /// A process which searches a case with a particular search string and tags all files it finds
+    /// A process which searches a case with a particular search string and adds all items it finds to a production set.
+    /// Will create a new production set if one with the given name does not already exist.
     /// </summary>
     internal class AddToProductionSetProcess : Process
     {
@@ -22,7 +23,7 @@ namespace NuixClient.Orchestration
         /// <returns></returns>
         public override IAsyncEnumerable<ResultLine> Execute()
         {
-            var r = OutsideScripting.SearchAndTag(CasePath, SearchTerm, ProductionSetName);
+            var r = OutsideScripting.AddToProductionSet(CasePath, SearchTerm, ProductionSetName); //TODO order? Limit?
 
             return r;
         }
