@@ -1,4 +1,4 @@
-require 'optparse'
+﻿require 'optparse'
 
 hash_options = {}
 OptionParser.new do |opts|
