@@ -25,27 +25,29 @@ namespace NuixClient.Search
         /// <summary>
         /// Render this property with this value
         /// </summary>
-        /// <param name="t"></param>
         /// <returns></returns>
-        public string Render(T t)
+        public string Render(T t, string? subProperty)
         {
-            if (t is string s && !s.All(char.IsLetter))
-                return $"{PropertyName}:\"{s}\""; //put strings with non letter characters in quotes
+            var tString = (t is string s && !s.All(char.IsLetter)) ? $"\"{s}\"" : t?.ToString();
 
-            return $"{PropertyName}:{t}";
+
+            if (subProperty != null)
+                return $"{PropertyName}:{subProperty}:{tString}"; //put strings with non letter characters in quotes
+
+            return $"{PropertyName}:{tString}";
         }
 
         /// <summary>
         /// Render this property with this value
         /// </summary>
         /// <returns></returns>
-        public override bool Render(string str, out string? result)
+        public override bool Render(string str, string? subProperty, out string? result)
         {
             var (success, obj) = _parseFunc(str);
 
             if (success)
             {
-                result = Render(obj);
+                result = Render(obj, subProperty);
                 return true;
             }
             else
@@ -84,9 +86,10 @@ namespace NuixClient.Search
         /// Render a property with this value. Assumes T has the correct type
         /// </summary>
         /// <param name="t">The value of the property. Must have the correct type</param>
+        /// <param name="subproperty">The name of the subproperty, if there is one</param>
         /// <param name="result">The result of rendering</param>
         /// <returns></returns>
         [ContractAnnotation("=>true,result:notNull; =>false,result:null;")]
-        public abstract bool Render(string t, out string? result);
+        public abstract bool Render(string t, string? subproperty, out string? result);
     }
 }

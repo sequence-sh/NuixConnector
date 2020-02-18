@@ -1,39 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 namespace NuixClient.Search
 {
+    internal static class RegexExtensions
+    {
+        [ContractAnnotation("=>true,match:notNull; =>false,match:null")]
+        public static bool TryMatch(this Regex r, string input, out Match match)
+        {
+            match = r.Match(input);
+
+            return match.Success;
+        }
+    }
+ 
     internal class PropertySearchTerm : ISearchTerm
     {
-        public static ISearchTerm TryCreate(string propertyString, string valueString)
-        {
-            if (propertyString.EndsWith(':'))
-                propertyString = propertyString[..^1];
+        internal static readonly Regex CompoundPropertyRegex = new Regex(
+            "(?<property>[a-z0-9-]+):(?<subProperty>(?:[a-z0-9-*]+)|(?:\"[ a-z0-9-*]+\")):",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            if (AllProperties.TryGetValue(propertyString, out var sp))
+        internal static readonly Regex PropertyRegex = new Regex(
+            "(?<property>[a-z0-9-]+):",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+
+        public static ISearchTerm TryCreate(string propertyString, string valueString)
+        { 
+            string propertyName;
+            string? subProperty;
+
+            if (CompoundPropertyRegex.TryMatch(propertyString, out var compoundMatch))
             {
-                var s = sp.Render(valueString, out var asString);
+                propertyName = compoundMatch.Groups["property"].Value;
+                subProperty = compoundMatch.Groups["subProperty"].Value;
+            }
+            else if(PropertyRegex.TryMatch(propertyString, out var pMatch))
+            {
+                propertyName = pMatch.Groups["property"].Value;
+                subProperty = null;
+            }
+            else
+            {
+                return new ErrorTerm($"'{propertyString}' could not be parsed as a property");
+            }
+
+            if (AllProperties.TryGetValue(propertyName, out var sp))
+            {
+                var s = sp.Render(valueString, subProperty, out var asString);
 
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse - for compiler
                 if (s && asString != null)
-                    return new PropertySearchTerm(sp, valueString, asString);
+                    return new PropertySearchTerm(sp, subProperty, valueString, asString);
                 else return new ErrorTerm($"'{valueString}' is an invalid value for '{propertyString}'");
             }
 
             return new ErrorTerm( $"'{propertyString}' is not a recognized property");
         }
 
-        private PropertySearchTerm(SearchProperty searchProperty, string str, string asString)
+        private PropertySearchTerm(SearchProperty searchProperty, string? subProperty, string valueString, string asString)
         {
             SearchProperty = searchProperty;
-            ValueString = str;
+            ValueString = valueString;
+            SubProperty = subProperty;
 
             AsString = asString;
         }
 
         public readonly SearchProperty SearchProperty;
+        public readonly string? SubProperty;
         public readonly string ValueString;
+
 
         public string AsString { get; }
         public IEnumerable<string> ErrorMessages => Enumerable.Empty<string>();
@@ -62,10 +102,11 @@ namespace NuixClient.Search
         /// <summary>
         /// All possible search properties that one could search by
         /// </summary>
-        public static IReadOnlyDictionary<string, SearchProperty> AllProperties =
+        public static IReadOnlyDictionary<string, SearchProperty> AllProperties = //TODO keep track of which of these take subProperties and the valid values for those 
             new List<SearchProperty>()
             {
 #pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+                new SearchProperty<Range>("date-properties", s => (Range.TryParse(s, out var r), r) ),
                 new SearchProperty<Range>("file-size", s=> (Range.TryParse(s, out var r), r)),
                 new SearchProperty<FileType>("mime-type", s=> (FileType.TryParse(s, out var r), r)),
                 new SearchProperty<string>("tag", s=>(!string.IsNullOrWhiteSpace(s), s)),

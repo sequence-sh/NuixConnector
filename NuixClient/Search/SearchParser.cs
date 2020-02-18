@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Superpower;
 using Superpower.Display;
-using Superpower.Model;
 using Superpower.Parsers;
 using Superpower.Tokenizers;
 
@@ -23,8 +22,9 @@ namespace NuixClient.Search
         Not,
         [Token(Example = "MimeType:")]
         Property,
+        [Token(Example = "date-properties:\"File Modified\":")]
+        CompoundProperty,
 
-        
         [Token(Example = "Emails/Email")]
         FileType,
 
@@ -51,14 +51,21 @@ namespace NuixClient.Search
         /// <returns></returns>
         public static (bool success, string? error, ISearchTerm? result) TryParse(string s)
         {
-            var tokens = Tokenizer.Tokenize(s);
+            //try to split the search term up into tokens
+            var tokensResult = Tokenizer.TryTokenize(s);
+
+            if (!tokensResult.HasValue)
+                return (false, tokensResult.ErrorMessage, null);
+
+            //If we get to here the search term is made of valid tokens, but they still may be in an invalid order
             
             var errors = new List<string>();
             var results = new List<ISearchTerm>();
+            var tokens = tokensResult.Value;
 
             do
             {
-                var result = BooleanParser.TryParse(tokens);
+                var result = BooleanParser.TryParse(tokens); //All searches should ultimately be 
 
                 if (result.HasValue)
                 {
@@ -95,7 +102,6 @@ namespace NuixClient.Search
                     return (true, null, finalResult);
                 }
             }
-
         }
 
         private static readonly Tokenizer<SearchToken> Tokenizer = new TokenizerBuilder<SearchToken>()
@@ -104,9 +110,11 @@ namespace NuixClient.Search
             .Match(Character.EqualTo('('), SearchToken.LParen)
             .Match(Character.EqualTo(')'), SearchToken.RParen)
             .Match(QuotedString.CStyle, SearchToken.Text)
-            .Match(Span.Regex("[a-z0-9-]+:", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.Property)
+            .Match(Span.Regex(PropertySearchTerm.CompoundPropertyRegex.ToString(), PropertySearchTerm.CompoundPropertyRegex.Options), SearchToken.Property)
+            .Match(Span.Regex(PropertySearchTerm.PropertyRegex.ToString(), PropertySearchTerm.PropertyRegex.Options), SearchToken.Property)
+            
             .Match(Span.Regex("[a-z0-9-]+/[a-z0-9-]+", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.FileType)
-            .Match(Span.Regex(@"\[\s*(?:\d+|\*)\s*TO\s*(?:\d+|\*)\s*\]", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.Range)
+            .Match(Span.Regex(Range.RangeRegex.ToString(), Range.RangeRegex.Options), SearchToken.Range)
             .Match(Span.EqualToIgnoreCase("and"), SearchToken.And, true)
             .Match(Span.EqualToIgnoreCase("or"), SearchToken.Or, true)
             .Match(Span.EqualToIgnoreCase("not"), SearchToken.Not, true)
@@ -115,6 +123,13 @@ namespace NuixClient.Search
 
         private static readonly TokenListParser<SearchToken, ISearchTerm> FullProperty =
             from pToken in Token.EqualTo(SearchToken.Property)
+            from vToken in Token.EqualTo(SearchToken.Text)
+                .Or(Token.EqualTo(SearchToken.FileType))
+                .Or(Token.EqualTo(SearchToken.Range))
+            select  PropertySearchTerm.TryCreate(pToken.ToStringValue(), vToken.ToStringValue());
+        
+        private static readonly TokenListParser<SearchToken, ISearchTerm> CompoundProperty =
+            from pToken in Token.EqualTo(SearchToken.CompoundProperty)
             from vToken in Token.EqualTo(SearchToken.Text)
                 .Or(Token.EqualTo(SearchToken.FileType))
                 .Or(Token.EqualTo(SearchToken.Range))
@@ -138,6 +153,7 @@ namespace NuixClient.Search
                     .Or(Parse.Ref(()=>OrParser))
                     .Or(Parse.Ref(() => NotParser))
                     .Or(FullProperty)
+                    .Or(CompoundProperty)
                     .Or(TextParser),
                 (op, lhs, rhs) =>
                 {
@@ -153,6 +169,7 @@ namespace NuixClient.Search
                 BracketParser
                     .Or(Parse.Ref(()=> NotParser))
                     .Or(FullProperty)
+                    .Or(CompoundProperty)
                     .Or(TextParser),
                 (op, lhs, rhs) =>
                 {
@@ -167,6 +184,7 @@ namespace NuixClient.Search
             from vToken in
                 BracketParser
                 .Or(FullProperty)
+                .Or(CompoundProperty)
                 .Or(TextParser)
             select (ISearchTerm) new NotTerm(vToken);
 
@@ -176,6 +194,7 @@ namespace NuixClient.Search
             .Or(OrParser)
             .Or(NotParser)
             .Or(FullProperty)
+            .Or(CompoundProperty)
             .Or(TextParser)
             .Or(BracketParser);
     }

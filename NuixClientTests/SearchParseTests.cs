@@ -27,6 +27,9 @@ namespace NuixClientTests
             new TestCase("file-size:[1 to 10]", "file-size:[1 TO 10]"),
             new TestCase("file-size:[1 to *]", "file-size:[1 TO *]"),
             new TestCase("file-size:[* to 10]", "file-size:[* TO 10]"),
+            new TestCase("date-properties:\"File Modified\":[* TO 1]","date-properties:\"File Modified\":[* TO 1]" ),
+            new TestCase("date-properties:\"*\":[* TO 1]","date-properties:\"*\":[* TO 1]" ),
+            new TestCase("date-properties:\"*\":[* TO -7Y]","date-properties:\"*\":[* TO -7Y]" )
         };
 
         [Test]

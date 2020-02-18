@@ -11,10 +11,12 @@ namespace NuixClient.Search
         /// <summary>
         /// Create a new range
         /// </summary>
-        public Range(int? min, int? max)
+        private Range(int? min, string? minUnits, int? max, string? maxUnits)
         {
             Min = min;
             Max = max;
+            MinUnits = minUnits;
+            MaxUnits = maxUnits;
         }
 
         /// <summary>
@@ -32,9 +34,12 @@ namespace NuixClient.Search
                 var start = int.TryParse(match.Groups["start"].Value, out var s) ? s : null as int?;
                 var end   = int.TryParse(match.Groups["end"].Value, out var e) ? e : null as int?;
 
+                var minUnits = match.Groups["sUnits"].Value;
+                var maxUnits = match.Groups["eUnits"].Value;
+
                 if (!start.HasValue && !end.HasValue)
                     range = null;
-                else range = new Range(start, end);
+                else range = new Range(start, minUnits, end, maxUnits);
             }
             else
                 range = null;
@@ -42,17 +47,28 @@ namespace NuixClient.Search
             return range != null;
         }
 
-        private static readonly Regex RangeRegex = new Regex(
-            @"\A\[\s*(?<start>\d+|\*)\s*TO\s*(?<end>\d+|\*)\s*\]\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        internal static readonly Regex RangeRegex = new Regex(
+            @"\A\[\s*(?:(?<start>-?\d+)(?<sUnits>Y)?|\*)\s*[tT][oO]\s*(?:(?<end>-?\d+)(?<eUnits>Y)?|\*)\s*\]\Z", RegexOptions.Compiled);
 
         /// <summary>
         /// The minimum value
         /// </summary>
         public readonly int? Min;
+
+        /// <summary>
+        /// Units of the minimum value
+        /// </summary>
+        public readonly string? MinUnits;
+
         /// <summary>
         /// The maximum value
         /// </summary>
         public readonly int? Max;
+
+        /// <summary>
+        /// Units of the maximum value
+        /// </summary>
+        public readonly string? MaxUnits;
 
         /// <summary>
         /// Converts this range to a string
@@ -60,11 +76,11 @@ namespace NuixClient.Search
         /// <returns></returns>
         public override string ToString()
         {
-            return $"[{AsString(Min)} TO {AsString(Max)}]";
+            return $"[{AsString(Min, MinUnits)} TO {AsString(Max, MaxUnits)}]";
 
-            static string AsString(int? i)
+            static string AsString(int? i, string? units)
             {
-                return i.HasValue ? i.Value.ToString() : "*";
+                return i.HasValue ? i.Value.ToString() + units : "*";
             }
         }
 
