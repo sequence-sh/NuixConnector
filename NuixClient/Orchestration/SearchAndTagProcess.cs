@@ -9,23 +9,13 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which searches a case with a particular search string and tags all files it finds
     /// </summary>
-    internal class SearchAndTagProcess : Process
+    internal class SearchAndTagProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
         public override string GetName() => $"Search and Tag with '{Tag}'";
 
-        /// <summary>
-        /// Execute this process
-        /// </summary>
-        /// <returns></returns>
-        public override IAsyncEnumerable<ResultLine> Execute()
-        {
-            var r = OutsideScripting.SearchAndTag(CasePath, SearchTerm, Tag);
-
-            return r;
-        }
 
         /// <summary>
         /// The tag to assign to found results
@@ -70,6 +60,26 @@ namespace NuixClient.Orchestration
         public override int GetHashCode()
         {
             return GetName().GetHashCode();
+        }
+
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(SearchTerm);
+
+            if (!searchTermParseSuccess || searchTermParsed == null)
+            {
+                yield return  $"Error parsing search term: {searchTermParseError}";
+            }
+        }
+
+        internal override string ScriptName => "SearchAndTag.rb";
+        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        {
+            yield return ("-p", CasePath);
+            yield return ("-s", SearchTerm);
+            yield return ("t", Tag);
+
+            //TODO limit and order
         }
     }
 }

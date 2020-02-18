@@ -9,23 +9,13 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which creates a new case
     /// </summary>
-    internal class CreateCaseProcess : Process
+    internal class CreateCaseProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
         public override string GetName() => $"Create Case '{CaseName}'";
 
-        /// <summary>
-        /// Execute this process
-        /// </summary>
-        /// <returns></returns>
-        public override IAsyncEnumerable<ResultLine> Execute()
-        {
-            var r = OutsideScripting.CreateCase(CasePath, CaseName, Description, Investigator);
-
-            return r;
-        }
 
         /// <summary>
         /// The name of the case to create
@@ -79,5 +69,18 @@ namespace NuixClient.Orchestration
         }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            yield break;
+        }
+
+        internal override string ScriptName => "CreateCase.rb";
+        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        {
+            yield return ("-p", CasePath);
+            yield return ("-n", CaseName);
+            yield return ("-d", Description);
+            yield return ("-i", Investigator);
+        }
     }
 }

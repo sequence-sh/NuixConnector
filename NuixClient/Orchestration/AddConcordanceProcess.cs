@@ -9,7 +9,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which adds concordance to a case
     /// </summary>
-    internal class AddConcordanceProcess : Process
+    internal class AddConcordanceProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
@@ -19,17 +19,6 @@ namespace NuixClient.Orchestration
             return $"Add concordance from '{FilePath}'";
         }
 
-        /// <summary>
-        /// Execute this process
-        /// </summary>
-        /// <returns></returns>
-        public override IAsyncEnumerable<ResultLine> Execute()
-        {
-            var r = OutsideScripting.AddConcordanceToCase(CasePath, FolderName, Description, Custodian, FilePath,
-                ConcordanceDateFormat, ConcordanceProfileName);
-
-            return r;
-        }
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
@@ -108,5 +97,21 @@ namespace NuixClient.Orchestration
         }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            yield break;
+        }
+
+        internal override string ScriptName => "AddConcordanceToCase.rb";
+        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        {
+            yield return ("-p", CasePath);
+            yield return ("-n", FolderName);
+            yield return ("-d", Description);
+            yield return ("-c", Custodian);
+            yield return ("-f", FilePath);
+            yield return ("-z", ConcordanceDateFormat);
+            yield return ("-t", ConcordanceProfileName);
+        }
     }
 }

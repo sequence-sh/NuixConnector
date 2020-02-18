@@ -10,23 +10,13 @@ namespace NuixClient.Orchestration
     /// A process which searches a case with a particular search string and adds all items it finds to a production set.
     /// Will create a new production set if one with the given name does not already exist.
     /// </summary>
-    internal class AddToProductionSetProcess : Process
+    internal class AddToProductionSetProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
         public override string GetName() => $"Search and add to production set '{ProductionSetName}'";
 
-        /// <summary>
-        /// Execute this process
-        /// </summary>
-        /// <returns></returns>
-        public override IAsyncEnumerable<ResultLine> Execute()
-        {
-            var r = OutsideScripting.AddToProductionSet(CasePath, SearchTerm, ProductionSetName); //TODO order? Limit?
-
-            return r;
-        }
 
         /// <summary>
         /// The production set to add results to. Will be created if it doesn't already exist
@@ -71,6 +61,24 @@ namespace NuixClient.Orchestration
         public override int GetHashCode()
         {
             return GetName().GetHashCode();
+        }
+
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(SearchTerm);
+
+            if (!searchTermParseSuccess || searchTermParsed == null)
+            {
+                yield return $"Error parsing search term: {searchTermParseError}";
+            }
+        }
+
+        internal override string ScriptName => "AddToProductionSet.rb";
+        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        {
+            yield return ("-p", CasePath);
+            yield return ("-s", SearchTerm);
+            yield return ("-n", ProductionSetName);
         }
     }
 }

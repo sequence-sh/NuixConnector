@@ -9,24 +9,13 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which exports concordance for a particular production set
     /// </summary>
-    internal class ExportConcordanceProcess : Process
+    internal class ExportConcordanceProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
         public override string GetName() => $"Export {ProductionSetName}";
 
-        /// <summary>
-        /// Execute this process
-        /// </summary>
-        /// <returns></returns>
-        public override IAsyncEnumerable<ResultLine> Execute()
-        {
-            var r = OutsideScripting.ExportProductionSetConcordance(CasePath, ExportPath, ProductionSetName,
-                MetadataProfileName?? "Default");
-
-            return r;
-        }
 
         /// <summary>
         /// The name of the metadata profile to use - "Default" by default
@@ -77,6 +66,21 @@ namespace NuixClient.Orchestration
         public override int GetHashCode()
         {
             return GetName().GetHashCode();
+        }
+
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            yield break;
+        }
+
+        internal override string ScriptName => "ExportConcordanceProcess.rb";
+        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        {
+            yield return ("-p", CasePath);
+            yield return ("-x", ExportPath);
+            yield return ("-n", ProductionSetName);
+            if(MetadataProfileName != null)
+                yield return ("-m", MetadataProfileName);
         }
     }
 }

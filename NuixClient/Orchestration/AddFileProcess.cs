@@ -9,22 +9,15 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// Adds a file or folder to a Nuix Case
     /// </summary>
-    internal class AddFileProcess : Process
+    internal class AddFileProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
         public override string GetName() => $"Add '{FilePath}'";
 
-        /// <summary>
-        /// Execute this process
-        /// </summary>
-        /// <returns></returns>
-        public override IAsyncEnumerable<ResultLine> Execute()
-        {
-            var r = OutsideScripting.AddFileToCase(CasePath, FolderName, Description, Custodian, FilePath, ProcessingProfileName);
-            return r;
-        }
+
+
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
@@ -73,7 +66,7 @@ namespace NuixClient.Orchestration
         /// </summary>
         [DataMember]
         [YamlMember(Order = 7)]
-        public string ProcessingProfileName { get; set; }
+        public string? ProcessingProfileName { get; set; }
 
         public override bool Equals(object? obj)
         {
@@ -94,5 +87,21 @@ namespace NuixClient.Orchestration
         }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            yield break;
+        }
+
+        internal override string ScriptName => "AddToCase.rb";
+        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        {
+            yield return ("-p", CasePath);
+            yield return ("-n", FolderName);
+            yield return ("-d", Description);
+            yield return ("-c", Custodian);
+            yield return ("-f", FilePath);
+            if(ProcessingProfileName != null)
+                yield return ("-r", ProcessingProfileName);
+        }
     }
 }
