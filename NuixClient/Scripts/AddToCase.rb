@@ -47,7 +47,7 @@ else
                                     :additional_digests      => [ 'SHA-1' ] }
 
 
-    processor.setProcessingProfile(hash_options[:processingProfileNameArg]) if hash_options[:processingProfileNameArg] is not nil
+    processor.setProcessingProfile(hash_options[:processingProfileNameArg]) if hash_options[:processingProfileNameArg] != nil
 
 
     folder = processor.new_evidence_container(hash_options[:folderNameArg])

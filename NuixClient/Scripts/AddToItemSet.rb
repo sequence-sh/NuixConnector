@@ -59,10 +59,10 @@ else
     if(itemSet == nil)
         itemSetOptions = {}
 
-        itemSetOptions[:deduplication] = hash_options[:deduplicationArg] if(hash_options[:deduplicationArg] != nil)
-        itemSetOptions[:description] = hash_options[:descriptionArg] if(hash_options[:descriptionArg] != nil)
-        itemSetOptions[:deduplicateBy] = hash_options[:deduplicateByArg] if(hash_options[:deduplicateByArg] != nil)
-        itemSetOptions[:custodianRanking] = hash_options[:custodianRankingArg].split(",") if(hash_options[:custodianRankingArg] != nil)
+        itemSetOptions[:deduplication] = hash_options[:deduplicationArg] if hash_options[:deduplicationArg] != nil
+        itemSetOptions[:description] = hash_options[:descriptionArg] if hash_options[:descriptionArg] != nil
+        itemSetOptions[:deduplicateBy] = hash_options[:deduplicateByArg] if hash_options[:deduplicateByArg] != nil
+        itemSetOptions[:custodianRanking] = hash_options[:custodianRankingArg].split(",") if hash_options[:custodianRankingArg] != nil
 
         itemSet = the_case.createItemSet(hash_options[:productionSetNameArg], itemSetOptions)
         
