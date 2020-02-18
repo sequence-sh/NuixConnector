@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
@@ -9,7 +8,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which searches a case with a particular search string and tags all files it finds
     /// </summary>
-    internal class SearchAndTagProcess : RubyScriptProcess
+    internal class SearchAndTagProcess : RubyScriptProcess1
     {
         /// <summary>
         /// The name of this process
@@ -44,23 +43,6 @@ namespace NuixClient.Orchestration
         public string CasePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-
-
-        public override bool Equals(object? obj)
-        {
-            var r = obj is SearchAndTagProcess stp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(stp.Conditions ?? Enumerable.Empty<Condition>())
-                                                        && Tag == stp.Tag
-                                                        && SearchTerm == stp.SearchTerm
-                                                        && CasePath == stp.CasePath;
-
-            return r;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetName().GetHashCode();
-        }
 
         internal override IEnumerable<string> GetArgumentErrors()
         {

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
@@ -9,7 +8,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// Adds a file or folder to a Nuix Case
     /// </summary>
-    internal class AddFileProcess : RubyScriptProcess
+    internal class AddFileProcess : RubyScriptProcess1
     {
         /// <summary>
         /// The name of this process
@@ -68,23 +67,6 @@ namespace NuixClient.Orchestration
         [YamlMember(Order = 7)]
         public string? ProcessingProfileName { get; set; }
 
-        public override bool Equals(object? obj)
-        {
-            var r = obj is AddFileProcess afp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(afp.Conditions ?? Enumerable.Empty<Condition>())
-                                                 && FilePath == afp.FilePath
-                                                 && Custodian == afp.Custodian
-                                                 && Description == afp.Description
-                                                 && FolderName == afp.FolderName
-                                                 && CasePath == afp.CasePath
-                                                 && ProcessingProfileName == afp.ProcessingProfileName;
-
-            return r;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetName().GetHashCode();
-        }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         internal override IEnumerable<string> GetArgumentErrors()

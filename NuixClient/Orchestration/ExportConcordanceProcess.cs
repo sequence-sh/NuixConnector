@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
@@ -9,7 +8,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which exports concordance for a particular production set
     /// </summary>
-    internal class ExportConcordanceProcess : RubyScriptProcess
+    internal class ExportConcordanceProcess : RubyScriptProcess1
     {
         /// <summary>
         /// The name of this process
@@ -51,22 +50,6 @@ namespace NuixClient.Orchestration
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-
-        public override bool Equals(object? obj)
-        {
-            var r = obj is ExportConcordanceProcess ecp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(ecp.Conditions ?? Enumerable.Empty<Condition>())
-                                                 && MetadataProfileName == ecp.MetadataProfileName
-                                                 && ProductionSetName == ecp.ProductionSetName
-                                                 && ExportPath == ecp.ExportPath
-                                                 && CasePath == ecp.CasePath;
-
-            return r;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetName().GetHashCode();
-        }
 
         internal override IEnumerable<string> GetArgumentErrors()
         {

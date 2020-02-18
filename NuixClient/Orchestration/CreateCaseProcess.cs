@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
@@ -9,7 +8,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which creates a new case
     /// </summary>
-    internal class CreateCaseProcess : RubyScriptProcess
+    internal class CreateCaseProcess : RubyScriptProcess1
     {
         /// <summary>
         /// The name of this process
@@ -51,22 +50,6 @@ namespace NuixClient.Orchestration
         [YamlMember(Order = 6)]
         public string Description { get; set; }
 
-
-        public override bool Equals(object? obj)
-        {
-            var r = obj is CreateCaseProcess ccp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(ccp.Conditions ?? Enumerable.Empty<Condition>())
-                                                     && CaseName == ccp.CaseName
-                                                     && Description == ccp.Description
-                                                     && Investigator == ccp.Investigator 
-                                                     && CasePath == ccp.CasePath;
-
-            return r;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetName().GetHashCode();
-        }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         internal override IEnumerable<string> GetArgumentErrors()

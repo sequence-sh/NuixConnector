@@ -9,7 +9,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which adds concordance to a case
     /// </summary>
-    internal class AddConcordanceProcess : RubyScriptProcess
+    internal class AddConcordanceProcess : RubyScriptProcess1
     {
         /// <summary>
         /// The name of this process
@@ -77,24 +77,6 @@ namespace NuixClient.Orchestration
         [YamlMember(Order = 9)]
         public string CasePath { get; set; }
 
-        public override bool Equals(object? obj)
-        {
-            var r = obj is AddConcordanceProcess acp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(acp.Conditions ?? Enumerable.Empty<Condition>())
-                                                    && ConcordanceProfileName == acp.ConcordanceProfileName
-                                                    && ConcordanceDateFormat == acp.ConcordanceDateFormat
-                                                    && FilePath == acp.FilePath
-                                                    && Custodian == acp.Custodian
-                                                    && Description == acp.Description
-                                                    && FolderName == acp.FolderName
-                                                    && CasePath == acp.CasePath;
-
-            return r;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetName().GetHashCode();
-        }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         internal override IEnumerable<string> GetArgumentErrors()

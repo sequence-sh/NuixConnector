@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
@@ -10,7 +9,7 @@ namespace NuixClient.Orchestration
     /// A process which searches a case with a particular search string and adds all items it finds to a production set.
     /// Will create a new production set if one with the given name does not already exist.
     /// </summary>
-    internal class AddToProductionSetProcess : RubyScriptProcess
+    internal class AddToProductionSetProcess : RubyScriptProcess1
     {
         /// <summary>
         /// The name of this process
@@ -46,22 +45,6 @@ namespace NuixClient.Orchestration
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-
-
-        public override bool Equals(object? obj)
-        {
-            var r = obj is AddToProductionSetProcess psp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(psp.Conditions ?? Enumerable.Empty<Condition>())
-                                                         && ProductionSetName == psp.ProductionSetName
-                                                         && SearchTerm == psp.SearchTerm
-                                                         && CasePath == psp.CasePath;
-
-            return r;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetName().GetHashCode();
-        }
 
         internal override IEnumerable<string> GetArgumentErrors()
         {

@@ -26,7 +26,9 @@ namespace NuixClient.Orchestration
         [Required]
         [DataMember]
         [YamlMember(Order = 3)]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public List<Process> Steps { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
         /// Execute the steps in this process until a condition is not met or a step fails 

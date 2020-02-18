@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NuixClient.Orchestration
 {
-    internal abstract class RubyScriptProcess : Process
+    internal abstract class RubyScriptProcess1 : Process
     {
         //TODO make a config property
         private const string NuixExeConsolePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe";
@@ -46,6 +46,29 @@ namespace NuixClient.Orchestration
 
             await foreach (var line in result)
                 yield return line;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is RubyScriptProcess1 rsp && ScriptName == rsp.ScriptName &&
+                   GetArgumentValuePairs().SequenceEqual(rsp.GetArgumentValuePairs());
+        }
+
+        public override int GetHashCode()
+        {
+            var t = 2;
+
+            unchecked
+            {
+                t += 3 * GetType().GetHashCode();
+
+                // ReSharper disable once LoopCanBeConvertedToQuery - possible overflow exception
+                foreach (var argumentValuePair in GetArgumentValuePairs()) 
+                    t += argumentValuePair.GetHashCode();
+            }
+            
+
+            return t;
         }
     }
 }

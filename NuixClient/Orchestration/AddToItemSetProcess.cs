@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 using NuixClient.enums;
 using YamlDotNet.Serialization;
@@ -11,7 +10,7 @@ namespace NuixClient.Orchestration
     /// A process which searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
-    internal class AddToItemSetProcess : RubyScriptProcess
+    internal class AddToItemSetProcess : RubyScriptProcess1
     {
         /// <summary>
         /// The name of this process
@@ -73,28 +72,8 @@ namespace NuixClient.Orchestration
         [YamlMember(Order = 9)]
         public string[]? CustodianRanking { get; set; }
 
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable
 
-
-
-        public override bool Equals(object? obj)
-        {
-            var r = obj is AddToItemSetProcess isp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(isp.Conditions ?? Enumerable.Empty<Condition>())
-                                                         && ItemSetName == isp.ItemSetName
-                                                         && SearchTerm == isp.SearchTerm
-                                                         && CasePath == isp.CasePath
-                                                         && ItemSetDeduplication == isp.ItemSetDeduplication
-                                                         && ItemSetDescription == isp.ItemSetDescription
-                                                         && DeduplicateBy == isp.DeduplicateBy
-                                                         && (CustodianRanking??Enumerable.Empty<string>()).SequenceEqual(isp.CustodianRanking??Enumerable.Empty<string>());
-
-            return r;
-        }
-
-        public override int GetHashCode()
-        {
-            return GetName().GetHashCode();
-        }
 
         internal override IEnumerable<string> GetArgumentErrors()
         {
