@@ -8,22 +8,19 @@ namespace NuixClient.Orchestration
 {
     internal static class YamlHelper
     {
-        private static readonly IReadOnlyList<Type> SpecialTypes = new[]
+        private static IReadOnlyList<Type> SpecialTypes
         {
-            typeof(AddConcordanceProcess),
-            typeof(AddFileProcess),
-            typeof(BranchProcess),
-            typeof(CreateCaseProcess),
-            typeof(ExportConcordanceProcess),
-            typeof(MultiStepProcess),
-            typeof(SearchAndTagProcess),
-            typeof(AddToProductionSetProcess),
-            typeof(CreateReportProcess),
-            typeof(CreateTermlistProcess),
-
-            typeof(FileExistsCondition)
-        };
-
+            get
+            {
+                var types = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(s => s.GetTypes())
+                    .Where(type => typeof(Process).IsAssignableFrom(type) || typeof(Condition).IsAssignableFrom(type))
+                    .Where(x=>!x.IsAbstract && ! x.IsInterface)
+                    
+                    .ToList();
+                return types;
+            }
+        }
 
         private static readonly Lazy<IDeserializer> Deserializer = new Lazy<IDeserializer>(() =>
         {
@@ -60,12 +57,14 @@ namespace NuixClient.Orchestration
                 error = null;
                 return true;
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
             {
                 process = null;
                 error = e.Message;
                 return false;
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
     }
 }

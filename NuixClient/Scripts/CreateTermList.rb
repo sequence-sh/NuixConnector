@@ -28,8 +28,6 @@ else
 
     caseStatistics = the_case.getStatistics()
     dateRange = caseStatistics.getCaseDateRange()
-    
-    puts "Date Range:#{dateRange.getEarliest()} to #{dateRange.getLatest()}"
 
     termStatistics = caseStatistics.getTermStatistics("", {"sort" => "on", "deduplicate" => "md5"}) #for some reason this takes strings rather than symbols
     #todo terms per custodian

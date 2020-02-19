@@ -12,6 +12,28 @@ namespace NuixClient
     {
 
         /// <summary>
+        /// Reports on irregular items in a nuix case
+        /// </summary>
+        /// <param name="casePath">The path to the case</param>
+        /// <param name="outputFolderPath">The path to write the report files to</param>
+        /// <returns>The output of report creation</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<ResultLine> CreateIrregularItemsList(
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
+            string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
+        {
+            var process = new CreateIrregularItemsReport
+            {
+                CasePath = casePath,
+                OutputFolder = outputFolderPath
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+        /// <summary>
         /// Reports on the frequency of terms in a nuix case
         /// </summary>
         /// <param name="casePath">The path to the case</param>
