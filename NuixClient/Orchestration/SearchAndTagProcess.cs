@@ -8,7 +8,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which searches a case with a particular search string and tags all files it finds
     /// </summary>
-    internal class SearchAndTagProcess : RubyScriptProcess1
+    internal class SearchAndTagProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

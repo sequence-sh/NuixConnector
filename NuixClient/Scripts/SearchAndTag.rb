@@ -17,9 +17,7 @@ OptionParser.new do |opts|
   end
   opts.on('-l [ARG]', '--limit [ARG]', "Limit") do |v|
     hash_options[:limitArg] = v
-  end
-
-  
+  end  
 
   opts.on('--version', 'Display the version') do 
     puts "VERSION"

@@ -8,7 +8,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which creates a new case
     /// </summary>
-    internal class CreateCaseProcess : RubyScriptProcess1
+    internal class CreateCaseProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

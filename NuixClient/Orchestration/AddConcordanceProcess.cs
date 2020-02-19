@@ -9,7 +9,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which adds concordance to a case
     /// </summary>
-    internal class AddConcordanceProcess : RubyScriptProcess1
+    internal class AddConcordanceProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

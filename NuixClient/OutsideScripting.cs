@@ -11,12 +11,35 @@ namespace NuixClient
     public static class OutsideScripting
     {
         /// <summary>
-        /// Creates a new Case in NUIX
+        /// Reports on the number of files of each type in a nuix case
         /// </summary>
-        /// <param name="casePath">Where to create the new case</param>
+        /// <param name="casePath">The path to the case</param>
+        /// <param name="outputFolderPath">The path to write the report files to</param>
+        /// <returns>The output of report creation</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<ResultLine> CreateReport(
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase", 
+            string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
+        {
+            var process = new CreateReportProcess
+            {
+                CasePath = casePath,
+                OutputFolder = outputFolderPath
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+
+        /// <summary>
+        /// Searches nuix with a particular search term and applies a tag to all files found 
+        /// </summary>
+        /// <param name="casePath">The path of the case</param>
         /// <param name="searchTerm">The term to search for</param>
         /// <param name="tag">The tag to apply to the found terms</param>
-        /// <returns>The output of the case creation script</returns>
+        /// <returns>The output of the search script</returns>
         [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> SearchAndTag( 
 
@@ -39,14 +62,14 @@ namespace NuixClient
         /// <summary>
         /// Add items to an item set in NUIX
         /// </summary>
-        /// <param name="casePath">Where to create the new case</param>
+        /// <param name="casePath">The path to the case to open</param>
         /// <param name="searchTerm">The term to search for</param>
         /// <param name="itemSetName">The item set to add the found items to. Will be created if it doesn't exist</param>
         /// <param name="itemSetDeduplication">The means of deduplicating items by key and prioritizing originals in a tie-break. </param>
         /// <param name="itemSetDescription">The description of the item set as a string.</param>
         /// <param name="deduplicateBy">Whether to deduplicate as a family or individual</param>
         /// <param name="custodianRanking">A list of custodian names ordered from highest ranked to lowest ranked. If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.</param>
-        /// <returns>The output of the case creation script</returns>
+        /// <returns>The output of the script</returns>
         [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> AddToItemSet(
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
@@ -55,8 +78,7 @@ namespace NuixClient
             ItemSetDeduplication itemSetDeduplication = ItemSetDeduplication.Default,
             string? itemSetDescription = null,
             DeduplicateBy deduplicateBy = DeduplicateBy.Individual,
-            string[]? custodianRanking = null
-        )
+            string[]? custodianRanking = null)
         {
             var process = new AddToItemSetProcess
             {
@@ -69,7 +91,6 @@ namespace NuixClient
                 CustodianRanking = custodianRanking
             };
 
-
             await foreach (var line in process.Execute())
                 yield return line;
         }
@@ -78,10 +99,10 @@ namespace NuixClient
         /// <summary>
         /// Add items to a production set in NUIX
         /// </summary>
-        /// <param name="casePath">Where to create the new case</param>
+        /// <param name="casePath">The path of the case to open</param>
         /// <param name="searchTerm">The term to search for</param>
         /// <param name="productionSetName">The production set to add the found items to. Will be created if it doesn't exist</param>
-        /// <returns>The output of the case creation script</returns>
+        /// <returns>The output of the script</returns>
         [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> AddToProductionSet( 
 
@@ -136,7 +157,7 @@ namespace NuixClient
         /// <param name="custodian">Custodian for the new folder</param>
         /// <param name="filePath">The path of the file to add</param>
         /// <param name="processingProfileName">The name of the processing profile to use. Can be null</param>
-        /// <returns>The output of the case creation script</returns>
+        /// <returns>The output of the script</returns>
         [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> AddFileToCase( //TODO remove default arguments
 
@@ -172,7 +193,7 @@ namespace NuixClient
         /// <param name="custodian">Custodian for the new folder</param>
         /// <param name="filePath">The path of the file to add</param>
         /// <param name="concordanceDateFormat">Concordance date format to use</param>
-        /// <returns>The output of the case creation script</returns>
+        /// <returns>The output of the script</returns>
         [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> AddConcordanceToCase( //TODO remove default arguments
 
@@ -208,7 +229,7 @@ namespace NuixClient
         /// <param name="exportPath">The path to export to</param>
         /// <param name="productionSetName">The name of the production set to export</param>
         /// <param name="metadataProfileName">Optional name of the metadata profile to use. Case sensitive. Note this is NOT a metadata export profile</param>
-        /// <returns>The output of the case creation script</returns>
+        /// <returns>The output of the script</returns>
         [UsedImplicitly]
         public static async IAsyncEnumerable<ResultLine> ExportProductionSetConcordance( //TODO remove default arguments
             
