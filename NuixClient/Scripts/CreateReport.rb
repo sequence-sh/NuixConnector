@@ -40,7 +40,7 @@ else
     puts "#{termStatistics.length} terms"
 
     termStatistics.each do |term, count|
-        puts "#{term}: #{count}"
+        puts "OutputTerms:#{term}: #{count}"
     end
     
     puts "Counting Kinds"
@@ -71,7 +71,7 @@ else
 
     fields.each do |key, value|
         count = the_case.count(value)
-        puts "#{key.to_s}: #{count}"
+        puts "OutputKinds:#{key.to_s}: #{count}"
 
     end
 

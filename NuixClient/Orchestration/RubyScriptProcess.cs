@@ -20,6 +20,24 @@ namespace NuixClient.Orchestration
 
         internal abstract IEnumerable<(string arg, string val)> GetArgumentValuePairs();
 
+        /// <summary>
+        /// Do something with a line returned from the script
+        /// </summary>
+        /// <param name="rl">The line to look at</param>
+        /// <returns>True if the line should continue through the pipeline</returns>
+        internal virtual bool HandleLine(ResultLine rl)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// What to do when the script finishes
+        /// </summary>
+        internal virtual void OnScriptFinish()
+        {
+
+        }
+    
         public override async IAsyncEnumerable<ResultLine> Execute()
         {
             var argumentErrors = GetArgumentErrors().ToList();
@@ -45,7 +63,10 @@ namespace NuixClient.Orchestration
             var result = ScriptRunner. RunScript(NuixExeConsolePath, scriptPath, UseDongle, args);
 
             await foreach (var line in result)
-                yield return line;
+            {
+                if(HandleLine(line))
+                    yield return line;
+            }
         }
 
         public override bool Equals(object? obj)
