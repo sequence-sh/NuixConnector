@@ -26,23 +26,6 @@ else
 
     puts "Generating Report:"
 
-    
-
-    caseStatistics = the_case.getStatistics()
-    dateRange = caseStatistics.getCaseDateRange()
-    
-    puts "Date Range:#{dateRange.getEarliest()} to #{dateRange.getLatest()}"
-
-    termStatistics = caseStatistics.getTermStatistics("", {"sort" => "on", "deduplicate" => "md5"}) #for some reason this takes strings rather than symbols
-    #todo terms per custodian
-    puts "#{termStatistics.length} terms"
-
-    puts "OutputTerms:term\tcount"
-
-    termStatistics.each do |term, count|
-        puts "OutputTerms:#{term}\t#{count}"
-    end
-    
     allItems = the_case.searchUnsorted("")
 
     results = Hash.new { |h, k| h[k] = Hash.new { |hh, kk| hh[kk] = Hash.new{0} } }

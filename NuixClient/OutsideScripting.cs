@@ -10,6 +10,29 @@ namespace NuixClient
     /// </summary>
     public static class OutsideScripting
     {
+
+        /// <summary>
+        /// Reports on the frequency of terms in a nuix case
+        /// </summary>
+        /// <param name="casePath">The path to the case</param>
+        /// <param name="outputFolderPath">The path to write the report files to</param>
+        /// <returns>The output of report creation</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<ResultLine> CreateTermList(
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
+            string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
+        {
+            var process = new CreateTermlistProcess()
+            {
+                CasePath = casePath,
+                OutputFolder = outputFolderPath
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
         /// <summary>
         /// Reports on the number of files of each type in a nuix case
         /// </summary>

@@ -18,6 +18,9 @@ namespace NuixClient.Orchestration
             typeof(MultiStepProcess),
             typeof(SearchAndTagProcess),
             typeof(AddToProductionSetProcess),
+            typeof(CreateReportProcess),
+            typeof(CreateTermlistProcess),
+
             typeof(FileExistsCondition)
         };
 
