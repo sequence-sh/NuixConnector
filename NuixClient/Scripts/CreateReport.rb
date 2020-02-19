@@ -26,53 +26,67 @@ else
 
     puts "Generating Report:"
 
-    caseStatistics = the_case.getStatistics()
+    
 
+    caseStatistics = the_case.getStatistics()
     dateRange = caseStatistics.getCaseDateRange()
     
     puts "Date Range:#{dateRange.getEarliest()} to #{dateRange.getLatest()}"
 
-
-    puts "Counting Terms:"
-
-    termStatistics = caseStatistics.getTermStatistics("", {"sort" => "on", "deduplicate" => "md5", "minOccurs" => 10 }) #for some reason this takes strings rather than symbols
-
+    termStatistics = caseStatistics.getTermStatistics("", {"sort" => "on", "deduplicate" => "md5"}) #for some reason this takes strings rather than symbols
+    #todo terms per custodian
     puts "#{termStatistics.length} terms"
 
     termStatistics.each do |term, count|
         puts "OutputTerms:#{term}: #{count}"
     end
     
-    puts "Counting Kinds"
+    allItems = the_case.searchUnsorted("")
 
-    fields = {
-    all: "",
-    email: "kind:email",
-    calendar: "kind:calendar",
-    contact: "kind:contact",
-    document: "kind:document",
-    spreadsheet: "kind:spreadsheet",
-    presentation: "kind:presentation",
-    drawing: "kind:drawing",
-    otherDocument: "kind:other-document",
-    image: "kind:image",
-    multimedia: "kind:multimedia",
-    database: "kind:database",
-    container: "kind:container",
-    system: "kind:system",
-    noData: "kind:no-data",
-    unrecognised: "kind:unrecognised",
-    log: "kind:log",
-    chatConversation: "kind:chat-conversation",
-    chatMessage: "kind:chat-message",
-    deleted: "flag:deleted",
-    empty: "mime-type:application/x-empty"
-    }
+    results = Hash.new(Hash.new(Hash.new(0)))
 
-    fields.each do |key, value|
-        count = the_case.count(value)
-        puts "OutputKinds:#{key.to_s}: #{count}"
+    items.each do |i|
+        custodians = ["any"]
+        custodians << i.getCustodian() if i.getCustodian() != nil
 
+        custodians.each do |c|
+            hash = results[c]
+
+            kindsHash = results[:kinds]
+            kindsHash["*"] += 1
+            kindsHash[i.getKind().getName()]  += 1
+
+            typesHash = results[:types]            
+            typesHash[i.getType().getName()] += 1            
+
+            communication = i.getCommunication()
+            if communication != nil
+                addresses = i.getFrom() | i.getTo() | i.getCc() | i.getBCc()
+                addressesHash = results[:addresses]
+                addresses.each do |a|
+                    addressesHash[a] += 1
+                end
+            end
+
+            tagsHash = results[:tags]
+            i.getTags().each do |t|
+                tagsHash[t] += 1
+            end
+
+            language = i.getLanguage()
+            if language != nil
+                languageHash = results[:language]
+                languageHash[language] += 1
+            end
+        end
+    end
+
+    results.each do |custodian, hash1|
+        hash1.each do |type, hash2|
+            hash2.each do |value, count|
+                puts "OutputStats:#{custodian}\t#{type}\t#{value}\t#{count}"
+            end
+        end
     end
 
     the_case.close
