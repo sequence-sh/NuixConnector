@@ -8,7 +8,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// Adds a file or folder to a Nuix Case
     /// </summary>
-    internal class AddFileProcess : RubyScriptProcess1
+    internal class AddFileProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

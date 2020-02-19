@@ -10,7 +10,7 @@ namespace NuixClient.Orchestration
     /// A process which searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
-    internal class AddToItemSetProcess : RubyScriptProcess1
+    internal class AddToItemSetProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

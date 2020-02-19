@@ -8,7 +8,7 @@ namespace NuixClient.Orchestration
     /// <summary>
     /// A process which exports concordance for a particular production set
     /// </summary>
-    internal class ExportConcordanceProcess : RubyScriptProcess1
+    internal class ExportConcordanceProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

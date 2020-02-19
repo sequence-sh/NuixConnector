@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace NuixClient.Orchestration
 {
-    internal abstract class RubyScriptProcess1 : Process
+    internal abstract class RubyScriptProcess : Process
     {
         //TODO make a config property
         private const string NuixExeConsolePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe";
@@ -50,7 +50,7 @@ namespace NuixClient.Orchestration
 
         public override bool Equals(object? obj)
         {
-            return obj is RubyScriptProcess1 rsp && ScriptName == rsp.ScriptName &&
+            return obj is RubyScriptProcess rsp && ScriptName == rsp.ScriptName &&
                    GetArgumentValuePairs().SequenceEqual(rsp.GetArgumentValuePairs());
         }
 

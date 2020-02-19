@@ -5,10 +5,37 @@ using YamlDotNet.Serialization;
 
 namespace NuixClient.Orchestration
 {
+    internal class CreateReportProcess : RubyScriptProcess
+    {
+        public override string GetName() => "Create Report";
+
+        /// <summary>
+        /// The path to the folder to create the case in
+        /// </summary>
+        [Required]
+        [DataMember]
+        [YamlMember(Order = 4)]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        public string CasePath { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            yield break;
+        }
+
+        internal override string ScriptName => "CreateReport.rb";
+        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        {
+            yield return ("-p", CasePath);
+        }
+    }
+
     /// <summary>
     /// A process which creates a new case
     /// </summary>
-    internal class CreateCaseProcess : RubyScriptProcess1
+    internal class CreateCaseProcess : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
