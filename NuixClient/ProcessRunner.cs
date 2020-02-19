@@ -23,11 +23,15 @@ namespace NuixClient
 
             if (!YamlHelper.TryMakeFromYaml(yamlString, out var process, out var e))
             {
+#pragma warning disable CS8604 // Possible null reference argument.
                 yield return new ResultLine(false, e);
+#pragma warning restore CS8604 // Possible null reference argument.
             }
             else
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 foreach (var processCondition in process.Conditions ?? Enumerable.Empty<Condition>())
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 {
                     if (processCondition.IsMet())
                         yield return new ResultLine(true, processCondition.GetDescription());

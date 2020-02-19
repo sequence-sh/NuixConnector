@@ -35,7 +35,6 @@ namespace NuixClient.Orchestration
         /// </summary>
         internal virtual void OnScriptFinish()
         {
-
         }
     
         public override async IAsyncEnumerable<ResultLine> Execute()
