@@ -26,6 +26,22 @@ else
 
     puts "Generating Report:"
 
+    caseStatistics = the_case.getStatistics()
+
+    dateRange = the_case.getCaseDateRange()
+    
+    puts "Date Range:#{dateRange.getEarliest()} to #{dateRange.getLatest()}"
+
+
+    puts "Counting Terms:"
+
+    termStatistics = caseStatistics.getTermStatistics("", {sort: "on", deduplicate:"md5" })
+
+    termStatistics.each do |term, count|
+        puts "#{term}: #{count}"
+    end
+
+
     fields = {
     all: "",
     email: "kind:email",
@@ -51,8 +67,8 @@ else
     }
 
     fields.each do |key, value|
-        items = the_case.search(value, {})
-        puts "#{key.to_s}: #{items.length}"
+        count = the_case.count(value)
+        puts "#{key.to_s}: #{count}"
 
     end
 
