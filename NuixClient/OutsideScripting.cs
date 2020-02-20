@@ -12,6 +12,29 @@ namespace NuixClient
     {
 
         /// <summary>
+        /// Runs OCR on items in a nuix case
+        /// </summary>
+        /// <param name="casePath">The path to the case</param>
+        /// <param name="ocrProfileName">The ocr profile to use</param>
+        /// <returns>The output of the process</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<ResultLine> RunOCR(
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
+            string? ocrProfileName = null)
+        {
+            var process = new RunOCRProcess()
+            {
+                CasePath = casePath,
+                OCRProfileName = ocrProfileName
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+
+        /// <summary>
         /// Reports on irregular items in a nuix case
         /// </summary>
         /// <param name="casePath">The path to the case</param>
