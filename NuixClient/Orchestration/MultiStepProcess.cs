@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -73,6 +72,11 @@ namespace NuixClient.Orchestration
         public override int GetHashCode()
         {
             return GetName().GetHashCode();
+        }
+
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            return Steps.SelectMany(process => process.GetArgumentErrors());
         }
     }
 }

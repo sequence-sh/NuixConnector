@@ -14,7 +14,7 @@ namespace NuixClient.Orchestration
         /// Checks if the current set of arguments is valid
         /// </summary>
         /// <returns></returns>
-        internal abstract IEnumerable<string> GetArgumentErrors();
+        
         
         internal abstract string ScriptName { get; }
 
@@ -24,8 +24,9 @@ namespace NuixClient.Orchestration
         /// Do something with a line returned from the script
         /// </summary>
         /// <param name="rl">The line to look at</param>
+        /// <param name="processState">The current state of the process</param>
         /// <returns>True if the line should continue through the pipeline</returns>
-        internal virtual bool HandleLine(ResultLine rl)
+        internal virtual bool HandleLine(ResultLine rl, ProcessState processState)
         {
             return true;
         }
@@ -33,7 +34,7 @@ namespace NuixClient.Orchestration
         /// <summary>
         /// What to do when the script finishes
         /// </summary>
-        internal virtual void OnScriptFinish()
+        internal virtual void OnScriptFinish(ProcessState processState)
         {
         }
     
@@ -59,15 +60,17 @@ namespace NuixClient.Orchestration
                 args.Add(value);
             }
 
+            var processState = new ProcessState();
+
             var result = ScriptRunner. RunScript(NuixExeConsolePath, scriptPath, UseDongle, args);
 
             await foreach (var line in result)
             {
-                if(HandleLine(line))
+                if(HandleLine(line, processState))
                     yield return line;
             }
 
-            OnScriptFinish();
+            OnScriptFinish(processState);
         }
 
         public override bool Equals(object? obj)

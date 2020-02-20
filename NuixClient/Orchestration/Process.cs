@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using YamlDotNet.Serialization;
 
 namespace NuixClient.Orchestration
@@ -8,6 +13,13 @@ namespace NuixClient.Orchestration
     /// </summary>
     internal abstract class Process
     {
+        /// <summary>
+        /// Get argument errors
+        /// </summary>
+        /// <returns></returns>
+        internal abstract IEnumerable<string> GetArgumentErrors();
+        
+
         /// <summary>
         /// Conditions which must be true for this process to be executed
         /// </summary>

@@ -8,13 +8,16 @@ namespace NuixClient.Orchestration
 {
     internal static class YamlHelper
     {
-        private static IReadOnlyList<Type> SpecialTypes
+        private static IEnumerable<Type> SpecialTypes
         {
             get
             {
                 var types = AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(s => s.GetTypes())
-                    .Where(type => typeof(Process).IsAssignableFrom(type) || typeof(Condition).IsAssignableFrom(type))
+                    .Where(type => 
+                        typeof(Process).IsAssignableFrom(type) 
+                        || typeof(Condition).IsAssignableFrom(type) 
+                        || typeof(Enumeration).IsAssignableFrom(type))
                     .Where(x=>!x.IsAbstract && ! x.IsInterface)
                     
                     .ToList();
