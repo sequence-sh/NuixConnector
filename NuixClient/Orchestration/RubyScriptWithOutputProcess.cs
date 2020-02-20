@@ -13,7 +13,7 @@ namespace NuixClient.Orchestration
 
         private readonly IDictionary<string, List<string>> _files = new Dictionary<string, List<string>>();
 
-        private static readonly Regex OutputLineRegex = new Regex(@"\AOutput\s*(?<filename>\w+)\s*:(?<data>.*)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex OutputLineRegex = new Regex(@"\AOutput\s*(?<filename>[\w-]+)\s*:(?<data>.*)\Z", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         internal override bool HandleLine(ResultLine rl)
         {
