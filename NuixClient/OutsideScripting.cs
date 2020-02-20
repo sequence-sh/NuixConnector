@@ -12,6 +12,28 @@ namespace NuixClient
     {
 
         /// <summary>
+        /// Extracts entities from case
+        /// </summary>
+        /// <param name="casePath">The path to the case</param>
+        /// <param name="outputFolderPath">The path to write the report files to</param>
+        /// <returns>The output of report creation</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<ResultLine> ExtractEntities(
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
+            string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
+        {
+            var process = new ExtractEntitiesProcess
+            {
+                CasePath = casePath,
+                OutputFolder = outputFolderPath
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+        /// <summary>
         /// Reports on irregular items in a nuix case
         /// </summary>
         /// <param name="casePath">The path to the case</param>

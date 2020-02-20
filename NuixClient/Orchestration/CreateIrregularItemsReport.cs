@@ -17,8 +17,6 @@ namespace NuixClient.Orchestration
         [YamlMember(Order = 5)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
-
-
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
