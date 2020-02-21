@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using NuixClient;
-using NuixClient.Orchestration;
-using NuixClient.Orchestration.Conditions;
-using NuixClient.Orchestration.Enumerations;
-using NuixClient.Orchestration.Processes;
+using NuixClient.Processes;
 using NUnit.Framework;
+using Orchestration;
+using Orchestration.Conditions;
+using Orchestration.Enumerations;
+using Orchestration.Processes;
 using YamlDotNet.Serialization;
 
 namespace NuixClientTests
@@ -73,7 +73,7 @@ namespace NuixClientTests
                 Tag = "Dinosaurs"
             }),
 
-            new YamlProcessTest(new AddToProductionSet()
+            new YamlProcessTest(new AddToProductionSet
             {
                 CasePath = "C:/Cases/MyCase",
                 SearchTerm = "Raptor",
@@ -124,7 +124,7 @@ namespace NuixClientTests
                         SearchTerm = "Raptor",
                         Tag = "Dinosaurs"
                     },
-                    new AddToProductionSet()
+                    new AddToProductionSet
                     {
                         CasePath = "C:/Cases/MyCase",
                         SearchTerm = "Raptor",
@@ -165,7 +165,7 @@ namespace NuixClientTests
         [Test]
         public void TestYamlAnchors()
         {
-            var yaml = @"!Sequence
+            const string yaml = @"!Sequence
 Steps:
 - !CreateCase
   CaseName: My Case
@@ -180,19 +180,19 @@ Steps:
   CasePath: *casePath";
 
 
-            var expectedProcess = new Sequence()
+            var expectedProcess = new Sequence
             {
 
-                Steps = new List<Process>()
+                Steps = new List<Process>
                 {
-                    new CreateCase()
+                    new CreateCase
                     {
                         CaseName = "My Case",
                         CasePath = "C:/Cases/MyCase",
                         Investigator = "Mark",
                         Description = "desc"
                     },
-                    new AddFile()
+                    new AddFile
                     {
                         FilePath = "C:/MyFolder",
                         Custodian = "Mark",
@@ -227,7 +227,7 @@ Steps:
         [Test]
         public async Task TestForeachProcess()
         {
-            var list = new List<string>()
+            var list = new List<string>
             {
                 "Correct", "Horse", "Battery", "Staple"
             };
@@ -264,7 +264,7 @@ Steps:
             public string Term { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-            internal override IEnumerable<string> GetArgumentErrors()
+            public override IEnumerable<string> GetArgumentErrors()
             {
                 yield break;
             }

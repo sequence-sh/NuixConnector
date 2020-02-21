@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using NuixClient.enums;
-using NuixClient.Orchestration;
-using NuixClient.Orchestration.Processes;
+using NuixClient.Processes;
+using Orchestration;
 
 namespace NuixClient
 {
@@ -11,7 +11,6 @@ namespace NuixClient
     /// </summary>
     public static class OutsideScripting
     {
-
         /// <summary>
         /// Extracts entities from case
         /// </summary>
