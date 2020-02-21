@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Moq;
 using NuixClient;
 using NUnit.Framework;
@@ -56,22 +57,24 @@ namespace NuixClientTests
         [Test]
         public async Task TestReadingTwoStreams()
         {
-
             var reader1 = new Mock<IStreamReader>(MockBehavior.Strict);
             var reader2 = new Mock<IStreamReader>(MockBehavior.Strict);
 
-
-            reader2.Setup(m => m.ReadLineAsync())
-                .Returns(() => ReturnStringAfter(String3, 100));
+            var semaphore1 = new SemaphoreSlim(1);
+            semaphore1.Wait();
+            var semaphore2 = new SemaphoreSlim(1);
+            semaphore2.Wait();
 
             reader1.Setup(m => m.ReadLineAsync())
-                .Returns(() => ReturnStringAfter(String1, 1));
-            
-            
-            
+                .Returns(()=> ReturnStringAfter(String1, semaphore1));
 
+            reader2.Setup(m => m.ReadLineAsync())
+                .Returns(() => ReturnStringAfter(String3, semaphore2));
+            
 
             var multiStreamReader = new MultiStreamReader(new[] {reader1.Object, reader2.Object});
+
+            semaphore1.Release();
 
             var r1 = await multiStreamReader.ReadLineAsync();
             Assert.AreEqual(String1, r1);
@@ -79,9 +82,8 @@ namespace NuixClientTests
             reader1.VerifyAll();
             reader2.VerifyAll();
 
-
             reader1.Setup(m => m.ReadLineAsync())
-                .Returns(() => ReturnStringAfter(String2, 1));
+                .ReturnsAsync(String2);
 
             var r2 = await multiStreamReader.ReadLineAsync();
             Assert.AreEqual(String2, r2);
@@ -89,8 +91,10 @@ namespace NuixClientTests
             reader2.VerifyAll();
 
             reader1.Setup(m => m.ReadLineAsync())
-                .Returns(() => ReturnStringAfter(null, 1));
+                .ReturnsAsync(null as string);
 
+            semaphore2.Release();
+                
             var r3 = await multiStreamReader.ReadLineAsync();
 
             Assert.AreEqual(String3, r3);
@@ -98,7 +102,7 @@ namespace NuixClientTests
             reader2.VerifyAll();
 
             reader2.Setup(m => m.ReadLineAsync())
-                .Returns(() => ReturnStringAfter(null, 1));
+                .ReturnsAsync(null as string);
 
 
             var n1 = await multiStreamReader.ReadLineAsync();
@@ -109,10 +113,11 @@ namespace NuixClientTests
         }
 
 
-        private async Task<string?> ReturnStringAfter(string? str, int milliseconds)
+        private static async Task<string?> ReturnStringAfter(string? str, SemaphoreSlim semaphore)
         {
-            await Task.Delay(milliseconds);
+            await semaphore.WaitAsync();
 
+            semaphore.Release();
             return str;
         }
 
