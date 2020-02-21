@@ -11,11 +11,11 @@ namespace NuixClient.Orchestration
     internal abstract class RubyScriptWithOutputProcess : RubyScriptProcess
     {
 
-        private readonly IDictionary<string, List<string>> _files = new Dictionary<string, List<string>>();
+        //private readonly IDictionary<string, List<string>> _files = new Dictionary<string, List<string>>();
 
         private static readonly Regex OutputLineRegex = new Regex(@"\AOutput\s*(?<filename>[\w-]+)\s*:(?<data>.*)\Z", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        internal override bool HandleLine(ResultLine rl)
+        internal override bool HandleLine(ResultLine rl, ProcessState processState)
         {
             if (!rl.IsSuccess)
                 return true;
@@ -26,27 +26,27 @@ namespace NuixClient.Orchestration
                 var data = match.Groups["data"].Value;
 
                 //This is an output line - it will be written to a file
-                if (_files.TryGetValue(fileName, out var lines))
-                    lines.Add(data);
+                if (processState.Artifacts.TryGetValue(fileName, out var lines))
+                    ((List<string>) lines).Add(data);
                 else
-                    _files.Add(fileName, new List<string> { data });
+                    processState.Artifacts.Add(fileName, new List<string> { data });
 
                 return false; //don't display line
             }
-            else return base.HandleLine(rl);
+            else return base.HandleLine(rl, processState);
         }
 
-        internal override async void OnScriptFinish()
+        internal override async void OnScriptFinish(ProcessState processState)
         {
-            foreach (var (fileName, lines) in _files)
+            foreach (var (fileName, lines) in processState.Artifacts)
             {
                 var filePath = Path.Combine(OutputFolder, fileName + ".txt");
                 await using var fileStream = File.CreateText(filePath);
 
-                foreach (var line in lines)
+                foreach (var line in (List<string>) lines)
                     fileStream.WriteLine(line);
             }
-            base.OnScriptFinish();
+            base.OnScriptFinish(processState);
         }
 
         internal override IEnumerable<string> GetArgumentErrors()

@@ -1,6 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
+using NuixClient;
 using NuixClient.Orchestration;
 using NUnit.Framework;
+using YamlDotNet.Serialization;
 
 namespace NuixClientTests
 {
@@ -216,6 +222,64 @@ Steps:
             Assert.AreEqual(yamlProcessTest.Process, p);
         }
 
+        [Test]
+        public async Task TestForeachProcess()
+        {
+            var list = new List<string>()
+            {
+                "Correct", "Horse", "Battery", "Staple"
+            };
+            var expected = list.Select(s => $"'{s}'").ToList();
+
+            var forEachProcess = new ForEachProcess
+            {
+                Enumeration = new ListEnumeration{List = list},
+                PropertyToInject = nameof(EmitTermProcess.Term),
+                Template = "'$s'",
+                SubProcess = new EmitTermProcess()
+            };
+
+            var realList = new List<string>();
+
+            var resultList = forEachProcess.Execute();
+
+            await foreach (var s in resultList)
+            {
+                Assert.IsTrue(s.IsSuccess);
+                realList.Add(s.Line);
+            }
+
+            CollectionAssert.AreEqual(expected, realList);
+            
+        }
+
+        private class EmitTermProcess : Process
+        {
+            [UsedImplicitly]
+            [YamlMember]
+            [Required]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+            public string Term { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+            internal override IEnumerable<string> GetArgumentErrors()
+            {
+                yield break;
+            }
+
+            public override string GetName()
+            {
+                return "Emit Term";
+            }
+
+#pragma warning disable 1998
+            public override async IAsyncEnumerable<ResultLine> Execute()
+#pragma warning restore 1998
+            {
+                yield return new ResultLine(true, Term);
+            }
+        }
+
     }
 
     /// <summary>
@@ -238,4 +302,6 @@ Steps:
             return Process.GetName();
         }
     }
+
+    
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -11,6 +12,8 @@ namespace NuixClient.Orchestration
     /// </summary>
     internal class BranchProcess : Process
     {
+        
+
         /// <summary>
         /// The name of this process
         /// </summary>
@@ -65,6 +68,11 @@ namespace NuixClient.Orchestration
         public override int GetHashCode()
         {
             return GetName().GetHashCode();
+        }
+
+        internal override IEnumerable<string> GetArgumentErrors()
+        {
+            return Options.SelectMany(process => process.GetArgumentErrors());
         }
     }
 }
