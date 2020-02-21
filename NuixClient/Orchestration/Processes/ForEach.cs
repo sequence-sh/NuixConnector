@@ -2,14 +2,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using NuixClient.Orchestration.Conditions;
+using NuixClient.Orchestration.Enumerations;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
-    /// A process that performs a nested process once for each element in an enumeration
+    /// Performs a nested process once for each element in an enumeration
     /// </summary>
-    internal class ForEachProcess : Process
+    internal class ForEach : Process
     {
         internal override IEnumerable<string> GetArgumentErrors()
         {

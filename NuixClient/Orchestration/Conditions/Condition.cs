@@ -1,4 +1,4 @@
-﻿namespace NuixClient.Orchestration
+﻿namespace NuixClient.Orchestration.Conditions
 {
 
     /// <summary>

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
+﻿using System.Collections.Generic;
+using NuixClient.Orchestration.Conditions;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
     /// A process. Can contain one or more steps

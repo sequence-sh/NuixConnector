@@ -4,18 +4,18 @@ using System.Runtime.Serialization;
 using NuixClient.enums;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
-    /// A process which searches a case with a particular search string and adds all items it finds to a particular item set.
+    /// Searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
-    internal class AddToItemSetProcess : RubyScriptProcess
+    internal class AddToItemSet : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public override string GetName() => $"Search and add to item set '{ItemSetName}'";
+        public override string GetName() => "Search and add to item set";
 
 
         /// <summary>

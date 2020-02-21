@@ -3,23 +3,20 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
-
-
     /// <summary>
-    /// A process which creates a new case
+    /// Creates a new case
     /// </summary>
-    internal class CreateCaseProcess : RubyScriptProcess
+    internal class CreateCase : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public override string GetName() => $"Create Case '{CaseName}'";
-
+        public override string GetName() => $"Create Case";
 
         /// <summary>
-        /// The name of the case to create
+        /// The name of the case to create.
         /// </summary>
         [Required]
         [DataMember]
@@ -27,9 +24,8 @@ namespace NuixClient.Orchestration
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CaseName { get; set; }
 
-
         /// <summary>
-        /// The path to the folder to create the case in
+        /// The path to the folder to create the case in.
         /// </summary>
         [Required]
         [DataMember]
@@ -37,7 +33,7 @@ namespace NuixClient.Orchestration
         public string CasePath { get; set; }
 
         /// <summary>
-        /// Name of the investigator
+        /// Name of the investigator.
         /// </summary>
         [Required]
         [DataMember]
@@ -45,7 +41,7 @@ namespace NuixClient.Orchestration
         public string Investigator { get; set; }
 
         /// <summary>
-        /// Description of the case
+        /// Description of the case.
         /// </summary>
         [Required]
         [DataMember]

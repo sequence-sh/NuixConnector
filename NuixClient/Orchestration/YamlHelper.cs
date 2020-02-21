@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using NuixClient.Orchestration.Conditions;
+using NuixClient.Orchestration.Enumerations;
+using NuixClient.Orchestration.Processes;
 using YamlDotNet.Serialization;
 
 namespace NuixClient.Orchestration

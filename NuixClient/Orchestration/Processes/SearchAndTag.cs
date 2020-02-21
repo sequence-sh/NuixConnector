@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
-    /// A process which searches a case with a particular search string and tags all files it finds
+    /// Searches a NUIX case with a particular search string and tags all files it finds
     /// </summary>
-    internal class SearchAndTagProcess : RubyScriptProcess
+    internal class SearchAndTag : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

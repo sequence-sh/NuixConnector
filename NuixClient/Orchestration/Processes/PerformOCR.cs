@@ -3,9 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
-    internal class RunOCRProcess : RubyScriptProcess
+    /// <summary>
+    /// Performs optical character recognition on files which need it in a NUIX case.
+    /// </summary>
+    internal class PerformOCR : RubyScriptProcess
     {
         public override string GetName() => "RunOCR";
 

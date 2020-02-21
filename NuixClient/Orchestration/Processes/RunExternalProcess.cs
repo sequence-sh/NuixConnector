@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
     /// Runs an external process

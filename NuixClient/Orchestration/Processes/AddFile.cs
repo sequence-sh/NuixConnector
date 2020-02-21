@@ -3,24 +3,22 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
     /// Adds a file or folder to a Nuix Case
     /// </summary>
-    internal class AddFileProcess : RubyScriptProcess
+    internal class AddFile : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
         public override string GetName() => $"Add '{FilePath}'";
 
-
-
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
-        /// The path of the file or folder to add to the case
+        /// The path of the file or folder to add to the case.
         /// </summary>
         [Required]
         [DataMember]
@@ -28,7 +26,7 @@ namespace NuixClient.Orchestration
         public string FilePath { get; set; }
 
         /// <summary>
-        /// The custodian to assign to the new folder
+        /// The custodian to assign to the new folder.
         /// </summary>
         [Required]
         [DataMember]
@@ -36,7 +34,7 @@ namespace NuixClient.Orchestration
         public string Custodian { get; set; }
 
         /// <summary>
-        /// The description of the new folder
+        /// The description of the new folder.
         /// </summary>
         [Required]
         [DataMember]
@@ -44,7 +42,7 @@ namespace NuixClient.Orchestration
         public string Description { get; set; }
 
         /// <summary>
-        /// The name of the folder to create
+        /// The name of the folder to create.
         /// </summary>
         [Required]
         [DataMember]
@@ -52,7 +50,7 @@ namespace NuixClient.Orchestration
         public string FolderName { get; set; }
 
         /// <summary>
-        /// The path to the case
+        /// The path to the case.
         /// </summary>
         [Required]
         [DataMember]
@@ -61,7 +59,8 @@ namespace NuixClient.Orchestration
 
 
         /// <summary>
-        /// The name of the processing profile to use - can be null
+        /// The name of the processing profile to use.
+        /// If null, the default processing profile will be used.
         /// </summary>
         [DataMember]
         [YamlMember(Order = 7)]

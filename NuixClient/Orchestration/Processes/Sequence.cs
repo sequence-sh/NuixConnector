@@ -2,14 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using NuixClient.Orchestration.Conditions;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
-    /// A process containing multiple steps
+    /// Executes each step in sequence until a condition is not met or a process fails.
     /// </summary>
-    internal class MultiStepProcess : Process
+    internal class Sequence : Process
     {
         /// <summary>
         /// The name of this process
@@ -63,7 +64,7 @@ namespace NuixClient.Orchestration
 
         public override bool Equals(object? obj)
         {
-            var r = obj is MultiStepProcess msp && (Conditions??Enumerable.Empty<Condition>()).SequenceEqual(msp.Conditions??Enumerable.Empty<Condition>())
+            var r = obj is Sequence msp && (Conditions??Enumerable.Empty<Condition>()).SequenceEqual(msp.Conditions??Enumerable.Empty<Condition>())
                                                        && Steps.SequenceEqual(msp.Steps);
 
             return r;

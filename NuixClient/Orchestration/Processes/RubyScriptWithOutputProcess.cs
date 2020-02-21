@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using NuixClient.Search;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     internal abstract class RubyScriptWithOutputProcess : RubyScriptProcess
     {

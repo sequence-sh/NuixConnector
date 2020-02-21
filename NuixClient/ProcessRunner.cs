@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using NuixClient.Orchestration;
+using NuixClient.Orchestration.Conditions;
 
 namespace NuixClient
 {

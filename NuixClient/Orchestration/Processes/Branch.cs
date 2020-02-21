@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using NuixClient.Orchestration.Conditions;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
-    /// A process which executes all sub-processes whose conditions are met
+    /// Executes all sub-processes whose conditions are met.
     /// </summary>
-    internal class BranchProcess : Process
+    internal class Branch : Process
     {
-        
-
         /// <summary>
         /// The name of this process
         /// </summary>
@@ -21,7 +19,6 @@ namespace NuixClient.Orchestration
         {
             return string.Join(" or ", Options.Select(s => s.GetName()));
         }
-
 
         /// <summary>
         /// Processes which will be executed as part of this process if their conditions are met
@@ -61,7 +58,7 @@ namespace NuixClient.Orchestration
 
         public override bool Equals(object? obj)
         {
-            var r = obj is BranchProcess bp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(bp.Conditions ?? Enumerable.Empty<Condition>())
+            var r = obj is Branch bp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(bp.Conditions ?? Enumerable.Empty<Condition>())
                                                        && Options.SequenceEqual(bp.Options);
 
             return r;

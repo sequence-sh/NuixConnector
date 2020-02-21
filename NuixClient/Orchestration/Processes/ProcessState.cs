@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
     /// Represents the current state of a running process

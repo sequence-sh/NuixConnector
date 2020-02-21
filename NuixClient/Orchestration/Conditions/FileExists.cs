@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Conditions
 {
     /// <summary>
     /// A condition that requires that a particular file exists
     /// </summary>
-    internal class FileExistsCondition : Condition
+    internal class FileExists : Condition
     {
         /// <summary>
         /// The path of the file to check
@@ -38,7 +38,7 @@ namespace NuixClient.Orchestration
 
         public override bool Equals(object? obj)
         {
-            return obj is FileExistsCondition fec && FilePath == fec.FilePath;
+            return obj is FileExists fec && FilePath == fec.FilePath;
         }
     }
 }

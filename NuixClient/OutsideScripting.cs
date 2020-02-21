@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using NuixClient.enums;
 using NuixClient.Orchestration;
+using NuixClient.Orchestration.Processes;
 
 namespace NuixClient
 {
@@ -22,7 +23,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new ExtractEntitiesProcess
+            var process = new ExtractEntities
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -44,7 +45,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string? ocrProfileName = null)
         {
-            var process = new RunOCRProcess()
+            var process = new PerformOCR()
             {
                 CasePath = casePath,
                 OCRProfileName = ocrProfileName
@@ -89,7 +90,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new CreateTermlistProcess()
+            var process = new CreateTermList()
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -111,7 +112,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase", 
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new CreateReportProcess
+            var process = new CreateReport
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -137,7 +138,7 @@ namespace NuixClient
             string searchTerm = "night",
             string tag  = "Nocturnal")
         {
-            var process = new SearchAndTagProcess
+            var process = new SearchAndTag
             {
                 CasePath = casePath,
                 SearchTerm = searchTerm,
@@ -170,7 +171,7 @@ namespace NuixClient
             DeduplicateBy deduplicateBy = DeduplicateBy.Individual,
             string[]? custodianRanking = null)
         {
-            var process = new AddToItemSetProcess
+            var process = new AddToItemSet
             {
                 CasePath = casePath,
                 SearchTerm = searchTerm,
@@ -200,7 +201,7 @@ namespace NuixClient
             string searchTerm = "night",
             string productionSetName  = "ProdSet")
         {
-            var process = new AddToProductionSetProcess
+            var process = new AddToProductionSet
             {
                 CasePath = casePath,
                 SearchTerm = searchTerm,
@@ -226,7 +227,7 @@ namespace NuixClient
             string description,
             string investigator)
         {
-            var process = new CreateCaseProcess()
+            var process = new CreateCase()
             {
                 CaseName = caseName,
                 CasePath = casePath,
@@ -258,7 +259,7 @@ namespace NuixClient
             string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
             string? processingProfileName = null)
         {
-            var process = new AddFileProcess()
+            var process = new AddFile()
             {
                 CasePath = casePath,
                 Custodian = custodian,
@@ -295,7 +296,7 @@ namespace NuixClient
             string concordanceDateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             string concordanceProfileName = @"TestProfile")
         {
-            var process = new AddConcordanceProcess()
+            var process = new AddConcordance()
             {
                 CasePath = casePath,
                 ConcordanceDateFormat = concordanceDateFormat,
@@ -328,7 +329,7 @@ namespace NuixClient
             string productionSetName = @"Night",
             string metadataProfileName = "Default")
         {
-            var process = new ExportConcordanceProcess
+            var process = new ExportConcordance
             {
                 CasePath = casePath,
                 ExportPath = exportPath,

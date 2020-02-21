@@ -3,67 +3,65 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
-    /// A process which exports concordance for a particular production set
+    /// Searches a case with a particular search string and adds all items it finds to a production set.
+    /// Will create a new production set if one with the given name does not already exist.
     /// </summary>
-    internal class ExportConcordanceProcess : RubyScriptProcess
+    internal class AddToProductionSet : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public override string GetName() => $"Export {ProductionSetName}";
+        public override string GetName() => $"Search and add to production set.";
 
 
         /// <summary>
-        /// The name of the metadata profile to use - "Default" by default
-        /// </summary>
-        [DataMember]
-        [YamlMember(Order = 3)]
-        public string? MetadataProfileName { get; set; }
-
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        /// <summary>
-        /// The name of the production set to export
+        /// The production set to add results to. Will be created if it doesn't already exist
         /// </summary>
         [DataMember]
         [Required]
-        [YamlMember(Order = 4)]
+        [YamlMember(Order = 3)]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string ProductionSetName { get; set; }
 
 
         /// <summary>
-        /// Where to export the concordance to
+        /// The term to search for
+        /// </summary>
+        [DataMember]
+        [Required]
+        [YamlMember(Order = 4)]
+        public string SearchTerm { get; set; }
+
+        /// <summary>
+        /// The path of the case to search
         /// </summary>
         [DataMember]
         [Required]
         [YamlMember(Order = 5)]
-        public string ExportPath { get; set; }
-
-        /// <summary>
-        /// The path of the case to export
-        /// </summary>
-        [DataMember]
-        [Required]
-        [YamlMember(Order = 6)]
         public string CasePath { get; set; }
+
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
         internal override IEnumerable<string> GetArgumentErrors()
         {
-            yield break;
+            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(SearchTerm);
+
+            if (!searchTermParseSuccess || searchTermParsed == null)
+            {
+                yield return $"Error parsing search term: {searchTermParseError}";
+            }
         }
 
-        internal override string ScriptName => "ExportConcordanceProcess.rb";
+        internal override string ScriptName => "AddToProductionSet.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);
-            yield return ("-x", ExportPath);
+            yield return ("-s", SearchTerm);
             yield return ("-n", ProductionSetName);
-            if(MetadataProfileName != null)
-                yield return ("-m", MetadataProfileName);
         }
     }
 }

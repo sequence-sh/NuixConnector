@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Enumerations
 {
-    internal class DirectoryEnumeration : Enumeration
+    internal class Directory : Enumeration
     {
         internal override string Name => $"'{Path}'";
 
@@ -15,9 +14,9 @@ namespace NuixClient.Orchestration
         {
             get
             {
-                if (Directory.Exists(Path))
+                if (System.IO.Directory.Exists(Path))
                 {
-                    return Directory.GetFiles(Path);
+                    return System.IO.Directory.GetFiles(Path);
                 }
 
                 return Enumerable.Empty<string>();
@@ -33,8 +32,5 @@ namespace NuixClient.Orchestration
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string Path { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-
-        
     }
 }

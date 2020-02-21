@@ -3,25 +3,25 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Processes
 {
     /// <summary>
-    /// A process which adds concordance to a case
+    /// Adds data from a Concordance file to a NUIX case.
     /// </summary>
-    internal class AddConcordanceProcess : RubyScriptProcess
+    internal class AddConcordance : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
         public override string GetName()
         {
-            return $"Add concordance from '{FilePath}'";
+            return "Add Concordance";
         }
         
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
-        /// The name of the concordance profile to use
+        /// The name of the concordance profile to use.
         /// </summary>
         [Required]
         [DataMember]
@@ -29,7 +29,7 @@ namespace NuixClient.Orchestration
         public string ConcordanceProfileName { get; set; }
 
         /// <summary>
-        /// The concordance date format to use
+        /// The concordance date format to use.
         /// </summary>
         [Required]
         [DataMember]
@@ -37,7 +37,7 @@ namespace NuixClient.Orchestration
         public string ConcordanceDateFormat { get; set; }
 
         /// <summary>
-        /// The path of the concordance file to import
+        /// The path of the concordance file to import.
         /// </summary>
         [Required]
         [DataMember]
@@ -45,7 +45,7 @@ namespace NuixClient.Orchestration
         public string FilePath { get; set; }
 
         /// <summary>
-        /// The name of the custodian to assign the folder to
+        /// The name of the custodian to assign the folder to.
         /// </summary>
         [Required]
         [DataMember]
@@ -53,7 +53,7 @@ namespace NuixClient.Orchestration
         public string Custodian { get; set; }
 
         /// <summary>
-        /// A description to add to the folder
+        /// A description to add to the folder.
         /// </summary>
         [Required]
         [DataMember]
@@ -61,7 +61,7 @@ namespace NuixClient.Orchestration
         public string Description { get; set; }
 
         /// <summary>
-        /// The name of the folder to create
+        /// The name of the folder to create.
         /// </summary>
         [Required]
         [DataMember]
@@ -69,7 +69,7 @@ namespace NuixClient.Orchestration
         public string FolderName { get; set; }
 
         /// <summary>
-        /// The name of the case to import into
+        /// The name of the case to import into.
         /// </summary>
         [Required]
         [DataMember]

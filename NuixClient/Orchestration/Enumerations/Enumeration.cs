@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NuixClient.Orchestration
+namespace NuixClient.Orchestration.Enumerations
 {
     /// <summary>
     /// Represents a list of elements
