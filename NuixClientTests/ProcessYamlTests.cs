@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using NuixClient;
 using NuixClient.Orchestration;
@@ -221,8 +222,8 @@ Steps:
             Assert.AreEqual(yamlProcessTest.Process, p);
         }
 
-
-        public async void TestForeachProcess()
+        [Test]
+        public async Task TestForeachProcess()
         {
             var list = new List<string>()
             {
