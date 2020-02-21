@@ -29,15 +29,18 @@ else
 
     
 
-    items = the_case.searchUnsorted("flag:text_not_indexed AND kind:image")
+    items = the_case.searchUnsorted("flag:text_not_indexed AND kind:image").to_a
 
     puts "Running OCR on #{items.length} items"
     
-    var processor = utilities.createOcrProcessor()
+    processor = utilities.createOcrProcessor()
 
 
     if hash_options[:ocrProfileArg] != nil
         ocrProfileStore = the_case.getOcrProfileStore()
+
+        puts "Got profile store"
+
         profile = ocrProfileStore.getProfile(hash_options[:ocrProfileArg])
 
         if profile != nil
