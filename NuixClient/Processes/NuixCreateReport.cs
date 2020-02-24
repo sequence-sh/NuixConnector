@@ -6,11 +6,11 @@ using YamlDotNet.Serialization;
 namespace NuixClient.Processes
 {
     /// <summary>
-    /// Extract Entities from a Nuix Case
+    /// Creates a report for a Nuix case.
     /// </summary>
-    internal class ExtractEntities : RubyScriptWithOutputProcess
+    internal class NuixCreateReport : RubyScriptWithOutputProcess
     {
-        public override string GetName() => "Extract Entities";
+        public override string GetName() => "Create Report";
 
         /// <summary>
         /// The path to the folder to create the case in
@@ -22,7 +22,7 @@ namespace NuixClient.Processes
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        internal override string ScriptName => "ExtractEntities.rb";
+        internal override string ScriptName => "CreateReport.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);

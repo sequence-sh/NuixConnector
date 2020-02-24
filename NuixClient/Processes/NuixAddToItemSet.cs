@@ -11,7 +11,7 @@ namespace NuixClient.Processes
     /// Searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
-    internal class AddToItemSet : RubyScriptProcess
+    internal class NuixAddToItemSet : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

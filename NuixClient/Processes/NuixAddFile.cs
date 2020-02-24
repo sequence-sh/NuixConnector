@@ -6,58 +6,39 @@ using YamlDotNet.Serialization;
 namespace NuixClient.Processes
 {
     /// <summary>
-    /// Adds data from a Concordance file to a NUIX case.
+    /// Adds a file or folder to a Nuix Case
     /// </summary>
-    internal class AddConcordance : RubyScriptProcess
+    internal class NuixAddFile : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public override string GetName()
-        {
-            return "Add Concordance";
-        }
-        
+        public override string GetName() => $"Add '{FilePath}'";
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
         /// <summary>
-        /// The name of the concordance profile to use.
+        /// The path of the file or folder to add to the case.
         /// </summary>
         [Required]
         [DataMember]
         [YamlMember(Order = 3)]
-        public string ConcordanceProfileName { get; set; }
+        public string FilePath { get; set; }
 
         /// <summary>
-        /// The concordance date format to use.
+        /// The custodian to assign to the new folder.
         /// </summary>
         [Required]
         [DataMember]
         [YamlMember(Order = 4)]
-        public string ConcordanceDateFormat { get; set; }
+        public string Custodian { get; set; }
 
         /// <summary>
-        /// The path of the concordance file to import.
+        /// The description of the new folder.
         /// </summary>
         [Required]
         [DataMember]
         [YamlMember(Order = 5)]
-        public string FilePath { get; set; }
-
-        /// <summary>
-        /// The name of the custodian to assign the folder to.
-        /// </summary>
-        [Required]
-        [DataMember]
-        [YamlMember(Order = 6)]
-        public string Custodian { get; set; }
-
-        /// <summary>
-        /// A description to add to the folder.
-        /// </summary>
-        [Required]
-        [DataMember]
-        [YamlMember(Order = 7)]
         public string Description { get; set; }
 
         /// <summary>
@@ -65,16 +46,25 @@ namespace NuixClient.Processes
         /// </summary>
         [Required]
         [DataMember]
-        [YamlMember(Order = 8)]
+        [YamlMember(Order = 6)]
         public string FolderName { get; set; }
 
         /// <summary>
-        /// The name of the case to import into.
+        /// The path to the case.
         /// </summary>
         [Required]
         [DataMember]
-        [YamlMember(Order = 9)]
+        [YamlMember(Order = 7)]
         public string CasePath { get; set; }
+
+
+        /// <summary>
+        /// The name of the processing profile to use.
+        /// If null, the default processing profile will be used.
+        /// </summary>
+        [DataMember]
+        [YamlMember(Order = 7)]
+        public string? ProcessingProfileName { get; set; }
 
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -83,7 +73,7 @@ namespace NuixClient.Processes
             yield break;
         }
 
-        internal override string ScriptName => "AddConcordanceToCase.rb";
+        internal override string ScriptName => "AddToCase.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);
@@ -91,8 +81,8 @@ namespace NuixClient.Processes
             yield return ("-d", Description);
             yield return ("-c", Custodian);
             yield return ("-f", FilePath);
-            yield return ("-z", ConcordanceDateFormat);
-            yield return ("-t", ConcordanceProfileName);
+            if(ProcessingProfileName != null)
+                yield return ("-r", ProcessingProfileName);
         }
     }
 }

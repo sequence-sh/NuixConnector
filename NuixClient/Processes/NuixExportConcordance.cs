@@ -8,7 +8,7 @@ namespace NuixClient.Processes
     /// <summary>
     /// Exports Concordance for a particular production set.
     /// </summary>
-    internal class ExportConcordance : RubyScriptProcess
+    internal class NuixExportConcordance : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

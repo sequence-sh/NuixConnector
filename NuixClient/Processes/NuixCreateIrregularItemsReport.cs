@@ -8,7 +8,7 @@ namespace NuixClient.Processes
     /// <summary>
     /// Creates a report detailing the irregular items in a case.
     /// </summary>
-    internal class CreateIrregularItemsReport : RubyScriptWithOutputProcess
+    internal class NuixCreateIrregularItemsReport : RubyScriptWithOutputProcess
     {
         public override string GetName() => "Create Irregular Items report";
 

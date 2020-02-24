@@ -9,21 +9,29 @@ using YamlDotNet.Serialization;
 
 namespace Orchestration
 {
+    /// <summary>
+    /// Contains methods for serializing and deserializing yaml
+    /// </summary>
     public static class YamlHelper
     {
         private static IEnumerable<Type> SpecialTypes
         {
             get
             {
-                var types = AppDomain.CurrentDomain.GetAssemblies()
+                var assemblies = AppDomain.CurrentDomain
+                    .GetAssemblies()
+                    .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(OrchestrationModuleAttribute)))
+                    .ToList();
+
+                var types = assemblies
                     .SelectMany(s => s.GetTypes())
                     .Where(type => 
                         typeof(Process).IsAssignableFrom(type) 
                         || typeof(Condition).IsAssignableFrom(type) 
                         || typeof(Enumeration).IsAssignableFrom(type))
                     .Where(x=>!x.IsAbstract && ! x.IsInterface)
-                    
                     .ToList();
+
                 return types;
             }
         }

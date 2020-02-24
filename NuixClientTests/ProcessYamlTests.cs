@@ -17,7 +17,7 @@ namespace NuixClientTests
     {
         public static readonly List<YamlProcessTest> Tests = new List<YamlProcessTest>
         {
-            new YamlProcessTest(new AddFile
+            new YamlProcessTest(new NuixAddFile
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
@@ -31,7 +31,7 @@ namespace NuixClientTests
             }),
 
 
-            new YamlProcessTest(new AddConcordance
+            new YamlProcessTest(new NuixAddConcordance
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
@@ -46,7 +46,7 @@ namespace NuixClientTests
                 ConcordanceProfileName = "Default"
             }),
 
-            new YamlProcessTest(new CreateCase
+            new YamlProcessTest(new NuixCreateCase
             {
                 CasePath = "C:/Cases/MyCase",
                 Conditions = new List<Condition>
@@ -58,7 +58,7 @@ namespace NuixClientTests
                 Investigator = "Mark"
             }),
 
-            new YamlProcessTest(new ExportConcordance
+            new YamlProcessTest(new NuixExportConcordance
             {
                 CasePath = "C:/Cases/MyCase",
                 ExportPath = "C:/Exports",
@@ -66,14 +66,14 @@ namespace NuixClientTests
                 ProductionSetName = "Stuff"
             }),
 
-            new YamlProcessTest(new SearchAndTag
+            new YamlProcessTest(new NuixSearchAndTag
             {
                 CasePath = "C:/Cases/MyCase",
                 SearchTerm = "Raptor",
                 Tag = "Dinosaurs"
             }),
 
-            new YamlProcessTest(new AddToProductionSet
+            new YamlProcessTest(new NuixAddToProductionSet
             {
                 CasePath = "C:/Cases/MyCase",
                 SearchTerm = "Raptor",
@@ -84,14 +84,14 @@ namespace NuixClientTests
             {
                 Steps = new List<Process>
                 {
-                    new CreateCase
+                    new NuixCreateCase
                     {
                         CasePath = "C:/Cases/MyCase",
                         Description = "My new case",
                         CaseName = "My Case",
                         Investigator = "Mark"
                     },
-                    new AddFile
+                    new NuixAddFile
                     {
                         CasePath = "C:/Cases/MyCase",
                         Custodian = "Mark",
@@ -104,7 +104,7 @@ namespace NuixClientTests
                         FolderName = "Evidence Folder 1"
                     },
 
-                    new AddConcordance
+                    new NuixAddConcordance
                     {
                         CasePath = "C:/Cases/MyCase",
                         Custodian = "Mark",
@@ -118,19 +118,19 @@ namespace NuixClientTests
                         ConcordanceDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
                         ConcordanceProfileName = "Default"
                     },
-                    new SearchAndTag
+                    new NuixSearchAndTag
                     {
                         CasePath = "C:/Cases/MyCase",
                         SearchTerm = "Raptor",
                         Tag = "Dinosaurs"
                     },
-                    new AddToProductionSet
+                    new NuixAddToProductionSet
                     {
                         CasePath = "C:/Cases/MyCase",
                         SearchTerm = "Raptor",
                         ProductionSetName = "Dinosaurs"
                     },
-                    new ExportConcordance
+                    new NuixExportConcordance
                     {
                         CasePath = "C:/Cases/MyCase",
                         ExportPath = "C:/Exports",
@@ -142,7 +142,7 @@ namespace NuixClientTests
 
             new YamlProcessTest(new Branch{Options = new List<Process>
             {
-                new CreateCase
+                new NuixCreateCase
                 {
                     CasePath = "C:/Cases/MyCase",
                     Conditions = new List<Condition>
@@ -153,7 +153,7 @@ namespace NuixClientTests
                     CaseName = "My Case",
                     Investigator = "Mark"
                 },
-                new SearchAndTag
+                new NuixSearchAndTag
                 {
                     CasePath = "C:/Cases/MyCase",
                     SearchTerm = "Raptor",
@@ -167,12 +167,12 @@ namespace NuixClientTests
         {
             const string yaml = @"!Sequence
 Steps:
-- !CreateCase
+- !NuixCreateCase
   CaseName: My Case
   CasePath: &casePath C:/Cases/MyCase
   Investigator: Mark
   Description: &description desc
-- !AddFile
+- !NuixAddFile
   FilePath: C:/MyFolder
   Custodian: Mark
   Description: *description
@@ -185,14 +185,14 @@ Steps:
 
                 Steps = new List<Process>
                 {
-                    new CreateCase
+                    new NuixCreateCase
                     {
                         CaseName = "My Case",
                         CasePath = "C:/Cases/MyCase",
                         Investigator = "Mark",
                         Description = "desc"
                     },
-                    new AddFile
+                    new NuixAddFile
                     {
                         FilePath = "C:/MyFolder",
                         Custodian = "Mark",

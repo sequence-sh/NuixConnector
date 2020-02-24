@@ -8,7 +8,7 @@ namespace NuixClient.Processes
     /// <summary>
     /// Creates a new case
     /// </summary>
-    internal class CreateCase : RubyScriptProcess
+    internal class NuixCreateCase : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process

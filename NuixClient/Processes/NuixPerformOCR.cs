@@ -8,7 +8,7 @@ namespace NuixClient.Processes
     /// <summary>
     /// Performs optical character recognition on files which need it in a NUIX case.
     /// </summary>
-    internal class PerformOCR : RubyScriptProcess
+    internal class NuixPerformOCR : RubyScriptProcess
     {
         public override string GetName() => "RunOCR";
 

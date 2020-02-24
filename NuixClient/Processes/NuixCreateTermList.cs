@@ -8,7 +8,7 @@ namespace NuixClient.Processes
     /// <summary>
     /// Creates a list of all terms appearing in the case and their frequencies.
     /// </summary>
-    internal class CreateTermList : RubyScriptWithOutputProcess
+    internal class NuixCreateTermList : RubyScriptWithOutputProcess
     {
         public override string GetName() => "Create Termlist";
 
