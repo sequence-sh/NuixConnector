@@ -27,9 +27,10 @@ else
     
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
+    searchTerm =
+    "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))"
     
-
-    items = the_case.searchUnsorted("flag:text_not_indexed AND kind:image").to_a
+    items = the_case.searchUnsorted(searchTerm).to_a
 
     puts "Running OCR on #{items.length} items"
     
@@ -55,7 +56,6 @@ else
     end
 
     
-
     the_case.close
     puts "Case Closed"
     
