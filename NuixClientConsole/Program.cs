@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Orchestration;
 
 namespace NuixClientConsole
 {
@@ -9,7 +10,7 @@ namespace NuixClientConsole
         {
             var methods = 
                 typeof(NuixClient.OutsideScripting).GetMethods()
-                    .Concat(typeof(NuixClient.ProcessRunner).GetMethods())
+                    .Concat(typeof(YamlRunner).GetMethods())
                     .Where(x=>x.IsStatic);
 
             var lines = ConsoleView.Run(args, methods);

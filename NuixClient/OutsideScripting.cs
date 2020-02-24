@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using NuixClient.enums;
-using NuixClient.Orchestration;
+using NuixClient.Processes;
+using Orchestration;
 
 namespace NuixClient
 {
@@ -10,7 +11,6 @@ namespace NuixClient
     /// </summary>
     public static class OutsideScripting
     {
-
         /// <summary>
         /// Extracts entities from case
         /// </summary>
@@ -22,7 +22,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new ExtractEntitiesProcess
+            var process = new NuixExtractEntities
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -44,7 +44,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string? ocrProfileName = null)
         {
-            var process = new RunOCRProcess()
+            var process = new NuixPerformOCR()
             {
                 CasePath = casePath,
                 OCRProfileName = ocrProfileName
@@ -67,7 +67,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new CreateIrregularItemsReport
+            var process = new NuixCreateIrregularItemsReport
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -89,7 +89,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new CreateTermlistProcess()
+            var process = new NuixCreateTermList()
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -111,7 +111,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase", 
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new CreateReportProcess
+            var process = new NuixCreateReport
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -137,7 +137,7 @@ namespace NuixClient
             string searchTerm = "night",
             string tag  = "Nocturnal")
         {
-            var process = new SearchAndTagProcess
+            var process = new NuixSearchAndTag
             {
                 CasePath = casePath,
                 SearchTerm = searchTerm,
@@ -170,7 +170,7 @@ namespace NuixClient
             DeduplicateBy deduplicateBy = DeduplicateBy.Individual,
             string[]? custodianRanking = null)
         {
-            var process = new AddToItemSetProcess
+            var process = new NuixAddToItemSet
             {
                 CasePath = casePath,
                 SearchTerm = searchTerm,
@@ -200,7 +200,7 @@ namespace NuixClient
             string searchTerm = "night",
             string productionSetName  = "ProdSet")
         {
-            var process = new AddToProductionSetProcess
+            var process = new NuixAddToProductionSet
             {
                 CasePath = casePath,
                 SearchTerm = searchTerm,
@@ -226,7 +226,7 @@ namespace NuixClient
             string description,
             string investigator)
         {
-            var process = new CreateCaseProcess()
+            var process = new NuixCreateCase()
             {
                 CaseName = caseName,
                 CasePath = casePath,
@@ -258,7 +258,7 @@ namespace NuixClient
             string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
             string? processingProfileName = null)
         {
-            var process = new AddFileProcess()
+            var process = new NuixAddFile()
             {
                 CasePath = casePath,
                 Custodian = custodian,
@@ -295,7 +295,7 @@ namespace NuixClient
             string concordanceDateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             string concordanceProfileName = @"TestProfile")
         {
-            var process = new AddConcordanceProcess()
+            var process = new NuixAddConcordance()
             {
                 CasePath = casePath,
                 ConcordanceDateFormat = concordanceDateFormat,
@@ -328,7 +328,7 @@ namespace NuixClient
             string productionSetName = @"Night",
             string metadataProfileName = "Default")
         {
-            var process = new ExportConcordanceProcess
+            var process = new NuixExportConcordance
             {
                 CasePath = casePath,
                 ExportPath = exportPath,

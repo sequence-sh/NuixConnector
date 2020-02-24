@@ -3,25 +3,27 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using NuixClient;
-using NuixClient.Orchestration;
+using NuixClient.Processes;
 using NUnit.Framework;
+using Orchestration;
+using Orchestration.Conditions;
+using Orchestration.Enumerations;
+using Orchestration.Processes;
 using YamlDotNet.Serialization;
 
 namespace NuixClientTests
 {
     public class ProcessYamlTest
     {
-
         public static readonly List<YamlProcessTest> Tests = new List<YamlProcessTest>
         {
-            new YamlProcessTest(new AddFileProcess
+            new YamlProcessTest(new NuixAddFile
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
                 Conditions = new List<Condition>
                 {
-                    new FileExistsCondition {FilePath = "C:/MyFile"}
+                    new FileExists {FilePath = "C:/MyFile"}
                 },
                 Description = "Interesting",
                 FilePath = "C:/MyFile",
@@ -29,13 +31,13 @@ namespace NuixClientTests
             }),
 
 
-            new YamlProcessTest(new AddConcordanceProcess
+            new YamlProcessTest(new NuixAddConcordance
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
                 Conditions = new List<Condition>
                 {
-                    new FileExistsCondition {FilePath = "C:/MyFile"}
+                    new FileExists {FilePath = "C:/MyFile"}
                 },
                 Description = "Interesting",
                 FilePath = "C:/MyFile",
@@ -44,19 +46,19 @@ namespace NuixClientTests
                 ConcordanceProfileName = "Default"
             }),
 
-            new YamlProcessTest(new CreateCaseProcess
+            new YamlProcessTest(new NuixCreateCase
             {
                 CasePath = "C:/Cases/MyCase",
                 Conditions = new List<Condition>
                 {
-                    new FileExistsCondition {FilePath = "C:/MyFile"}
+                    new FileExists {FilePath = "C:/MyFile"}
                 },
                 Description = "Interesting",
                 CaseName = "My Case",
                 Investigator = "Mark"
             }),
 
-            new YamlProcessTest(new ExportConcordanceProcess
+            new YamlProcessTest(new NuixExportConcordance
             {
                 CasePath = "C:/Cases/MyCase",
                 ExportPath = "C:/Exports",
@@ -64,51 +66,51 @@ namespace NuixClientTests
                 ProductionSetName = "Stuff"
             }),
 
-            new YamlProcessTest(new SearchAndTagProcess
+            new YamlProcessTest(new NuixSearchAndTag
             {
                 CasePath = "C:/Cases/MyCase",
                 SearchTerm = "Raptor",
                 Tag = "Dinosaurs"
             }),
 
-            new YamlProcessTest(new AddToProductionSetProcess()
+            new YamlProcessTest(new NuixAddToProductionSet
             {
                 CasePath = "C:/Cases/MyCase",
                 SearchTerm = "Raptor",
                 ProductionSetName = "Dinosaurs"
             }),
 
-            new YamlProcessTest(new MultiStepProcess
+            new YamlProcessTest(new Sequence
             {
                 Steps = new List<Process>
                 {
-                    new CreateCaseProcess
+                    new NuixCreateCase
                     {
                         CasePath = "C:/Cases/MyCase",
                         Description = "My new case",
                         CaseName = "My Case",
                         Investigator = "Mark"
                     },
-                    new AddFileProcess
+                    new NuixAddFile
                     {
                         CasePath = "C:/Cases/MyCase",
                         Custodian = "Mark",
                         Conditions = new List<Condition>
                         {
-                            new FileExistsCondition {FilePath = "C:/MyFolder"}
+                            new FileExists {FilePath = "C:/MyFolder"}
                         },
                         Description = "Evidence from file",
                         FilePath = "C:/MyFolder",
                         FolderName = "Evidence Folder 1"
                     },
 
-                    new AddConcordanceProcess
+                    new NuixAddConcordance
                     {
                         CasePath = "C:/Cases/MyCase",
                         Custodian = "Mark",
                         Conditions = new List<Condition>
                         {
-                            new FileExistsCondition {FilePath = "C:/MyConcordance.dat"}
+                            new FileExists {FilePath = "C:/MyConcordance.dat"}
                         },
                         Description = "Evidence from concordance",
                         FilePath = "C:/MyConcordance.dat",
@@ -116,19 +118,19 @@ namespace NuixClientTests
                         ConcordanceDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
                         ConcordanceProfileName = "Default"
                     },
-                    new SearchAndTagProcess
+                    new NuixSearchAndTag
                     {
                         CasePath = "C:/Cases/MyCase",
                         SearchTerm = "Raptor",
                         Tag = "Dinosaurs"
                     },
-                    new AddToProductionSetProcess()
+                    new NuixAddToProductionSet
                     {
                         CasePath = "C:/Cases/MyCase",
                         SearchTerm = "Raptor",
                         ProductionSetName = "Dinosaurs"
                     },
-                    new ExportConcordanceProcess
+                    new NuixExportConcordance
                     {
                         CasePath = "C:/Cases/MyCase",
                         ExportPath = "C:/Exports",
@@ -138,20 +140,20 @@ namespace NuixClientTests
                 }
             }),
 
-            new YamlProcessTest(new BranchProcess{Options = new List<Process>
+            new YamlProcessTest(new Branch{Options = new List<Process>
             {
-                new CreateCaseProcess
+                new NuixCreateCase
                 {
                     CasePath = "C:/Cases/MyCase",
                     Conditions = new List<Condition>
                     {
-                        new FileExistsCondition {FilePath = "C:/MyFile"}
+                        new FileExists {FilePath = "C:/MyFile"}
                     },
                     Description = "Interesting",
                     CaseName = "My Case",
                     Investigator = "Mark"
                 },
-                new SearchAndTagProcess
+                new NuixSearchAndTag
                 {
                     CasePath = "C:/Cases/MyCase",
                     SearchTerm = "Raptor",
@@ -163,14 +165,14 @@ namespace NuixClientTests
         [Test]
         public void TestYamlAnchors()
         {
-            var yaml = @"!MultiStepProcess
+            const string yaml = @"!Sequence
 Steps:
-- !CreateCaseProcess
+- !NuixCreateCase
   CaseName: My Case
   CasePath: &casePath C:/Cases/MyCase
   Investigator: Mark
   Description: &description desc
-- !AddFileProcess
+- !NuixAddFile
   FilePath: C:/MyFolder
   Custodian: Mark
   Description: *description
@@ -178,19 +180,19 @@ Steps:
   CasePath: *casePath";
 
 
-            var expectedProcess = new MultiStepProcess()
+            var expectedProcess = new Sequence
             {
 
-                Steps = new List<Process>()
+                Steps = new List<Process>
                 {
-                    new CreateCaseProcess()
+                    new NuixCreateCase
                     {
                         CaseName = "My Case",
                         CasePath = "C:/Cases/MyCase",
                         Investigator = "Mark",
                         Description = "desc"
                     },
-                    new AddFileProcess()
+                    new NuixAddFile
                     {
                         FilePath = "C:/MyFolder",
                         Custodian = "Mark",
@@ -225,15 +227,15 @@ Steps:
         [Test]
         public async Task TestForeachProcess()
         {
-            var list = new List<string>()
+            var list = new List<string>
             {
                 "Correct", "Horse", "Battery", "Staple"
             };
             var expected = list.Select(s => $"'{s}'").ToList();
 
-            var forEachProcess = new ForEachProcess
+            var forEachProcess = new ForEach
             {
-                Enumeration = new ListEnumeration{List = list},
+                Enumeration = new Collection{Members = list},
                 PropertyToInject = nameof(EmitTermProcess.Term),
                 Template = "'$s'",
                 SubProcess = new EmitTermProcess()
@@ -262,7 +264,7 @@ Steps:
             public string Term { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-            internal override IEnumerable<string> GetArgumentErrors()
+            public override IEnumerable<string> GetArgumentErrors()
             {
                 yield break;
             }
