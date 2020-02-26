@@ -7,14 +7,15 @@ using YamlDotNet.Serialization;
 namespace NuixClient.Processes
 {
     /// <summary>
-    /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
+    /// Annotates a document ID list to add production set names to it.
+
     /// </summary>
-    internal class NuixImportDocumentIds : RubyScriptProcess
+    internal class AnnotateDocumentIdList : RubyScriptProcess
     {
         /// <summary>
         /// The name of this process
         /// </summary>
-        public override string GetName() => $"Add document ids to production set.";
+        public override string GetName() => $"Annotates a document ID list";
 
 
         /// <summary>
@@ -35,19 +36,11 @@ namespace NuixClient.Processes
         public string CasePath { get; set; }
 
         /// <summary>
-        /// Specifies that the source production set name(s) are contained in the document ID list.
-        /// </summary>
-        [DataMember]
-        [Required]
-        [YamlMember(Order = 5)]
-        public bool AreSourceProductionSetsInData { get; set; }
-
-        /// <summary>
         /// Specifies the file path of the document ID list.
         /// </summary>
         [DataMember]
         [Required]
-        [YamlMember(Order = 6)]
+        [YamlMember(Order = 5)]
         public string DataPath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -63,7 +56,6 @@ namespace NuixClient.Processes
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);
-            yield return ("-s", AreSourceProductionSetsInData.ToString().ToLower());
             yield return ("-n", ProductionSetName);
             yield return ("-d", DataPath);
         }

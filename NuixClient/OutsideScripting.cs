@@ -12,6 +12,32 @@ namespace NuixClient
     public static class OutsideScripting
     {
         /// <summary>
+        /// Annotates a document ID list to add production set names to it.
+        /// </summary>
+        /// <param name="productionSetName">The name of the production set to import document ids to</param>
+        /// <param name="dataPath">Specifies the file path of the document ID list</param>
+        /// <param name="casePath">The path to the case</param>
+        /// <returns>The output of report creation</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<Result<string>> AnnotateDocumentIdList(string productionSetName,
+            string dataPath,
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase")
+        {
+            var process = new AnnotateDocumentIdList
+            {
+                CasePath = casePath,
+                ProductionSetName = productionSetName,
+                DataPath = dataPath
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+
+
+        /// <summary>
         /// Extracts entities from case
         /// </summary>
         /// <param name="productionSetName">The name of the production set to import document ids to</param>
@@ -25,7 +51,7 @@ namespace NuixClient
             bool areSourceProductionSetsInData,
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase")
         {
-            var process = new NuixImportDocumentIds()
+            var process = new NuixImportDocumentIds
             {
                 CasePath = casePath,
                 ProductionSetName = productionSetName,
@@ -72,7 +98,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string? ocrProfileName = null)
         {
-            var process = new NuixPerformOCR()
+            var process = new NuixPerformOCR
             {
                 CasePath = casePath,
                 OCRProfileName = ocrProfileName
@@ -117,7 +143,7 @@ namespace NuixClient
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
-            var process = new NuixCreateTermList()
+            var process = new NuixCreateTermList
             {
                 CasePath = casePath,
                 OutputFolder = outputFolderPath
@@ -260,7 +286,7 @@ namespace NuixClient
             string description,
             string investigator)
         {
-            var process = new NuixCreateCase()
+            var process = new NuixCreateCase
             {
                 CaseName = caseName,
                 CasePath = casePath,
@@ -292,7 +318,7 @@ namespace NuixClient
             string filePath = @"C:\Dev\Nuix\Data\Custodians\BobS\Report3.ufdr",
             string? processingProfileName = null)
         {
-            var process = new NuixAddFile()
+            var process = new NuixAddFile
             {
                 CasePath = casePath,
                 Custodian = custodian,
@@ -329,7 +355,7 @@ namespace NuixClient
             string concordanceDateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             string concordanceProfileName = @"TestProfile")
         {
-            var process = new NuixAddConcordance()
+            var process = new NuixAddConcordance
             {
                 CasePath = casePath,
                 ConcordanceDateFormat = concordanceDateFormat,
