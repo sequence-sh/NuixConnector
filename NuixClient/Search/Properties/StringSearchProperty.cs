@@ -1,4 +1,4 @@
-﻿using Orchestration;
+﻿using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search.Properties
 {
@@ -11,11 +11,11 @@ namespace NuixClient.Search.Properties
         protected override Result<string> TryParse(string s)
         {
             return string.IsNullOrWhiteSpace(s)?
-                Result<string>.Failure("String is null or empty") : 
-                Result<string>.Success(s);
+                Result.Failure<string>("String is null or empty") : 
+                Result.Success(s);
         }
 
-        protected override string? ConvertToString(string s)
+        protected override string ConvertToString(string s)
         {
             return s.Contains(" ") ? $"\"{s}\"" : s;
         }

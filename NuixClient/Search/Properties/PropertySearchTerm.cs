@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Orchestration;
 
 namespace NuixClient.Search.Properties
 {
@@ -31,12 +30,12 @@ namespace NuixClient.Search.Properties
             var r = value.TryRender(sp);
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse - for compiler
-            if (r is Success<string> s)
+            if (r.IsSuccess)
                 return subProperty == null
-                    ? new RegularPropertySearchTerm(sp, value, s.Result) as PropertySearchTerm
-                    : new CompoundPropertySearchTerm(sp, value, s.Result, subProperty);
+                    ? new RegularPropertySearchTerm(sp, value, r.Value) as PropertySearchTerm
+                    : new CompoundPropertySearchTerm(sp, value, r.Value, subProperty);
 
-            return new ErrorTerm(string.Join("\r\n", r.Errors));
+            return new ErrorTerm(string.Join("\r\n", r.Error));
 
         }
 

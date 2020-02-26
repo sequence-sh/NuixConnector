@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using Orchestration;
+using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search
 {
@@ -45,9 +45,9 @@ namespace NuixClient.Search
             var match = FileTypeRegex.Match(str);
 
             return match.Success
-                ? Success<FileType>.Success(new FileType(match.Groups["Category"].Value,
+                ? Result.Success(new FileType(match.Groups["Category"].Value,
                     match.Groups["Type"].Value))
-                : Result<FileType>.Failure($"Could not parse '{str}' as a file type.");
+                : Result.Failure<FileType>($"Could not parse '{str}' as a file type.");
         }
 
         private static readonly Regex FileTypeRegex = new Regex(@"\A(?<Category>[\w-_]+)\/(?<Type>[\w-_\.]+)\Z", RegexOptions.IgnoreCase | RegexOptions.Compiled);

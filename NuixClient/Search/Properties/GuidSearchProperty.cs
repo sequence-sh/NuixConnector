@@ -1,5 +1,5 @@
 ﻿using System;
-using Orchestration;
+using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search.Properties
 {
@@ -12,8 +12,8 @@ namespace NuixClient.Search.Properties
         protected override Result<Guid> TryParse(string s)
         {
             if(Guid.TryParse(s, out var r))
-                return Result<Guid>.Success(r);
-            return Result<Guid>.Failure($"Could not parse '{s}' as a Guid.");
+                return Result.Success(r);
+            return Result.Failure<Guid>($"Could not parse '{s}' as a Guid.");
         }
     }
 }

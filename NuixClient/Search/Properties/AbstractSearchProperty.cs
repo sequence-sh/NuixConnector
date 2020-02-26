@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using Orchestration;
+﻿using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search.Properties
 {

@@ -1,5 +1,5 @@
-﻿using NuixClient.Search.Properties;
-using Orchestration;
+﻿using CSharpFunctionalExtensions;
+using NuixClient.Search.Properties;
 
 namespace NuixClient.Search
 {

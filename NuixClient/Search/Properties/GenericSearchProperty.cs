@@ -1,4 +1,5 @@
-﻿using Orchestration;
+﻿using System.Diagnostics;
+using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search.Properties
 {
@@ -24,10 +25,12 @@ namespace NuixClient.Search.Properties
         protected abstract Result<T> TryParse(string s);
 
 
-        protected virtual string? ConvertToString(T t)
+        protected virtual string ConvertToString(T t)
         {
-            var r = t?.ToString();
+            Debug.Assert(t != null, nameof(t) + " != null");
+            var r = t.ToString();
 
+            Debug.Assert(r != null, nameof(r) + " != null");
             return r;
         }
 
@@ -39,17 +42,7 @@ namespace NuixClient.Search.Properties
         {
             var r = TryParse(str);
 
-            if (r is Success<T> s)
-            {
-                var renderedString = ConvertToString(s.Result);
-
-                if (renderedString == null)
-                    return Result<string>.Failure($"Could not render '{str}'");
-
-                return Result<string>.Success(renderedString);
-            }
-            else
-                return Result<string>.Failure(r.Errors);
+            return r.Map(ConvertToString);
         }
     }
 }

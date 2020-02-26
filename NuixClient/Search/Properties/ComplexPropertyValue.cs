@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Orchestration;
+using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search.Properties
 {
@@ -15,28 +15,14 @@ namespace NuixClient.Search.Properties
 
         public override Result<string> TryRender(AbstractSearchProperty searchProperty)
         {
-            var vs = new List<string>();
-            var errors = new List<string>();
+            if(Disjunction.Count == 0)
+                return Result.Failure<string>($"'{searchProperty.PropertyName}' Must have at least one property value");
 
-            foreach (var simplePropertyValue in Disjunction)
-            {
-                var r = simplePropertyValue.TryRender(searchProperty);
+            var result = Disjunction.Select(x => x.TryRender(searchProperty))
+                .Combine()
+                .Map(vs => @$"({string.Join(" OR ", vs.Select(x => x))})");
 
-                if (r is Success<string> s)
-                    vs.Add(s.Result);
-                else
-                    errors.AddRange(r.Errors);
-            }
-
-            if(errors.Any())
-                return Result<string>.Failure(errors);
-
-            if(!vs.Any())
-                return Result<string>.Failure($"'{searchProperty.PropertyName}' Must have at least one property value");
-
-            var resultString = @$"({string.Join(" OR ", vs.Select(x => x))})";
-
-            return Result<string>.Success(resultString);
+            return result;
         }
 
         public override string ToString()

@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using Orchestration;
+using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search
 {
@@ -27,7 +27,7 @@ namespace NuixClient.Search
         {
             var match = RangeRegex.Match(str);
 
-            if (!match.Success) return Result<Range>.Failure($"Could not parse '{str}' as a range");
+            if (!match.Success) return Result.Failure<Range>($"Could not parse '{str}' as a range");
 
             var start = int.TryParse(match.Groups["start"].Value, out var s) ? s : null as int?;
             var end   = int.TryParse(match.Groups["end"].Value, out var e) ? e : null as int?;
@@ -36,8 +36,8 @@ namespace NuixClient.Search
             var maxUnits = match.Groups["eUnits"].Value;
 
             if (!start.HasValue && !end.HasValue)
-                return Result<Range>.Failure("Either the start or the end of the range must have a value.");
-            return Result<Range>.Success(new Range(start, minUnits, end, maxUnits));
+                return Result.Failure<Range>("Either the start or the end of the range must have a value.");
+            return Result.Success(new Range(start, minUnits, end, maxUnits));
         }
 
         internal static readonly Regex RangeRegex = new Regex(

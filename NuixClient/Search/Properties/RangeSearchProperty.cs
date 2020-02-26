@@ -1,4 +1,4 @@
-﻿using Orchestration;
+﻿using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search.Properties
 {

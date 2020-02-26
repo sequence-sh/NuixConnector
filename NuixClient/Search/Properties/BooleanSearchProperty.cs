@@ -1,4 +1,4 @@
-﻿using Orchestration;
+﻿using CSharpFunctionalExtensions;
 
 namespace NuixClient.Search.Properties
 {
@@ -11,13 +11,13 @@ namespace NuixClient.Search.Properties
         protected override Result<bool> TryParse(string s)
         {
             if(bool.TryParse(s, out var r))
-                return Result<bool>.Success(r);
+                return Result.Success(r);
             if (int.TryParse(s, out var i) && (i == 1 || i == 0 ))
-                return Result<bool>.Success(i == 1);
-            return Result<bool>.Failure($"Could not parse '{s}' as a boolean.");
+                return Result.Success(i == 1);
+            return Result.Failure<bool>($"Could not parse '{s}' as a boolean.");
         }
 
-        protected override string? ConvertToString(bool t)
+        protected override string ConvertToString(bool t)
         {
             return t ? "1" : "0";
         }
