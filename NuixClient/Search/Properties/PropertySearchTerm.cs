@@ -84,22 +84,31 @@ namespace NuixClient.Search.Properties
         public static IReadOnlyDictionary<string, AbstractSearchProperty> AllProperties = 
             new List<AbstractSearchProperty>
             {
+                new BooleanSearchProperty("has-custodian"),
+                new BooleanSearchProperty("has-embedded-data"),
+                new BooleanSearchProperty("has-text"),
+                new BooleanSearchProperty("has-image"),
+
                 new RangeSearchProperty("date-properties"),
                 new RangeSearchProperty("file-size"),
+                new RangeSearchProperty("recipient-count"),
+
                 new FileTypeSearchProperty("mime-type"),
+
                 new StringSearchProperty("tag"),
+                new StringSearchProperty("kind"),
                 new StringSearchProperty("comment"),
                 new StringSearchProperty("from-mail-domain"),
                 new StringSearchProperty("to-mail-domain"),
                 new StringSearchProperty("cc-mail-domain"),
                 new StringSearchProperty("bcc-mail-domain"),
-                new RangeSearchProperty("recipient-count"),
-                new BooleanSearchProperty("has-custodian"),
                 new StringSearchProperty("custodian1"),
-                new GuidSearchProperty("item-set-guid"),
-                new GuidSearchProperty("production-set-guid"),
                 new StringSearchProperty("document-id"),
                 new StringSearchProperty("flag"),
+
+
+                new GuidSearchProperty("item-set-guid"),
+                new GuidSearchProperty("production-set-guid"),
                 
                 //TODO other properties
             }.ToDictionary(x => x.PropertyName, StringComparer.OrdinalIgnoreCase);

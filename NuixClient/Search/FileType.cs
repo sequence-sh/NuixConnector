@@ -11,8 +11,6 @@ namespace NuixClient.Search
         /// <summary>
         /// Create a new FileType
         /// </summary>
-        /// <param name="category"></param>
-        /// <param name="type"></param>
         public FileType(string category, string type)
         {
             Category = category;
@@ -37,9 +35,7 @@ namespace NuixClient.Search
         {
             return Category + "/" + Type;
         }
-
-
-
+        
         /// <summary>
         /// Create a range from a string
         /// </summary>
@@ -54,6 +50,6 @@ namespace NuixClient.Search
                 : Result<FileType>.Failure($"Could not parse '{str}' as a file type.");
         }
 
-        private static readonly Regex FileTypeRegex = new Regex(@"\A(?<Category>\w+)\/(?<Type>\w+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex FileTypeRegex = new Regex(@"\A(?<Category>[\w-_]+)\/(?<Type>[\w-_\.]+)\Z", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     }
 }

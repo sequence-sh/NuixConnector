@@ -24,17 +24,25 @@ namespace NuixClient.Search.Properties
         /// <returns></returns>
         protected abstract Result<T> TryParse(string s);
 
+
+        protected virtual string? ConvertToString(T t)
+        {
+            var r = t?.ToString();
+
+            return r;
+        }
+
         /// <summary>
         /// Render this property with this value
         /// </summary>
         /// <returns></returns>
-        public string RenderValue(T t)
+        private string? RenderValue(T t)
         {
+            if (t == null)
+                return null;
+            var s = ConvertToString(t);
 
-            var tString = t is string s && s.Contains(" ") ? $"\"{s}\"" : t?.ToString();
-
-            Debug.Assert(tString != null, nameof(tString) + " != null");
-            return tString;
+            return s;
         }
 
         /// <summary>
@@ -48,6 +56,9 @@ namespace NuixClient.Search.Properties
             if (r is Success<T> s)
             {
                 result = RenderValue(s.Result);
+                if (result == null)
+                    return false;
+
                 return true;
             }
             else

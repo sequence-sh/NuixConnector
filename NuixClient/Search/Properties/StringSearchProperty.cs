@@ -14,5 +14,10 @@ namespace NuixClient.Search.Properties
                 Result<string>.Failure("String is null or empty") : 
                 Result<string>.Success(s);
         }
+
+        protected override string? ConvertToString(string s)
+        {
+            return s.Contains(" ") ? $"\"{s}\"" : s;
+        }
     }
 }
