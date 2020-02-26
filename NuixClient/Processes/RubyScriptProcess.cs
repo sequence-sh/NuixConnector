@@ -8,7 +8,7 @@ using Orchestration.Processes;
 
 namespace NuixClient.Processes
 {
-    internal abstract class RubyScriptProcess : Process
+    public abstract class RubyScriptProcess : Process
     {
         //TODO make a config property
         private const string NuixExeConsolePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe";
