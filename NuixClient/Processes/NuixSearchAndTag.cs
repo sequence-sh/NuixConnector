@@ -59,7 +59,7 @@ namespace NuixClient.Processes
         {
             yield return ("-p", CasePath);
             yield return ("-s", SearchTerm);
-            yield return ("t", Tag);
+            yield return ("-t", Tag);
 
             //TODO limit and order
         }
