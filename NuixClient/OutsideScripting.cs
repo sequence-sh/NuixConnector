@@ -14,6 +14,34 @@ namespace NuixClient
         /// <summary>
         /// Extracts entities from case
         /// </summary>
+        /// <param name="productionSetName">The name of the production set to import document ids to</param>
+        /// <param name="dataPath">Specifies the file path of the document ID list</param>
+        /// <param name="areSourceProductionSetsInData">Specifies that the source production set name(s) are contained in the document ID list</param>
+        /// <param name="casePath">The path to the case</param>
+        /// <returns>The output of report creation</returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<Result<string>> ImportDocumentIds(string productionSetName,
+            string dataPath,
+            bool areSourceProductionSetsInData,
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase")
+        {
+            var process = new NuixImportDocumentIds()
+            {
+                CasePath = casePath,
+                ProductionSetName = productionSetName,
+                DataPath = dataPath,
+                AreSourceProductionSetsInData = areSourceProductionSetsInData
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+
+        /// <summary>
+        /// Extracts entities from case
+        /// </summary>
         /// <param name="casePath">The path to the case</param>
         /// <param name="outputFolderPath">The path to write the report files to</param>
         /// <returns>The output of report creation</returns>
