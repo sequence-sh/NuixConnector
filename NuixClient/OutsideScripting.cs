@@ -263,6 +263,7 @@ namespace NuixClient
         /// <summary>
         /// Add items to a production set in NUIX
         /// </summary>
+        /// <param name="description"></param>
         /// <param name="casePath">The path of the case to open</param>
         /// <param name="searchTerm">The term to search for</param>
         /// <param name="productionSetName">The production set to add the found items to. Will be created if it doesn't exist</param>
@@ -270,12 +271,12 @@ namespace NuixClient
         /// <param name="limit"></param>
         /// <returns>The output of the script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<Result<string>> AddToProductionSet( 
-
-            string casePath= @"C:\Dev\Nuix\Cases\NewCase",
+        public static async IAsyncEnumerable<Result<string>> AddToProductionSet(
+            string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
-            string productionSetName  = "ProdSet",
-            string order = "name ASC",
+            string productionSetName = "ProdSet",
+            string? description = "cool",
+            string? order = "name ASC",
             int limit = 1000)
         {
             var process = new NuixAddToProductionSet
@@ -283,6 +284,7 @@ namespace NuixClient
                 CasePath = casePath,
                 SearchTerm = searchTerm,
                 ProductionSetName = productionSetName,
+                Description = description,
                 Order = order,
                 Limit = limit
             };
