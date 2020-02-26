@@ -59,7 +59,7 @@ namespace NuixClient.Processes
                 yield return $"'{DataPath}' does not exist";
         }
 
-        internal override string ScriptName => "AddToProductionSet.rb";
+        internal override string ScriptName => "ImportDocumentIds.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);

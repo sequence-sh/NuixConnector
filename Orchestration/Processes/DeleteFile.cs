@@ -12,7 +12,7 @@ namespace Orchestration.Processes
     public class DeleteFile : Process
     {
         /// <summary>
-        /// 
+        /// The path to the file to delete
         /// </summary>
         [YamlMember(Order = 2)]
         [Required]
