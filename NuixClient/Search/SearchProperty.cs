@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Diagnostics;
 using JetBrains.Annotations;
 
 namespace NuixClient.Search
@@ -26,28 +26,26 @@ namespace NuixClient.Search
         /// Render this property with this value
         /// </summary>
         /// <returns></returns>
-        public string Render(T t, string? subProperty)
+        public string RenderValue(T t)
         {
-            var tString = (t is string s && !s.All(char.IsLetter)) ? $"\"{s}\"" : t?.ToString();
 
+            var tString = t is string s && s.Contains(" ") ? $"\"{s}\"" : t?.ToString();
 
-            if (subProperty != null)
-                return $"{PropertyName}:{subProperty}:{tString}"; //put strings with non letter characters in quotes
-
-            return $"{PropertyName}:{tString}";
+            Debug.Assert(tString != null, nameof(tString) + " != null");
+            return tString;
         }
 
         /// <summary>
         /// Render this property with this value
         /// </summary>
         /// <returns></returns>
-        public override bool Render(string str, string? subProperty, out string? result)
+        public override bool RenderValue(string str,out string? result)
         {
             var (success, obj) = _parseFunc(str);
 
             if (success)
             {
-                result = Render(obj, subProperty);
+                result = RenderValue(obj);
                 return true;
             }
             else
@@ -86,10 +84,9 @@ namespace NuixClient.Search
         /// Render a property with this value. Assumes T has the correct type
         /// </summary>
         /// <param name="t">The value of the property. Must have the correct type</param>
-        /// <param name="subproperty">The name of the subproperty, if there is one</param>
         /// <param name="result">The result of rendering</param>
         /// <returns></returns>
         [ContractAnnotation("=>true,result:notNull; =>false,result:null;")]
-        public abstract bool Render(string t, string? subproperty, out string? result);
+        public abstract bool RenderValue(string t, out string? result);
     }
 }

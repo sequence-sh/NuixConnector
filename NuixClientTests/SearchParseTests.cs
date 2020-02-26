@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace NuixClientTests
 {
@@ -18,6 +19,7 @@ namespace NuixClientTests
             new TestCase("hello AND world", "hello AND world"),
             new TestCase("hello OR world", "hello OR world"),
             new TestCase("tag:Dinosaurs", "tag:Dinosaurs"),
+            new TestCase("tag: Dinosaurs", "tag:Dinosaurs"),
             new TestCase("hello tag:Dinosaurs", "hello AND tag:Dinosaurs"),
             new TestCase("(hello OR greetings) world", "(hello OR greetings) AND world"),
             new TestCase("(nested OR (nest AND ted))", "nested OR (nest AND ted)" ),
@@ -29,7 +31,23 @@ namespace NuixClientTests
             new TestCase("file-size:[* to 10]", "file-size:[* TO 10]"),
             new TestCase("date-properties:\"File Modified\":[* TO 1]","date-properties:\"File Modified\":[* TO 1]" ),
             new TestCase("date-properties:\"*\":[* TO 1]","date-properties:\"*\":[* TO 1]" ),
-            new TestCase("date-properties:\"*\":[* TO -7Y]","date-properties:\"*\":[* TO -7Y]" )
+            new TestCase("date-properties:\"*\":[* TO -7Y]","date-properties:\"*\":[* TO -7Y]" ),
+
+            new TestCase("flag:not_processed","flag:not_processed"),
+
+            new TestCase("flag:poison OR (NOT flag:encrypted AND has-embedded-data:0 AND ( ( has-text:0 AND has-image:0 AND NOT flag:not_processed AND NOT kind:multimedia AND NOT mime-type:application/vnd.ms-shortcut AND NOT mime-type:application/x-contact AND NOT kind:system AND NOT mime-type:( application/vnd.apache-error-log-entry OR application/vnd.git-logstash-log-entry OR application/vnd.linux-syslog-entry OR application/vnd.logstash-log-entry OR application/vnd.ms-iis-log-entry OR application/vnd.ms-windows-event-log-record OR application/vnd.ms-windows-event-logx-record OR application/vnd.ms-windows-setup-api-win7-win8-log-boot-entry OR application/vnd.ms-windows-setup-api-win7-win8-log-section-entry OR application/vnd.ms-windows-setup-api-xp-log-entry OR application/vnd.squid-access-log-entry OR application/vnd.tcpdump.record OR application/vnd.tcpdump.tcp.stream OR application/vnd.tcpdump.udp.stream OR application/vnd.twitter-logstash-log-entry OR application/x-pcapng-entry OR filesystem/x-linux-login-logfile-record OR filesystem/x-ntfs-logfile-record OR server/dropbox-log-event OR text/x-common-log-entry OR text/x-log-entry ) AND NOT kind:log AND NOT mime-type:application/vnd.ms-exchange-stm ) OR mime-type:application/vnd.lotus-notes ))", "flag:poison OR (NOT flag:encrypted AND has-embedded-data:0 AND ( ( has-text:0 AND has-image:0 AND NOT flag:not_processed AND NOT kind:multimedia AND NOT mime-type:application/vnd.ms-shortcut AND NOT mime-type:application/x-contact AND NOT kind:system AND NOT mime-type:( application/vnd.apache-error-log-entry OR application/vnd.git-logstash-log-entry OR application/vnd.linux-syslog-entry OR application/vnd.logstash-log-entry OR application/vnd.ms-iis-log-entry OR application/vnd.ms-windows-event-log-record OR application/vnd.ms-windows-event-logx-record OR application/vnd.ms-windows-setup-api-win7-win8-log-boot-entry OR application/vnd.ms-windows-setup-api-win7-win8-log-section-entry OR application/vnd.ms-windows-setup-api-xp-log-entry OR application/vnd.squid-access-log-entry OR application/vnd.tcpdump.record OR application/vnd.tcpdump.tcp.stream OR application/vnd.tcpdump.udp.stream OR application/vnd.twitter-logstash-log-entry OR application/x-pcapng-entry OR filesystem/x-linux-login-logfile-record OR filesystem/x-ntfs-logfile-record OR server/dropbox-log-event OR text/x-common-log-entry OR text/x-log-entry ) AND NOT kind:log AND NOT mime-type:application/vnd.ms-exchange-stm ) OR mime-type:application/vnd.lotus-notes ))"),
+
+            new TestCase("(tag:robot) OR (tag:kitten)", "tag:robot OR tag:kitten"),
+            new TestCase("(tag:robot) NOT (tag:kitten)", "tag:robot AND NOT tag:kitten"),
+            new TestCase("(tag:robot) AND (tag:kitten)", "tag:robot AND tag:kitten"),
+            new TestCase("NOT tag:(robot OR kitten)","NOT tag:(robot OR kitten)" ),
+
+
+            new TestCase("(tag:robot AND tag:dinosaur) OR (tag:kitten)", "(tag:robot AND tag:dinosaur) OR tag:kitten"),
+            new TestCase("(tag:robot AND tag:dinosaur) OR (tag:cute AND tag:kitten)", "(tag:robot AND tag:dinosaur) OR (tag:cute AND tag:kitten)"),
+            
+            new TestCase("tag:(robots OR ninjas)", "tag:(robots OR ninjas)")
+
         };
 
         [Test]
@@ -65,8 +83,7 @@ namespace NuixClientTests
         [Test]
         [TestCaseSource(nameof(ErrorTestCases))]
         public void TestError(ErrorTestCase errorTestCase)
-        {
-            var (success, error, _) = NuixClient.Search.SearchParser.TryParse(errorTestCase.Input);
+        { var (success, error, _) = NuixClient.Search.SearchParser.TryParse(errorTestCase.Input);
 
             Assert.IsFalse(success, "Expected error");
             Assert.IsNotNull(error);
@@ -74,8 +91,6 @@ namespace NuixClientTests
 
             StringAssert.StartsWith(errorTestCase.ExpectedError, error);
         }
-
-        
     }
 
     public class TestCase

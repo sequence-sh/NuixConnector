@@ -44,6 +44,6 @@ namespace NuixClient.Search
             return obj is ISearchTerm st && st.AsString == AsString;
         }
 
-        public IEnumerable<string> ErrorMessages => Enumerable.Empty<string>();
+        public IEnumerable<string> ErrorMessages => Terms.SelectMany(x=>x.ErrorMessages);
     }
 }

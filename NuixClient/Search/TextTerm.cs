@@ -22,10 +22,9 @@ namespace NuixClient.Search
         {
             get
             {
-                if (Text.All(char.IsLetter))
-                    return Text;
-                else
+                if (Text.Contains(" "))
                     return '"' + Text + '"'; //if text contains multiple words, put it in quotes
+                else return Text;
             }
         }
 

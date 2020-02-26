@@ -2,43 +2,11 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using Superpower;
-using Superpower.Display;
 using Superpower.Parsers;
 using Superpower.Tokenizers;
 
 namespace NuixClient.Search
 {
-    internal enum SearchToken
-    {
-        None = 0,
-        [Token(Example = "raptor")]
-        Text,
-        [Token(Example = "AND")]
-        And,
-        [Token(Example = "OR")]
-        Or,
-
-        [Token(Example = "NOT")]
-        Not,
-        [Token(Example = "MimeType:")]
-        Property,
-        [Token(Example = "date-properties:\"File Modified\":")]
-        CompoundProperty,
-
-        [Token(Example = "Emails/Email")]
-        FileType,
-
-        [Token(Example = "[50 to *]")]
-        Range,
-
-        [Token(Example = "(")]
-        LParen,
-
-        [Token(Example = ")")]
-        RParen
-
-    }
-
     /// <summary>
     /// Static class for parsing strings as Search terms
     /// </summary>
@@ -55,7 +23,7 @@ namespace NuixClient.Search
             var tokensResult = Tokenizer.TryTokenize(s);
 
             if (!tokensResult.HasValue)
-                return (false, tokensResult.ErrorMessage, null);
+                return (false, tokensResult.ToString(), null);
 
             //If we get to here the search term is made of valid tokens, but they still may be in an invalid order
             
@@ -65,7 +33,7 @@ namespace NuixClient.Search
 
             do
             {
-                var result = BooleanParser.TryParse(tokens); //All searches should ultimately be 
+                var result = Boolean.TryParse(tokens); //All searches should ultimately be booleans
 
                 if (result.HasValue)
                 {
@@ -110,48 +78,68 @@ namespace NuixClient.Search
             .Match(Character.EqualTo('('), SearchToken.LParen)
             .Match(Character.EqualTo(')'), SearchToken.RParen)
             .Match(QuotedString.CStyle, SearchToken.Text)
-            .Match(Span.Regex(PropertySearchTerm.CompoundPropertyRegex.ToString(), PropertySearchTerm.CompoundPropertyRegex.Options), SearchToken.Property)
-            .Match(Span.Regex(PropertySearchTerm.PropertyRegex.ToString(), PropertySearchTerm.PropertyRegex.Options), SearchToken.Property)
+            .Match(Span.Regex(CompoundPropertySearchTerm.CompoundPropertyRegex.ToString(), CompoundPropertySearchTerm.CompoundPropertyRegex.Options), SearchToken.Property)
+            .Match(Span.Regex(RegularPropertySearchTerm.PropertyRegex.ToString(), RegularPropertySearchTerm.PropertyRegex.Options), SearchToken.Property)
             
-            .Match(Span.Regex("[a-z0-9-]+/[a-z0-9-]+", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.FileType)
+            .Match(Span.Regex("[a-z0-9-_]+/[a-z0-9-_]+(?:\\.[a-z0-9-_]+){0,3}", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.FileType)
             .Match(Span.Regex(Range.RangeRegex.ToString(), Range.RangeRegex.Options), SearchToken.Range)
             .Match(Span.EqualToIgnoreCase("and"), SearchToken.And, true)
             .Match(Span.EqualToIgnoreCase("or"), SearchToken.Or, true)
             .Match(Span.EqualToIgnoreCase("not"), SearchToken.Not, true)
-            .Match(Span.Regex("[a-z0-9-']+", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.Text, true)
+            .Match(Span.Regex("[a-z0-9-'_]+", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.Text, true)
             .Build();
+
+
+        private static readonly TokenListParser<SearchToken, PropertyValue> SinglePropertyValue =
+            Token.EqualTo(SearchToken.Text)
+                .Or(Token.EqualTo(SearchToken.FileType))
+                .Or(Token.EqualTo(SearchToken.Range))
+                .Select(x=> new SimplePropertyValue(x.ToStringValue()) as PropertyValue);
+
+        private static readonly TokenListParser<SearchToken, PropertyValue> ComplexPropertyValue =
+            from lp in Token.EqualTo(SearchToken.LParen)
+            from b in Parse.Chain(
+                Token.EqualTo(SearchToken.Or),
+                SinglePropertyValue,
+                (op, lhs, rhs) =>
+                {
+                    var leftTerms = lhs is ComplexPropertyValue lct ? lct.Disjunction : new[] { (SimplePropertyValue) lhs };
+                    var rightTerms = rhs is ComplexPropertyValue rct ? rct.Disjunction : new[] { (SimplePropertyValue) rhs };
+
+                    return new ComplexPropertyValue(leftTerms.Concat(rightTerms));
+                })
+            from rp in Token.EqualTo(SearchToken.RParen)
+            select  b;
+
 
         private static readonly TokenListParser<SearchToken, ISearchTerm> FullProperty =
             from pToken in Token.EqualTo(SearchToken.Property)
-            from vToken in Token.EqualTo(SearchToken.Text)
-                .Or(Token.EqualTo(SearchToken.FileType))
-                .Or(Token.EqualTo(SearchToken.Range))
-            select  PropertySearchTerm.TryCreate(pToken.ToStringValue(), vToken.ToStringValue());
+            from vToken in SinglePropertyValue.Or(ComplexPropertyValue)
+            select PropertySearchTerm.TryCreate(pToken.ToStringValue(), vToken);
         
         private static readonly TokenListParser<SearchToken, ISearchTerm> CompoundProperty =
             from pToken in Token.EqualTo(SearchToken.CompoundProperty)
-            from vToken in Token.EqualTo(SearchToken.Text)
-                .Or(Token.EqualTo(SearchToken.FileType))
-                .Or(Token.EqualTo(SearchToken.Range))
-            select  PropertySearchTerm.TryCreate(pToken.ToStringValue(), vToken.ToStringValue());
+            from vToken in SinglePropertyValue.Or(ComplexPropertyValue)
+            select  PropertySearchTerm.TryCreate(pToken.ToStringValue(), vToken);
 
         private static readonly TokenListParser<SearchToken, ISearchTerm> TextParser =
             Token.EqualTo(SearchToken.Text).Select(b => new TextTerm(b.ToStringValue()) as ISearchTerm);
 
 
-        private static readonly TokenListParser<SearchToken, ISearchTerm> BracketParser =
+        private static readonly TokenListParser<SearchToken, ISearchTerm> Bracket =
             from lp in Token.EqualTo(SearchToken.LParen)
-            from b in Parse.Ref(() => BooleanParser)
+            from b in Parse.Ref(() => Boolean)
             from rp in Token.EqualTo(SearchToken.RParen)
             select  b;
 
 
-        private static readonly TokenListParser<SearchToken, ISearchTerm> AndParser = 
+        private static readonly TokenListParser<SearchToken, ISearchTerm> And = 
             Parse.Chain(
                 Token.EqualTo(SearchToken.And),
-                BracketParser
-                    .Or(Parse.Ref(()=>OrParser))
-                    .Or(Parse.Ref(() => NotParser))
+                
+                    Parse.Ref(()=>Or)
+                    .Or(Parse.Ref(() => Not))
+                    .Or(Bracket)
                     .Or(FullProperty)
                     .Or(CompoundProperty)
                     .Or(TextParser),
@@ -163,11 +151,11 @@ namespace NuixClient.Search
                     return new ConjunctionTerm(leftTerms.Concat(rightTerms));
                 });
 
-        private static readonly TokenListParser<SearchToken, ISearchTerm> OrParser =
+        private static readonly TokenListParser<SearchToken, ISearchTerm> Or =
             Parse.Chain(
                 Token.EqualTo(SearchToken.Or),
-                BracketParser
-                    .Or(Parse.Ref(()=> NotParser))
+                Bracket
+                    .Or(Parse.Ref(()=> Not))
                     .Or(FullProperty)
                     .Or(CompoundProperty)
                     .Or(TextParser),
@@ -179,23 +167,23 @@ namespace NuixClient.Search
                     return new DisjunctionTerm(leftTerms.Concat(rightTerms));
                 });
 
-        private static readonly TokenListParser<SearchToken, ISearchTerm> NotParser =
+        private static readonly TokenListParser<SearchToken, ISearchTerm> Not =
             from pToken in Token.EqualTo(SearchToken.Not)
             from vToken in
-                BracketParser
+                Bracket
                 .Or(FullProperty)
                 .Or(CompoundProperty)
                 .Or(TextParser)
             select (ISearchTerm) new NotTerm(vToken);
 
-        private static readonly TokenListParser<SearchToken, ISearchTerm> BooleanParser =
-            
-            AndParser
-            .Or(OrParser)
-            .Or(NotParser)
+        private static readonly TokenListParser<SearchToken, ISearchTerm> Boolean =
+            And
+            .Or(Or)
+            .Or(Not)
             .Or(FullProperty)
             .Or(CompoundProperty)
             .Or(TextParser)
-            .Or(BracketParser);
+            .Or(Bracket);
+
     }
 }

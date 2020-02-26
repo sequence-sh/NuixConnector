@@ -17,6 +17,26 @@ namespace NuixClientTests
     {
         public static readonly List<YamlProcessTest> Tests = new List<YamlProcessTest>
         {
+            new YamlProcessTest(new Sequence
+            {
+                Steps = new List<Process>
+                {
+                    new NuixAddToProductionSet
+                    {
+                        ProductionSetName = "UnsupportedInfectedPoisoned",
+                        SearchTerm = "flag:poison or (NOT flag:encrypted AND has-embedded-data:0 AND ( ( has-text:0 AND has-image:0 AND NOT flag:not_processed AND NOT kind:multimedia AND NOT mime-type:application/vnd.ms-shortcut AND NOT mime-type:application/x-contact AND NOT kind:system AND NOT mime-type:( application/vnd.apache-error-log-entry OR application/vnd.git-logstash-log-entry OR application/vnd.linux-syslog-entry OR application/vnd.logstash-log-entry OR application/vnd.ms-iis-log-entry OR application/vnd.ms-windows-event-log-record OR application/vnd.ms-windows-event-logx-record OR application/vnd.ms-windows-setup-api-win7-win8-log-boot-entry OR application/vnd.ms-windows-setup-api-win7-win8-log-section-entry OR application/vnd.ms-windows-setup-api-xp-log-entry OR application/vnd.squid-access-log-entry OR application/vnd.tcpdump.record OR application/vnd.tcpdump.tcp.stream OR application/vnd.tcpdump.udp.stream OR application/vnd.twitter-logstash-log-entry OR application/x-pcapng-entry OR filesystem/x-linux-login-logfile-record OR filesystem/x-ntfs-logfile-record OR server/dropbox-log-event OR text/x-common-log-entry OR text/x-log-entry ) AND NOT kind:log AND NOT mime-type:application/vnd.ms-exchange-stm ) OR mime-type:application/vnd.lotus-notes ))",
+                        CasePath = @"D:\Dev\Nuix\Cases\MarksCase"
+                    },
+                    new NuixExportConcordance
+                    {
+                        ProductionSetName = "UnsupportedInfectedPoisoned",
+                        ExportPath = @"D:\Dev\Nuix\Exports\MarksCaseTest",
+                        CasePath = @"D:\Dev\Nuix\Cases\MarksCase"
+                    }
+                }
+            }),
+
+
             new YamlProcessTest(new NuixAddFile
             {
                 CasePath = "C:/Cases/MyCase",

@@ -15,7 +15,7 @@ namespace NuixClient.Search
         {
             get
             {
-                if (Term is TextTerm)
+                if (Term is TextTerm || Term is PropertySearchTerm)
                 {
                     return "NOT " + Term.AsString;
                 }
