@@ -12,6 +12,28 @@ namespace NuixClient
     public static class OutsideScripting
     {
         /// <summary>
+        /// Renumbers the items in the production set
+        /// </summary>
+        /// <returns></returns>
+        [UsedImplicitly]
+        public static async IAsyncEnumerable<Result<string>> RenumberProductionSet(string productionSetName,
+            ProductionSetSortOrder sortOrder,
+            string casePath = @"D:\Dev\Nuix\Cases\MarksCase")
+        {
+            var process = new NuixReorderProductionSet()
+            {
+                CasePath = casePath,
+                ProductionSetName = productionSetName,
+                SortOrder = sortOrder
+            };
+            await foreach (var r in process.Execute())
+            {
+                yield return r;
+            }
+        }
+
+
+        /// <summary>
         /// Annotates a document ID list to add production set names to it.
         /// </summary>
         /// <param name="productionSetName">The name of the production set to import document ids to</param>
@@ -23,7 +45,7 @@ namespace NuixClient
             string dataPath,
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase")
         {
-            var process = new AnnotateDocumentIdList
+            var process = new NuixAnnotateDocumentIdList
             {
                 CasePath = casePath,
                 ProductionSetName = productionSetName,
@@ -34,8 +56,6 @@ namespace NuixClient
                 yield return r;
             }
         }
-
-
 
         /// <summary>
         /// Extracts entities from case
