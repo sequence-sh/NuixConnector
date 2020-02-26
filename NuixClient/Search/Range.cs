@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using JetBrains.Annotations;
+using Orchestration;
 
 namespace NuixClient.Search
 {
@@ -23,28 +23,21 @@ namespace NuixClient.Search
         /// Create a range from a string
         /// </summary>
         /// <returns></returns>
-        [ContractAnnotation("=>true,range:notNull; =>false,range:null;")]
-        public static bool TryParse(string str, out Range? range)
+        public static Result<Range> TryParse(string str)
         {
-            
             var match = RangeRegex.Match(str);
 
-            if (match.Success)
-            {
-                var start = int.TryParse(match.Groups["start"].Value, out var s) ? s : null as int?;
-                var end   = int.TryParse(match.Groups["end"].Value, out var e) ? e : null as int?;
+            if (!match.Success) return Result<Range>.Failure($"Could not parse '{str}' as a range");
 
-                var minUnits = match.Groups["sUnits"].Value;
-                var maxUnits = match.Groups["eUnits"].Value;
+            var start = int.TryParse(match.Groups["start"].Value, out var s) ? s : null as int?;
+            var end   = int.TryParse(match.Groups["end"].Value, out var e) ? e : null as int?;
 
-                if (!start.HasValue && !end.HasValue)
-                    range = null;
-                else range = new Range(start, minUnits, end, maxUnits);
-            }
-            else
-                range = null;
+            var minUnits = match.Groups["sUnits"].Value;
+            var maxUnits = match.Groups["eUnits"].Value;
 
-            return range != null;
+            if (!start.HasValue && !end.HasValue)
+                return Result<Range>.Failure("Either the start or the end of the range must have a value.");
+            return Result<Range>.Success(new Range(start, minUnits, end, maxUnits));
         }
 
         internal static readonly Regex RangeRegex = new Regex(

@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using JetBrains.Annotations;
+using Orchestration;
 
 namespace NuixClient.Search
 {
@@ -44,21 +44,14 @@ namespace NuixClient.Search
         /// Create a range from a string
         /// </summary>
         /// <returns></returns>
-        [ContractAnnotation("=>true,range:notNull; =>false,range:null;")]
-        public static bool TryParse(string str, out FileType? range)
+        public static Result<FileType> TryParse(string str)
         {
             var match = FileTypeRegex.Match(str);
 
-            if (match.Success)
-            {
-                range = new FileType(match.Groups["Category"].Value, match.Groups["Type"].Value);
-                return true;
-            }
-            else
-            {
-                range = null;
-                return false;
-            }
+            return match.Success
+                ? Success<FileType>.Success(new FileType(match.Groups["Category"].Value,
+                    match.Groups["Type"].Value))
+                : Result<FileType>.Failure($"Could not parse '{str}' as a file type.");
         }
 
         private static readonly Regex FileTypeRegex = new Regex(@"\A(?<Category>\w+)\/(?<Type>\w+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);

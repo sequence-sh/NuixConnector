@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NuixClient.Search.Properties;
 
 namespace NuixClient.Search
 {
