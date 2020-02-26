@@ -120,14 +120,14 @@ namespace NuixClientConsole
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        private static IReadOnlyDictionary<string, string>? MakeArgumentDictionary(string[] args)
+        private static IReadOnlyDictionary<string, string>? MakeArgumentDictionary(IReadOnlyList<string> args)
         {
-            if (args.Length % 2 == 0)
+            if (args.Count % 2 == 0)
                 return null; //should always be an odd number of arguments
 
             var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            for (var i = 1; i < args.Length - 1; i+=2)
+            for (var i = 1; i < args.Count - 1; i+=2)
             {
                 var paramName = args[i];
                 var paramValue = args[i + 1];
@@ -213,10 +213,7 @@ namespace NuixClientConsole
                                 var handleMethodResult=  HandleMethod(method, dictionary);
 
                                 await foreach (var s in handleMethodResult)
-                                {
                                     yield return s;
-                                }
-
                             }
                         }
                     }

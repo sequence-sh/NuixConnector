@@ -75,8 +75,8 @@ namespace NuixClientTests
             new ErrorTestCase("NOT", "Syntax error: unexpected end of input"),
             new ErrorTestCase("()", "Syntax error: unexpected end of input"),
             new ErrorTestCase("hello AND", "Syntax error: unexpected end of input"),
-            new ErrorTestCase("File-size:[* TO *]", "'[* TO *]' is an invalid value for 'File-size:'"),
-            new ErrorTestCase("File-size:dinosaur", "'dinosaur' is an invalid value for 'File-size:'"),
+            new ErrorTestCase("File-size:[* TO *]", "Either the start or the end of the range must have a value."),
+            new ErrorTestCase("File-size:dinosaur", "Could not parse 'dinosaur' as a range"),
         };
 
         [Test]
