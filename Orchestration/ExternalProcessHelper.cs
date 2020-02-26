@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using CSharpFunctionalExtensions;
 
 namespace Orchestration
 {
@@ -15,7 +16,7 @@ namespace Orchestration
         /// <param name="processPath">The path to the process</param>
         /// <param name="arguments">The arguments to provide to the process</param>
         /// <returns>The output of the process</returns>
-        public static async IAsyncEnumerable<ResultLine> RunExternalProcess(string processPath, IEnumerable<string> arguments)
+        public static async IAsyncEnumerable<Result<string>> RunExternalProcess(string processPath, IEnumerable<string> arguments)
         {
             if (!File.Exists(processPath))
                 throw new Exception($"Could not find '{processPath}'");
@@ -47,7 +48,7 @@ namespace Orchestration
                 var line = await multiStreamReader.ReadLineAsync();
                 if (line == null) //We've reached the end of the file
                     break;
-                yield return new ResultLine(true, line);
+                yield return Result.Success(line);
             }
 
             pProcess.WaitForExit();

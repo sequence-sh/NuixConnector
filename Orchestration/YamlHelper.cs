@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+using CSharpFunctionalExtensions;
 using Orchestration.Conditions;
 using Orchestration.Enumerations;
 using Orchestration.Processes;
@@ -62,23 +62,9 @@ namespace Orchestration
             return r;
         }
 
-        [ContractAnnotation("=>true,process:notNull,error:Null; =>false,process:null,error:notNull")]
-        public static bool TryMakeFromYaml(string yaml, out Process? process, out string? error)
+        public static Result<Process> TryMakeFromYaml(string yaml)
         {
-            try
-            {
-                process = Deserializer.Value.Deserialize<Process>(yaml);
-                error = null;
-                return true;
-            }
-#pragma warning disable CA1031 // Do not catch general exception types
-            catch (Exception e)
-            {
-                process = null;
-                error = e.Message;
-                return false;
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
+            return  Result.Try(() => Deserializer.Value.Deserialize<Process>(yaml), e => e.Message);
         }
     }
 }

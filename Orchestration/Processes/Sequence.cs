@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using CSharpFunctionalExtensions;
 using Orchestration.Conditions;
 using YamlDotNet.Serialization;
 
@@ -34,22 +35,22 @@ namespace Orchestration.Processes
         /// Execute the steps in this process until a condition is not met or a step fails 
         /// </summary>
         /// <returns></returns>
-        public override async IAsyncEnumerable<ResultLine> Execute() 
+        public override async IAsyncEnumerable<Result<string>> Execute() 
         {
             foreach (var process in Steps)
             {
                 foreach (var processCondition in process.Conditions?? Enumerable.Empty<Condition>())
                 {
                     if (processCondition.IsMet())
-                        yield return new ResultLine(true, processCondition.GetDescription());
+                        yield return Result.Success(processCondition.GetDescription());
                     else
                     {
-                        yield return new ResultLine(false, $"CONDITION NOT MET: [{processCondition.GetDescription()}]");
+                        yield return Result.Failure<string>($"CONDITION NOT MET: [{processCondition.GetDescription()}]");
                         yield break;
                     }
                 }
 
-                yield return new ResultLine(true, $"Executing '{process.GetName()}'");
+                yield return Result.Success($"Executing '{process.GetName()}'");
                 var allGood = true;
                 var resultLines = process.Execute();
                 await foreach (var resultLine in resultLines)

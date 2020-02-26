@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using CSharpFunctionalExtensions;
 using Orchestration.Conditions;
 using Orchestration.Enumerations;
 using YamlDotNet.Serialization;
@@ -53,7 +54,7 @@ namespace Orchestration.Processes
         public Process SubProcess { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        public override async IAsyncEnumerable<ResultLine> Execute()
+        public override async IAsyncEnumerable<Result<string>> Execute()
         {
             foreach (var element in Enumeration.Elements.ToList())
             {
@@ -65,7 +66,7 @@ namespace Orchestration.Processes
 
                 if (property == null)
                 {
-                    yield return new ResultLine(false, $"Could not find property '{PropertyToInject}'");
+                    yield return Result.Failure<string>($"Could not find property '{PropertyToInject}'");
                     break;
                 }
 

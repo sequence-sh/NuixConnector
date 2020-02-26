@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using CSharpFunctionalExtensions;
 using NuixClient.Search;
-using Orchestration;
 using Orchestration.Processes;
 using YamlDotNet.Serialization;
 
@@ -12,17 +12,14 @@ namespace NuixClient.Processes
 {
     internal abstract class RubyScriptWithOutputProcess : RubyScriptProcess
     {
-
-        //private readonly IDictionary<string, List<string>> _files = new Dictionary<string, List<string>>();
-
         private static readonly Regex OutputLineRegex = new Regex(@"\AOutput\s*(?<filename>[\w-]+)\s*:(?<data>.*)\Z", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        internal override bool HandleLine(ResultLine rl, ProcessState processState)
+        internal override bool HandleLine(Result<string> rl, ProcessState processState)
         {
-            if (!rl.IsSuccess)
+            if (rl.IsFailure)
                 return true;
 
-            if (OutputLineRegex.TryMatch(rl.Line, out var match))
+            if (OutputLineRegex.TryMatch(rl.Value, out var match))
             {
                 var fileName = match.Groups["filename"].Value;
                 var data = match.Groups["data"].Value;

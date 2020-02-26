@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CSharpFunctionalExtensions;
 using Orchestration.Conditions;
 using YamlDotNet.Serialization;
 
@@ -31,7 +32,7 @@ namespace Orchestration.Processes
         /// Executes this process. Should only be called if all conditions are met
         /// </summary>
         /// <returns></returns>
-        public abstract IAsyncEnumerable<ResultLine> Execute();
+        public abstract IAsyncEnumerable<Result<string>> Execute();
 
         /// <summary>
         /// String representation of this process

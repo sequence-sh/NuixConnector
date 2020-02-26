@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using NuixClient.Processes;
 using NUnit.Framework;
@@ -223,11 +224,11 @@ Steps:
                 }
             };
 
-            var success = YamlHelper.TryMakeFromYaml(yaml, out var p, out var e);
+            var (isSuccess, _, value, error) = YamlHelper.TryMakeFromYaml(yaml);
 
-            Assert.IsTrue(success, e);
+            Assert.IsTrue(isSuccess, error);
 
-            Assert.AreEqual(expectedProcess, p);
+            Assert.AreEqual(expectedProcess, value);
 
         }
 
@@ -237,11 +238,11 @@ Steps:
         {
             var yaml = YamlHelper.ConvertToYaml(yamlProcessTest.Process);
 
-            var success = YamlHelper.TryMakeFromYaml(yaml, out var p, out var e);
+            var (isSuccess, _, value, error) = YamlHelper.TryMakeFromYaml(yaml);
 
-            Assert.IsTrue(success, e);
+            Assert.IsTrue(isSuccess, error);
 
-            Assert.AreEqual(yamlProcessTest.Process, p);
+            Assert.AreEqual(yamlProcessTest.Process, value);
         }
 
         [Test]
@@ -265,10 +266,10 @@ Steps:
 
             var resultList = forEachProcess.Execute();
 
-            await foreach (var s in resultList)
+            await foreach (var (isSuccess, _, value, error) in resultList)
             {
-                Assert.IsTrue(s.IsSuccess);
-                realList.Add(s.Line);
+                Assert.IsTrue(isSuccess, error);
+                realList.Add(value);
             }
 
             CollectionAssert.AreEqual(expected, realList);
@@ -295,10 +296,10 @@ Steps:
             }
 
 #pragma warning disable 1998
-            public override async IAsyncEnumerable<ResultLine> Execute()
+            public override async IAsyncEnumerable<Result<string>> Execute()
 #pragma warning restore 1998
             {
-                yield return new ResultLine(true, Term);
+                yield return Result.Success(Term);
             }
         }
 

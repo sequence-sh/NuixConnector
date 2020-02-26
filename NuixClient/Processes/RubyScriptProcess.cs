@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CSharpFunctionalExtensions;
 using Orchestration;
 using Orchestration.Processes;
 
@@ -27,7 +28,7 @@ namespace NuixClient.Processes
         /// <param name="rl">The line to look at</param>
         /// <param name="processState">The current state of the process</param>
         /// <returns>True if the line should continue through the pipeline</returns>
-        internal virtual bool HandleLine(ResultLine rl, ProcessState processState)
+        internal virtual bool HandleLine(Result<string> rl, ProcessState processState)
         {
             return true;
         }
@@ -39,14 +40,14 @@ namespace NuixClient.Processes
         {
         }
     
-        public override async IAsyncEnumerable<ResultLine> Execute()
+        public override async IAsyncEnumerable<Result<string>> Execute()
         {
             var argumentErrors = GetArgumentErrors().ToList();
 
             if (argumentErrors.Any())
             {
                 foreach (var ae in argumentErrors)
-                    yield return new ResultLine(false, ae);
+                    yield return Result.Failure<string>(ae);
                 yield break;
             }
 

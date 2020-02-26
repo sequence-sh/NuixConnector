@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using NuixClient.enums;
 using NuixClient.Processes;
-using Orchestration;
 
 namespace NuixClient
 {
@@ -18,7 +18,7 @@ namespace NuixClient
         /// <param name="outputFolderPath">The path to write the report files to</param>
         /// <returns>The output of report creation</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> ExtractEntities(
+        public static async IAsyncEnumerable<Result<string>> ExtractEntities(
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
@@ -40,7 +40,7 @@ namespace NuixClient
         /// <param name="ocrProfileName">The ocr profile to use</param>
         /// <returns>The output of the process</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> RunOCR(
+        public static async IAsyncEnumerable<Result<string>> RunOCR(
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string? ocrProfileName = null)
         {
@@ -63,7 +63,7 @@ namespace NuixClient
         /// <param name="outputFolderPath">The path to write the report files to</param>
         /// <returns>The output of report creation</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> CreateIrregularItemsList(
+        public static async IAsyncEnumerable<Result<string>> CreateIrregularItemsList(
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
@@ -85,7 +85,7 @@ namespace NuixClient
         /// <param name="outputFolderPath">The path to write the report files to</param>
         /// <returns>The output of report creation</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> CreateTermList(
+        public static async IAsyncEnumerable<Result<string>> CreateTermList(
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase",
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
@@ -107,7 +107,7 @@ namespace NuixClient
         /// <param name="outputFolderPath">The path to write the report files to</param>
         /// <returns>The output of report creation</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> CreateReport(
+        public static async IAsyncEnumerable<Result<string>> CreateReport(
             string casePath = @"D:\Dev\Nuix\Cases\MarksCase", 
             string outputFolderPath = @"D:\Dev\Nuix\MarkReports")
         {
@@ -131,7 +131,7 @@ namespace NuixClient
         /// <param name="tag">The tag to apply to the found terms</param>
         /// <returns>The output of the search script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> SearchAndTag( 
+        public static async IAsyncEnumerable<Result<string>> SearchAndTag( 
 
             string casePath= @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
@@ -161,7 +161,7 @@ namespace NuixClient
         /// <param name="custodianRanking">A list of custodian names ordered from highest ranked to lowest ranked. If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.</param>
         /// <returns>The output of the script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> AddToItemSet(
+        public static async IAsyncEnumerable<Result<string>> AddToItemSet(
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
             string itemSetName = "ProdSet",
@@ -194,7 +194,7 @@ namespace NuixClient
         /// <param name="productionSetName">The production set to add the found items to. Will be created if it doesn't exist</param>
         /// <returns>The output of the script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> AddToProductionSet( 
+        public static async IAsyncEnumerable<Result<string>> AddToProductionSet( 
 
             string casePath= @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
@@ -220,7 +220,7 @@ namespace NuixClient
         /// <param name="investigator">Name of the investigator</param>
         /// <returns>The output of the case creation script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> CreateCase(
+        public static async IAsyncEnumerable<Result<string>> CreateCase(
             string casePath,
             string caseName,
             string description,
@@ -249,7 +249,7 @@ namespace NuixClient
         /// <param name="processingProfileName">The name of the processing profile to use. Can be null</param>
         /// <returns>The output of the script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> AddFileToCase( //TODO remove default arguments
+        public static async IAsyncEnumerable<Result<string>> AddFileToCase( //TODO remove default arguments
 
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string folderName = "TestFolder",
@@ -285,7 +285,7 @@ namespace NuixClient
         /// <param name="concordanceDateFormat">Concordance date format to use</param>
         /// <returns>The output of the script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> AddConcordanceToCase( //TODO remove default arguments
+        public static async IAsyncEnumerable<Result<string>> AddConcordanceToCase( //TODO remove default arguments
 
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string folderName = "BestFolder",
@@ -321,7 +321,7 @@ namespace NuixClient
         /// <param name="metadataProfileName">Optional name of the metadata profile to use. Case sensitive. Note this is NOT a metadata export profile</param>
         /// <returns>The output of the script</returns>
         [UsedImplicitly]
-        public static async IAsyncEnumerable<ResultLine> ExportProductionSetConcordance( //TODO remove default arguments
+        public static async IAsyncEnumerable<Result<string>> ExportProductionSetConcordance( //TODO remove default arguments
             
             string casePath = @"C:\Dev\Nuix\Cases\NewCase",
             string exportPath = @"C:\Dev\Nuix\Exports\Export6",

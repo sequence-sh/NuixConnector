@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using CSharpFunctionalExtensions;
 using YamlDotNet.Serialization;
 
 namespace Orchestration.Processes
@@ -65,14 +66,14 @@ namespace Orchestration.Processes
                        : "");
         }
 
-        public override async IAsyncEnumerable<ResultLine> Execute()
+        public override async IAsyncEnumerable<Result<string>> Execute()
         {
             var argumentErrors = GetArgumentErrors().ToList();
 
             if (argumentErrors.Any())
             {
                 foreach (var ae in argumentErrors)
-                    yield return new ResultLine(false, ae);
+                    yield return Result.Failure<string>(ae);
                 yield break;
             }
 

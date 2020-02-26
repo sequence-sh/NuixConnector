@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using CSharpFunctionalExtensions;
 using Orchestration.Conditions;
 using YamlDotNet.Serialization;
 
@@ -34,13 +35,13 @@ namespace Orchestration.Processes
         /// Execute this process.
         /// </summary>
         /// <returns></returns>
-        public override async IAsyncEnumerable<ResultLine> Execute()
+        public override async IAsyncEnumerable<Result<string>> Execute()
         {
             foreach (var process in Options)
             {
                 if (process.Conditions.All(c => c.IsMet()))
                 {
-                    yield return new ResultLine(true, $"Executing '{process.GetName()}'");
+                    yield return Result.Success($"Executing '{process.GetName()}'");
                     var results = process.Execute();
 
                     await foreach (var result in results)
@@ -50,7 +51,7 @@ namespace Orchestration.Processes
                 }
                 else
                 {
-                    yield return new ResultLine(true, $"Not executing '{process.GetName()}'");
+                    yield return Result.Success($"Not executing '{process.GetName()}'");
                 }
             }
         }
