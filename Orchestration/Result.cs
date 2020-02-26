@@ -1,4 +1,7 @@
-﻿namespace Orchestration
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Orchestration
 {
     /// <summary>
     /// The result of a successful operation.
@@ -14,7 +17,7 @@
         public T Result { get; }
 
         public override bool WasSuccessful => true;
-        public override string? Error => null;
+        public override IEnumerable<string> Errors => Enumerable.Empty<string>();
     }
 
     /// <summary>
@@ -23,13 +26,15 @@
     /// <typeparam name="T"></typeparam>
     public sealed class Failure<T> : Result<T>
     {
-        internal Failure(string error)
+        private readonly string[] _errors;
+
+        internal Failure(string[] errors)
         {
-            Error = error;
+            _errors = errors;
         }
 
         public override bool WasSuccessful => false;
-        public override string Error { get; }
+        public override IEnumerable<string> Errors => _errors;
     }
 
     /// <summary>
@@ -43,9 +48,14 @@
             return new Success<T>(r);
         }
 
-        public static Result<T> Failure(string error)
+        public static Result<T> Failure(params string[] errors)
         {
-            return new Failure<T>(error);
+            return new Failure<T>(errors);
+        }
+        
+        public static Result<T> Failure(IEnumerable<string> errors)
+        {
+            return new Failure<T>(errors.ToArray());
         }
 
         /// <summary>
@@ -56,6 +66,6 @@
         /// <summary>
         /// The error message if the operation was not successful.
         /// </summary>
-        public abstract string? Error { get; }
+        public abstract IEnumerable<string> Errors { get; }
     }
 }

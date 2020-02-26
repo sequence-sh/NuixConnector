@@ -1,4 +1,5 @@
 ﻿using NuixClient.Search.Properties;
+using Orchestration;
 
 namespace NuixClient.Search
 {
@@ -11,9 +12,9 @@ namespace NuixClient.Search
 
         public string Value { get; }
 
-        public override bool Render(AbstractSearchProperty searchProperty, out string? value)
+        public override Result<string> TryRender(AbstractSearchProperty searchProperty)
         {
-            return searchProperty.RenderValue(Value, out value);
+            return searchProperty.TryRender(Value);
         }
 
         public override string ToString()

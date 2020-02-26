@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Orchestration;
+﻿using Orchestration;
 
 namespace NuixClient.Search.Properties
 {
@@ -36,36 +35,21 @@ namespace NuixClient.Search.Properties
         /// Render this property with this value
         /// </summary>
         /// <returns></returns>
-        private string? RenderValue(T t)
-        {
-            if (t == null)
-                return null;
-            var s = ConvertToString(t);
-
-            return s;
-        }
-
-        /// <summary>
-        /// Render this property with this value
-        /// </summary>
-        /// <returns></returns>
-        public override bool RenderValue(string str, out string? result)
+        public override Result<string> TryRender(string str)
         {
             var r = TryParse(str);
 
             if (r is Success<T> s)
             {
-                result = RenderValue(s.Result);
-                if (result == null)
-                    return false;
+                var renderedString = ConvertToString(s.Result);
 
-                return true;
+                if (renderedString == null)
+                    return Result<string>.Failure($"Could not render '{str}'");
+
+                return Result<string>.Success(renderedString);
             }
             else
-            {
-                result = null;
-                return false;
-            }
+                return Result<string>.Failure(r.Errors);
         }
     }
 }

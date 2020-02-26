@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using Orchestration;
 
 namespace NuixClient.Search.Properties
 {
@@ -30,9 +31,7 @@ namespace NuixClient.Search.Properties
         /// Render a property with this value. Assumes T has the correct type
         /// </summary>
         /// <param name="t">The value of the property. Must have the correct type</param>
-        /// <param name="result">The result of rendering</param>
         /// <returns></returns>
-        [ContractAnnotation("=>true,result:notNull; =>false,result:null;")]
-        public abstract bool RenderValue(string t, out string? result);
+        public abstract Result<string> TryRender(string t);
     }
 }

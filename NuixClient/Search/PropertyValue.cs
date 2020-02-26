@@ -1,9 +1,10 @@
 ﻿using NuixClient.Search.Properties;
+using Orchestration;
 
 namespace NuixClient.Search
 {
     internal abstract class PropertyValue
     {
-        public abstract bool Render(AbstractSearchProperty searchProperty, out string? value);
+        public abstract Result<string> TryRender(AbstractSearchProperty searchProperty);
     }
 }

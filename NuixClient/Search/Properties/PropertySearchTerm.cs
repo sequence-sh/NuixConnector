@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Orchestration;
 
 namespace NuixClient.Search.Properties
 {
@@ -27,15 +28,15 @@ namespace NuixClient.Search.Properties
             if (!AllProperties.TryGetValue(propertyName, out var sp))
                 return new ErrorTerm($"'{propertyString}' is not a recognized property");
 
-            var s = value.Render(sp, out var propertyValueString);
+            var r = value.TryRender(sp);
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse - for compiler
-            if (s && propertyValueString != null)
+            if (r is Success<string> s)
                 return subProperty == null
-                    ? new RegularPropertySearchTerm(sp, value, propertyValueString) as PropertySearchTerm
-                    : new CompoundPropertySearchTerm(sp, value, propertyValueString, subProperty);
+                    ? new RegularPropertySearchTerm(sp, value, s.Result) as PropertySearchTerm
+                    : new CompoundPropertySearchTerm(sp, value, s.Result, subProperty);
 
-            return new ErrorTerm($"'{value}' is an invalid value for '{propertyString}'");
+            return new ErrorTerm(string.Join("\r\n", r.Errors));
 
         }
 

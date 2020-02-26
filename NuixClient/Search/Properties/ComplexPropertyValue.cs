@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Orchestration;
 
 namespace NuixClient.Search.Properties
 {
@@ -12,26 +13,30 @@ namespace NuixClient.Search.Properties
 
         public IReadOnlyList<SimplePropertyValue> Disjunction { get; }
 
-        public override bool Render(AbstractSearchProperty searchProperty, out string? value)
+        public override Result<string> TryRender(AbstractSearchProperty searchProperty)
         {
             var vs = new List<string>();
+            var errors = new List<string>();
 
             foreach (var simplePropertyValue in Disjunction)
             {
-                if (simplePropertyValue.Render(searchProperty, out var v))
-                {
-                    vs.Add(v);
-                }
+                var r = simplePropertyValue.TryRender(searchProperty);
+
+                if (r is Success<string> s)
+                    vs.Add(s.Result);
                 else
-                {
-                    value = null;
-                    return false;
-                }
+                    errors.AddRange(r.Errors);
             }
 
-            value = @$"({string.Join(" OR ", vs.Select(x => x))})";
+            if(errors.Any())
+                return Result<string>.Failure(errors);
 
-            return vs.Any();
+            if(!vs.Any())
+                return Result<string>.Failure($"'{searchProperty.PropertyName}' Must have at least one property value");
+
+            var resultString = @$"({string.Join(" OR ", vs.Select(x => x))})";
+
+            return Result<string>.Success(resultString);
         }
 
         public override string ToString()
