@@ -43,6 +43,21 @@ namespace NuixClient.Processes
         [YamlMember(Order = 5)]
         public string CasePath { get; set; }
 
+        /// <summary>
+        /// How to order the items to be added to the production set.
+        /// e.g. "name ASC", "item-date DESC",  or "name ASC, item-date DESC" etc
+        /// </summary>
+        [DataMember]
+        [YamlMember(Order = 6)]
+        public string? Order { get; set; }
+
+        /// <summary>
+        /// The maximum number of items to add to the production set.
+        /// </summary>
+        [DataMember]
+        [YamlMember(Order = 7)]
+        public int? Limit { get; set; }
+
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
@@ -62,6 +77,11 @@ namespace NuixClient.Processes
             yield return ("-p", CasePath);
             yield return ("-s", SearchTerm);
             yield return ("-n", ProductionSetName);
+
+            if(Order != null)
+                yield return ("-o", Order);
+            if(Limit.HasValue)
+                yield return ("-l", Limit.Value.ToString());
         }
     }
 }

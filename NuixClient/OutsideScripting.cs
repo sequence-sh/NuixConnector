@@ -192,19 +192,25 @@ namespace NuixClient
         /// <param name="casePath">The path of the case to open</param>
         /// <param name="searchTerm">The term to search for</param>
         /// <param name="productionSetName">The production set to add the found items to. Will be created if it doesn't exist</param>
+        /// <param name="order"></param>
+        /// <param name="limit"></param>
         /// <returns>The output of the script</returns>
         [UsedImplicitly]
         public static async IAsyncEnumerable<Result<string>> AddToProductionSet( 
 
             string casePath= @"C:\Dev\Nuix\Cases\NewCase",
             string searchTerm = "night",
-            string productionSetName  = "ProdSet")
+            string productionSetName  = "ProdSet",
+            string order = "name ASC",
+            int limit = 1000)
         {
             var process = new NuixAddToProductionSet
             {
                 CasePath = casePath,
                 SearchTerm = searchTerm,
-                ProductionSetName = productionSetName
+                ProductionSetName = productionSetName,
+                Order = order,
+                Limit = limit
             };
 
             await foreach (var line in process.Execute())
