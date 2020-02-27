@@ -8,6 +8,9 @@ using Orchestration.Processes;
 
 namespace NuixClient.Processes
 {
+    /// <summary>
+    /// A process that runs a ruby script against NUIX
+    /// </summary>
     public abstract class RubyScriptProcess : Process
     {
         //TODO make a config property
@@ -40,6 +43,10 @@ namespace NuixClient.Processes
         {
         }
     
+        /// <summary>
+        /// Execute this process
+        /// </summary>
+        /// <returns></returns>
         public override async IAsyncEnumerable<Result<string>> Execute()
         {
             var argumentErrors = GetArgumentErrors().ToList();
@@ -84,12 +91,21 @@ namespace NuixClient.Processes
             OnScriptFinish(processState);
         }
 
+        /// <summary>
+        /// Determines if two processes are equal.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object? obj)
         {
             return obj is RubyScriptProcess rsp && ScriptName == rsp.ScriptName &&
                    GetArgumentValuePairs().SequenceEqual(rsp.GetArgumentValuePairs());
         }
 
+        /// <summary>
+        /// Get the hash code for this process.
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             var t = 2;
