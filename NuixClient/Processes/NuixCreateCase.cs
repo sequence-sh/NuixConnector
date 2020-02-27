@@ -5,6 +5,31 @@ using YamlDotNet.Serialization;
 
 namespace NuixClient.Processes
 {
+
+    internal class NuixMigrateCase : RubyScriptProcess
+    {
+        /// <summary>
+        /// The path to the case folder
+        /// </summary>
+        [Required]
+        [DataMember]
+        [YamlMember(Order = 2)]
+        public string CasePath { get; set; }
+
+        public override IEnumerable<string> GetArgumentErrors()
+        {
+            yield break;
+        }
+
+        public override string GetName() => "Migrate Case";
+
+        internal override string ScriptName => "MigrateCase.rb";
+        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        {
+            yield return ("-p", CasePath);
+        }
+    }
+
     /// <summary>
     /// Creates a new case
     /// </summary>
