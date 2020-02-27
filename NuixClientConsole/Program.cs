@@ -8,9 +8,9 @@ namespace NuixClientConsole
     {
         static void Main(string[] args)
         {
-            var methods = 
-                typeof(NuixClient.OutsideScripting).GetMethods()
-                    .Concat(typeof(YamlRunner).GetMethods())
+            //TODO add other methods from processes
+
+            var methods = typeof(YamlRunner).GetMethods()
                     .Where(x=>x.IsStatic);
 
             var lines = ConsoleView.Run(args, methods);
@@ -21,8 +21,7 @@ namespace NuixClientConsole
             {
                 while (true)
                 {
-                    var nextTask = enumerator.MoveNextAsync().AsTask();// .ConfigureAwait(false).GetAwaiter().GetResult();// .AsTask().aw.Wait();
-                    nextTask.Wait();
+                    var nextTask = enumerator.MoveNextAsync().AsTask();
                     var next = nextTask.Result;
                     if (!next)
                         break;
