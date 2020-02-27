@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Runtime.Serialization;
 using CSharpFunctionalExtensions;
 using YamlDotNet.Serialization;
 
@@ -16,6 +17,7 @@ namespace Orchestration.Processes
         /// </summary>
         [YamlMember(Order = 2)]
         [Required]
+        [DataMember]
         public string FilePath { get; }
 
         public override IEnumerable<string> GetArgumentErrors()
