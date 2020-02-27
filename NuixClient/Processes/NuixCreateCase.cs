@@ -5,7 +5,9 @@ using YamlDotNet.Serialization;
 
 namespace NuixClient.Processes
 {
-
+    /// <summary>
+    /// Migrates a case to the latest version if necessary
+    /// </summary>
     internal class NuixMigrateCase : RubyScriptProcess
     {
         /// <summary>
@@ -14,7 +16,9 @@ namespace NuixClient.Processes
         [Required]
         [DataMember]
         [YamlMember(Order = 2)]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         public override IEnumerable<string> GetArgumentErrors()
         {

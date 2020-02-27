@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Orchestration;
 using Orchestration.Processes;
-
 
 namespace NuixClient.Processes
 {
@@ -13,10 +13,10 @@ namespace NuixClient.Processes
     /// </summary>
     public abstract class RubyScriptProcess : Process
     {
-        //TODO make a config property
-        private const string NuixExeConsolePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe";
-        //TODO make a config property
-        private const bool UseDongle = true;
+        ////TODO make a config property
+        //private const string NuixExeConsolePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe";
+        ////TODO make a config property
+        //private const bool UseDongle = true;
         /// <summary>
         /// Checks if the current set of arguments is valid
         /// </summary>
@@ -73,20 +73,39 @@ namespace NuixClient.Processes
 
             var arguments = new List<string>();
 
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (UseDongle)
-            {
-                // ReSharper disable once StringLiteralTypo
-                arguments.Add("-licencesourcetype");
-                arguments.Add("dongle");                
-            }
+            var useDongleString =  ConfigurationManager.AppSettings["NuixUseDongle"];
+
+            if(!string.IsNullOrWhiteSpace(useDongleString))
+                if (bool.TryParse(useDongleString, out var useDongle))
+                {
+                    if (useDongle)
+                    {
+                        // ReSharper disable once StringLiteralTypo
+                        arguments.Add("-licencesourcetype");
+                        arguments.Add("dongle");  
+                    }
+                }
+                else
+                {
+                    yield return Result.Failure<string>($"Setting 'NuixUseDongle' must be either 'True' or 'False'");
+                    yield break;
+                }
+
                 
             if (!string.IsNullOrWhiteSpace(scriptPath))
                 arguments.Add(scriptPath);
 
             arguments.AddRange(args);
 
-            await foreach (var rl in ExternalProcessHelper.RunExternalProcess(NuixExeConsolePath, arguments))
+            var nuixExeConsolePath = ConfigurationManager.AppSettings["NuixExeConsolePath"];
+
+            if (string.IsNullOrWhiteSpace(nuixExeConsolePath))
+            {
+                yield return Result.Failure<string>($"Setting 'NuixExeConsolePath' must be set");
+                yield break;
+            }
+
+            await foreach (var rl in ExternalProcessHelper.RunExternalProcess(nuixExeConsolePath, arguments))
             {
                 if(HandleLine(rl, processState))
                     yield return rl;
