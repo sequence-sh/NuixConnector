@@ -18,7 +18,9 @@ namespace Orchestration.Processes
         [YamlMember(Order = 2)]
         [Required]
         [DataMember]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string FilePath { get; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         public override IEnumerable<string> GetArgumentErrors()
         {
@@ -28,7 +30,9 @@ namespace Orchestration.Processes
 
         public override string GetName() => $"Delete {FilePath}";
 
-        public async override IAsyncEnumerable<Result<string>> Execute()
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously - needs to be async to return IAsyncEnumerable
+        public override async IAsyncEnumerable<Result<string>> Execute()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (File.Exists(FilePath))
             {
