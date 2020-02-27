@@ -36,6 +36,8 @@ else
         else            
             puts "Production Set Found"
 
+            options = {}
+
             resultMap = productionSet.generatePrintPreviews(options)
 
             puts "Print previews generated"

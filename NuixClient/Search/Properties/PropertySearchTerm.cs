@@ -108,6 +108,7 @@ namespace NuixClient.Search.Properties
 
 
                 new GuidSearchProperty("item-set-guid"),
+                new GuidSearchProperty("path-guid"),
                 new GuidSearchProperty("production-set-guid"),
                 
                 //TODO other properties

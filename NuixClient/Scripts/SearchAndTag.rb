@@ -41,7 +41,7 @@ else
     
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
-    puts "Searching"
+    puts "Searching for '#{hash_options[:searchArg]}'"
 
     searchOptions = {}
     searchOptions[:order] = hash_options[:orderArg] if hash_options[:orderArg] != nil

@@ -47,10 +47,17 @@ else
     fields.each do |key, value|
         items = the_case.search(value)
         puts "OutputIrregular:#{key.to_s}\t#{items.length}"
+        
+        if items.length > 0
+            puts "Output#{key.to_s}:path\tguid"
+            items.each do |i|
+                path = i.getPathNames().join("/")
+                guid = i.getGuid()
+                puts "Output#{key.to_s}:#{path}\t#{guid}"
 
-        items.each do |i|
-            path = i.getPathNames().join("/")
-            puts "Output#{key.to_s}:#{path}"
+        end
+
+        
         end
     end
 

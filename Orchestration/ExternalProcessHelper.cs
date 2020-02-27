@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CSharpFunctionalExtensions;
 
 namespace Orchestration
@@ -21,17 +22,21 @@ namespace Orchestration
             if (!File.Exists(processPath))
                 throw new Exception($"Could not find '{processPath}'");
 
+            var argumentString = string.Join(' ', arguments.Select(a => a.Contains(" ") ? $@"""{a}""": a));
+
             using var pProcess = new System.Diagnostics.Process
             {
                 StartInfo =
                 {
                     FileName = processPath,
-                    Arguments = string.Join(' ', arguments),
+                    Arguments = argumentString,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden, //don't display a window
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
+                    StandardErrorEncoding = System.Text.Encoding.UTF8,
+                    StandardOutputEncoding = System.Text.Encoding.UTF8
                 }
             };
             pProcess.Start();

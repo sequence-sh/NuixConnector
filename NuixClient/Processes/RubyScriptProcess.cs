@@ -75,8 +75,12 @@ namespace NuixClient.Processes
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (UseDongle)
+            {
                 // ReSharper disable once StringLiteralTypo
-                arguments.Add("-licencesourcetype dongle");
+                arguments.Add("-licencesourcetype");
+                arguments.Add("dongle");                
+            }
+                
             if (!string.IsNullOrWhiteSpace(scriptPath))
                 arguments.Add(scriptPath);
 
