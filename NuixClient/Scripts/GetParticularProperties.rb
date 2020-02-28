@@ -40,18 +40,18 @@ else
 
     puts "Finding Entities"
 
-    items = the_case.search(hash_options[:searchArg])
+    items = the_case.search(hash_options[:searchArg], {})
 
     puts "#{items.length} items found"
 
     regex = Regexp.new(hash_options[:regexArg])
     
-    "Output#{hash_options[:fileArg]}:Key\tValue\tPath\tGuid"
+    puts "Output#{hash_options[:fileArg]}:Key\tValue\tPath\tGuid"
 
 
     items.each do |i| 
 
-        i.getStatistics.each do |k,v|
+        i.getProperties().each do |k,v|
 
           puts "Output#{hash_options[:fileArg]}:#{k}\t#{v}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}" if regex =~ k
 
