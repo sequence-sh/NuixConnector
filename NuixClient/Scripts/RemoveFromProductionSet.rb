@@ -45,7 +45,7 @@ else
             if hash_options[:searchArg] != nil
                 items = the_case.searchUnsorted(hash_options[:searchArg])
                 productionSetItems = productionSet.getItems();
-                itemsToRemove = items & productionSetItems
+                itemsToRemove = items.to_a & productionSetItems
                 productionSet.removeItems(itemsToRemove)
                 puts "#{itemsToRemove.length} removed"
 

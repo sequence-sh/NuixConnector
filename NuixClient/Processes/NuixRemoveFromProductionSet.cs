@@ -48,7 +48,7 @@ namespace NuixClient.Processes
 
         public override string GetName() => "Remove items from Production Set";
 
-        internal override string ScriptName => "NuixRemoveFromProductionSet.rb";
+        internal override string ScriptName => "RemoveFromProductionSet.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);
