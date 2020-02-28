@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using NuixClient.Search;
@@ -35,6 +38,8 @@ namespace NuixClient.Processes
             else return base.HandleLine(rl, processState);
         }
 
+        private static readonly Regex HexRegex = new Regex(@"\A(?:0x)(?:[0-9a-f]{2}\s?)+\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         internal override async void OnScriptFinish(ProcessState processState)
         {
             foreach (var (fileName, lines) in processState.Artifacts)
@@ -43,9 +48,29 @@ namespace NuixClient.Processes
                 await using var fileStream = File.CreateText(filePath);
 
                 foreach (var line in (List<string>) lines)
-                    fileStream.WriteLine(line);
+                {
+                    var terms = line.Split('\t');
+
+                    var newString =
+                        string.Join('\t',
+                            terms.Select(MaybeConvertFromHex));
+
+                    fileStream.WriteLine(newString);
+                }
             }
             base.OnScriptFinish(processState);
+
+            static string MaybeConvertFromHex(string term) => HexRegex.IsMatch(term) ? FromHexString(term.Substring(2)) : term;
+            static string FromHexString(string hexString)
+            {
+                var bytes = new byte[hexString.Length / 2];
+                for (var i = 0; i < bytes.Length; i++)
+                {
+                    bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+                }
+
+                return Encoding.Unicode.GetString(bytes);
+            }
         }
 
         public override IEnumerable<string> GetArgumentErrors()
