@@ -1,5 +1,9 @@
 require 'optparse'
 
+def bin_to_hex(s)
+  s.each_byte.map { |b| b.to_s(16) }.join(' ')
+end
+
 hash_options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: your_app [options]"
@@ -38,7 +42,7 @@ else
     puts "OutputTerms:term\tcount"
 
     termStatistics.each do |term, count|
-        puts "OutputTerms:#{term}\t#{count}"
+        puts "OutputTerms:#{bin_to_hex(term)}\t#{count}"
     end
    
     the_case.close
