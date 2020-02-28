@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using NuixClient.Processes;
 using Orchestration;
 
 namespace NuixClientConsole
@@ -10,8 +13,15 @@ namespace NuixClientConsole
         {
             //TODO add other methods from processes
 
+            var rubyScriptProcessAssembly = Assembly.GetAssembly(typeof(RubyScriptProcess));
+            Debug.Assert(rubyScriptProcessAssembly != null, nameof(rubyScriptProcessAssembly) + " != null");
+
             var methods = typeof(YamlRunner).GetMethods()
-                    .Where(x=>x.IsStatic);
+                    .Where(x=>x.IsStatic).Select(x=>new MethodWrapper(x) as IRunnable)
+                    .Concat(rubyScriptProcessAssembly.GetTypes()
+                        .Where(t=> typeof(RubyScriptProcess).IsAssignableFrom(t))
+                        .Select(x=> new NuixProcessWrapper(x) )
+                    );
 
             var lines = ConsoleView.Run(args, methods);
 

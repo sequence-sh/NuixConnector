@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CSharpFunctionalExtensions;
@@ -20,10 +19,12 @@ namespace Orchestration
         public static async IAsyncEnumerable<Result<string>> RunExternalProcess(string processPath, IEnumerable<string> arguments)
         {
             if (!File.Exists(processPath))
-                throw new Exception($"Could not find '{processPath}'");
-
+            {
+                yield return Result.Failure<string>($"Could not find '{processPath}'");
+                yield break;
+            }
+            
             var argumentString = string.Join(' ', arguments.Select(a => a.Contains(" ") ? $@"""{a}""": a));
-
             using var pProcess = new System.Diagnostics.Process
             {
                 StartInfo =
