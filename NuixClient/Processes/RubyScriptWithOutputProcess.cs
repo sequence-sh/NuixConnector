@@ -69,7 +69,7 @@ namespace NuixClient.Processes
                     bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
                 }
 
-                return Encoding.Unicode.GetString(bytes);
+                return Encoding.UTF8.GetString(bytes);
             }
         }
 

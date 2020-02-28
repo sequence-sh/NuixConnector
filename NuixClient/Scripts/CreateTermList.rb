@@ -1,7 +1,8 @@
 require 'optparse'
 
 def bin_to_hex(s)
-  s.each_byte.map { |b| b.to_s(16) }.join(' ')
+  suffix = s.each_byte.map { |b| b.to_s(16) }.join('')
+  '0x' + suffix
 end
 
 hash_options = {}
@@ -24,9 +25,7 @@ unless requiredArguments.all? {|a| hash_options[a] != nil}
 
 
 else
-    puts "Opening Case"
-
-    puts "😀"
+    puts "Opening Case"    
     
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
