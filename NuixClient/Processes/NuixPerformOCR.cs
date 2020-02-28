@@ -32,10 +32,11 @@ namespace NuixClient.Processes
 
         public override IEnumerable<string> GetArgumentErrors()
         {
-            if(OCRProfileName != null)
-            {
-                yield return "Unfortunately OCRProfiles don't work because of a bug in NUIX";
-            }            
+            yield break;
+            //if(OCRProfileName != null)
+            //{
+            //    yield return "Unfortunately OCRProfiles don't work because of a bug in NUIX";
+            //}            
         }
         internal override string ScriptName => "RunOCR.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
