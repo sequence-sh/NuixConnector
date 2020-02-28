@@ -76,7 +76,7 @@ else
 
     puts "Created results for #{allItems.length} items"
 
-    puts "OutputStats:custodian\ttype\tvalue\tcount"
+    puts "OutputStats:Custodian\tType\tValue\tCount"
 
     puts "#{results.length - 1} custodians"
     results.each do |custodian, hash1|

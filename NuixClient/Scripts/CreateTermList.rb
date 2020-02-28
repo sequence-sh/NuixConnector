@@ -32,13 +32,12 @@ else
     puts "Generating Report:"   
 
     caseStatistics = the_case.getStatistics()
-    dateRange = caseStatistics.getCaseDateRange()
 
     termStatistics = caseStatistics.getTermStatistics("", {"sort" => "on", "deduplicate" => "md5"}) #for some reason this takes strings rather than symbols
     #todo terms per custodian
     puts "#{termStatistics.length} terms"
 
-    puts "OutputTerms:term\tcount"
+    puts "OutputTerms:Term\tCount"
 
     termStatistics.each do |term, count|
         puts "OutputTerms:#{bin_to_hex(term)}\t#{count}"

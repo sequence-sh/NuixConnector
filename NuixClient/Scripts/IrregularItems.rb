@@ -42,14 +42,14 @@ else
 
     }
     
-    puts "OutputIrregular:reason\tcount"
+    puts "OutputIrregular:Reason\tCount"
 
     fields.each do |key, value|
         items = the_case.search(value)
         puts "OutputIrregular:#{key.to_s}\t#{items.length}"
         
         if items.length > 0
-            puts "Output#{key.to_s}:path\tguid"
+            puts "Output#{key.to_s}:Path\tGuid"
             items.each do |i|
                 path = i.getPathNames().join("/")
                 guid = i.getGuid()

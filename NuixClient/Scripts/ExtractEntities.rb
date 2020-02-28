@@ -44,12 +44,12 @@ else
 
         puts "Found entities for #{allItems.length} items"
 
-        puts "OutputEntities:type\tvalue\tcount" #The headers for the entities file
+        puts "OutputEntities:Type\tValue\tCount" #The headers for the entities file
 
         results.each do |et, values|
             totalCount = values.map{|x,y| y.length}.reduce(:+)
             puts "OutputEntities:#{et}\t*\t#{totalCount}" #The total count for entities of this type
-            puts "Output#{et}:value\tguid" #The header for this types's file
+            puts "Output#{et}:Value\tGuid" #The header for this types's file
             values.each do |value, guids|
                 puts "OutputEntities:#{et}\t#{value}\t#{guids.length}" #The row in the entities file
                 guids.each do |guid|                
