@@ -1,5 +1,10 @@
 require 'optparse'
 
+def bin_to_hex(s)
+  suffix = s.each_byte.map { |b| b.to_s(16) }.join('')
+  '0x' + suffix
+end
+
 hash_options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: your_app [options]"
@@ -20,9 +25,7 @@ unless requiredArguments.all? {|a| hash_options[a] != nil}
 
 
 else
-    puts "Opening Case"
-
-    puts "😀"
+    puts "Opening Case"    
     
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
@@ -38,7 +41,7 @@ else
     puts "OutputTerms:term\tcount"
 
     termStatistics.each do |term, count|
-        puts "OutputTerms:#{term}\t#{count}"
+        puts "OutputTerms:#{bin_to_hex(term)}\t#{count}"
     end
    
     the_case.close
