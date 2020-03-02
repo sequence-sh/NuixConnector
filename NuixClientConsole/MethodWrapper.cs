@@ -20,9 +20,9 @@ namespace NuixClientConsole
         public string Name => _methodInfo.Name;
         public string Summary => _methodInfo.GetXmlDocsSummary();
 
-        public Result<Func<object?>, List<string>> TryGetInvocation(IReadOnlyDictionary<string, string> dictionary)
+        public Result<Func<object?>, List<string?[]>> TryGetInvocation(IReadOnlyDictionary<string, string> dictionary)
         {
-            var errors = new List<string>();
+            var errors = new List<string?[]>();
             var usedArguments = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             var argumentsToUse = new List<object?>();
@@ -38,23 +38,25 @@ namespace NuixClientConsole
                     if (parsed)
                         argumentsToUse.Add(vObject);
                     else
-                        errors.Add($"Could not parse '{v}' as {parameter.ParameterType.Name}");
+                        errors.Add(new []{parameter.Name, parameter.ParameterType.Name, $"Could not parse '{v}'" });
                 }
                 else if (parameter.HasDefaultValue)
                     argumentsToUse.Add(parameter.DefaultValue);
                 else
-                    errors.Add($"Argument '{parameter.Name}' of type {parameter.ParameterType.Name} is required");
+                    errors.Add(new []{parameter.Name, parameter.ParameterType.Name, "Is required"});
             }
+            
+            
 
             var extraArguments = dictionary.Keys.Where(k => !usedArguments.Contains(k)).ToList();
-            errors.AddRange(extraArguments.Select(extraArgument => $"Could not understand argument '{extraArgument}'"));
+            errors.AddRange(extraArguments.Select(extraArgument => new[] {extraArgument, null, "Not a valid argument"}));
 
             if (errors.Any())
-                return Result.Failure<Func<object?>, List<string>>(errors);
+                return Result.Failure<Func<object?>, List<string?[]>>(errors);
             
             var func = new Func<object?>(()=>_methodInfo.Invoke(null, argumentsToUse.ToArray()));
 
-            return Result.Success<Func<object?>, List<string>>(func);
+            return Result.Success<Func<object?>, List<string?[]>>(func);
         }
 
         public IEnumerable<IParameter> Parameters => _methodInfo.GetParameters().Select(x=> new ParameterWrapper(x));

@@ -10,7 +10,7 @@ namespace NuixClientConsole
 
         string Summary { get; }
 
-        Result<Func<object?>, List<string>> TryGetInvocation(IReadOnlyDictionary<string, string> arguments);
+        Result<Func<object?>, List<string?[]>> TryGetInvocation(IReadOnlyDictionary<string, string> arguments);
 
         IEnumerable<IParameter> Parameters { get; }
     }

@@ -22,21 +22,17 @@ namespace NuixClientConsole
             if (args.Length == 0 || args.Length == 1 && args.First().Equals("help", StringComparison.OrdinalIgnoreCase))
             {
                 yield return "Possible methods are:";
-                foreach (var method in methods)
-                {
-                    var summary = method.Summary;
-                    if (string.IsNullOrWhiteSpace(summary))
-                        yield return method.Name;
-                    else
-                        yield return $"{method.Name} - {summary}";
-                }
+
+                var ps = Prettifier.ArrangeIntoColumns(methods.Select(m => new[] {m.Name, m.Summary}).ToList());
+
+                foreach (var prettyString in ps)
+                    yield return prettyString;
             }
             else
             {
                 var methodName = args.First();
 
-
-                var possibleMethods = methods.Where(x => x.Name == methodName).ToList();
+                var possibleMethods = methods.Where(x => x.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase)).ToList();
 
                 if (possibleMethods.Count == 0)
                     yield return $"Could not find method with name '{methodName}'. Type 'help' for list of methods";
@@ -48,20 +44,18 @@ namespace NuixClientConsole
 
                     if (args.Length == 2 && args[1].Equals("help", StringComparison.OrdinalIgnoreCase))
                     {
-                        var summary = method.Summary;
-                        if (string.IsNullOrWhiteSpace(summary))
-                            yield return method.Name;
-                        else
-                            yield return $"{method.Name} - {summary}";
-
-                        foreach (var parameter in method.Parameters)
+                        var rows = new List<string?[]>
                         {
-                            if (string.IsNullOrWhiteSpace(parameter.Summary))
-                                yield return $"{parameter.Name} - {parameter.Type.Name}";
-                            else
-                                yield return
-                                    $"{parameter.Name} - {parameter.Type.Name} - {parameter.Summary}";
-                        }
+                            new[] {method.Name, null, method.Summary},
+                            Array.Empty<string>(), //empty line
+                        };
+
+                        rows.AddRange(method.Parameters.Select(p=> new []{p.Name, p.Type.Name, p.Summary}));
+
+                        var prettyStrings = Prettifier.ArrangeIntoColumns(rows);
+
+                        foreach (var prettyString in prettyStrings)
+                            yield return prettyString;
                     }
                     else
                     {
@@ -74,7 +68,7 @@ namespace NuixClientConsole
 
                             if (isFailure)
                             {
-                                foreach (var s in error)
+                                foreach (var s in Prettifier.ArrangeIntoColumns(error))
                                     yield return s;
                                 yield break;
                             }

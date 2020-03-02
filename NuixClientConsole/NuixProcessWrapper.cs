@@ -27,9 +27,9 @@ namespace NuixClientConsole
         public string Name => _processType.Name;
         public string Summary => _processType.GetXmlDocsSummary();
 
-        public Result<Func<object?>, List<string>> TryGetInvocation(IReadOnlyDictionary<string, string> dictionary)
+        public Result<Func<object?>, List<string?[]>> TryGetInvocation(IReadOnlyDictionary<string, string> dictionary)
         {
-            var errors = new List<string>();
+            var errors = new List<string?[]>();
             var usedArguments = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             var instance = Activator.CreateInstance(_processType) as RubyScriptProcess;
@@ -44,21 +44,21 @@ namespace NuixClientConsole
                     if (parsed)
                         property.SetValue(instance, vObject);
                     else
-                        errors.Add($"Could not parse '{v}' as {property.PropertyType.Name}");
+                        errors.Add(new []{property.Name, property.PropertyType.Name, $"Could not parse '{v}'" });
                 }
                 else if (property.CustomAttributes.Any(att=>att.AttributeType == typeof(RequiredAttribute)))
-                    errors.Add($"Argument '{property.Name}' of type {property.PropertyType.Name} is required");
+                    errors.Add(new []{property.Name, property.PropertyType.Name, "Is required"});
             }
 
             var extraArguments = dictionary.Keys.Where(k => !usedArguments.Contains(k)).ToList();
-            errors.AddRange(extraArguments.Select(extraArgument => $"Could not understand argument '{extraArgument}'"));
+            errors.AddRange(extraArguments.Select(extraArgument => new[] {extraArgument, null, "Not a valid argument"}));
 
             if (errors.Any())
-                return Result.Failure<Func<object?>, List<string>>(errors);
+                return Result.Failure<Func<object?>, List<string?[]>>(errors);
             
             var func = new Func<object?>(()=> instance.Execute());
 
-            return Result.Success<Func<object?>, List<string>>(func);
+            return Result.Success<Func<object?>, List<string?[]>>(func);
         }
 
         private IEnumerable<PropertyInfo> RelevantProperties { get; }
@@ -76,7 +76,7 @@ namespace NuixClientConsole
 
             public string Name => _propertyInfo.Name;
             public string Summary => _propertyInfo.GetXmlDocsSummary();
-            public Type Type => _propertyInfo.GetType();
+            public Type Type => _propertyInfo.PropertyType;
         }
     }
 }
