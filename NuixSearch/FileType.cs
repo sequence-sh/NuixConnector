@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 
-namespace NuixClient.Search
+namespace NuixSearch
 {
     /// <summary>
     /// The type of the file

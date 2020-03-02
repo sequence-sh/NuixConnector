@@ -2,7 +2,7 @@
 using System.Linq;
 using CSharpFunctionalExtensions;
 
-namespace NuixClient.Search.Properties
+namespace NuixSearch.SearchProperties
 {
     internal class ComplexPropertyValue : PropertyValue
     {

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Superpower.Tokenizers;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using NuixClient.Search.Properties;
+using NuixSearch.SearchProperties;
 using Superpower;
 using Superpower.Parsers;
-using Superpower.Tokenizers;
 
-namespace NuixClient.Search
+namespace NuixSearch
 {
     /// <summary>
     /// Static class for parsing strings as Search terms

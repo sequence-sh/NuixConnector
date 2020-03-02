@@ -71,7 +71,7 @@ namespace NuixClient.processes
         /// </summary>
         [DataMember]
         [YamlMember(Order = 9)]
-        public string[]? CustodianRanking { get; set; }
+        public List<string>? CustodianRanking { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable
 
@@ -79,7 +79,7 @@ namespace NuixClient.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
-            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(SearchTerm);
+            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = NuixSearch.SearchParser.TryParse(SearchTerm);
 
             if (!searchTermParseSuccess || searchTermParsed == null)
             {

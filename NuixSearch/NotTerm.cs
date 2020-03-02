@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using NuixClient.Search.Properties;
+using NuixSearch.SearchProperties;
 
-namespace NuixClient.Search
+namespace NuixSearch
 {
     internal class NotTerm : ISearchTerm
     {

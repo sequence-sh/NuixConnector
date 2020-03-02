@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NuixClient.Search.Properties
+namespace NuixSearch.SearchProperties
 {
     internal abstract class PropertySearchTerm : ISearchTerm
     {

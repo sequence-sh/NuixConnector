@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace NuixClient.Search
+namespace NuixSearch
 {
     internal class TextTerm : ISearchTerm
     {

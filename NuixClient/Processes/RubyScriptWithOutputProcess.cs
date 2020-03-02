@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
-using NuixClient.Search;
+using NuixSearch;
 using Orchestration.Processes;
 using YamlDotNet.Serialization;
 

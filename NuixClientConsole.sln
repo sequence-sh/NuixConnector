@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClientTests", "NuixClie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orchestration", "Orchestration\Orchestration.csproj", "{83AC3086-F919-4800-B7F0-CED65DF9B335}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrchestrationTests", "OrchestrationTests\OrchestrationTests.csproj", "{52033527-F03F-4466-BAB0-057107ADAEC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrchestrationTests", "OrchestrationTests\OrchestrationTests.csproj", "{52033527-F03F-4466-BAB0-057107ADAEC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixSearch", "NuixSearch\NuixSearch.csproj", "{7A3689F5-20A7-44B8-9BA1-0CAE13628441}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuixSearchTests", "NuixSearchTests\NuixSearchTests.csproj", "{35426298-230A-484B-8A50-BFCBFEBF6532}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{52033527-F03F-4466-BAB0-057107ADAEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52033527-F03F-4466-BAB0-057107ADAEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52033527-F03F-4466-BAB0-057107ADAEC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A3689F5-20A7-44B8-9BA1-0CAE13628441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A3689F5-20A7-44B8-9BA1-0CAE13628441}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A3689F5-20A7-44B8-9BA1-0CAE13628441}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A3689F5-20A7-44B8-9BA1-0CAE13628441}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35426298-230A-484B-8A50-BFCBFEBF6532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35426298-230A-484B-8A50-BFCBFEBF6532}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35426298-230A-484B-8A50-BFCBFEBF6532}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35426298-230A-484B-8A50-BFCBFEBF6532}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

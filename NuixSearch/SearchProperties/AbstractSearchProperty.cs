@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace NuixClient.Search.Properties
+namespace NuixSearch.SearchProperties
 {
     /// <summary>
     /// A property that one could search by

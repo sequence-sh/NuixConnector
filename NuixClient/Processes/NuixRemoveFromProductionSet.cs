@@ -46,7 +46,7 @@ namespace NuixClient.processes
         {
             if (SearchTerm != null)
             {
-                var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(SearchTerm);
+                var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = NuixSearch.SearchParser.TryParse(SearchTerm);
 
                 if (!searchTermParseSuccess || searchTermParsed == null)
                 {

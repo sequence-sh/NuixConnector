@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NuixClient.Search
+namespace NuixSearch
 {
     /// <summary>
     /// A term for searching in NUIX

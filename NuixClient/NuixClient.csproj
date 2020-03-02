@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NuixSearch\NuixSearch.csproj" />
     <ProjectReference Include="..\Orchestration\Orchestration.csproj" />
   </ItemGroup>
 

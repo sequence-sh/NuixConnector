@@ -1,7 +1,7 @@
 ﻿using System;
 using CSharpFunctionalExtensions;
 
-namespace NuixClient.Search.Properties
+namespace NuixSearch.SearchProperties
 {
     internal sealed class GuidSearchProperty : GenericSearchProperty<Guid>
     {

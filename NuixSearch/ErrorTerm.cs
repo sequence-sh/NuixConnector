@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NuixClient.Search
+namespace NuixSearch
 {
     internal class ErrorTerm : ISearchTerm
     {

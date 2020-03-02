@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace NuixClient.Search.Properties
+namespace NuixSearch.SearchProperties
 {
     internal class StringSearchProperty : GenericSearchProperty<string>
     {

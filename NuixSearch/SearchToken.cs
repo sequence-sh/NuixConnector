@@ -1,6 +1,6 @@
 ﻿using Superpower.Display;
 
-namespace NuixClient.Search
+namespace NuixSearch
 {
     internal enum SearchToken
     {
