@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Exports Concordance for a particular production set.
     /// </summary>
-    internal class NuixExportConcordance : RubyScriptProcess
+    public sealed class NuixExportConcordance : RubyScriptProcess
     {
-        /// <summary>
-        /// The name of this process
-        /// </summary>
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => $"Export {ProductionSetName}";
 
 
@@ -50,7 +50,8 @@ namespace NuixClient.Processes
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             yield break;

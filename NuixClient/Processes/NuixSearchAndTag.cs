@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Searches a NUIX case with a particular search string and tags all files it finds
     /// </summary>
-    internal class NuixSearchAndTag : RubyScriptProcess
+    public sealed class NuixSearchAndTag : RubyScriptProcess
     {
-        /// <summary>
-        /// The name of this process
-        /// </summary>
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => $"Search and Tag with '{Tag}'";
 
 
@@ -44,6 +44,8 @@ namespace NuixClient.Processes
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(SearchTerm);

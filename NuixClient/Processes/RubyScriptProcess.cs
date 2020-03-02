@@ -6,17 +6,13 @@ using CSharpFunctionalExtensions;
 using Orchestration;
 using Orchestration.Processes;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// A process that runs a ruby script against NUIX
     /// </summary>
     public abstract class RubyScriptProcess : Process
     {
-        ////TODO make a config property
-        //private const string NuixExeConsolePath = @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe";
-        ////TODO make a config property
-        //private const bool UseDongle = true;
         /// <summary>
         /// Checks if the current set of arguments is valid
         /// </summary>
@@ -47,7 +43,7 @@ namespace NuixClient.Processes
         /// Execute this process
         /// </summary>
         /// <returns></returns>
-        public override async IAsyncEnumerable<Result<string>> Execute()
+        public sealed override async IAsyncEnumerable<Result<string>> Execute()
         {
             var argumentErrors = GetArgumentErrors().ToList();
 
@@ -59,7 +55,7 @@ namespace NuixClient.Processes
             }
 
             var currentDirectory = Directory.GetCurrentDirectory();
-            var scriptPath = Path.Combine(currentDirectory, "..", "nuixclient", "NuixClient", "Scripts", ScriptName);
+            var scriptPath = Path.Combine(currentDirectory, "..", "nuixclient", "NuixClient", "scripts", ScriptName);
             
             var args = new List<string>();
 

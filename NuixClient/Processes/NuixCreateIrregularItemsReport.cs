@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Creates a report detailing the irregular items in a case.
     /// </summary>
-    internal class NuixCreateIrregularItemsReport : RubyScriptWithOutputProcess
+    public sealed class NuixCreateIrregularItemsReport : RubyScriptWithOutputProcess
     {
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Create Irregular Items report";
 
         /// <summary>

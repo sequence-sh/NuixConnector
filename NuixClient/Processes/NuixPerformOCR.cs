@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Performs optical character recognition on files which need it in a NUIX case.
     /// </summary>
-    internal class NuixPerformOCR : RubyScriptProcess
+    public sealed class NuixPerformOCR : RubyScriptProcess
     {
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "RunOCR";
 
         /// <summary>
@@ -29,7 +32,8 @@ namespace NuixClient.Processes
         [YamlMember(Order = 3)]
         public string? OCRProfileName { get; set; }
 
-
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             yield break;      

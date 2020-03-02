@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Creates a report for a Nuix case.
     /// </summary>
-    internal class NuixCreateReport : RubyScriptWithOutputProcess
+    public sealed class NuixCreateReport : RubyScriptWithOutputProcess
     {
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Create Report";
 
         /// <summary>

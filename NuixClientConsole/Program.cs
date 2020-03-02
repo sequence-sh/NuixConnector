@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using NuixClient.Processes;
+using NuixClient.processes;
 using Orchestration;
 
 namespace NuixClientConsole

@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Adds data from a Concordance file to a NUIX case.
     /// </summary>
-    internal class NuixAddConcordance : RubyScriptProcess
+    public sealed class NuixAddConcordance : RubyScriptProcess
     {
-        /// <summary>
-        /// The name of this process
-        /// </summary>
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName()
         {
             return "Add Concordance";
         }
-        
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
@@ -75,9 +74,11 @@ namespace NuixClient.Processes
         [DataMember]
         [YamlMember(Order = 9)]
         public string CasePath { get; set; }
-
-
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             yield break;

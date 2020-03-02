@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
-using NuixClient.Processes;
+using NuixClient.processes;
 using NUnit.Framework;
 using Orchestration;
 using Orchestration.Conditions;

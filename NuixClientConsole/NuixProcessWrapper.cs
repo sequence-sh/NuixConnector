@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using CSharpFunctionalExtensions;
 using Namotion.Reflection;
-using NuixClient.Processes;
+using NuixClient.processes;
 using YamlDotNet.Serialization;
 
 namespace NuixClientConsole

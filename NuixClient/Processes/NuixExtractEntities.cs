@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Extract Entities from a Nuix Case
     /// </summary>
-    internal class NuixExtractEntities : RubyScriptWithOutputProcess
+    public sealed class NuixExtractEntities : RubyScriptWithOutputProcess
     {
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Extract Entities";
 
         /// <summary>

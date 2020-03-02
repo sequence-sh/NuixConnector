@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -11,9 +12,13 @@ using NuixClient.Search;
 using Orchestration.Processes;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
-    internal abstract class RubyScriptWithOutputProcess : RubyScriptProcess
+
+    /// <summary>
+    /// A process that runs a ruby script in Nuix and also writes something to a file on the file system
+    /// </summary>
+    public abstract class RubyScriptWithOutputProcess : RubyScriptProcess
     {
         private static readonly Regex OutputLineRegex = new Regex(@"\AOutput\s*(?<filename>[\w-]+)\s*:(?<data>.*)\Z", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -73,6 +78,8 @@ namespace NuixClient.Processes
             }
         }
 
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             if (string.IsNullOrWhiteSpace(OutputFolder))

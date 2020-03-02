@@ -1,12 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
-    internal class NuixRemoveFromProductionSet : RubyScriptProcess
+    /// <summary>
+    /// A process that removes particular items from a Nuix production set
+    /// </summary>
+    public sealed class NuixRemoveFromProductionSet : RubyScriptProcess
     {
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string GetName() => "Remove items from Production Set";
+
         /// <summary>
         /// The production set to remove results from
         /// </summary>
@@ -32,7 +40,8 @@ namespace NuixClient.Processes
         [YamlMember(Order = 5)]
         public string CasePath { get; set; }
 
-
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             if (SearchTerm != null)
@@ -45,8 +54,7 @@ namespace NuixClient.Processes
                 }
             }
         }
-
-        public override string GetName() => "Remove items from Production Set";
+        
 
         internal override string ScriptName => "RemoveFromProductionSet.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()

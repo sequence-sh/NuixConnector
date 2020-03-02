@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
-    internal class NuixGetParticularProperties : RubyScriptWithOutputProcess
+    /// <summary>
+    /// A process that reads searches a case and outputs to a file the values of particular properties of the results
+    /// </summary>
+    public sealed class NuixGetParticularProperties : RubyScriptWithOutputProcess
     {
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Get particular properties";
 
         internal override string ScriptName => "GetParticularProperties.rb";
@@ -47,7 +53,6 @@ namespace NuixClient.Processes
         public string OutputFilePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
 
 
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()

@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Searches a case with a particular search string and adds all items it finds to a production set.
     /// Will create a new production set if one with the given name does not already exist.
     /// </summary>
-    internal class NuixAddToProductionSet : RubyScriptProcess
+    public sealed class NuixAddToProductionSet : RubyScriptProcess
     {
-        /// <summary>
-        /// The name of this process
-        /// </summary>
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => $"Search and add to production set.";
 
 
@@ -68,7 +68,8 @@ namespace NuixClient.Processes
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = Search.SearchParser.TryParse(SearchTerm);

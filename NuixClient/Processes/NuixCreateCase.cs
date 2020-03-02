@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Migrates a case to the latest version if necessary
     /// </summary>
-    internal class NuixMigrateCase : RubyScriptProcess
+    public sealed class NuixMigrateCase : RubyScriptProcess
     {
         /// <summary>
         /// The path to the case folder
@@ -20,11 +21,15 @@ namespace NuixClient.Processes
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             yield break;
         }
 
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Migrate Case";
 
         internal override string ScriptName => "MigrateCase.rb";

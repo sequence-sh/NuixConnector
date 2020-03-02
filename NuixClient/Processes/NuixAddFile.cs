@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.Processes
+namespace NuixClient.processes
 {
     /// <summary>
     /// Adds a file or folder to a Nuix Case
     /// </summary>
-    internal class NuixAddFile : RubyScriptProcess
+    public sealed class NuixAddFile : RubyScriptProcess
     {
-        /// <summary>
-        /// The name of this process
-        /// </summary>
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => $"Add '{FilePath}'";
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -65,9 +65,10 @@ namespace NuixClient.Processes
         [DataMember]
         [YamlMember(Order = 7)]
         public string? ProcessingProfileName { get; set; }
-
-
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+        /// <inheritdoc />
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
             yield break;
