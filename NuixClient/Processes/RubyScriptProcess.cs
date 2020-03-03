@@ -3,8 +3,8 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using CSharpFunctionalExtensions;
-using Orchestration;
-using Orchestration.Processes;
+using Processes;
+using Processes.process;
 
 namespace NuixClient.processes
 {

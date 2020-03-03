@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using NuixClient.enums;
-using Orchestration;
+using Processes;
 using YamlDotNet.Serialization;
 
 namespace NuixClient.processes

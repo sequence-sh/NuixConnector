@@ -9,15 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClient", "NuixClient\Nu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClientTests", "NuixClientTests\NuixClientTests.csproj", "{B242ECE0-86EB-4295-BDF4-20D419308253}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orchestration", "Orchestration\Orchestration.csproj", "{83AC3086-F919-4800-B7F0-CED65DF9B335}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrchestrationTests", "OrchestrationTests\OrchestrationTests.csproj", "{52033527-F03F-4466-BAB0-057107ADAEC6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixSearch", "NuixSearch\NuixSearch.csproj", "{7A3689F5-20A7-44B8-9BA1-0CAE13628441}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixSearchTests", "NuixSearchTests\NuixSearchTests.csproj", "{35426298-230A-484B-8A50-BFCBFEBF6532}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstantConsole", "..\InstantConsole\InstantConsole\InstantConsole.csproj", "{86DD3539-7553-4B83-A937-8ACD25AD31C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Processes", "..\processes\Processes\Processes.csproj", "{4D4373FF-D809-4402-98C9-E55D8E48A120}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessesTests", "..\processes\ProcessesTests\ProcessesTests.csproj", "{FF0A9A1D-9DF3-492E-BDB8-F9AF5464FE52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,14 +37,6 @@ Global
 		{B242ECE0-86EB-4295-BDF4-20D419308253}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B242ECE0-86EB-4295-BDF4-20D419308253}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B242ECE0-86EB-4295-BDF4-20D419308253}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83AC3086-F919-4800-B7F0-CED65DF9B335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83AC3086-F919-4800-B7F0-CED65DF9B335}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83AC3086-F919-4800-B7F0-CED65DF9B335}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83AC3086-F919-4800-B7F0-CED65DF9B335}.Release|Any CPU.Build.0 = Release|Any CPU
-		{52033527-F03F-4466-BAB0-057107ADAEC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52033527-F03F-4466-BAB0-057107ADAEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52033527-F03F-4466-BAB0-057107ADAEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52033527-F03F-4466-BAB0-057107ADAEC6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A3689F5-20A7-44B8-9BA1-0CAE13628441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A3689F5-20A7-44B8-9BA1-0CAE13628441}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A3689F5-20A7-44B8-9BA1-0CAE13628441}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +49,14 @@ Global
 		{86DD3539-7553-4B83-A937-8ACD25AD31C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86DD3539-7553-4B83-A937-8ACD25AD31C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86DD3539-7553-4B83-A937-8ACD25AD31C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D4373FF-D809-4402-98C9-E55D8E48A120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D4373FF-D809-4402-98C9-E55D8E48A120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D4373FF-D809-4402-98C9-E55D8E48A120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D4373FF-D809-4402-98C9-E55D8E48A120}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF0A9A1D-9DF3-492E-BDB8-F9AF5464FE52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF0A9A1D-9DF3-492E-BDB8-F9AF5464FE52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF0A9A1D-9DF3-492E-BDB8-F9AF5464FE52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF0A9A1D-9DF3-492E-BDB8-F9AF5464FE52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

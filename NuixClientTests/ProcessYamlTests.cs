@@ -6,10 +6,10 @@ using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using NuixClient.processes;
 using NUnit.Framework;
-using Orchestration;
-using Orchestration.Conditions;
-using Orchestration.Enumerations;
-using Orchestration.Processes;
+using Processes;
+using Processes.conditions;
+using Processes.enumerations;
+using Processes.process;
 using YamlDotNet.Serialization;
 
 namespace NuixClientTests

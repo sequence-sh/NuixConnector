@@ -22,7 +22,7 @@ namespace NuixClientConsole
 
             RelevantProperties = _processType.GetProperties()
                 .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(YamlMemberAttribute)))
-                .Where(x => x.Name != nameof(Orchestration.Processes.Process.Conditions));
+                .Where(x => x.Name != nameof(Processes.process.Process.Conditions));
         }
 
         public string Name => _processType.Name;

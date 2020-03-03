@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using InstantConsole;
 using NuixClient.processes;
-using Orchestration;
+using Processes;
 
 namespace NuixClientConsole
 {

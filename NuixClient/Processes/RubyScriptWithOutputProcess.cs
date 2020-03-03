@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using NuixSearch;
-using Orchestration.Processes;
+using Processes.process;
 using YamlDotNet.Serialization;
 
 namespace NuixClient.processes

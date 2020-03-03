@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
-using Orchestration;
+using Processes;
 
 [assembly: InternalsVisibleTo("NuixClientTests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-[assembly: OrchestrationModule]
+[assembly: ProcessModule]
