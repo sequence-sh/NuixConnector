@@ -1,0 +1,3 @@
+[submodule "InstantConsole"]
+	path = InstantConsole
+	url = git@gitlab.com:reductech/utilities/instantconsole.git
