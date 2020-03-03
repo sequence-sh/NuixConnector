@@ -1,0 +1,122 @@
+RunProcessFromYamlString       Run process defined in yaml
+ yamlString                    Yaml representing the process                                                                                         string                 Required
+
+RunProcessFromYaml             Run process defined in yaml found at a particular path
+ yamlPath                      Path to the yaml                                                                                                      string                 Required
+
+NuixAddConcordance             Adds data from a Concordance file to a NUIX case.
+ ConcordanceProfileName        The name of the concordance profile to use.                                                                           string                 Required
+ ConcordanceDateFormat         The concordance date format to use.                                                                                   string                 Required
+ FilePath                      The path of the concordance file to import.                                                                           string                 Required
+ Custodian                     The name of the custodian to assign the folder to.                                                                    string                 Required
+ Description                   A description to add to the folder.                                                                                   string                 Required
+ FolderName                    The name of the folder to create.                                                                                     string                 Required
+ CasePath                      The name of the case to import into.                                                                                  string                 Required
+
+NuixAddFile                    Adds a file or folder to a Nuix Case
+ FilePath                      The path of the file or folder to add to the case.                                                                    string                 Required
+ Custodian                     The custodian to assign to the new folder.                                                                            string                 Required
+ Description                   The description of the new folder.                                                                                    string                 Required
+ FolderName                    The name of the folder to create.                                                                                     string                 Required
+ CasePath                      The path to the case.                                                                                                 string                 Required
+ ProcessingProfileName         The name of the processing profile to use.                                                                            string
+                               If null, the default processing profile will be used.
+
+NuixAddToItemSet               Searches a case with a particular search string and adds all items it finds to a particular item set.
+                               Will create a new item set if one doesn't already exist.
+ ItemSetName                   The production set to add results to. Will be created if it doesn't already exist                                     string                 Required
+ SearchTerm                    The term to search for                                                                                                string                 Required
+ CasePath                      The path of the case to search                                                                                        string                 Required
+ ItemSetDeduplication          The means of deduplicating items by key and prioritizing originals in a tie-break.                                    ItemSetDeduplication
+ ItemSetDescription            The description of the item set as a string.                                                                          string
+ DeduplicateBy                 Whether to deduplicate as a family or individual                                                                      DeduplicateBy
+ CustodianRanking              A list of custodian names ordered from highest ranked to lowest ranked.                                               List<string>
+                               If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
+
+NuixAddToProductionSet         Searches a case with a particular search string and adds all items it finds to a production set.
+                               Will create a new production set if one with the given name does not already exist.
+ ProductionSetName             The production set to add results to. Will be created if it doesn't already exist                                     string                 Required
+ SearchTerm                    The term to search for                                                                                                string                 Required
+ CasePath                      The path of the case to search                                                                                        string                 Required
+ Description                   Description of the production set                                                                                     string                 Required
+ Order                         How to order the items to be added to the production set.                                                             string
+                               e.g. "name ASC", "item-date DESC",  or "name ASC, item-date DESC" etc
+ Limit                         The maximum number of items to add to the production set.                                                             int?
+
+NuixReorderProductionSet       Renumbers the items in the production set.
+ ProductionSetName             The production set to add results to. Will be created if it doesn't already exist                                     string                 Required
+ CasePath                      The path of the case to search                                                                                        string                 Required
+ SortOrder                     Selects the method of sorting items during the renumber                                                               ProductionSetSortOrder Required
+
+NuixAnnotateDocumentIdList     Annotates a document ID list to add production set names to it.
+ ProductionSetName             The production set to add results to. Will be created if it doesn't already exist                                     string                 Required
+ CasePath                      The path of the case to search                                                                                        string                 Required
+ DataPath                      Specifies the file path of the document ID list.                                                                      string                 Required
+
+NuixMigrateCase                Migrates a case to the latest version if necessary
+ CasePath                      The path to the case folder                                                                                           string                 Required
+
+NuixCreateCase                 Creates a new case
+ CaseName                      The name of the case to create.                                                                                       string                 Required
+ CasePath                      The path to the folder to create the case in.                                                                         string                 Required
+ Investigator                  Name of the investigator.                                                                                             string                 Required
+ Description                   Description of the case.                                                                                              string                 Required
+
+NuixCreateIrregularItemsReport Creates a report detailing the irregular items in a case.
+ CasePath                      The path to the folder to create the case in.                                                                         string                 Required
+ OutputFolder                  The path to the folder to put the output files in                                                                     string                 Required
+
+NuixCreateReport               Creates a report for a Nuix case.
+ CasePath                      The path to the folder to create the case in                                                                          string                 Required
+ OutputFolder                  The path to the folder to put the output files in                                                                     string                 Required
+
+NuixCreateTermList             Creates a list of all terms appearing in the case and their frequencies.
+ CasePath                      The path of the case to examine.                                                                                      string                 Required
+ OutputFolder                  The path to the folder to put the output files in                                                                     string                 Required
+
+NuixExportConcordance          Exports Concordance for a particular production set.
+ MetadataProfileName           The name of the metadata profile to use.                                                                              string
+                               Will use the Default profile if this is null
+ ProductionSetName             The name of the production set to export.                                                                             string                 Required
+ ExportPath                    Where to export the Concordance to.                                                                                   string                 Required
+ CasePath                      The path of the case to export Concordance from.                                                                      string                 Required
+
+NuixExtractEntities            Extract Entities from a Nuix Case
+ CasePath                      The path to the folder to create the case in                                                                          string                 Required
+ OutputFolder                  The path to the folder to put the output files in                                                                     string                 Required
+
+NuixGeneratePrintPreviews      Generates print previews for items in the production set
+ ProductionSetName             The production set to generate print previews for                                                                     string                 Required
+ CasePath                      The path of the case to search                                                                                        string                 Required
+
+NuixGetParticularProperties    A process that reads searches a case and outputs to a file the values of particular properties of the results
+ CasePath                      The path of the case to examine.                                                                                      string                 Required
+ SearchTerm                    The term to search for                                                                                                string                 Required
+ PropertyRegex                 The term to search for                                                                                                string                 Required
+ OutputFilePath                The name of the file to write the results to                                                                          string                 Required
+ OutputFolder                  The path to the folder to put the output files in                                                                     string                 Required
+
+NuixImportDocumentIds          Imports the given document IDs into this production set. Only works if this production set has imported numbering.
+ ProductionSetName             The production set to add results to. Will be created if it doesn't already exist                                     string                 Required
+ CasePath                      The path of the case to search                                                                                        string                 Required
+ AreSourceProductionSetsInData Specifies that the source production set name(s) are contained in the document ID list.                               bool                   Required
+ DataPath                      Specifies the file path of the document ID list.                                                                      string                 Required
+
+NuixPerformOCR                 Performs optical character recognition on files which need it in a NUIX case.
+ CasePath                      The path to the case                                                                                                  string                 Required
+ OCRProfileName                The name of the OCR profile to use. If not provided, the default profile will be used                                 string
+
+NuixRemoveFromProductionSet    A process that removes particular items from a Nuix production set
+ ProductionSetName             The production set to remove results from                                                                             string                 Required
+ SearchTerm                    The search term to use for choosing which items to remove. If null, all items will be removed.                        string
+ CasePath                      The path of the case to search                                                                                        string                 Required
+
+NuixSearchAndTag               Searches a NUIX case with a particular search string and tags all files it finds
+ Tag                           The tag to assign to found results                                                                                    string                 Required
+ SearchTerm                    The term to search for                                                                                                string                 Required
+ CasePath                      The path of the case to search                                                                                        string                 Required
+
+RubyScriptProcess              A process that runs a ruby script against NUIX
+
+RubyScriptWithOutputProcess    A process that runs a ruby script in Nuix and also writes something to a file on the file system
+ OutputFolder                  The path to the folder to put the output files in                                                                     string                 Required

@@ -19,7 +19,7 @@ namespace NuixClientConsole
                     .Concat(rubyScriptProcessAssembly.GetTypes()
                         .Where(t=> typeof(RubyScriptProcess).IsAssignableFrom(t))
                         .Select(x=> new NuixProcessWrapper(x) )
-                    );
+                    ).ToList();
 
             ConsoleView.Run(args, methods);
         }
