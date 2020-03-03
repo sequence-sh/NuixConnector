@@ -11,15 +11,46 @@ namespace InstantConsole
     public static class ConsoleView
     {
         /// <summary>
+        /// Uses the arguments to choose a method, set its parameters and run it, printing its output to the console.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="methods"></param>
+        public static void Run(string[] args, IEnumerable<IRunnable> methods)
+        {
+            var lines = ConsoleView.RunAsync(args, methods);
+
+            var enumerator = lines.GetAsyncEnumerator();
+
+            try
+            {
+                while (true)
+                {
+                    var nextTask = enumerator.MoveNextAsync().AsTask();
+                    var next = nextTask.Result;
+                    if (!next)
+                        break;
+                    Console.WriteLine(enumerator.Current);
+                }
+            }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        }
+
+
+        /// <summary>
         /// Runs the method. Returns output lines asynchronously
         /// </summary>
         /// <param name="args"></param>
         /// <param name="methods"></param>
         /// <returns></returns>
-        public static async IAsyncEnumerable<string> Run(string[] args, IEnumerable<IRunnable> methods)
+        private static async IAsyncEnumerable<string> RunAsync(IReadOnlyList<string> args, IEnumerable<IRunnable> methods)
         {
             //the fist argument should be the method name. The remaining arguments should be '-parameterName parameterValue'
-            if (args.Length == 0 || args.Length == 1 && args.First().Equals("help", StringComparison.OrdinalIgnoreCase))
+            if (args.Count == 0 || args.Count == 1 && args.First().Equals("help", StringComparison.OrdinalIgnoreCase))
             {
                 yield return "Possible methods are:";
 
@@ -42,7 +73,7 @@ namespace InstantConsole
                 {
                     var method = possibleMethods.Single();
 
-                    if (args.Length == 2 && args[1].Equals("help", StringComparison.OrdinalIgnoreCase))
+                    if (args.Count == 2 && args[1].Equals("help", StringComparison.OrdinalIgnoreCase))
                     {
                         var rows = new List<string?[]>
                         {
