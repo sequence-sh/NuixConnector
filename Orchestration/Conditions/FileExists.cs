@@ -31,10 +31,12 @@ namespace Orchestration.Conditions
             return System.IO.File.Exists(FilePath);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return GetDescription().GetHashCode();
         }
+        /// <inheritdoc />
 
         public override bool Equals(object? obj)
         {

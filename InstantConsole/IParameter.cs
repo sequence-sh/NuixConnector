@@ -1,18 +1,36 @@
 ﻿using System;
 using System.Linq;
 
-namespace NuixClientConsole
+namespace InstantConsole
 {
+    /// <summary>
+    /// The parameter to a runnable method.
+    /// </summary>
     public interface IParameter
     {
+        /// <summary>
+        /// The name of the parameter.
+        /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// /// A summary of what this parameter does.
+        /// </summary>
         string Summary { get; }
 
+        /// <summary>
+        /// The type of the parameter.
+        /// </summary>
         Type Type { get; }
 
+        /// <summary>
+        /// Human readable name of the parameter type.
+        /// </summary>
         public string TypeName => GetFullName(Type);
 
+        /// <summary>
+        /// Is this parameter required.
+        /// </summary>
         bool Required { get; }
 
 

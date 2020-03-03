@@ -46,6 +46,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Orchestration.Conditions.FileExists.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Conditions.FileExists.Equals(System.Object)">
+            <inheritdoc />
+        </member>
         <member name="T:Orchestration.Enumerations.Collection">
             <summary>
             Enumerates through elements of a list
@@ -70,6 +76,27 @@
             <summary>
             Represents a list of elements
             </summary>
+        </member>
+        <member name="M:Orchestration.Enumerations.Enumeration.ToString">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Enumerations.Enumeration.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Enumerations.Enumeration.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="T:Orchestration.EnumMethods">
+            <summary>
+            Helper methods.
+            </summary>
+        </member>
+        <member name="M:Orchestration.EnumMethods.GetDescription(System.Enum)">
+            <summary>
+            Gets the description of an enum value from the Description Attribute.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
         </member>
         <member name="T:Orchestration.ExternalProcessHelper">
             <summary>
@@ -138,6 +165,15 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Orchestration.Processes.Branch.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.Branch.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.Branch.GetArgumentErrors">
+            <inheritdoc />
+        </member>
         <member name="T:Orchestration.Processes.DeleteFile">
             <summary>
             Delete a file or a directory
@@ -148,9 +184,29 @@
             The path to the file to delete
             </summary>
         </member>
+        <member name="M:Orchestration.Processes.DeleteFile.GetArgumentErrors">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.DeleteFile.GetName">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.DeleteFile.Execute">
+            <inheritdoc />
+        </member>
         <member name="T:Orchestration.Processes.ForEach">
             <summary>
             Performs a nested process once for each element in an enumeration
+            </summary>
+        </member>
+        <member name="M:Orchestration.Processes.ForEach.GetArgumentErrors">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.ForEach.GetName">
+            <inheritdoc />
+        </member>
+        <member name="P:Orchestration.Processes.ForEach.Enumeration">
+            <summary>
+            The enumeration to iterate through.
             </summary>
         </member>
         <member name="P:Orchestration.Processes.ForEach.PropertyToInject">
@@ -169,6 +225,9 @@
             <summary>
             The process to run once for each element
             </summary>
+        </member>
+        <member name="M:Orchestration.Processes.ForEach.Execute">
+            <inheritdoc />
         </member>
         <member name="T:Orchestration.Processes.Process">
             <summary>
@@ -240,6 +299,15 @@
             This is intended for use with injection.
             </summary>
         </member>
+        <member name="M:Orchestration.Processes.RunExternalProcess.GetArgumentErrors">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.RunExternalProcess.GetName">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.RunExternalProcess.Execute">
+            <inheritdoc />
+        </member>
         <member name="T:Orchestration.Processes.Sequence">
             <summary>
             Executes each step in sequence until a condition is not met or a process fails.
@@ -261,9 +329,28 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Orchestration.Processes.Sequence.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.Sequence.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Orchestration.Processes.Sequence.GetArgumentErrors">
+            <inheritdoc />
+        </member>
         <member name="T:Orchestration.YamlHelper">
             <summary>
             Contains methods for serializing and deserializing yaml
+            </summary>
+        </member>
+        <member name="M:Orchestration.YamlHelper.ConvertToYaml(Orchestration.Processes.Process)">
+            <summary>
+            Creates a Yaml string representing a process.
+            </summary>
+        </member>
+        <member name="M:Orchestration.YamlHelper.TryMakeFromYaml(System.String)">
+            <summary>
+            Tries to create a process from a Yaml string.
             </summary>
         </member>
         <member name="T:Orchestration.YamlRunner">

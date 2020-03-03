@@ -7,15 +7,6 @@
 
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="scripts\CreateCase.rb" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="scripts\CreateCase.rb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.3.0" />

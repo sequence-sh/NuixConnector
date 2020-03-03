@@ -6,9 +6,23 @@ using System.Reflection;
 using CSharpFunctionalExtensions;
 using Namotion.Reflection;
 
-namespace NuixClientConsole
+namespace InstantConsole
 {
-    public class MethodWrapper : IRunnable
+    public static class ExtensionMethods
+    {
+        /// <summary>
+        /// Converts this method into an object which can be displayed and called by the console.
+        /// Should only be called on static methods.
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static IRunnable AsRunnable(this MethodInfo methodInfo)
+        {
+            return new MethodWrapper(methodInfo);
+        }
+    }
+
+    internal sealed class MethodWrapper : IRunnable
     {
         private readonly MethodInfo _methodInfo;
 

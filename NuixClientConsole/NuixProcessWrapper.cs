@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using CSharpFunctionalExtensions;
+using InstantConsole;
 using Namotion.Reflection;
 using NuixClient.processes;
 using YamlDotNet.Serialization;

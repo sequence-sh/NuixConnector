@@ -56,7 +56,7 @@ namespace Orchestration.Processes
             }
         }
 
-
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             var r = obj is Branch bp && (Conditions ?? Enumerable.Empty<Condition>()).SequenceEqual(bp.Conditions ?? Enumerable.Empty<Condition>())
@@ -65,11 +65,13 @@ namespace Orchestration.Processes
             return r;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return GetName().GetHashCode();
         }
 
+        /// <inheritdoc />
         public override IEnumerable<string> GetArgumentErrors()
         {
             return Options.SelectMany(process => process.GetArgumentErrors());

@@ -42,7 +42,7 @@ namespace Orchestration.Processes
         [YamlMember(Order = 5)]
         public string? ExtraParameterValue { get; set; }
 
-
+        /// <inheritdoc />
         public override IEnumerable<string> GetArgumentErrors()
         {
             if (ProcessPath == null)
@@ -58,6 +58,7 @@ namespace Orchestration.Processes
                 yield return $"{nameof(ExtraParameterName)} is null.";
         }
 
+        /// <inheritdoc />
         public override string GetName()
         {
             return $"{ProcessPath} {string.Join(" ", Parameters.Select((k, v) => $"-{k} {v}"))}" +
@@ -66,6 +67,7 @@ namespace Orchestration.Processes
                        : "");
         }
 
+        /// <inheritdoc />
         public override async IAsyncEnumerable<Result<string>> Execute()
         {
             var argumentErrors = GetArgumentErrors().ToList();

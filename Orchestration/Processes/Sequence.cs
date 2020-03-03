@@ -63,6 +63,7 @@ namespace Orchestration.Processes
             }
         }
 
+        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             var r = obj is Sequence msp && (Conditions??Enumerable.Empty<Condition>()).SequenceEqual(msp.Conditions??Enumerable.Empty<Condition>())
@@ -71,11 +72,13 @@ namespace Orchestration.Processes
             return r;
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return GetName().GetHashCode();
         }
 
+        /// <inheritdoc />
         public override IEnumerable<string> GetArgumentErrors()
         {
             return Steps.SelectMany(process => process.GetArgumentErrors());

@@ -2,7 +2,7 @@
 using System.Reflection;
 using CSharpFunctionalExtensions;
 
-namespace NuixClientConsole
+namespace InstantConsole
 {
     public static class ArgumentHelpers
     {

@@ -54,7 +54,9 @@ namespace Orchestration
             return serializerBuilder.Build();
         });
 
-
+        /// <summary>
+        /// Creates a Yaml string representing a process.
+        /// </summary>
         public static string ConvertToYaml(Process process)
         {
             var r = Serializer.Value.Serialize(process);
@@ -62,6 +64,9 @@ namespace Orchestration
             return r;
         }
 
+        /// <summary>
+        /// Tries to create a process from a Yaml string.
+        /// </summary>
         public static Result<Process> TryMakeFromYaml(string yaml)
         {
             return  Result.Try(() => Deserializer.Value.Deserialize<Process>(yaml), e => e.Message);

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 
-namespace NuixClientConsole
+namespace InstantConsole
 {
     public static class ConsoleView
     {

@@ -14,13 +14,18 @@ namespace Orchestration.Processes
     /// </summary>
     public class ForEach : Process
     {
+        /// <inheritdoc />
         public override IEnumerable<string> GetArgumentErrors()
         {
             return SubProcess.GetArgumentErrors(); //TODO look at this - its problematic. There seems to be no way to check the injected argument
         }
 
+        /// <inheritdoc />
         public override string GetName() => $"Foreach in {Enumeration}, {SubProcess}";
 
+        /// <summary>
+        /// The enumeration to iterate through.
+        /// </summary>
         [Required]
         [DataMember]
         [YamlMember(Order = 2)]
@@ -54,6 +59,7 @@ namespace Orchestration.Processes
         public Process SubProcess { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
+        /// <inheritdoc />
         public override async IAsyncEnumerable<Result<string>> Execute()
         {
             foreach (var element in Enumeration.Elements.ToList())
@@ -72,13 +78,12 @@ namespace Orchestration.Processes
 
                 property.SetValue(subProcess, elementS);
 
-                if ((subProcess.Conditions??Enumerable.Empty<Condition>()).All(x => x.IsMet()))
-                {
-                    var resultLines = subProcess.Execute();
+                if (!(subProcess.Conditions ?? Enumerable.Empty<Condition>()).All(x => x.IsMet())) continue;
 
-                    await foreach (var rl in resultLines)
-                        yield return rl;
-                }
+                var resultLines = subProcess.Execute();
+
+                await foreach (var rl in resultLines)
+                    yield return rl;
             }
         }
     }

@@ -3,8 +3,16 @@ using System.ComponentModel;
 
 namespace Orchestration
 {
+    /// <summary>
+    /// Helper methods.
+    /// </summary>
     public static class EnumMethods
     {
+        /// <summary>
+        /// Gets the description of an enum value from the Description Attribute.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string GetDescription(this Enum value)
         {
             var type = value.GetType();
