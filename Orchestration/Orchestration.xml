@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Orchestration</name>
+    </assembly>
+    <members>
+        <member name="T:Orchestration.Conditions.Condition">
+            <summary>
+            A condition that is required for the process to execute
+            </summary>
+        </member>
+        <member name="M:Orchestration.Conditions.Condition.GetDescription">
+            <summary>
+            Description of this condition
+            </summary>
+        </member>
+        <member name="M:Orchestration.Conditions.Condition.ToString">
+            <summary>
+            String representation of this Description
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Orchestration.Conditions.Condition.IsMet">
+            <summary>
+            Is this condition met
+            </summary>
+        </member>
+        <member name="T:Orchestration.Conditions.FileExists">
+            <summary>
+            A condition that requires that a particular file exists
+            </summary>
+        </member>
+        <member name="P:Orchestration.Conditions.FileExists.FilePath">
+            <summary>
+            The path of the file to check
+            </summary>
+        </member>
+        <member name="M:Orchestration.Conditions.FileExists.GetDescription">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Orchestration.Conditions.FileExists.IsMet">
+            <summary>
+            Does the file exist
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Orchestration.Enumerations.Collection">
+            <summary>
+            Enumerates through elements of a list
+            </summary>
+        </member>
+        <member name="P:Orchestration.Enumerations.Collection.Members">
+            <summary>
+            The elements to iterate over
+            </summary>
+        </member>
+        <member name="T:Orchestration.Enumerations.Directory">
+            <summary>
+            Enumerates through files in a directory
+            </summary>
+        </member>
+        <member name="P:Orchestration.Enumerations.Directory.Path">
+            <summary>
+            The path to the directory
+            </summary>
+        </member>
+        <member name="T:Orchestration.Enumerations.Enumeration">
+            <summary>
+            Represents a list of elements
+            </summary>
+        </member>
+        <member name="T:Orchestration.ExternalProcessHelper">
+            <summary>
+            Runs external processes.
+            </summary>
+        </member>
+        <member name="M:Orchestration.ExternalProcessHelper.RunExternalProcess(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Runs an external process and returns the output and errors
+            </summary>
+            <param name="processPath">The path to the process</param>
+            <param name="arguments">The arguments to provide to the process</param>
+            <returns>The output of the process</returns>
+        </member>
+        <member name="T:Orchestration.IStreamReader">
+            <summary>
+            Anything that implements ReadLineAsync
+            </summary>
+        </member>
+        <member name="M:Orchestration.IStreamReader.ReadLineAsync">
+            <summary>
+            Reads a line of characters asynchronously and returns the data as a string
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Orchestration.MultiStreamReader">
+            <summary>
+            Reads lines from several StreamReaders in the order that they arrive
+            </summary>
+        </member>
+        <member name="M:Orchestration.MultiStreamReader.#ctor(System.Collections.Generic.IEnumerable{Orchestration.IStreamReader})">
+            <summary>
+            Create a new MultiStreamReader
+            </summary>
+            <param name="streamReaders"></param>
+        </member>
+        <member name="M:Orchestration.MultiStreamReader.ReadLineAsync">
+            <summary>
+            Read the next line from any of these stream readers. Returns null if all of them are finished
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Orchestration.OrchestrationModuleAttribute">
+            <summary>
+            Use this attribute if your solution contains orchestration processes
+            </summary>
+        </member>
+        <member name="T:Orchestration.Processes.Branch">
+            <summary>
+            Executes all sub-processes whose conditions are met.
+            </summary>
+        </member>
+        <member name="M:Orchestration.Processes.Branch.GetName">
+            <summary>
+            The name of this process
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.Branch.Options">
+            <summary>
+            Processes which will be executed as part of this process if their conditions are met
+            </summary>
+        </member>
+        <member name="M:Orchestration.Processes.Branch.Execute">
+            <summary>
+            Execute this process.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Orchestration.Processes.DeleteFile">
+            <summary>
+            Delete a file or a directory
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.DeleteFile.FilePath">
+            <summary>
+            The path to the file to delete
+            </summary>
+        </member>
+        <member name="T:Orchestration.Processes.ForEach">
+            <summary>
+            Performs a nested process once for each element in an enumeration
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.ForEach.PropertyToInject">
+            <summary>
+            The property of the subProcess to inject with the element of enumeration
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.ForEach.Template">
+            <summary>
+            The template to apply to the element before injection.
+            If null the element will be used without modification
+            The string '$s' in the template will be replaced with the element
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.ForEach.SubProcess">
+            <summary>
+            The process to run once for each element
+            </summary>
+        </member>
+        <member name="T:Orchestration.Processes.Process">
+            <summary>
+            A process. Can contain one or more steps
+            </summary>
+        </member>
+        <member name="M:Orchestration.Processes.Process.GetArgumentErrors">
+            <summary>
+            Get argument errors
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Orchestration.Processes.Process.Conditions">
+            <summary>
+            Conditions which must be true for this process to be executed
+            </summary>
+        </member>
+        <member name="M:Orchestration.Processes.Process.GetName">
+            <summary>
+            The name of this process
+            </summary>
+        </member>
+        <member name="M:Orchestration.Processes.Process.Execute">
+            <summary>
+            Executes this process. Should only be called if all conditions are met
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Orchestration.Processes.Process.ToString">
+            <summary>
+            String representation of this process
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Orchestration.Processes.ProcessState">
+            <summary>
+            Represents the current state of a running process
+            </summary>
+        </member>
+        <member name="F:Orchestration.Processes.ProcessState.Artifacts">
+            <summary>
+            Artifacts of this process
+            </summary>
+        </member>
+        <member name="T:Orchestration.Processes.RunExternalProcess">
+            <summary>
+            Runs an external process
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.RunExternalProcess.ProcessPath">
+            <summary>
+            The path to the process to run
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.RunExternalProcess.Parameters">
+            <summary>
+            Pairs of parameters to give to the process
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.RunExternalProcess.ExtraParameterName">
+            <summary>
+            The name of an additional parameter.
+            This is intended for use with injection.
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.RunExternalProcess.ExtraParameterValue">
+            <summary>
+            The value of the additional parameter.
+            This is intended for use with injection.
+            </summary>
+        </member>
+        <member name="T:Orchestration.Processes.Sequence">
+            <summary>
+            Executes each step in sequence until a condition is not met or a process fails.
+            </summary>
+        </member>
+        <member name="M:Orchestration.Processes.Sequence.GetName">
+            <summary>
+            The name of this process
+            </summary>
+        </member>
+        <member name="P:Orchestration.Processes.Sequence.Steps">
+            <summary>
+            Steps that make up this process. To be executed in order
+            </summary>
+        </member>
+        <member name="M:Orchestration.Processes.Sequence.Execute">
+            <summary>
+            Execute the steps in this process until a condition is not met or a step fails 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Orchestration.YamlHelper">
+            <summary>
+            Contains methods for serializing and deserializing yaml
+            </summary>
+        </member>
+        <member name="T:Orchestration.YamlRunner">
+            <summary>
+            Runs processes from Yaml
+            </summary>
+        </member>
+        <member name="M:Orchestration.YamlRunner.RunProcessFromYamlString(System.String)">
+            <summary>
+            Run process defined in yaml
+            </summary>
+            <param name="yamlString">Yaml representing the process</param>
+            <returns></returns>
+        </member>
+        <member name="M:Orchestration.YamlRunner.RunProcessFromYaml(System.String)">
+            <summary>
+            Run process defined in yaml found at a particular path
+            </summary>
+            <param name="yamlPath">Path to the yaml</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\wainw\source\repos\nuix\Orchestration\Orchestration.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.3.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
