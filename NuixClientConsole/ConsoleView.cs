@@ -23,7 +23,7 @@ namespace NuixClientConsole
             {
                 yield return "Possible methods are:";
 
-                var ps = Prettifier.ArrangeIntoColumns(methods.Select(m => new[] {m.Name, m.Summary}).ToList());
+                var ps = Prettifier.ArrangeIntoColumns(methods.Select(m => new[] {m.Name, m.Summary}));
 
                 foreach (var prettyString in ps)
                     yield return prettyString;
@@ -46,11 +46,11 @@ namespace NuixClientConsole
                     {
                         var rows = new List<string?[]>
                         {
-                            new[] {method.Name, null, method.Summary},
+                            new[] {method.Name, null, null, method.Summary},
                             Array.Empty<string>(), //empty line
                         };
 
-                        rows.AddRange(method.Parameters.Select(p=> new []{p.Name, p.Type.Name, p.Summary}));
+                        rows.AddRange(method.Parameters.Select(p=> new []{p.Name, p.TypeName, p.Required? "Required": "",  p.Summary}));
 
                         var prettyStrings = Prettifier.ArrangeIntoColumns(rows);
 
@@ -72,7 +72,6 @@ namespace NuixClientConsole
                                     yield return s;
                                 yield break;
                             }
-
 
                             var results = Invoke(invocation);
 

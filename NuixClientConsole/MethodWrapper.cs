@@ -81,6 +81,7 @@ namespace NuixClientConsole
 
             public string Summary => _parameterInfo.GetXmlDocs();
             public Type Type => _parameterInfo.ParameterType;
+            public bool Required => !_parameterInfo.HasDefaultValue;
         }
     }
 }

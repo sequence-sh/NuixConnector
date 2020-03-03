@@ -77,6 +77,7 @@ namespace NuixClientConsole
             public string Name => _propertyInfo.Name;
             public string Summary => _propertyInfo.GetXmlDocsSummary();
             public Type Type => _propertyInfo.PropertyType;
+            public bool Required => _propertyInfo.CustomAttributes.Any(att=>att.AttributeType == typeof(RequiredAttribute));
         }
     }
 }

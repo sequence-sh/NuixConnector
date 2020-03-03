@@ -67,7 +67,8 @@ namespace NuixClient.processes
         public DeduplicateBy DeduplicateBy { get; set; }
 
         /// <summary>
-        /// A list of custodian names ordered from highest ranked to lowest ranked. If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
+        /// A list of custodian names ordered from highest ranked to lowest ranked.
+        /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
         /// </summary>
         [DataMember]
         [YamlMember(Order = 9)]
