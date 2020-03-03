@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixConsole", "NuixClientConsole\NuixConsole.csproj", "{80972A8F-0387-4C7E-9846-F3F54B01932B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixConsole", "NuixConsole\NuixConsole.csproj", "{80972A8F-0387-4C7E-9846-F3F54B01932B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClient", "NuixClient\NuixClient.csproj", "{DC18DF1A-570F-4380-A266-3EF9CA771699}"
 EndProject

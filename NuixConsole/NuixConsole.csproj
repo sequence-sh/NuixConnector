@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(SolutionDir)NuixClientConsole\bin\Debug\netcoreapp3.1\NuixClientConsole.exe documentation &gt; $(SolutionDir)documentation.md" />
+    <Exec Command="$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe documentation &gt; $(SolutionDir)documentation.md" />
   </Target>
 
 </Project>
