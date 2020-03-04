@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe documentation &gt; $(SolutionDir)documentation.md" />
+    <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe documentation &gt; $(SolutionDir)documentation.md" IgnoreExitCode="true"/>
   </Target>
 
 </Project>
