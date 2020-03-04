@@ -8,44 +8,56 @@ The following yaml will create a case, add evidence from both a file and a conco
 
 
 ```yaml
-!MultiStepProcess
+!Sequence
 Steps:
-- !CreateCaseProcess
-  CaseName: My Case
-  CasePath: &casePath C:/Cases/MyCase
-  Investigator: Mark
-  Description: My new case
-- !AddFileProcess
-  FilePath: C:/MyFolder
-  Custodian: Mark
-  Description: Evidence from file
-  FolderName: Evidence Folder 1
-  CasePath: *casePath
-  Conditions:
-  - !FileExistsCondition
-    FilePath: C:/MyFolder
-- !AddConcordanceProcess
-  ConcordanceProfileName: Default
-  ConcordanceDateFormat: yyyy-MM-dd'T'HH:mm:ss.SSSZ
-  FilePath: C:/MyConcordance.dat
-  Custodian: Mark
-  Description: Evidence from concordance
-  FolderName: Evidence Folder 2
-  CasePath: *casePath
-  Conditions:
-  - !FileExistsCondition
-    FilePath: C:/MyConcordance.dat
-- !SearchAndTagProcess
-  Tag: Dinosaurs
-  SearchTerm: Raptor
-  CasePath: *casePath
-- !AddToProductionSetProcess
-  ProductionSetName: &productionSet Dinosaurs
-  SearchTerm: Raptor
-  CasePath: *casePath
-- !ExportConcordanceProcess
+- !NuixCreateCase
+  CaseName: Case Name
+  CasePath: Case Path
+  Investigator: Investigator
+  Description: Case Description
+- !NuixAddFile
+  FilePath: File Path
+  Custodian: Custodian
+  Description: Description
+  FolderName: Folder Name
+  CasePath: Case Path
+  ProcessingProfileName: Default
+- !NuixCreateReport
+  OutputFolder: Report Output Folder
+  CasePath: Case Path
+- !NuixPerformOCR
+  CasePath: Case Path
+  OCRProfileName: OCR Profile
+- !ForEach
+  Enumeration: !CSVEnumeration
+    FilePath: CSV Path
+    Delimiter: ','
+    HeaderInjections:
+    - Item1: SearchTerm
+      Item2:
+        PropertyToInject: SearchTerm
+    - Item1: Tag
+      Item2:
+        PropertyToInject: Tag
+    HasFieldsEnclosedInQuotes: true
+    RemoveDuplicates: false
+  SubProcess: !NuixSearchAndTag
+    CasePath: Case Path
+- !NuixAddToItemSet
+  ItemSetName: TaggedItems
+  SearchTerm: Tag:*
+  CasePath: Case Path
+  ItemSetDeduplication: Default
+  DeduplicateBy: Individual
+- !NuixAddToProductionSet
+  ProductionSetName: Production Set Name
+  SearchTerm: ItemSet:TaggedItems
+  CasePath: Case Path
+  Description: Production Set Description`
+- !NuixExportConcordance
   MetadataProfileName: Default
-  ProductionSetName: *productionSet
-  ExportPath: C:/Exports
-  CasePath: *casePath
+  ProductionSetName: Production Set Name
+  ExportPath: Export Path
+  CasePath: Case Path
+
 ```
