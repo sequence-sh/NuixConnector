@@ -12,7 +12,7 @@ The following yaml will create a case, add evidence from both a file and a conco
 Steps:
 - !NuixCreateCase
   CaseName: Case Name
-  CasePath: Case Path
+  CasePath: &casePath Case Path
   Investigator: Investigator
   Description: Case Description
 - !NuixAddFile
@@ -20,44 +20,42 @@ Steps:
   Custodian: Custodian
   Description: Description
   FolderName: Folder Name
-  CasePath: Case Path
+  CasePath: *casePath
   ProcessingProfileName: Default
 - !NuixCreateReport
   OutputFolder: Report Output Folder
-  CasePath: Case Path
+  CasePath: *casePath
 - !NuixPerformOCR
-  CasePath: Case Path
+  CasePath: *casePath
   OCRProfileName: OCR Profile
 - !ForEach
   Enumeration: !CSVEnumeration
-    FilePath: CSV Path
+    FilePath: *casePath
     Delimiter: ','
     HeaderInjections:
-    - Item1: SearchTerm
-      Item2:
-        PropertyToInject: SearchTerm
-    - Item1: Tag
-      Item2:
-        PropertyToInject: Tag
-    HasFieldsEnclosedInQuotes: true
+    - Header: SearchTerm
+      PropertyToInject: SearchTerm
+    - Header: Tag
+      PropertyToInject: Tag
+    HasFieldsEnclosedInQuotes: false
     RemoveDuplicates: false
   SubProcess: !NuixSearchAndTag
-    CasePath: Case Path
+    CasePath: *casePath
 - !NuixAddToItemSet
   ItemSetName: TaggedItems
   SearchTerm: Tag:*
-  CasePath: Case Path
+  CasePath: *casePath
   ItemSetDeduplication: Default
   DeduplicateBy: Individual
 - !NuixAddToProductionSet
   ProductionSetName: Production Set Name
   SearchTerm: ItemSet:TaggedItems
-  CasePath: Case Path
+  CasePath: *casePath
   Description: Production Set Description`
 - !NuixExportConcordance
   MetadataProfileName: Default
   ProductionSetName: Production Set Name
   ExportPath: Export Path
-  CasePath: Case Path
+  CasePath: *casePath
 
 ```
