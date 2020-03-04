@@ -38,8 +38,16 @@ else
     reportGenerator = utilities.getReportGenerator();
 
     reportContext = {
+    "NUIX_USER" => "Mark",
+    "NUIX_APP_NAME" => "AppName",
+    "NUIX_REPORT_TITLE" => "ReportTitle",
+    "NUIX_APP_VERSION" => 8.2,
+    "LOCAL_RESOURCES_URL" => the_case,
+    "GLOBAL_RESOURCES_URL" => utilities,
     "currentCase" => the_case,
-    "utilities" => utilities
+    "utilities" => utilities,
+    "ENGINE_CURRENT_CASE-7.3" => the_case,
+    "ENGINE_UTILITIES-7.3" => utilities
     }
 
     reportGenerator.generateReport(
