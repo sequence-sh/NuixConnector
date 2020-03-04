@@ -1,16 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using JetBrains.Annotations;
 using NuixClient.processes;
 using NUnit.Framework;
 using Processes;
 using Processes.conditions;
-using Processes.enumerations;
 using Processes.process;
-using YamlDotNet.Serialization;
 
 namespace NuixClientTests
 {
@@ -18,6 +12,44 @@ namespace NuixClientTests
     {
         public static readonly List<YamlProcessTest> Tests = new List<YamlProcessTest>
         {
+            new YamlProcessTest(new Sequence
+            {
+                Steps = new List<Process>
+                {
+                    new NuixCreateCase
+                    {
+                        CaseName = "Case Name",
+                        CasePath = "Case Path",
+                        Description = "Case Description",
+                        Investigator = "Investigator"
+                    },
+
+                    new NuixAddFile
+                    {
+                        CasePath = "Case Path",
+                        Custodian = "Custodian",
+                        Description = "Description",
+                        FilePath = "File Path",
+                        FolderName = "Folder Name",
+                        ProcessingProfileName = "Default"
+                    },
+
+                    new NuixCreateReport
+                    {
+                        CasePath = "Case Path",
+                        OutputFolder = "Report Output Folder"
+                    },
+
+                    new NuixPerformOCR
+                    {
+                        CasePath = "Case Path",
+                        OCRProfileName = "OCR Profile"
+                    },
+
+
+                }
+            }),
+
             new YamlProcessTest(new Sequence
             {
                 Steps = new List<Process>
@@ -245,63 +277,7 @@ Steps:
             Assert.AreEqual(yamlProcessTest.Process, value);
         }
 
-        [Test]
-        public async Task TestForeachProcess()
-        {
-            var list = new List<string>
-            {
-                "Correct", "Horse", "Battery", "Staple"
-            };
-            var expected = list.Select(s => $"'{s}'").ToList();
-
-            var forEachProcess = new ForEach
-            {
-                Enumeration = new Collection{Members = list},
-                PropertyToInject = nameof(EmitTermProcess.Term),
-                Template = "'$s'",
-                SubProcess = new EmitTermProcess()
-            };
-
-            var realList = new List<string>();
-
-            var resultList = forEachProcess.Execute();
-
-            await foreach (var (isSuccess, _, value, error) in resultList)
-            {
-                Assert.IsTrue(isSuccess, error);
-                realList.Add(value);
-            }
-
-            CollectionAssert.AreEqual(expected, realList);
-            
-        }
-
-        private class EmitTermProcess : Process
-        {
-            [UsedImplicitly]
-            [YamlMember]
-            [Required]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-            public string Term { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-            public override IEnumerable<string> GetArgumentErrors()
-            {
-                yield break;
-            }
-
-            public override string GetName()
-            {
-                return "Emit Term";
-            }
-
-#pragma warning disable 1998
-            public override async IAsyncEnumerable<Result<string>> Execute()
-#pragma warning restore 1998
-            {
-                yield return Result.Success(Term);
-            }
-        }
+        
 
     }
 
