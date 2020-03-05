@@ -48,11 +48,11 @@ namespace NuixClientTests
                     },
                     new ForEach
                     {
-                        Enumeration = new CsvEnumeration
+                        Enumeration = new CSVEnumeration
                         {
                             Delimiter = ",",
-                            FilePath = "CSV Path",
-                            HeaderInjections = new List<ColumnInjection>
+                            CSVFilePath = "CSV Path",
+                            ColumnInjections = new List<ColumnInjection>
                             {
                                 new ColumnInjection
                                 {
