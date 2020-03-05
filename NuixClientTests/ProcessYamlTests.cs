@@ -323,8 +323,6 @@ Steps:
             Assert.AreEqual(yamlProcessTest.Process, value);
         }
 
-        
-
     }
 
     /// <summary>
