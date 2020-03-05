@@ -4,6 +4,7 @@ using NuixClient.processes;
 using NUnit.Framework;
 using Processes;
 using Processes.conditions;
+using Processes.enumerations;
 using Processes.process;
 
 namespace NuixClientTests
@@ -45,8 +46,53 @@ namespace NuixClientTests
                         CasePath = "Case Path",
                         OCRProfileName = "OCR Profile"
                     },
+                    new ForEach
+                    {
+                        Enumeration = new CsvEnumeration
+                        {
+                            Delimiter = ",",
+                            FilePath = "CSV Path",
+                            HeaderInjections = new List<ColumnInjection>
+                            {
+                                new ColumnInjection
+                                {
+                                        Header = "SearchTerm",
+                                        PropertyToInject = nameof(NuixSearchAndTag.SearchTerm)
+                                    },
+                                new ColumnInjection
+                                {
+                                    Header = "Tag",
+                                    PropertyToInject = nameof(NuixSearchAndTag.Tag)
+                                }
+                            }
+                        },
 
+                        SubProcess = new NuixSearchAndTag
+                        {
+                            CasePath = "Case Path"
+                        }
+                    },
 
+                    new NuixAddToItemSet
+                    {
+                        CasePath = "Case Path",
+                        SearchTerm = "Tag:*",
+                        ItemSetName = "TaggedItems"
+                    },
+                    new NuixAddToProductionSet
+                    {
+                        SearchTerm = "ItemSet:TaggedItems",
+                        ProductionSetName = "Production Set Name",
+                        CasePath = "Case Path",
+                        Description = "Production Set Description`"
+                    },
+                    new NuixExportConcordance
+                    {
+                        CasePath = "Case Path",
+                        ExportPath = "Export Path",
+                        MetadataProfileName = "Default",
+                        ProductionSetName = "Production Set Name"
+                    }
                 }
             }),
 
