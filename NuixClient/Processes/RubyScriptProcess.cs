@@ -33,10 +33,19 @@ namespace NuixClient.processes
         }
 
         /// <summary>
+        /// What to do before the script starts.
+        /// </summary>
+        internal virtual IEnumerable<Result<string>> BeforeScriptStart(ProcessState processState)
+        {
+            yield break;
+        }
+
+        /// <summary>
         /// What to do when the script finishes
         /// </summary>
-        internal virtual void OnScriptFinish(ProcessState processState)
+        internal virtual IEnumerable<Result<string>> OnScriptFinish(ProcessState processState)
         {
+            yield break;
         }
     
         /// <summary>
@@ -107,7 +116,8 @@ namespace NuixClient.processes
                     yield return rl;
             }
 
-            OnScriptFinish(processState);
+            foreach (var l in OnScriptFinish(processState))
+                yield return l;
         }
 
         /// <summary>

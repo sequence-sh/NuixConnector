@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
+using Processes.process;
 
 namespace NuixClientTests
 {
@@ -18,20 +19,34 @@ namespace NuixClientTests
 
             Directory.Delete(directoryPath, true);
 
-            var process = new NuixClient.processes.NuixCreateCase()
+            var sequence = new Sequence()
             {
-                CaseName = "Case Name",
-                CasePath = directoryPath,
-                Investigator = "Mark",
-                Description = "Description"
+                Steps = new List<Process>()
+                {
+                    new NuixClient.processes.NuixCheckCaseExists()
+                    {
+                        CasePath = directoryPath,
+                        ShouldExist = false
+                    },
+
+                    new NuixClient.processes.NuixCreateCase()
+                    {
+                        CaseName = "Case Name",
+                        CasePath = directoryPath,
+                        Investigator = "Mark",
+                        Description = "Description"
+                    },
+
+                    new NuixClient.processes.NuixCheckCaseExists()
+                    {
+                        CasePath = directoryPath,
+                        ShouldExist = true
+                    },
+                }
             };
+            await AssertNoErrors(sequence.Execute());
 
-            await AssertNoErrors(process.Execute());
-
-            var lines =  process.Execute();
-            
-
-
+            Directory.Delete(directoryPath, true);
         }
 
 
