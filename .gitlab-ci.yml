@@ -18,4 +18,4 @@ build:
 test:
     stage: test
     script: 
-        - "dotnet test"
+        - "--filter TestCategory!=\"Integration\""

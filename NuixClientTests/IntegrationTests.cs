@@ -11,7 +11,10 @@ namespace NuixClientTests
 {
     class IntegrationTests
     {
+        private const string Integration = "Integration";
+
         [Test]
+        [Category(Integration)]
         public async Task TestCreateCase()
         {
             const string directoryPath = "D:/Test/TestCase";
