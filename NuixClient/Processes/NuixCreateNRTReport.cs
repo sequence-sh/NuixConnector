@@ -20,8 +20,9 @@ namespace NuixClient.processes
             yield return ("-p", CasePath);
             yield return ("-n", NRTPAth);
             yield return ("-f", OutputFormat);
-            yield return ("-l", LocalResourcesURL);
             yield return ("-o", OutputPath);
+            yield return ("-l", LocalResourcesURL);
+            
         }
 
         /// <inheritdoc />

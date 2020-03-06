@@ -46,7 +46,7 @@ else
     "NUIX_REPORT_TITLE" => "ReportTitle",
     "NUIX_APP_VERSION" => NUIX_VERSION,
     "LOCAL_RESOURCES_URL" => hash_options[:localResourcesUrlArg],
-    "currentCase" => $the_case,
+    "currentCase" => the_case,
     "utilities" => $utilities,
     "dedupeEnabled" => true
     }
