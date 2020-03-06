@@ -6,6 +6,8 @@ using YamlDotNet.Serialization;
 
 namespace NuixClient.processes
 {
+
+
     /// <summary>
     /// Creates a report for a Nuix case.
     /// </summary>
@@ -16,7 +18,7 @@ namespace NuixClient.processes
         public override string GetName() => "Create Report";
 
         /// <summary>
-        /// The path to the folder to create the case in
+        /// The case folder path.
         /// </summary>
         [Required]
         [DataMember]
