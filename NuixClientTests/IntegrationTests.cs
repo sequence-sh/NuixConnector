@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -9,6 +10,13 @@ namespace NuixClientTests
 {
     class IntegrationTests
     {
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            ConfigurationManager.AppSettings["NuixExeConsolePath"] = @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe";
+            ConfigurationManager.AppSettings["NuixUseDongle"] = @"true";
+        }
+
         private const string Integration = "Integration";
 
         [Test]
@@ -17,7 +25,8 @@ namespace NuixClientTests
         {
             const string directoryPath = "D:/Test/TestCase";
 
-            Directory.Delete(directoryPath, true);
+            if(Directory.Exists(directoryPath))
+                Directory.Delete(directoryPath, true);
 
             var sequence = new Sequence()
             {

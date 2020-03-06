@@ -45,12 +45,12 @@ namespace NuixClient.processes
 
         private static readonly Regex HexRegex = new Regex(@"\A(?:0x)(?:[0-9a-f]{2}\s?)+\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        internal override async void OnScriptFinish(ProcessState processState)
+        internal override IEnumerable<Result<string>> OnScriptFinish(ProcessState processState)
         {
             foreach (var (fileName, lines) in processState.Artifacts)
             {
                 var filePath = Path.Combine(OutputFolder, fileName + ".txt");
-                await using var fileStream = File.CreateText(filePath);
+                using var fileStream = File.CreateText(filePath);
 
                 foreach (var line in (List<string>) lines)
                 {
@@ -63,7 +63,7 @@ namespace NuixClient.processes
                     fileStream.WriteLine(newString);
                 }
             }
-            base.OnScriptFinish(processState);
+            return base.OnScriptFinish(processState);
 
             static string MaybeConvertFromHex(string term) => HexRegex.IsMatch(term) ? FromHexString(term.Substring(2)) : term;
             static string FromHexString(string hexString)
