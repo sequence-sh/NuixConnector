@@ -12,6 +12,9 @@ OptionParser.new do |opts|
   opts.on('-f [ARG]', '--outputFormat [ARG]', "Output Format") do |v|
     hash_options[:OutputFormatArg] = v
   end
+  opts.on('-l [ARG]', '--localResourcesUrl [ARG]', "Local Resources Url") do |v|
+    hash_options[:localResourcesUrlArg] = v
+  end
   opts.on('-o [ARG]', '--outputPath [ARG]', "Output Path") do |v|
     hash_options[:OutputPathArg] = v
   end
@@ -22,7 +25,7 @@ OptionParser.new do |opts|
 
 end.parse!
 
-requiredArguments = [:pathArg, :NRTPathArg, :OutputFormatArg, :OutputPathArg]
+requiredArguments = [:pathArg, :NRTPathArg, :OutputFormatArg, :OutputPathArg, :localResourcesUrlArg]
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
@@ -41,18 +44,16 @@ else
     "NUIX_USER" => "Mark",
     "NUIX_APP_NAME" => "AppName",
     "NUIX_REPORT_TITLE" => "ReportTitle",
-    "NUIX_APP_VERSION" => 8.2,
-    "LOCAL_RESOURCES_URL" => the_case,
-    "GLOBAL_RESOURCES_URL" => utilities,
+    "NUIX_APP_VERSION" => NUIX_VERSION,
+    "LOCAL_RESOURCES_URL" => hash_options[:localResourcesUrlArg],
     "currentCase" => the_case,
-    "utilities" => utilities,
-    "ENGINE_CURRENT_CASE-7.3" => the_case,
-    "ENGINE_UTILITIES-7.3" => utilities
+    "utilities" => $utilities,
+    "dedupeEnabled" => true
     }
 
     reportGenerator.generateReport(
     hash_options[:NRTPathArg],
-    reportContext,
+    reportContext.to_java,
     hash_options[:OutputFormatArg],
     hash_options[:OutputPathArg]
     )

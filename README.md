@@ -8,44 +8,54 @@ The following yaml will create a case, add evidence from both a file and a conco
 
 
 ```yaml
-!MultiStepProcess
+!Sequence
 Steps:
-- !CreateCaseProcess
-  CaseName: My Case
+- !NuixCreateCase
+  CaseName: MyCase
   CasePath: &casePath C:/Cases/MyCase
-  Investigator: Mark
-  Description: My new case
-- !AddFileProcess
-  FilePath: C:/MyFolder
-  Custodian: Mark
-  Description: Evidence from file
-  FolderName: Evidence Folder 1
+  Investigator: Taj
+  Description: Case Description
+- !NuixAddFile
+  FilePath: C:/Evidence/CaseEvidence
+  Custodian: Custodian
+  Description: Description
+  FolderName: CaseEvidence
   CasePath: *casePath
-  Conditions:
-  - !FileExistsCondition
-    FilePath: C:/MyFolder
-- !AddConcordanceProcess
-  ConcordanceProfileName: Default
-  ConcordanceDateFormat: yyyy-MM-dd'T'HH:mm:ss.SSSZ
-  FilePath: C:/MyConcordance.dat
-  Custodian: Mark
-  Description: Evidence from concordance
-  FolderName: Evidence Folder 2
+  ProcessingProfileName: Default
+- !NuixCreateReport
+  OutputFolder: C:/Reports/MyCase
   CasePath: *casePath
-  Conditions:
-  - !FileExistsCondition
-    FilePath: C:/MyConcordance.dat
-- !SearchAndTagProcess
-  Tag: Dinosaurs
-  SearchTerm: Raptor
+- !NuixPerformOCR
   CasePath: *casePath
-- !AddToProductionSetProcess
-  ProductionSetName: &productionSet Dinosaurs
-  SearchTerm: Raptor
+  OCRProfileName: Default
+- !ForEach
+  Enumeration: !CSVEnumeration
+    FilePath: C:/TermsAndTags.csv
+    Delimiter: ','
+    HeaderInjections:
+    - Header: TermToSeach
+      PropertyToInject: SearchTerm
+    - Header: TagToApply
+      PropertyToInject: Tag
+    HasFieldsEnclosedInQuotes: false
+    RemoveDuplicates: false
+  SubProcess: !NuixSearchAndTag
+    CasePath: *casePath
+- !NuixAddToItemSet
+  ItemSetName: TaggedItems
+  SearchTerm: Tag:*
   CasePath: *casePath
-- !ExportConcordanceProcess
+  ItemSetDeduplication: Default
+  DeduplicateBy: Individual
+- !NuixAddToProductionSet
+  ProductionSetName:&productionSetName ItemsToExport
+  SearchTerm: ItemSet:TaggedItems
+  CasePath: *casePath
+  Description: Production Set Description
+- !NuixExportConcordance
   MetadataProfileName: Default
-  ProductionSetName: *productionSet
-  ExportPath: C:/Exports
+  ProductionSetName: *productionSetName
+  ExportPath: c:/Exports
   CasePath: *casePath
+
 ```

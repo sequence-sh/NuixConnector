@@ -62,7 +62,7 @@ namespace NuixClient.processes
             foreach (var (key, value) in GetArgumentValuePairs())
             {
                 args.Add(key);
-                args.Add(value);
+                args.Add(value.Replace(@"\", @"\\"));//Escape backslashes
             }
 
             var processState = new ProcessState();
