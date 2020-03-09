@@ -18,7 +18,7 @@ namespace NuixClient.processes
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);
-            yield return ("-n", NRTPAth);
+            yield return ("-n", NRTPath);
             yield return ("-f", OutputFormat);
             yield return ("-o", OutputPath);
             yield return ("-l", LocalResourcesURL);
@@ -46,7 +46,7 @@ namespace NuixClient.processes
         [Required]
         [DataMember]
         [YamlMember(Order = 4)]
-        public string NRTPAth { get; set; }
+        public string NRTPath { get; set; }
 
         /// <summary>
         /// The format of the report file that will be created.
@@ -60,7 +60,7 @@ namespace NuixClient.processes
         /// <summary>
         /// The path to the local resources folder.
         /// To load the logo's etc.
-        /// e.g. C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\resources\
+        /// e.g. C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\
         /// </summary>
         [Required]
         [DataMember]

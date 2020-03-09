@@ -32,7 +32,6 @@ namespace NuixConsole
                 return;
             }
 
-
             var nuixProcessSettings = new NuixProcessSettings(useDongle, nuixExeConsolePath);
 
             var methods = typeof(YamlRunner).GetMethods()
