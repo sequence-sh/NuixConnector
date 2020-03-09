@@ -1,8 +1,7 @@
 {
   "profiles": {
     "NuixClientConsole": {
-      "commandName": "Project",
-      "commandLineArgs": "documentation"
+      "commandName": "Project"
     }
   }
 }

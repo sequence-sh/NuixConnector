@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using CSharpFunctionalExtensions;
@@ -47,21 +46,45 @@ namespace NuixClient.processes
         {
             yield break;
         }
-    
+
+        /// <summary>
+        /// Gets errors in the settings object
+        /// </summary>
+        /// <param name="processSettings"></param>
+        /// <returns></returns>
+        public override IEnumerable<string> GetSettingsErrors(IProcessSettings processSettings)
+        {
+            if (!(processSettings is INuixProcessSettings nps))
+            {
+                yield return $"Process settings must be an instance of {nameof(INuixProcessSettings)}";
+                yield break;
+            }
+
+            if (string.IsNullOrWhiteSpace(nps.NuixExeConsolePath))
+                yield return $"'{nameof(nps.NuixExeConsolePath)}' must not be empty";
+        }
+
         /// <summary>
         /// Execute this process
         /// </summary>
         /// <returns></returns>
-        public sealed override async IAsyncEnumerable<Result<string>> Execute()
+        public sealed override async IAsyncEnumerable<Result<string>> Execute(IProcessSettings processSettings)
         {
-            var argumentErrors = GetArgumentErrors().ToList();
-
-            if (argumentErrors.Any())
+            if (!(processSettings is INuixProcessSettings nuixProcessSettings))
             {
-                foreach (var ae in argumentErrors)
+                yield return Result.Failure<string>($"Process Settings must be an instance of {typeof(INuixProcessSettings).Name}");
+                yield break;
+            }
+
+            var errors = GetArgumentErrors().Concat(GetSettingsErrors(processSettings)).ToList();
+
+            if (errors.Any())
+            {
+                foreach (var ae in errors)
                     yield return Result.Failure<string>(ae);
                 yield break;
             }
+
 
             var currentDirectory = System.AppContext.BaseDirectory;
             var scriptPath = Path.Combine(currentDirectory,  "scripts", ScriptName);
@@ -78,39 +101,20 @@ namespace NuixClient.processes
 
             var arguments = new List<string>();
 
-            var useDongleString =  ConfigurationManager.AppSettings["NuixUseDongle"];
+            if (nuixProcessSettings.UseDongle)
+            {
+                // ReSharper disable once StringLiteralTypo
+                arguments.Add("-licencesourcetype");
+                arguments.Add("dongle");  
+            }
 
-            if(!string.IsNullOrWhiteSpace(useDongleString))
-                if (bool.TryParse(useDongleString, out var useDongle))
-                {
-                    if (useDongle)
-                    {
-                        // ReSharper disable once StringLiteralTypo
-                        arguments.Add("-licencesourcetype");
-                        arguments.Add("dongle");  
-                    }
-                }
-                else
-                {
-                    yield return Result.Failure<string>($"Setting 'NuixUseDongle' must be either 'True' or 'False'");
-                    yield break;
-                }
-
-                
             if (!string.IsNullOrWhiteSpace(scriptPath))
                 arguments.Add(scriptPath);
 
             arguments.AddRange(args);
 
-            var nuixExeConsolePath = ConfigurationManager.AppSettings["NuixExeConsolePath"];
 
-            if (string.IsNullOrWhiteSpace(nuixExeConsolePath))
-            {
-                yield return Result.Failure<string>($"Setting 'NuixExeConsolePath' must be set");
-                yield break;
-            }
-
-            await foreach (var rl in ExternalProcessHelper.RunExternalProcess(nuixExeConsolePath, arguments))
+            await foreach (var rl in ExternalProcessHelper.RunExternalProcess(nuixProcessSettings.NuixExeConsolePath, arguments))
             {
                 if(HandleLine(rl, processState))
                     yield return rl;

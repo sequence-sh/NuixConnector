@@ -7,18 +7,21 @@ using System.Reflection;
 using CSharpFunctionalExtensions;
 using InstantConsole;
 using Namotion.Reflection;
+using NuixClient;
 using NuixClient.processes;
 using YamlDotNet.Serialization;
 
-namespace NuixClientConsole
+namespace NuixConsole
 {
     public class NuixProcessWrapper : IRunnable
     {
         private readonly Type _processType;
+        private readonly INuixProcessSettings _nuixProcessSettings;
 
-        public NuixProcessWrapper(Type processType)
+        public NuixProcessWrapper(Type processType, INuixProcessSettings nuixProcessSettings)
         {
             _processType = processType;
+            _nuixProcessSettings = nuixProcessSettings;
 
             RelevantProperties = _processType.GetProperties()
                 .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(YamlMemberAttribute)))
@@ -57,7 +60,7 @@ namespace NuixClientConsole
             if (errors.Any())
                 return Result.Failure<Func<object?>, List<string?[]>>(errors);
             
-            var func = new Func<object?>(()=> instance.Execute());
+            var func = new Func<object?>(()=> instance.Execute(_nuixProcessSettings));
 
             return Result.Success<Func<object?>, List<string?[]>>(func);
         }

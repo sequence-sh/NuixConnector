@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using NuixClient;
+using NuixClient.processes;
 using NUnit.Framework;
 using Processes.process;
 
@@ -10,12 +11,8 @@ namespace NuixClientTests
 {
     class IntegrationTests
     {
-        [OneTimeSetUp]
-        public void Setup()
-        {
-            ConfigurationManager.AppSettings["NuixExeConsolePath"] = @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe";
-            ConfigurationManager.AppSettings["NuixUseDongle"] = @"true";
-        }
+        private static readonly INuixProcessSettings NuixSettings = new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe");
+        //TODO set these from a config file
 
         private const string Integration = "Integration";
 
@@ -23,22 +20,23 @@ namespace NuixClientTests
         [Category(Integration)]
         public async Task TestCreateCase()
         {
+            
             const string directoryPath = "D:/Test/TestCase";
 
             if(Directory.Exists(directoryPath))
                 Directory.Delete(directoryPath, true);
 
-            var sequence = new Sequence()
+            var sequence = new Sequence
             {
-                Steps = new List<Process>()
+                Steps = new List<Process>
                 {
-                    new NuixClient.processes.NuixCheckCaseExists()
+                    new NuixCheckCaseExists
                     {
                         CasePath = directoryPath,
                         ShouldExist = false
                     },
 
-                    new NuixClient.processes.NuixCreateCase()
+                    new NuixCreateCase
                     {
                         CaseName = "Case Name",
                         CasePath = directoryPath,
@@ -46,14 +44,14 @@ namespace NuixClientTests
                         Description = "Description"
                     },
 
-                    new NuixClient.processes.NuixCheckCaseExists()
+                    new NuixCheckCaseExists
                     {
                         CasePath = directoryPath,
                         ShouldExist = true
-                    },
+                    }
                 }
             };
-            await AssertNoErrors(sequence.Execute());
+            await AssertNoErrors(sequence.Execute(NuixSettings));
 
             Directory.Delete(directoryPath, true);
         }
