@@ -3,7 +3,6 @@ using CSharpFunctionalExtensions;
 using NuixClient.processes;
 using NUnit.Framework;
 using Processes;
-using Processes.conditions;
 using Processes.enumerations;
 using Processes.process;
 
@@ -120,10 +119,6 @@ namespace NuixClientTests
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
-                Conditions = new List<Condition>
-                {
-                    new FileExists {FilePath = "C:/MyFile"}
-                },
                 Description = "Interesting",
                 FilePath = "C:/MyFile",
                 FolderName = "My Folder"
@@ -134,10 +129,6 @@ namespace NuixClientTests
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
-                Conditions = new List<Condition>
-                {
-                    new FileExists {FilePath = "C:/MyFile"}
-                },
                 Description = "Interesting",
                 FilePath = "C:/MyFile",
                 FolderName = "My Folder",
@@ -148,10 +139,6 @@ namespace NuixClientTests
             new YamlProcessTest(new NuixCreateCase
             {
                 CasePath = "C:/Cases/MyCase",
-                Conditions = new List<Condition>
-                {
-                    new FileExists {FilePath = "C:/MyFile"}
-                },
                 Description = "Interesting",
                 CaseName = "My Case",
                 Investigator = "Mark"
@@ -194,10 +181,6 @@ namespace NuixClientTests
                     {
                         CasePath = "C:/Cases/MyCase",
                         Custodian = "Mark",
-                        Conditions = new List<Condition>
-                        {
-                            new FileExists {FilePath = "C:/MyFolder"}
-                        },
                         Description = "Evidence from file",
                         FilePath = "C:/MyFolder",
                         FolderName = "Evidence Folder 1"
@@ -207,10 +190,6 @@ namespace NuixClientTests
                     {
                         CasePath = "C:/Cases/MyCase",
                         Custodian = "Mark",
-                        Conditions = new List<Condition>
-                        {
-                            new FileExists {FilePath = "C:/MyConcordance.dat"}
-                        },
                         Description = "Evidence from concordance",
                         FilePath = "C:/MyConcordance.dat",
                         FolderName = "Evidence Folder 2",
@@ -237,28 +216,7 @@ namespace NuixClientTests
                         ProductionSetName = "Dinosaurs"
                     }
                 }
-            }),
-
-            new YamlProcessTest(new Branch{Options = new List<Process>
-            {
-                new NuixCreateCase
-                {
-                    CasePath = "C:/Cases/MyCase",
-                    Conditions = new List<Condition>
-                    {
-                        new FileExists {FilePath = "C:/MyFile"}
-                    },
-                    Description = "Interesting",
-                    CaseName = "My Case",
-                    Investigator = "Mark"
-                },
-                new NuixSearchAndTag
-                {
-                    CasePath = "C:/Cases/MyCase",
-                    SearchTerm = "Raptor",
-                    Tag = "Dinosaurs"
-                }
-            }})
+            })
         };
 
         [Test]

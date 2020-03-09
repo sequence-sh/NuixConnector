@@ -24,8 +24,7 @@ namespace NuixConsole
             _nuixProcessSettings = nuixProcessSettings;
 
             RelevantProperties = _processType.GetProperties()
-                .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(YamlMemberAttribute)))
-                .Where(x => x.Name != nameof(Processes.process.Process.Conditions));
+                .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(YamlMemberAttribute)));
         }
 
         public string Name => _processType.Name;

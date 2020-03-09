@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Processes.process;
 using YamlDotNet.Serialization;
 
 namespace NuixClient.processes
@@ -14,7 +13,7 @@ namespace NuixClient.processes
         /// <summary>
         /// The name of this process
         /// </summary>
-        public override string GetName() => $"Create Case";
+        public override string GetName() => "Create Case";
 
         /// <summary>
         /// The name of the case to create.
