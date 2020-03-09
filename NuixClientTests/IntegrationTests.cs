@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NuixClient;
 using NuixClient.processes;
+using NuixClient.processes.asserts;
 using NUnit.Framework;
 using Processes.process;
 
@@ -30,7 +31,7 @@ namespace NuixClientTests
             {
                 Steps = new List<Process>
                 {
-                    new NuixCheckCaseExists
+                    new NuixAssertCaseExists
                     {
                         CasePath = directoryPath,
                         ShouldExist = false

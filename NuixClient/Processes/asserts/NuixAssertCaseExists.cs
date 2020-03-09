@@ -3,27 +3,35 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.processes
+namespace NuixClient.processes.asserts
 {
     /// <summary>
-    /// Checks whether or not a particular case exists.
+    /// Asserts that a particular case exists or doesn't exist.
     /// </summary>
-    public sealed class NuixCheckCaseExists : RubyScriptAssertionProcess
+    public sealed class NuixAssertCaseExists : RubyScriptAssertionProcess
     {
         /// <inheritdoc />
-        protected override bool? InterpretLine(string s)
+        protected override (bool, string?)? InterpretLine(string s)
         {
-            if (s.Equals("Case Exists"))
-                return ShouldExist;
+            bool? exists = s switch
+            {
+                "Case Exists" => true,
+                "Case does not exist" => false,
+                _ => null,
+            };
+            if (!exists.HasValue)
+                return null;
 
-            if (s.Equals("Case does not exist"))
-                return !ShouldExist;
 
-            return null;
+            if (ShouldExist)
+                return exists.Value ? (true, null) : (false, $"Case '{CasePath}' should exist but does not.");
+
+            return exists.Value ? (false, $"Case '{CasePath}' should not exist but does.") : (true, null);
         }
 
         /// <inheritdoc />
-        protected override string FailureMessage => ShouldExist ? "Case does not exist." : "Case exists";
+        protected override string DefaultFailureMessage => "Could not confirm whether or not case exists";
+
 
         /// <inheritdoc />
         public override IEnumerable<string> GetArgumentErrors()
