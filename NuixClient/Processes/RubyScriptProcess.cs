@@ -63,8 +63,8 @@ namespace NuixClient.processes
                 yield break;
             }
 
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var scriptPath = Path.Combine(currentDirectory, "..", "nuixclient", "NuixClient", "scripts", ScriptName);
+            var currentDirectory = System.AppContext.BaseDirectory;
+            var scriptPath = Path.Combine(currentDirectory,  "scripts", ScriptName);
             
             var args = new List<string>();
 

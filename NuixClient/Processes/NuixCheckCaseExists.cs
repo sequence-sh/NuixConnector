@@ -40,7 +40,7 @@ namespace NuixClient.processes
         internal override string ScriptName => "DoesCaseExist.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
-            yield return ("p", CasePath);
+            yield return ("-p", CasePath);
         }
 
         /// <summary>
