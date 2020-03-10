@@ -1,12 +1,12 @@
-﻿using Superpower.Tokenizers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using NuixSearch.SearchProperties;
+using Reductech.EDR.Connectors.Nuix.Search.SearchProperties;
 using Superpower;
 using Superpower.Parsers;
+using Superpower.Tokenizers;
 
-namespace NuixSearch
+namespace Reductech.EDR.Connectors.Nuix.Search
 {
     /// <summary>
     /// Static class for parsing strings as Search terms

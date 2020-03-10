@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.processes.asserts
+namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 {
     /// <summary>
     /// Asserts that a particular case exists or doesn't exist.

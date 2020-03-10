@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Extract Entities from a Nuix Case

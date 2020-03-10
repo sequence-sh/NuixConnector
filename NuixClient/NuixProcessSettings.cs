@@ -1,6 +1,6 @@
-﻿using Processes.process;
+﻿using Reductech.EDR.Utilities.Processes;
 
-namespace NuixClient
+namespace Reductech.EDR.Connectors.Nuix
 {
     /// <summary>
     /// Settings required to run a nuix process.

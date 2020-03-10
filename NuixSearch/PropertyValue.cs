@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using NuixSearch.SearchProperties;
+using Reductech.EDR.Connectors.Nuix.Search.SearchProperties;
 
-namespace NuixSearch
+namespace Reductech.EDR.Connectors.Nuix.Search
 {
     internal abstract class PropertyValue
     {

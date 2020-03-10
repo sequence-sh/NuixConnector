@@ -6,6 +6,8 @@
     <IsPackable>false</IsPackable>
 
     <Nullable>enable</Nullable>
+
+    <RootNamespace>Reductech.EDR.Connectors.Nuix.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NuixClient\NuixClient.csproj" />
+    <ProjectReference Include="..\NuixClient\Nuix.csproj" />
   </ItemGroup>
 
 </Project>

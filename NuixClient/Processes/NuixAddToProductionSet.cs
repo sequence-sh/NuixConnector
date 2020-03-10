@@ -2,9 +2,10 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Reductech.EDR.Connectors.Nuix.Search;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Searches a case with a particular search string and adds all items it finds to a production set.
@@ -72,7 +73,7 @@ namespace NuixClient.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
-            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = NuixSearch.SearchParser.TryParse(SearchTerm);
+            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = SearchParser.TryParse(SearchTerm);
 
             if (!searchTermParseSuccess || searchTermParsed == null)
             {

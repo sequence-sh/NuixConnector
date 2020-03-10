@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace NuixSearchTests
+namespace Reductech.EDR.Connectors.Nuix.Search.Tests
 {
     public class SearchParseTests
     {
@@ -54,7 +54,7 @@ namespace NuixSearchTests
         [TestCaseSource(nameof(TestCases))]
         public void Test(TestCase testCase)
         {
-            var (success, error, result) = NuixSearch.SearchParser.TryParse(testCase.Input);
+            var (success, error, result) = SearchParser.TryParse(testCase.Input);
 
             Assert.IsTrue(success, error);
             Assert.IsNotNull(result);
@@ -82,7 +82,7 @@ namespace NuixSearchTests
         [Test]
         [TestCaseSource(nameof(ErrorTestCases))]
         public void TestError(ErrorTestCase errorTestCase)
-        { var (success, error, _) = NuixSearch.SearchParser.TryParse(errorTestCase.Input);
+        { var (success, error, _) = SearchParser.TryParse(errorTestCase.Input);
 
             Assert.IsFalse(success, "Expected error");
             Assert.IsNotNull(error);

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace NuixSearch.SearchProperties
+namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
 {
     internal class CompoundPropertySearchTerm : PropertySearchTerm
     {

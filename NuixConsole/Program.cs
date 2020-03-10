@@ -1,21 +1,19 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using InstantConsole;
-using NuixClient;
-using NuixClient.processes;
-using Processes;
+using Reductech.EDR.Connectors.Nuix.processes;
+using Reductech.EDR.Utilities.Processes;
+using Reductech.Utilities.InstantConsole;
 
-namespace NuixConsole
+namespace Reductech.EDR.Connectors.Nuix.Console
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
+            System.Console.OutputEncoding = Encoding.UTF8;
 
             var rubyScriptProcessAssembly = Assembly.GetAssembly(typeof(RubyScriptProcess));
             Debug.Assert(rubyScriptProcessAssembly != null, nameof(rubyScriptProcessAssembly) + " != null");
@@ -25,13 +23,13 @@ namespace NuixConsole
 
             if (!bool.TryParse(useDongleString, out var useDongle))
             {
-                Console.WriteLine("Please set the property 'NuixUseDongle' in the settings file");
+                System.Console.WriteLine("Please set the property 'NuixUseDongle' in the settings file");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(nuixExeConsolePath))
             {
-                Console.WriteLine("Please set the property 'NuixExeConsolePath' in the settings file");
+                System.Console.WriteLine("Please set the property 'NuixExeConsolePath' in the settings file");
                 return;
             }
 

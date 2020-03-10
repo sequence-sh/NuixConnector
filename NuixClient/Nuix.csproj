@@ -13,6 +13,8 @@
 	<PackageTags>ediscovery,forensics,nuix,automation,orchestration,edrm</PackageTags>
 	<PackageReleaseNotes>https://gitlab.com/reductech/e-discovery/flow/connectors/nuix/-/tags</PackageReleaseNotes>
 	<AssemblyVersion>0.1.0.0</AssemblyVersion>
+	<RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
+	<AssemblyName>Nuix</AssemblyName>
 
   </PropertyGroup>
 

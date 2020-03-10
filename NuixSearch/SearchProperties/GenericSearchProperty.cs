@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using CSharpFunctionalExtensions;
 
-namespace NuixSearch.SearchProperties
+namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
 {
     /// <summary>
     /// A property that one could search by

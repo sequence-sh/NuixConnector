@@ -1,6 +1,6 @@
 ﻿using Superpower.Display;
 
-namespace NuixSearch
+namespace Reductech.EDR.Connectors.Nuix.Search
 {
     internal enum SearchToken
     {

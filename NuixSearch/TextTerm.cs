@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace NuixSearch
+namespace Reductech.EDR.Connectors.Nuix.Search
 {
     internal class TextTerm : ISearchTerm
     {

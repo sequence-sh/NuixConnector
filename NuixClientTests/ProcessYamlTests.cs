@@ -1,52 +1,46 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
-using NuixClient.processes;
-using NuixClient.processes.asserts;
 using NUnit.Framework;
-using Processes;
-using Processes.enumerations;
-using Processes.process;
+using Reductech.EDR.Connectors.Nuix.processes;
+using Reductech.EDR.Connectors.Nuix.processes.asserts;
+using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Utilities.Processes.enumerations;
 
-namespace NuixClientTests
+namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     public class ProcessYamlTest
     {
         public static readonly List<YamlProcessTest> Tests = new List<YamlProcessTest>
         {
-            new YamlProcessTest(new Conditional()
+            new YamlProcessTest(new Conditional
             {
-                If = new NuixCaseExists()
+                If = new NuixCaseExists
                 {
                     CasePath = "cp",
                     ShouldExist = true
                 },
-                Then = new NuixSearchAndTag()
+                Then = new NuixSearchAndTag
                 {
                     SearchTerm = "s",
                     Tag = "t",
                     CasePath = "cp"
                 },
-                Else = new Sequence()
+                Else = new Sequence
                 {
-                    Steps = new List<Process>()
+                    Steps = new List<Process>
                     {
-                        new NuixCreateCase()
+                        new NuixCreateCase
                         {
                             CasePath = "cp"
                         },
-                        new NuixSearchAndTag()
+                        new NuixSearchAndTag
                         {
                             SearchTerm = "s",
                             Tag = "t",
                             CasePath = "cp"
                         }
-
                     }
-                    
-
                 }
-                    
-                    
             }),
 
             new YamlProcessTest(new Sequence
@@ -257,6 +251,19 @@ namespace NuixClientTests
         };
 
         [Test]
+        [TestCaseSource(nameof(Tests))]
+        public void TestYaml(YamlProcessTest yamlProcessTest)
+        {
+            var yaml = YamlHelper.ConvertToYaml(yamlProcessTest.Process);
+
+            var (isSuccess, _, value, error) = YamlHelper.TryMakeFromYaml(yaml);
+
+            Assert.IsTrue(isSuccess, error);
+
+            Assert.AreEqual(yamlProcessTest.Process.ToString(), value.ToString());
+        }
+
+        [Test]
         public void TestYamlAnchors()
         {
             const string yaml = @"!Sequence
@@ -267,7 +274,7 @@ Steps:
   Investigator: Mark
   Description: &description desc
 - !NuixAddFile
-  Path: C:/MyFolder
+  FilePath: C:/MyFolder
   Custodian: Mark
   Description: *description
   FolderName: Evidence Folder 1
@@ -303,19 +310,6 @@ Steps:
 
             Assert.AreEqual(expectedProcess, value);
 
-        }
-
-        [Test]
-        [TestCaseSource(nameof(Tests))]
-        public void TestYaml(YamlProcessTest yamlProcessTest)
-        {
-            var yaml = YamlHelper.ConvertToYaml(yamlProcessTest.Process);
-
-            var (isSuccess, _, value, error) = YamlHelper.TryMakeFromYaml(yaml);
-
-            Assert.IsTrue(isSuccess, error);
-
-            Assert.AreEqual(yamlProcessTest.Process, value);
         }
 
     }

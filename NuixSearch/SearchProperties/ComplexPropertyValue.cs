@@ -2,7 +2,7 @@
 using System.Linq;
 using CSharpFunctionalExtensions;
 
-namespace NuixSearch.SearchProperties
+namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
 {
     internal class ComplexPropertyValue : PropertyValue
     {

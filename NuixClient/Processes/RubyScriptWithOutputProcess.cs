@@ -8,11 +8,11 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
-using NuixSearch;
-using Processes.process;
+using Reductech.EDR.Connectors.Nuix.Search;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
 
     /// <summary>

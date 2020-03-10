@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixConsole", "NuixConsole\NuixConsole.csproj", "{80972A8F-0387-4C7E-9846-F3F54B01932B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClient", "NuixClient\NuixClient.csproj", "{DC18DF1A-570F-4380-A266-3EF9CA771699}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuix", "NuixClient\Nuix.csproj", "{DC18DF1A-570F-4380-A266-3EF9CA771699}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClientTests", "NuixClientTests\NuixClientTests.csproj", "{B242ECE0-86EB-4295-BDF4-20D419308253}"
 EndProject

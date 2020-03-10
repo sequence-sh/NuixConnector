@@ -3,11 +3,11 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Runtime.Serialization;
-using NuixClient.enums;
-using Processes;
+using Reductech.EDR.Connectors.Nuix.enums;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Renumbers the items in the production set.

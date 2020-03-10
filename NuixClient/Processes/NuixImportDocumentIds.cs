@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
-using Processes.process;
+using Reductech.EDR.Utilities.Processes;
 
-namespace NuixClient.processes.asserts
+namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 {
     /// <summary>
     /// A ruby script that will fail if a particular thing does not happen.

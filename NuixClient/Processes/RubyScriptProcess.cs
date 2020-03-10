@@ -2,10 +2,9 @@
 using System.IO;
 using System.Linq;
 using CSharpFunctionalExtensions;
-using Processes;
-using Processes.process;
+using Reductech.EDR.Utilities.Processes;
 
-namespace NuixClient.processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// A process that runs a ruby script against NUIX

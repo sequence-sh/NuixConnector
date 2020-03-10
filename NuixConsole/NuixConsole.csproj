@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
+    <RootNamespace>Reductech.EDR.Connectors.Nuix.Console</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InstantConsole\InstantConsole\InstantConsole.csproj" />
-    <ProjectReference Include="..\NuixClient\NuixClient.csproj" />
+    <ProjectReference Include="..\NuixClient\Nuix.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,7 +21,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe documentation &gt; $(SolutionDir)documentation.md" IgnoreExitCode="true"/>
+    <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe documentation &gt; $(SolutionDir)documentation.md" IgnoreExitCode="true" />
   </Target>
 
 </Project>

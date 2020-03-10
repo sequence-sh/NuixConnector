@@ -2,13 +2,12 @@
 using System.IO;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using NuixClient;
-using NuixClient.processes;
-using NuixClient.processes.asserts;
 using NUnit.Framework;
-using Processes.process;
+using Reductech.EDR.Connectors.Nuix.processes;
+using Reductech.EDR.Connectors.Nuix.processes.asserts;
+using Reductech.EDR.Utilities.Processes;
 
-namespace NuixClientTests
+namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     class IntegrationTests
     {

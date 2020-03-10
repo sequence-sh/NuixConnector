@@ -5,13 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using CSharpFunctionalExtensions;
-using InstantConsole;
 using Namotion.Reflection;
-using NuixClient;
-using NuixClient.processes;
+using Reductech.EDR.Connectors.Nuix.processes;
+using Reductech.Utilities.InstantConsole;
 using YamlDotNet.Serialization;
 
-namespace NuixConsole
+namespace Reductech.EDR.Connectors.Nuix.Console
 {
     public class NuixProcessWrapper : IRunnable
     {

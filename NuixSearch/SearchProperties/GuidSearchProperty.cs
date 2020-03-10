@@ -1,7 +1,7 @@
 ﻿using System;
 using CSharpFunctionalExtensions;
 
-namespace NuixSearch.SearchProperties
+namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
 {
     internal sealed class GuidSearchProperty : GenericSearchProperty<Guid>
     {

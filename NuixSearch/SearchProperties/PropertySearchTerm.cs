@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NuixSearch.SearchProperties
+namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
 {
     internal abstract class PropertySearchTerm : ISearchTerm
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using NuixSearch.SearchProperties;
+using Reductech.EDR.Connectors.Nuix.Search.SearchProperties;
 
-namespace NuixSearch
+namespace Reductech.EDR.Connectors.Nuix.Search
 {
     internal class NotTerm : ISearchTerm
     {

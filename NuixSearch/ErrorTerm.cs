@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NuixSearch
+namespace Reductech.EDR.Connectors.Nuix.Search
 {
     internal class ErrorTerm : ISearchTerm
     {

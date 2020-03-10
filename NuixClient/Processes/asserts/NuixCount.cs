@@ -2,10 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using NuixSearch;
+using Reductech.EDR.Connectors.Nuix.Search;
 using YamlDotNet.Serialization;
 
-namespace NuixClient.processes.asserts
+namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 {
     /// <summary>
     /// Asserts that a particular number of items match a particular search term.
