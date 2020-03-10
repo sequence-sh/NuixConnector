@@ -25,6 +25,11 @@ namespace NuixConsole
 
             RelevantProperties = _processType.GetProperties()
                 .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(YamlMemberAttribute)));
+
+
+            var instance = Activator.CreateInstance(processType);
+            Parameters = RelevantProperties.Select(propertyInfo => 
+                new PropertyWrapper(propertyInfo, propertyInfo.GetValue(instance)?.ToString()  )).ToList();
         }
 
         public string Name => _processType.Name;
@@ -66,22 +71,25 @@ namespace NuixConsole
 
         private IEnumerable<PropertyInfo> RelevantProperties { get; }
 
-        public IEnumerable<IParameter> Parameters => RelevantProperties.Select(x => new PropertyWrapper(x)).ToList();
+        public IEnumerable<IParameter> Parameters { get; }
+            
+            
 
         private class PropertyWrapper : IParameter
         {
             private readonly PropertyInfo _propertyInfo;
 
-            public PropertyWrapper(PropertyInfo propertyInfo)
+            public PropertyWrapper(PropertyInfo propertyInfo, string? defaultValueString)
             {
                 _propertyInfo = propertyInfo;
+                DefaultValueString = defaultValueString;
             }
 
             public string Name => _propertyInfo.Name;
             public string Summary => _propertyInfo.GetXmlDocsSummary();
             public Type Type => _propertyInfo.PropertyType;
             public bool Required => _propertyInfo.CustomAttributes.Any(att=>att.AttributeType == typeof(RequiredAttribute));
-            public string? DefaultValueString => null;
+            public string? DefaultValueString { get; }
         }
     }
 }

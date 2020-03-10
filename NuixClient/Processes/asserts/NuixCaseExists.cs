@@ -8,7 +8,7 @@ namespace NuixClient.processes.asserts
     /// <summary>
     /// Asserts that a particular case exists or doesn't exist.
     /// </summary>
-    public sealed class NuixAssertCaseExists : RubyScriptAssertionProcess
+    public sealed class NuixCaseExists : RubyScriptAssertionProcess
     {
         /// <inheritdoc />
         protected override (bool, string?)? InterpretLine(string s)
@@ -57,8 +57,8 @@ namespace NuixClient.processes.asserts
         /// </summary>
         [Required]
         [DataMember]
-        [YamlMember(Order = 2 )]
-        public bool ShouldExist { get; set; }
+        [YamlMember(Order = 2)]
+        public bool ShouldExist { get; set; } = true;
 
         /// <summary>
         /// The case path to check

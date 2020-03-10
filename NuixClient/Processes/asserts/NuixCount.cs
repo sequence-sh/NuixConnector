@@ -10,7 +10,7 @@ namespace NuixClient.processes.asserts
     /// <summary>
     /// Asserts that a particular number of items match a particular search term.
     /// </summary>
-    public sealed class NuixAssertCount : RubyScriptAssertionProcess
+    public sealed class NuixCount : RubyScriptAssertionProcess
     {
         /// <inheritdoc />
         public override IEnumerable<string> GetArgumentErrors()

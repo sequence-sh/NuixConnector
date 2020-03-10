@@ -15,7 +15,7 @@ namespace NuixClientTests
         {
             new YamlProcessTest(new Conditional()
             {
-                If = new NuixAssertCaseExists()
+                If = new NuixCaseExists()
                 {
                     CasePath = "cp",
                     ShouldExist = true

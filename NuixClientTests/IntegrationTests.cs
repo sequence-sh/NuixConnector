@@ -33,7 +33,7 @@ namespace NuixClientTests
                     {
                         Path = DirectoryPath
                     },
-                    new NuixAssertCaseExists
+                    new NuixCaseExists
                     {
                         CasePath = DirectoryPath,
                         ShouldExist = false
@@ -47,13 +47,13 @@ namespace NuixClientTests
                         Description = "Description"
                     },
 
-                    new NuixAssertCaseExists
+                    new NuixCaseExists
                     {
                         CasePath = DirectoryPath,
                         ShouldExist = true
                     },
 
-                    new NuixAssertCaseExists
+                    new NuixCaseExists
                     {
                         CasePath = DirectoryPath,
                         ShouldExist = false
@@ -86,7 +86,7 @@ namespace NuixClientTests
                         Investigator = "Mark",
                         Description = "Description"
                     },
-                    new NuixAssertCount
+                    new NuixCount
                     {
                         CasePath = DirectoryPath,
                         ExpectedCount = 0,
@@ -101,7 +101,7 @@ namespace NuixClientTests
                         FilePath = DataPath,
                         FolderName = "New Folder"
                     },
-                    new NuixAssertCount
+                    new NuixCount
                     {
                         CasePath = DirectoryPath,
                         ExpectedCount = 2,
@@ -146,12 +146,12 @@ namespace NuixClientTests
                         FilePath = DataPath,
                         FolderName = "New Folder"
                     },
-                    new NuixSearchAndTag()
+                    new NuixSearchAndTag
                     {
                         CasePath = DirectoryPath,SearchTerm = "charm",
                         Tag = "charm"
                     },
-                    new NuixAssertCount
+                    new NuixCount
                     {
                         CasePath = DirectoryPath,
                         ExpectedCount = 1,
