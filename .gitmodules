@@ -3,4 +3,4 @@
 	url = ../../processes.git
 [submodule "instantconsole"]
 	path = instantconsole
-	url = git@gitlab.com:reductech/utilities/instantconsole.git
+	url = ../../../../utilities/instantconsole.git
