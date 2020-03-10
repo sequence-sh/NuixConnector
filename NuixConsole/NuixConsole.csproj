@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InstantConsole\InstantConsole\InstantConsole.csproj" />
-    <ProjectReference Include="..\Nuix\Nuix.csproj" />
+    <ProjectReference Include="..\NuixClient\Nuix.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Nuix\Nuix.csproj" />
+    <ProjectReference Include="..\NuixClient\Nuix.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
+[submodule "InstantConsole"]
+	path = InstantConsole
+	url = ../../../../utilities/instantconsole.git
 [submodule "processes"]
 	path = processes
 	url = ../../processes.git
-[submodule "instantconsole"]
-	path = instantconsole
-	url = git@gitlab.com:reductech/utilities/instantconsole.git
