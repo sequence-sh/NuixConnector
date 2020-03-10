@@ -11,10 +11,13 @@
 	<PackageLicenseExpression></PackageLicenseExpression>
 	<PackageProjectUrl>https://reductech.io/</PackageProjectUrl>
 	<PackageTags>ediscovery,forensics,nuix,automation,orchestration,edrm</PackageTags>
-	<PackageReleaseNotes>https://gitlab.com/reductech/e-discovery/flow/connectors/nuix/-/tags</PackageReleaseNotes>
+	<PackageReleaseNotes>First Release</PackageReleaseNotes>
 	<AssemblyVersion>0.1.0.0</AssemblyVersion>
 	<RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
 	<AssemblyName>Nuix</AssemblyName>
+	<Description>Class library containing processes for working with Nuix.</Description>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<FileVersion>0.1.0.0</FileVersion>
 
   </PropertyGroup>
 
@@ -98,6 +101,10 @@
     </None>
     <None Update="scripts\SearchAndTag.rb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 

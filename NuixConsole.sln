@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixConsole", "NuixConsole\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuix", "Nuix\Nuix.csproj", "{DC18DF1A-570F-4380-A266-3EF9CA771699}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixClientTests", "NuixClientTests\NuixClientTests.csproj", "{B242ECE0-86EB-4295-BDF4-20D419308253}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixTests", "NuixTests\NuixTests.csproj", "{B242ECE0-86EB-4295-BDF4-20D419308253}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixSearch", "NuixSearch\NuixSearch.csproj", "{7A3689F5-20A7-44B8-9BA1-0CAE13628441}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixSearchTests", "NuixSearchTests\NuixSearchTests.csproj", "{35426298-230A-484B-8A50-BFCBFEBF6532}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstantConsole", "instantConsole\InstantConsole\InstantConsole.csproj", "{86DD3539-7553-4B83-A937-8ACD25AD31C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstantConsole", "instantconsole\InstantConsole\InstantConsole.csproj", "{86DD3539-7553-4B83-A937-8ACD25AD31C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Processes", "processes\Processes\Processes.csproj", "{4D4373FF-D809-4402-98C9-E55D8E48A120}"
 EndProject

@@ -8,6 +8,28 @@
     <Nullable>enable</Nullable>
 
     <RootNamespace>Reductech.EDR.Connectors.Nuix.Tests</RootNamespace>
+
+    <Authors>Mark Wainwright</Authors>
+
+    <Company>Reductech</Company>
+
+    <Product>EDR</Product>
+
+    <Description>Test for Nuix.</Description>
+
+    <Copyright>©2020 Reductech Ltd.</Copyright>
+
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+    <PackageProjectUrl>https://reductech.io/</PackageProjectUrl>
+
+    <PackageTags>ediscovery,forensics,nuix,automation,orchestration,edrm, unittests</PackageTags>
+
+    <PackageReleaseNotes>First Release</PackageReleaseNotes>
+
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+
+    <FileVersion>0.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +44,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Nuix\Nuix.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
