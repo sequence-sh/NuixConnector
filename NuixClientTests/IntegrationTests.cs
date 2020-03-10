@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NuixClient;
@@ -18,7 +17,7 @@ namespace NuixClientTests
 
         private const string Integration = "Integration";
 
-        private const string directoryPath = "D:/Test/TestCase";
+        private const string DirectoryPath = "D:/Test/TestCase";
 
         public static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "data");
 
@@ -26,67 +25,77 @@ namespace NuixClientTests
         [Category(Integration)]
         public async Task TestCreateCase()
         {
-            if(Directory.Exists(directoryPath))
-                Directory.Delete(directoryPath, true);
-
             var sequence = new Sequence
             {
                 Steps = new List<Process>
                 {
+                    new DeleteFile
+                    {
+                        Path = DirectoryPath
+                    },
                     new NuixAssertCaseExists
                     {
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         ShouldExist = false
                     },
 
                     new NuixCreateCase
                     {
                         CaseName = "Case Name",
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         Investigator = "Mark",
                         Description = "Description"
                     },
 
-                    new NuixAssertCaseExists()
+                    new NuixAssertCaseExists
                     {
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         ShouldExist = true
-                    }
+                    },
+
+                    new NuixAssertCaseExists
+                    {
+                        CasePath = DirectoryPath,
+                        ShouldExist = false
+                    },
+                    new DeleteFile
+                    {
+                        Path = DirectoryPath
+                    },
                 }
             };
             await AssertNoErrors(sequence.Execute(NuixSettings));
-
-            Directory.Delete(directoryPath, true);
         }
 
         [Test]
         [Category(Integration)]
         public async Task TestAddFileToCase()
         {
-            if(Directory.Exists(directoryPath))
-                Directory.Delete(directoryPath, true);
-
             var sequence = new Sequence
             {
                 Steps = new List<Process>
                 {
+                    new DeleteFile
+                    {
+                        Path = DirectoryPath
+                    },
                     new NuixCreateCase
                     {
                         CaseName = "Case Name",
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         Investigator = "Mark",
                         Description = "Description"
                     },
                     new NuixAssertCount
                     {
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         ExpectedCount = 0,
                         SearchTerm = "*"
                     },
 
                     new NuixAddFile
                     {
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         Custodian = "Mark",
                         Description = "Description",
                         FilePath = DataPath,
@@ -94,15 +103,17 @@ namespace NuixClientTests
                     },
                     new NuixAssertCount
                     {
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         ExpectedCount = 2,
                         SearchTerm = "*"
+                    },
+                    new DeleteFile
+                    {
+                        Path = DirectoryPath
                     },
                 }
             };
             await AssertNoErrors(sequence.Execute(NuixSettings));
-
-            Directory.Delete(directoryPath, true);
         }
 
 
@@ -110,23 +121,26 @@ namespace NuixClientTests
         [Category(Integration)]
         public async Task TestSearchAndTag()
         {
-            if(Directory.Exists(directoryPath))
-                Directory.Delete(directoryPath, true);
 
             var sequence = new Sequence
             {
                 Steps = new List<Process>
                 {
+                    new DeleteFile
+                    {
+                        Path = DirectoryPath
+                    },
+
                     new NuixCreateCase
                     {
                         CaseName = "Case Name",
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         Investigator = "Mark",
                         Description = "Description"
                     },
                     new NuixAddFile
                     {
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         Custodian = "Mark",
                         Description = "Description",
                         FilePath = DataPath,
@@ -134,20 +148,22 @@ namespace NuixClientTests
                     },
                     new NuixSearchAndTag()
                     {
-                        CasePath = directoryPath,SearchTerm = "charm",
+                        CasePath = DirectoryPath,SearchTerm = "charm",
                         Tag = "charm"
                     },
                     new NuixAssertCount
                     {
-                        CasePath = directoryPath,
+                        CasePath = DirectoryPath,
                         ExpectedCount = 1,
                         SearchTerm = "tag:charm"
+                    },
+                    new DeleteFile
+                    {
+                        Path = DirectoryPath
                     },
                 }
             };
             await AssertNoErrors(sequence.Execute(NuixSettings));
-
-            Directory.Delete(directoryPath, true);
         }
 
         private static async Task AssertNoErrors(IAsyncEnumerable<Result<string>> lines)

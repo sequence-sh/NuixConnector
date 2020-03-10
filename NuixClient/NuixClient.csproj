@@ -4,6 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<Nullable>enable</Nullable>
+	<Authors>Mark Wainwright</Authors>
+	<Company>Reductech</Company>
+	<Product>EDR</Product>
+	<Copyright>©2020 Reductech Ltd.</Copyright>
+	<PackageLicenseExpression></PackageLicenseExpression>
+	<PackageProjectUrl>https://reductech.io/</PackageProjectUrl>
+	<PackageTags>ediscovery,forensics,nuix,automation,orchestration,edrm</PackageTags>
+	<PackageReleaseNotes>https://gitlab.com/reductech/e-discovery/flow/connectors/nuix/-/tags</PackageReleaseNotes>
+	<AssemblyVersion>0.1.0.0</AssemblyVersion>
 
   </PropertyGroup>
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 using NuixClient.processes;
+using NuixClient.processes.asserts;
 using NUnit.Framework;
 using Processes;
 using Processes.enumerations;
@@ -12,6 +13,42 @@ namespace NuixClientTests
     {
         public static readonly List<YamlProcessTest> Tests = new List<YamlProcessTest>
         {
+            new YamlProcessTest(new Conditional()
+            {
+                If = new NuixAssertCaseExists()
+                {
+                    CasePath = "cp",
+                    ShouldExist = true
+                },
+                Then = new NuixSearchAndTag()
+                {
+                    SearchTerm = "s",
+                    Tag = "t",
+                    CasePath = "cp"
+                },
+                Else = new Sequence()
+                {
+                    Steps = new List<Process>()
+                    {
+                        new NuixCreateCase()
+                        {
+                            CasePath = "cp"
+                        },
+                        new NuixSearchAndTag()
+                        {
+                            SearchTerm = "s",
+                            Tag = "t",
+                            CasePath = "cp"
+                        }
+
+                    }
+                    
+
+                }
+                    
+                    
+            }),
+
             new YamlProcessTest(new Sequence
             {
                 Steps = new List<Process>
@@ -230,7 +267,7 @@ Steps:
   Investigator: Mark
   Description: &description desc
 - !NuixAddFile
-  FilePath: C:/MyFolder
+  Path: C:/MyFolder
   Custodian: Mark
   Description: *description
   FolderName: Evidence Folder 1
