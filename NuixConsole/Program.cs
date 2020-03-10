@@ -6,6 +6,7 @@ using System.Text;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.Utilities.InstantConsole;
+using Process = Reductech.EDR.Utilities.Processes.Process;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
 {
@@ -14,9 +15,6 @@ namespace Reductech.EDR.Connectors.Nuix.Console
         private static void Main(string[] args)
         {
             System.Console.OutputEncoding = Encoding.UTF8;
-
-            var rubyScriptProcessAssembly = Assembly.GetAssembly(typeof(RubyScriptProcess));
-            Debug.Assert(rubyScriptProcessAssembly != null, nameof(rubyScriptProcessAssembly) + " != null");
 
             var useDongleString =  ConfigurationManager.AppSettings["NuixUseDongle"];
             var nuixExeConsolePath = ConfigurationManager.AppSettings["NuixExeConsolePath"];
@@ -33,6 +31,13 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                 return;
             }
 
+
+            var rubyScriptProcessAssembly = Assembly.GetAssembly(typeof(RubyScriptProcess));
+            Debug.Assert(rubyScriptProcessAssembly != null, nameof(rubyScriptProcessAssembly) + " != null");
+
+            var processAssembly = Assembly.GetAssembly(typeof(Process));
+            Debug.Assert(processAssembly != null, nameof(processAssembly) + " != null");
+
             var nuixProcessSettings = new NuixProcessSettings(useDongle, nuixExeConsolePath);
 
             var methods = typeof(YamlRunner).GetMethods()
@@ -41,8 +46,15 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                     .Concat(rubyScriptProcessAssembly.GetTypes()
                         .Where(t=> typeof(RubyScriptProcess).IsAssignableFrom(t))
                         .Where(t=>!t.IsAbstract)
-                        .Select(x=> new NuixProcessWrapper(x, nuixProcessSettings) )
-                    ).ToList();
+                        .Select(x=> new ProcessWrapper<INuixProcessSettings>(x, nuixProcessSettings) )
+                    )
+                .Concat(processAssembly.GetTypes()
+                    .Where(t=> typeof(Process).IsAssignableFrom(t))
+                    .Where(t=>!t.IsAbstract)
+                    .Select(x=> new ProcessWrapper<INuixProcessSettings>(x, nuixProcessSettings) )
+                )
+                
+                .ToList();
 
             ConsoleView.Run(args, methods);
         }

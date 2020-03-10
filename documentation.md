@@ -222,3 +222,71 @@ Asserts that a particular number of items match a particular search term.
 |ExpectedCount|`int`   |☑️      |0      |If true, asserts that the case does exist. If false, asserts that the case does not exist.|
 |CasePath     |`string`|☑️      |       |The case path to check                                                                    |
 |SearchTerm   |`string`|☑️      |       |The search term to count                                                                  |
+## Conditional
+
+A process that runs a process depending on the success of an assertion.
+
+|Parameter|Type     |Required|Default|Summary                                            |
+|:-------:|:-------:|:------:|:-----:|:-------------------------------------------------:|
+|If       |`Process`|☑️      |       |The process to use as the assertion                |
+|Then     |`Process`|☑️      |       |If the 'If' process was successful then run this.  |
+|Else     |`Process`|        |       |If the 'If' process was unsuccessful then run this.|
+## DeleteFile
+
+Deletes a file or a directory.
+
+|Parameter|Type    |Required|Default|Summary                                     |
+|:-------:|:------:|:------:|:-----:|:------------------------------------------:|
+|Path     |`string`|☑️      |       |The path to the file or directory to delete.|
+## ForEach
+
+Performs a nested process once for each element in an enumeration
+
+|Parameter  |Type         |Required|Default|Summary                                 |
+|:---------:|:-----------:|:------:|:-----:|:--------------------------------------:|
+|Enumeration|`Enumeration`|☑️      |       |The enumeration to iterate through.     |
+|SubProcess |`Process`    |☑️      |       |The process to run once for each element|
+## RunExternalProcess
+
+Runs an external process
+
+|Parameter          |Type                       |Required|Default|Summary                                                                        |
+|:-----------------:|:-------------------------:|:------:|:-----:|:-----------------------------------------------------------------------------:|
+|ProcessPath        |`string`                   |☑️      |       |The path to the process to run                                                 |
+|Parameters         |`Dictionary<string,string>`|☑️      |       |Pairs of parameters to give to the process                                     |
+|ExtraParameterName |`string`                   |        |       |The name of an additional parameter. This is intended for use with injection.  |
+|ExtraParameterValue|`string`                   |        |       |The value of the additional parameter. This is intended for use with injection.|
+## Sequence
+
+Executes each step in sequence until a condition is not met or a process fails.
+
+|Parameter|Type           |Required|Default|Summary                                                 |
+|:-------:|:-------------:|:------:|:-----:|:------------------------------------------------------:|
+|Steps    |`List<Process>`|☑️      |       |Steps that make up this process. To be executed in order|
+## DeduplicateBy
+Whether to deduplicate as a family or individual
+
+|Name      |Summary                                                                                                                                                                                                                                                                           |
+|:--------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|Individual|Deduplication by individual treats each item as an individual and an attachment or embedded item has the same priority for deduplication as a loose file.                                                                                                                         |
+|Family    |Items can be treated as a family where only the top-level item of a family is deduplicated and the descendants are classified as original or duplicate with their family as a group. The top-level item does not have to be in the set for its descendants to classified this way.|
+## ItemSetDeduplication
+The means of deduplicating items by key and prioritizing originals in a tie-break. 
+
+|Name              |Summary                                                                                                                                                                                                 |
+|:----------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|Default           |MD5RankedCustodian if a custodian ranking is given, MD5 otherwise                                                                                                                                       |
+|MD5               |MD5 results in items with the same MD5 hash being identical. Tie breaking is by highest path order.                                                                                                     |
+|MD5PerCustodian   |MD5 Per Custodian results in items with the same MD5 hash and custodian being identical. Tie breaking is by highest path order.                                                                         |
+|MD5RankedCustodian|MD5 Ranked Custodian results in items with MD5 hash being identical. Tie breaking is by the item with the highest ranked custodian or highest path order if custodian ranking is equal.                 |
+|Scripted          |Scripted results in items being deduplicated based on an expression defined by the script and passed to ItemSet.addItems. It is an error to add items to this Item Set without supplying the expression.|
+|None              |None results in all items being added to the set without deduplication.                                                                                                                                 |
+## ProductionSetSortOrder
+Selects the method of sorting items during production set sort ordering
+
+|Name                      |Summary                                                                                   |
+|:------------------------:|:----------------------------------------------------------------------------------------:|
+|Position                  |Default sort order (fastest). Sorts as documented in ItemSorter.sortItemsByPosition(List).|
+|TopLevelItemDate          |Sorts as documented in ItemSorter.sortItemsByTopLevelItemDate(List).                      |
+|TopLevelItemDateDescending|Sorts as documented in ItemSorter.sortItemsByTopLevelItemDateDescending(List).            |
+|DocumentId                |Sorts items based on their document IDs for the production set.                           |

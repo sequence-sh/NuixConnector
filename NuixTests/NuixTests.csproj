@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NuixClient\Nuix.csproj" />
+    <ProjectReference Include="..\Nuix\Nuix.csproj" />
   </ItemGroup>
 
   <ItemGroup>

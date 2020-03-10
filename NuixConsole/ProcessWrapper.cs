@@ -6,21 +6,22 @@ using System.Linq;
 using System.Reflection;
 using CSharpFunctionalExtensions;
 using Namotion.Reflection;
-using Reductech.EDR.Connectors.Nuix.processes;
+using Reductech.EDR.Utilities.Processes;
+using Process = Reductech.EDR.Utilities.Processes.Process;
 using Reductech.Utilities.InstantConsole;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
 {
-    public class NuixProcessWrapper : IRunnable
+    public class ProcessWrapper<T> : IRunnable where T : IProcessSettings
     {
         private readonly Type _processType;
-        private readonly INuixProcessSettings _nuixProcessSettings;
+        private readonly T _processSettings;
 
-        public NuixProcessWrapper(Type processType, INuixProcessSettings nuixProcessSettings)
+        public ProcessWrapper(Type processType, T processSettings)
         {
             _processType = processType;
-            _nuixProcessSettings = nuixProcessSettings;
+            _processSettings = processSettings;
 
             RelevantProperties = _processType.GetProperties()
                 .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(YamlMemberAttribute)));
@@ -39,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             var errors = new List<string?[]>();
             var usedArguments = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            var instance = Activator.CreateInstance(_processType) as RubyScriptProcess;
+            var instance = Activator.CreateInstance(_processType) as Process;
             Debug.Assert(instance != null, nameof(instance) + " != null");
 
             foreach (var property in RelevantProperties)
@@ -63,7 +64,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             if (errors.Any())
                 return Result.Failure<Func<object?>, List<string?[]>>(errors);
             
-            var func = new Func<object?>(()=> instance.Execute(_nuixProcessSettings));
+            var func = new Func<object?>(()=> instance.Execute(_processSettings));
 
             return Result.Success<Func<object?>, List<string?[]>>(func);
         }
