@@ -3,37 +3,24 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using CSharpFunctionalExtensions;
-using Namotion.Reflection;
 using Reductech.EDR.Utilities.Processes;
 using Process = Reductech.EDR.Utilities.Processes.Process;
 using Reductech.Utilities.InstantConsole;
-using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
 {
-    public class ProcessWrapper<T> : IRunnable where T : IProcessSettings
+    public sealed class ProcessWrapper<T> : YamlObjectWrapper, IRunnable where T : IProcessSettings
     {
         private readonly Type _processType;
         private readonly T _processSettings;
 
-        public ProcessWrapper(Type processType, T processSettings)
+        public ProcessWrapper(Type processType, T processSettings, string category)
+        : base(processType, category)
         {
             _processType = processType;
             _processSettings = processSettings;
-
-            RelevantProperties = _processType.GetProperties()
-                .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(YamlMemberAttribute)));
-
-
-            var instance = Activator.CreateInstance(processType);
-            Parameters = RelevantProperties.Select(propertyInfo => 
-                new PropertyWrapper(propertyInfo, propertyInfo.GetValue(instance)?.ToString()  )).ToList();
         }
-
-        public string Name => _processType.Name;
-        public string Summary => _processType.GetXmlDocsSummary();
 
         public Result<Func<object?>, List<string?[]>> TryGetInvocation(IReadOnlyDictionary<string, string> dictionary)
         {
@@ -69,27 +56,5 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             return Result.Success<Func<object?>, List<string?[]>>(func);
         }
 
-        private IEnumerable<PropertyInfo> RelevantProperties { get; }
-
-        public IEnumerable<IParameter> Parameters { get; }
-            
-            
-
-        private class PropertyWrapper : IParameter
-        {
-            private readonly PropertyInfo _propertyInfo;
-
-            public PropertyWrapper(PropertyInfo propertyInfo, string? defaultValueString)
-            {
-                _propertyInfo = propertyInfo;
-                DefaultValueString = defaultValueString;
-            }
-
-            public string Name => _propertyInfo.Name;
-            public string Summary => _propertyInfo.GetXmlDocsSummary();
-            public Type Type => _propertyInfo.PropertyType;
-            public bool Required => _propertyInfo.CustomAttributes.Any(att=>att.AttributeType == typeof(RequiredAttribute));
-            public string? DefaultValueString { get; }
-        }
     }
 }

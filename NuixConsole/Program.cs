@@ -6,7 +6,6 @@ using System.Text;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.Utilities.InstantConsole;
-using Process = Reductech.EDR.Utilities.Processes.Process;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
 {
@@ -35,24 +34,41 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             var rubyScriptProcessAssembly = Assembly.GetAssembly(typeof(RubyScriptProcess));
             Debug.Assert(rubyScriptProcessAssembly != null, nameof(rubyScriptProcessAssembly) + " != null");
 
-            var processAssembly = Assembly.GetAssembly(typeof(Process));
+            var processAssembly = Assembly.GetAssembly(typeof(Utilities.Processes.Process));
             Debug.Assert(processAssembly != null, nameof(processAssembly) + " != null");
 
             var nuixProcessSettings = new NuixProcessSettings(useDongle, nuixExeConsolePath);
 
             var methods = typeof(YamlRunner).GetMethods()
                 .Where(m=>m.DeclaringType != typeof(object))
-                    .Select(x=>x.AsRunnable(new YamlRunner(nuixProcessSettings)))
+                    .Select(x=>x.AsRunnable(new YamlRunner(nuixProcessSettings), "Yaml"))
+                .OfType<IDocumented>()
+                .Concat(processAssembly.GetTypes()
+                    .Where(t=> 
+                        typeof(Utilities.Processes.Process).IsAssignableFrom(t))
+                    .Where(t=>!t.IsAbstract)
+                    .Select(x=> new YamlObjectWrapper(x,  "General Processes"))
+                )
+                .Concat(processAssembly.GetTypes()
+                    .Where(t=> 
+                        typeof(Utilities.Processes.enumerations.Enumeration).IsAssignableFrom(t))
+                    .Where(t=>!t.IsAbstract)
+                    .Select(x=> new YamlObjectWrapper(x,  "Enumerations"))
+                )
+
+                .Concat(processAssembly.GetTypes()
+                    .Where(t=> 
+                        typeof(Utilities.Processes.enumerations.Injection).IsAssignableFrom(t))
+                    .Where(t=>!t.IsAbstract)
+                    .Select(x=> new YamlObjectWrapper(x,  "Injections"))
+                )
+
                     .Concat(rubyScriptProcessAssembly.GetTypes()
                         .Where(t=> typeof(RubyScriptProcess).IsAssignableFrom(t))
                         .Where(t=>!t.IsAbstract)
-                        .Select(x=> new ProcessWrapper<INuixProcessSettings>(x, nuixProcessSettings) )
+                        .Select(x=> new ProcessWrapper<INuixProcessSettings>(x, nuixProcessSettings, "Nuix Processes") )
                     )
-                .Concat(processAssembly.GetTypes()
-                    .Where(t=> typeof(Process).IsAssignableFrom(t))
-                    .Where(t=>!t.IsAbstract)
-                    .Select(x=> new ProcessWrapper<INuixProcessSettings>(x, nuixProcessSettings) )
-                )
+                
                 
                 .ToList();
 
