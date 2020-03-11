@@ -88,7 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixCount
                     {
                         CasePath = DirectoryPath,
-                        ExpectedCount = 0,
+                        Maximum = 0,
                         SearchTerm = "*"
                     },
 
@@ -103,7 +103,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixCount
                     {
                         CasePath = DirectoryPath,
-                        ExpectedCount = 2,
+                        Minimum = 2,
+                        Maximum = 2,
                         SearchTerm = "*"
                     },
                     new DeleteItem
@@ -153,7 +154,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixCount
                     {
                         CasePath = DirectoryPath,
-                        ExpectedCount = 1,
+                        Minimum = 1,
+                        Maximum = 1,
                         SearchTerm = "tag:charm"
                     },
                     new DeleteItem

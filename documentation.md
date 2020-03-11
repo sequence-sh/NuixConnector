@@ -154,7 +154,7 @@ Searches a case with a particular search string and adds all items it finds to a
 
 |Parameter           |Type                                         |Required|Summary                                                                                                                                                                                      |Default   |
 |:------------------:|:-------------------------------------------:|:------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------:|
-|ItemSetName         |`string`                                     |☑️      |The production set to add results to. Will be created if it doesn't already exist                                                                                                            |          |
+|ItemSetName         |`string`                                     |☑️      |The item set to add results to. Will be created if it doesn't already exist                                                                                                                  |          |
 |SearchTerm          |`string`                                     |☑️      |The term to search for                                                                                                                                                                       |          |
 |CasePath            |`string`                                     |☑️      |The path of the case to search                                                                                                                                                               |          |
 |ItemSetDeduplication|[ItemSetDeduplication](#ItemSetDeduplication)|        |The means of deduplicating items by key and prioritizing originals in a tie-break.                                                                                                           |Default   |
@@ -335,10 +335,11 @@ Migrates a case to the latest version if necessary
 
 Performs optical character recognition on files which need it in a NUIX case.
 
-|Parameter     |Type    |Required|Summary                                                                              |
-|:------------:|:------:|:------:|:-----------------------------------------------------------------------------------:|
-|CasePath      |`string`|☑️      |The path to the case                                                                 |
-|OCRProfileName|`string`|        |The name of the OCR profile to use. If not provided, the default profile will be used|
+|Parameter     |Type    |Required|Summary                                        |Default                                                                                                                                         |Example        |
+|:------------:|:------:|:------:|:---------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
+|CasePath      |`string`|☑️      |The path to the case                           |                                                                                                                                                |C:/Cases/MyCase|
+|OCRProfileName|`string`|        |The name of the OCR profile to use.            |The default profile will be used.                                                                                                               |MyOcrProfile   |
+|SearchTerm    |`string`|        |The term to use for searching for files to OCR.|NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))|               |
 
 <a name="NuixRemoveFromProductionSet"></a>
 ## NuixRemoveFromProductionSet

@@ -9,6 +9,9 @@ OptionParser.new do |opts|
   opts.on('-o [ARG]', '--ocrProfile [ARG]', "OCR Profile Name") do |v|
     hash_options[:ocrProfileArg] = v
   end 
+  opts.on('-s [ARG]', '--searchTerm [ARG]', "Search Term") do |v|
+    hash_options[:searchTermArg] = v
+  end 
   opts.on('-h', '--help', 'Display this help') do 
     puts opts
     exit
@@ -16,7 +19,7 @@ OptionParser.new do |opts|
 
 end.parse!
 
-requiredArguments = [:pathArg] #ocrProfileArg is optional
+requiredArguments = [:pathArg, :searchTermArg] #ocrProfileArg is optional
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
@@ -27,8 +30,8 @@ else
     
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
-    searchTerm =
-    "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))"
+    searchTerm = hash_options[:searchTermArg]
+    
     
     items = the_case.searchUnsorted(searchTerm).to_a
 

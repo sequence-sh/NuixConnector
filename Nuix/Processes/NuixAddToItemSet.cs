@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The production set to add results to. Will be created if it doesn't already exist
+        /// The item set to add results to. Will be created if it doesn't already exist
         /// </summary>
         [DataMember]
         [Required]

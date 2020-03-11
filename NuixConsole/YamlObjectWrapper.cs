@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using Namotion.Reflection;
+using Reductech.EDR.Utilities.Processes;
 using Reductech.Utilities.InstantConsole;
 using YamlDotNet.Serialization;
 
@@ -54,13 +55,19 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             {
                 _propertyInfo = propertyInfo;
                 Required = _propertyInfo.CustomAttributes.Any(att => att.AttributeType == typeof(RequiredAttribute)) && defaultValueString == null;
-                DefaultValueString = defaultValueString;
+                DefaultValueString =
+                    propertyInfo.GetCustomAttribute<DefaultValueExplanationAttribute>()?.Explanation ?? defaultValueString;
+
+                Example = propertyInfo.GetCustomAttribute<ExampleValueAttribute>()?.ExampleValue.ToString();
             }
 
             public string Name => _propertyInfo.Name;
             public string Summary => _propertyInfo.GetXmlDocsSummary();
             public Type Type => _propertyInfo.PropertyType;
             public bool Required { get; }
+
+            /// <inheritdoc />
+            public string? Example { get; }
             public string? DefaultValueString { get; }
         }
     }
