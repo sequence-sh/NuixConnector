@@ -28,7 +28,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 Steps = new List<Process>
                 {
-                    new DeleteFile
+                    new DeleteItem
                     {
                         Path = DirectoryPath
                     },
@@ -57,7 +57,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = DirectoryPath,
                         ShouldExist = false
                     },
-                    new DeleteFile
+                    new DeleteItem
                     {
                         Path = DirectoryPath
                     },
@@ -74,7 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 Steps = new List<Process>
                 {
-                    new DeleteFile
+                    new DeleteItem
                     {
                         Path = DirectoryPath
                     },
@@ -106,7 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         ExpectedCount = 2,
                         SearchTerm = "*"
                     },
-                    new DeleteFile
+                    new DeleteItem
                     {
                         Path = DirectoryPath
                     },
@@ -125,7 +125,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 Steps = new List<Process>
                 {
-                    new DeleteFile
+                    new DeleteItem
                     {
                         Path = DirectoryPath
                     },
@@ -156,7 +156,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         ExpectedCount = 1,
                         SearchTerm = "tag:charm"
                     },
-                    new DeleteFile
+                    new DeleteItem
                     {
                         Path = DirectoryPath
                     },

@@ -30,8 +30,8 @@ A process that runs a process depending on the success of an assertion.
 |Then     |[Process](#Process)|☑️      |If the 'If' process was successful then run this.  |
 |Else     |[Process](#Process)|        |If the 'If' process was unsuccessful then run this.|
 
-<a name="DeleteFile"></a>
-## DeleteFile
+<a name="DeleteItem"></a>
+## DeleteItem
 
 Deletes a file or a directory.
 
@@ -39,15 +39,15 @@ Deletes a file or a directory.
 |:-------:|:------:|:------:|:------------------------------------------:|
 |Path     |`string`|☑️      |The path to the file or directory to delete.|
 
-<a name="ForEach"></a>
-## ForEach
+<a name="Loop"></a>
+## Loop
 
 Performs a nested process once for each element in an enumeration
 
-|Parameter  |Type                       |Required|Summary                                 |
-|:---------:|:-------------------------:|:------:|:--------------------------------------:|
-|Enumeration|[Enumeration](#Enumeration)|☑️      |The enumeration to iterate through.     |
-|SubProcess |[Process](#Process)        |☑️      |The process to run once for each element|
+|Parameter|Type                       |Required|Summary                                 |
+|:-------:|:-------------------------:|:------:|:--------------------------------------:|
+|For      |[Enumeration](#Enumeration)|☑️      |The enumeration to iterate through.     |
+|Do       |[Process](#Process)        |☑️      |The process to run once for each element|
 
 <a name="RunExternalProcess"></a>
 ## RunExternalProcess
@@ -72,62 +72,50 @@ Executes each step in sequence until a condition is not met or a process fails.
 
 <a name="Enumeration"></a>
 # Enumerations
-<a name="Collection"></a>
-## Collection
-
-Enumerates through elements of a list
-
-|Parameter |Type                         |Required|Summary                                      |
-|:--------:|:---------------------------:|:------:|:-------------------------------------------:|
-|Members   |List<`string`>               |☑️      |The elements to iterate over                 |
-|Injections|List<[Injection](#Injection)>|☑️      |Injections to use on the elements of the list|
-
-<a name="ColumnInjection"></a>
-## ColumnInjection
-
-Inject the values from a particular column
-
-|Parameter       |Type    |Required|Summary                                                                                                                                                                                                     |
-|:--------------:|:------:|:------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|Header          |`string`|☑️      |The header in the CSV                                                                                                                                                                                       |
-|PropertyToInject|`string`|☑️      |The property of the subProcess to inject with the element of enumeration                                                                                                                                    |
-|Regex           |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used. Will be ignored if null.                                                                             |
-|Template        |`string`|        |The template to apply to the element before injection. If null the element will be used without modification. The string '$s' in the template will be replaced with the element. Is applied after the Regex.|
-
-<a name="CSVEnumeration"></a>
-## CSVEnumeration
+<a name="CSV"></a>
+## CSV
 
 Enumerates through a CSV file 
 
-|Parameter                |Type                                     |Required|Summary                                                                                                                         |Default|
-|:-----------------------:|:---------------------------------------:|:------:|:------------------------------------------------------------------------------------------------------------------------------:|:-----:|
-|ColumnInjections         |List<[ColumnInjection](#ColumnInjection)>|☑️      |List of mappings from headers to property injections                                                                            |       |
-|CommentToken             |`string`                                 |☑️      |A string that, when placed at the beginning of a line, indicates that the line is a comment and should be ignored by the parser.|       |
-|CSVFilePath              |`string`                                 |        |The path to the CSV file. Either this or CSVText must be set (but not both).                                                    |       |
-|CSVText                  |`string`                                 |        |Raw Csv. Either this or CSVFilePath must be set (but not both).                                                                 |       |
-|Delimiter                |`string`                                 |☑️      |The delimiter used in the CSV file                                                                                              |       |
-|HasFieldsEnclosedInQuotes|`bool`                                   |        |Determines whether fields are enclosed in quotation marks.                                                                      |False  |
+|Parameter                |Type                                        |Required|Summary                                                                                                                         |Default|
+|:-----------------------:|:------------------------------------------:|:------:|:------------------------------------------------------------------------------------------------------------------------------:|:-----:|
+|CommentToken             |`string`                                    |        |A string that, when placed at the beginning of a line, indicates that the line is a comment and should be ignored by the parser.|       |
+|CSVFilePath              |`string`                                    |        |The path to the CSV file. Either this or CSVText must be set (but not both).                                                    |       |
+|CSVText                  |`string`                                    |        |Raw Csv. Either this or CSVFilePath must be set (but not both).                                                                 |       |
+|Delimiter                |`string`                                    |        |The delimiter used in the CSV file                                                                                              |,      |
+|HasFieldsEnclosedInQuotes|`bool`                                      |        |Determines whether fields are enclosed in quotation marks.                                                                      |False  |
+|InjectColumn             |Dictionary<`string`,[Injection](#Injection)>|☑️      |List of mappings from headers to property injection                                                                             |       |
 
 <a name="Directory"></a>
 ## Directory
 
 Enumerates through files in a directory
 
-|Parameter |Type                         |Required|Summary                                      |
-|:--------:|:---------------------------:|:------:|:-------------------------------------------:|
-|Path      |`string`                     |☑️      |The path to the directory                    |
-|Injections|List<[Injection](#Injection)>|☑️      |Injections to use on the elements of the list|
+|Parameter|Type                         |Required|Summary                                     |
+|:-------:|:---------------------------:|:------:|:------------------------------------------:|
+|Path     |`string`                     |☑️      |The path to the directory                   |
+|Injection|List<[Injection](#Injection)>|☑️      |Injection to use on the elements of the list|
 
 <a name="Injection"></a>
 ## Injection
 
 Injects a value from the enumerator into a process property in a foreach loop
 
-|Parameter       |Type    |Required|Summary                                                                                                                                                                                                     |
-|:--------------:|:------:|:------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|PropertyToInject|`string`|☑️      |The property of the subProcess to inject with the element of enumeration                                                                                                                                    |
-|Regex           |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used. Will be ignored if null.                                                                             |
-|Template        |`string`|        |The template to apply to the element before injection. If null the element will be used without modification. The string '$s' in the template will be replaced with the element. Is applied after the Regex.|
+|Parameter|Type    |Required|Summary                                                                                                                                                                                                     |
+|:-------:|:------:|:------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|Property |`string`|☑️      |The property of the subProcess to injection with the element of enumeration                                                                                                                                 |
+|Regex    |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used. Will be ignored if null.                                                                             |
+|Template |`string`|        |The template to apply to the element before injection. If null the element will be used without modification. The string '$s' in the template will be replaced with the element. Is applied after the Regex.|
+
+<a name="List"></a>
+## List
+
+Enumerates through elements of a list
+
+|Parameter|Type                         |Required|Summary                                     |
+|:-------:|:---------------------------:|:------:|:------------------------------------------:|
+|Members  |List<`string`>               |☑️      |The elements to iterate over                |
+|Inject   |List<[Injection](#Injection)>|☑️      |Injection to use on the elements of the list|
 
 # Nuix Processes
 <a name="NuixAddConcordance"></a>

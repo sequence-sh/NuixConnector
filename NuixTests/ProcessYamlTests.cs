@@ -76,28 +76,32 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = "Case Path",
                         OCRProfileName = "OCR Profile"
                     },
-                    new ForEach
+                    new Loop
                     {
-                        Enumeration = new CSVEnumeration
+                        For = new CSV
                         {
                             Delimiter = ",",
                             CSVFilePath = "CSV Path",
-                            ColumnInjections = new List<ColumnInjection>
+                            InjectColumn = new Dictionary<string, Injection>()
                             {
-                                new ColumnInjection
                                 {
-                                        Header = "SearchTerm",
-                                        PropertyToInject = nameof(NuixSearchAndTag.SearchTerm)
-                                    },
-                                new ColumnInjection
+                                    "SearchTerm",
+                                    new Injection
+                                    {
+                                        Property = nameof(NuixSearchAndTag.SearchTerm)
+                                    }
+                                },
                                 {
-                                    Header = "Tag",
-                                    PropertyToInject = nameof(NuixSearchAndTag.Tag)
+                                    "Tag",
+                                    new Injection
+                                    {
+                                        Property = nameof(NuixSearchAndTag.Tag)
+                                    }
                                 }
                             }
                         },
 
-                        SubProcess = new NuixSearchAndTag
+                        Do = new NuixSearchAndTag
                         {
                             CasePath = "Case Path"
                         }
