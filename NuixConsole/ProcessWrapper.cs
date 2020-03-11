@@ -15,7 +15,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
         private readonly Type _processType;
         private readonly T _processSettings;
 
-        public ProcessWrapper(Type processType, T processSettings, string category)
+        public ProcessWrapper(Type processType, T processSettings, DocumentationCategory category)
         : base(processType, category)
         {
             _processType = processType;

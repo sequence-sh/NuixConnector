@@ -22,7 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
         [Required]
         [DataMember]
-        [YamlMember(Order = 3)]
+        [YamlMember( Order = 3)]
         public string FilePath { get; set; }
 
         /// <summary>

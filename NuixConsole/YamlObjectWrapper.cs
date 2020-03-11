@@ -13,22 +13,25 @@ namespace Reductech.EDR.Connectors.Nuix.Console
     {
         private readonly Type _processType;
 
-        public YamlObjectWrapper(Type processType, string category)
+        public YamlObjectWrapper(Type processType, DocumentationCategory category)
         {
-            CategoryName = category;
+            DocumentationCategory = category;
             _processType = processType;
 
             RelevantProperties = processType.GetProperties()
-                .Where(x => x.CustomAttributes.Any(y => y.AttributeType == typeof(YamlMemberAttribute)));
+                .Select(p=> (p, p.GetCustomAttribute<YamlMemberAttribute>()))
+                .Where(x=>x.Item2 != null)
+                .OrderBy(x=>x.Item2?.Order)
+                .ThenBy(x=>x.p.Name).Select(x=>x.p).ToList();
 
 
             var instance = Activator.CreateInstance(processType);
             Parameters = RelevantProperties.Select(propertyInfo => 
                 new PropertyWrapper(propertyInfo, propertyInfo.GetValue(instance)?.ToString()  )).ToList();
         }
-
+        
         /// <inheritdoc />
-        public string CategoryName { get; }
+        public DocumentationCategory DocumentationCategory { get; }
 
         /// <inheritdoc />
         public string Name => _processType.Name;
