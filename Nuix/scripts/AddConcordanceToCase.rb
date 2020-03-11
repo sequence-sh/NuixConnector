@@ -37,7 +37,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-requiredArguments = [:pathArg, :folderNameArg, :folderDescriptionArg, :folderCustodianArg, :filePathArg, :dateFormatArg, :profileNameArg]
+requiredArguments = [:pathArg, :folderNameArg,  :folderCustodianArg, :filePathArg, :dateFormatArg, :profileNameArg] #:folderDescriptionArg is optional
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"

@@ -8,23 +8,36 @@ using YamlDotNet.Serialization;
 namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 {
     /// <summary>
-    /// Asserts that a particular number of items match a particular search term.
+    /// A process that succeed if the numbers of items returned by a search is within a particular range and fails if it is not.
+    /// Useful in Conditionals.
     /// </summary>
     public sealed class NuixCount : RubyScriptAssertionProcess
     {
         /// <inheritdoc />
         public override IEnumerable<string> GetArgumentErrors()
         {
+            if(Minimum == null && Maximum == null)
+                yield return  "Either minimum or maximum must be set.";
+
             var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = SearchParser.TryParse(SearchTerm);
 
             if (!searchTermParseSuccess || searchTermParsed == null)
             {
-                yield return  $"Error parsing search term: {searchTermParseError}";
+                yield return  $"Error parsing search term: '{searchTermParseError}'.";
             }
         }
 
         /// <inheritdoc />
-        public override string GetName() => $"Assert {ExpectedCount} items match '{SearchTerm}'";
+        public override string GetName()
+        {
+            if (Minimum == null)
+                return Maximum == null
+                    ? $"Assert count of '{SearchTerm}'"
+                    : $"Assert count of '{SearchTerm}' <= {Maximum.Value}";
+            return Maximum == null
+                ? $"Assert {Minimum.Value} <= count of '{SearchTerm}'"
+                : $"Assert {Minimum.Value} <= count of '{SearchTerm}' <= {Maximum.Value}";
+        } 
 
         internal override string ScriptName => "CountItems.rb";
 
@@ -39,42 +52,52 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         /// <inheritdoc />
         protected override (bool success, string? failureMessage)? InterpretLine(string s)
         {
-            if (CountRegex.TryMatch(s, out var m) && int.TryParse(m.Groups["count"].Value, out var c))
-            {
-                return c == ExpectedCount ? (true, null) : (false, $"Expected {ExpectedCount} matches for '{SearchTerm}' but found {c}");
-            }
+            if (!CountRegex.TryMatch(s, out var m) || !int.TryParse(m.Groups["count"].Value, out var c)) return null;
 
-            return null;
+            if (Maximum.HasValue && c > Maximum)
+                return (false, $"Expected {Maximum.Value} or fewer matches for '{SearchTerm}' but found {c}");
+
+            if (Minimum.HasValue && c < Minimum)
+                return (false, $"Expected {Minimum.Value} or more matches for '{SearchTerm}' but found {c}");
+
+            return (true, null);
+
         }
         
         /// <inheritdoc />
         protected override string DefaultFailureMessage => "Could not confirm count";
 
-
         /// <summary>
-        /// If true, asserts that the case does exist.
-        /// If false, asserts that the case does not exist.
+        /// Inclusive minimum of the expected range.
+        /// Either this, Maximum, or both must be set.
         /// </summary>
-        [Required]
         [DataMember]
         [YamlMember(Order = 2 )]
-        public int ExpectedCount { get; set; }
+        public int? Minimum { get; set; }
 
         /// <summary>
-        /// The case path to check
+        /// Inclusive maximum of the expected range.
+        /// Either this, Minimum, or both must be set.
+        /// </summary>
+        [DataMember]
+        [YamlMember(Order = 3 )]
+        public int? Maximum { get; set; }
+
+        /// <summary>
+        /// The path to the case to check.
         /// </summary>
         [Required]
         [DataMember]
-        [YamlMember(Order = 3)]
+        [YamlMember(Order = 4)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
 
         /// <summary>
-        /// The search term to count
+        /// The search term to count.
         /// </summary>
         [Required]
         [DataMember]
-        [YamlMember(Order = 3)]
+        [YamlMember(Order = 5)]
         public string SearchTerm { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }

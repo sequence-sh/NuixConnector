@@ -129,18 +129,18 @@ Adds data from a Concordance file to a NUIX case.
 |ConcordanceDateFormat |`string`|☑️      |The concordance date format to use.               |
 |FilePath              |`string`|☑️      |The path of the concordance file to import.       |
 |Custodian             |`string`|☑️      |The name of the custodian to assign the folder to.|
-|Description           |`string`|☑️      |A description to add to the folder.               |
+|Description           |`string`|        |A description to add to the folder.               |
 |FolderName            |`string`|☑️      |The name of the folder to create.                 |
 |CasePath              |`string`|☑️      |The name of the case to import into.              |
 
-<a name="NuixAddFile"></a>
-## NuixAddFile
+<a name="NuixAddItem"></a>
+## NuixAddItem
 
 Adds a file or folder to a Nuix Case
 
 |Parameter            |Type    |Required|Summary                                                                                         |
 |:-------------------:|:------:|:------:|:----------------------------------------------------------------------------------------------:|
-|FilePath             |`string`|☑️      |The path of the file or folder to add to the case.                                              |
+|Path                 |`string`|☑️      |The path of the file or folder to add to the case.                                              |
 |Custodian            |`string`|☑️      |The custodian to assign to the new folder.                                                      |
 |Description          |`string`|☑️      |The description of the new folder.                                                              |
 |FolderName           |`string`|☑️      |The name of the folder to create.                                                               |
@@ -190,7 +190,7 @@ Annotates a document ID list to add production set names to it.
 <a name="NuixCaseExists"></a>
 ## NuixCaseExists
 
-Asserts that a particular case exists or doesn't exist.
+A process that succeeds or fails depending on whether or not a particular case exists. Useful in Conditionals.
 
 |Parameter  |Type    |Required|Summary                                                                                   |Default|
 |:---------:|:------:|:------:|:----------------------------------------------------------------------------------------:|:-----:|
@@ -200,13 +200,14 @@ Asserts that a particular case exists or doesn't exist.
 <a name="NuixCount"></a>
 ## NuixCount
 
-Asserts that a particular number of items match a particular search term.
+A process that succeed if the numbers of items returned by a search is within a particular range and fails if it is not. Useful in Conditionals.
 
-|Parameter    |Type    |Required|Summary                                                                                   |Default|
-|:-----------:|:------:|:------:|:----------------------------------------------------------------------------------------:|:-----:|
-|ExpectedCount|`int`   |        |If true, asserts that the case does exist. If false, asserts that the case does not exist.|0      |
-|CasePath     |`string`|☑️      |The case path to check                                                                    |       |
-|SearchTerm   |`string`|☑️      |The search term to count                                                                  |       |
+|Parameter |Type    |Required|Summary                                                                            |
+|:--------:|:------:|:------:|:---------------------------------------------------------------------------------:|
+|Minimum   |`int`?  |        |Inclusive minimum of the expected range. Either this, Maximum, or both must be set.|
+|Maximum   |`int`?  |        |Inclusive maximum of the expected range. Either this, Minimum, or both must be set.|
+|CasePath  |`string`|☑️      |The path to the case to check.                                                     |
+|SearchTerm|`string`|☑️      |The search term to count.                                                          |
 
 <a name="NuixCreateCase"></a>
 ## NuixCreateCase
@@ -218,7 +219,7 @@ Creates a new case
 |CaseName    |`string`|☑️      |The name of the case to create.              |
 |CasePath    |`string`|☑️      |The path to the folder to create the case in.|
 |Investigator|`string`|☑️      |Name of the investigator.                    |
-|Description |`string`|☑️      |Description of the case.                     |
+|Description |`string`|        |Description of the case.                     |
 
 <a name="NuixCreateIrregularItemsReport"></a>
 ## NuixCreateIrregularItemsReport
@@ -295,10 +296,10 @@ Generates print previews for items in the production set
 |ProductionSetName|`string`|☑️      |The production set to generate print previews for|
 |CasePath         |`string`|☑️      |The path of the case to search                   |
 
-<a name="NuixGetParticularProperties"></a>
-## NuixGetParticularProperties
+<a name="NuixGetItemProperties"></a>
+## NuixGetItemProperties
 
-A process that reads searches a case and outputs to a file the values of particular properties of the results
+A process that the searches a case for items and outputs the values of item properties.
 
 |Parameter     |Type    |Required|Summary                                          |
 |:------------:|:------:|:------:|:-----------------------------------------------:|

@@ -55,12 +55,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         Investigator = "Investigator"
                     },
 
-                    new NuixAddFile
+                    new NuixAddItem
                     {
                         CasePath = "Case Path",
                         Custodian = "Custodian",
                         Description = "Description",
-                        FilePath = "File Path",
+                        Path = "File Path",
                         FolderName = "Folder Name",
                         ProcessingProfileName = "Default"
                     },
@@ -150,12 +150,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             }),
 
 
-            new YamlProcessTest(new NuixAddFile
+            new YamlProcessTest(new NuixAddItem
             {
                 CasePath = "C:/Cases/MyCase",
                 Custodian = "Mark",
                 Description = "Interesting",
-                FilePath = "C:/MyFile",
+                Path = "C:/MyFile",
                 FolderName = "My Folder"
             }),
 
@@ -212,12 +212,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CaseName = "My Case",
                         Investigator = "Mark"
                     },
-                    new NuixAddFile
+                    new NuixAddItem
                     {
                         CasePath = "C:/Cases/MyCase",
                         Custodian = "Mark",
                         Description = "Evidence from file",
-                        FilePath = "C:/MyFolder",
+                        Path = "C:/MyFolder",
                         FolderName = "Evidence Folder 1"
                     },
 
@@ -277,8 +277,8 @@ Steps:
   CasePath: &casePath C:/Cases/MyCase
   Investigator: Mark
   Description: &description desc
-- !NuixAddFile
-  FilePath: C:/MyFolder
+- !NuixAddItem
+  Path: C:/MyFolder
   Custodian: Mark
   Description: *description
   FolderName: Evidence Folder 1
@@ -297,9 +297,9 @@ Steps:
                         Investigator = "Mark",
                         Description = "desc"
                     },
-                    new NuixAddFile
+                    new NuixAddItem
                     {
-                        FilePath = "C:/MyFolder",
+                        Path = "C:/MyFolder",
                         Custodian = "Mark",
                         Description = "desc",
                         FolderName = "Evidence Folder 1",

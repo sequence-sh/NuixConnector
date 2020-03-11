@@ -9,11 +9,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Adds a file or folder to a Nuix Case
     /// </summary>
-    public sealed class NuixAddFile : RubyScriptProcess
+    public sealed class NuixAddItem : RubyScriptProcess
     {
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => $"Add '{FilePath}'";
+        public override string GetName() => $"Add '{Path}'";
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -23,7 +23,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [DataMember]
         [YamlMember( Order = 3)]
-        public string FilePath { get; set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// The custodian to assign to the new folder.
@@ -37,9 +37,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The description of the new folder.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 5)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// The name of the folder to create.
@@ -79,9 +78,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             yield return ("-p", CasePath);
             yield return ("-n", FolderName);
-            yield return ("-d", Description);
+            if(Description != null)
+                yield return ("-d", Description);
             yield return ("-c", Custodian);
-            yield return ("-f", FilePath);
+            yield return ("-f", Path);
             if(ProcessingProfileName != null)
                 yield return ("-r", ProcessingProfileName);
         }

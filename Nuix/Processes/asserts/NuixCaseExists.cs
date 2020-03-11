@@ -6,7 +6,8 @@ using YamlDotNet.Serialization;
 namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 {
     /// <summary>
-    /// Asserts that a particular case exists or doesn't exist.
+    /// A process that succeeds or fails depending on whether or not a particular case exists.
+    /// Useful in Conditionals.
     /// </summary>
     public sealed class NuixCaseExists : RubyScriptAssertionProcess
     {

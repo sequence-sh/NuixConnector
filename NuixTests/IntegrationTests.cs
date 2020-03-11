@@ -92,12 +92,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         SearchTerm = "*"
                     },
 
-                    new NuixAddFile
+                    new NuixAddItem
                     {
                         CasePath = DirectoryPath,
                         Custodian = "Mark",
                         Description = "Description",
-                        FilePath = DataPath,
+                        Path = DataPath,
                         FolderName = "New Folder"
                     },
                     new NuixCount
@@ -137,12 +137,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         Investigator = "Mark",
                         Description = "Description"
                     },
-                    new NuixAddFile
+                    new NuixAddItem
                     {
                         CasePath = DirectoryPath,
                         Custodian = "Mark",
                         Description = "Description",
-                        FilePath = DataPath,
+                        Path = DataPath,
                         FolderName = "New Folder"
                     },
                     new NuixSearchAndTag

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
@@ -54,10 +55,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// A description to add to the folder.
         /// </summary>
-        [Required]
         [DataMember]
         [YamlMember(Order = 7)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// The name of the folder to create.
@@ -89,7 +89,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             yield return ("-p", CasePath);
             yield return ("-n", FolderName);
-            yield return ("-d", Description);
+            if(Description != null)
+                yield return ("-d", Description);
             yield return ("-c", Custodian);
             yield return ("-f", FilePath);
             yield return ("-z", ConcordanceDateFormat);

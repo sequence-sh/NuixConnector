@@ -43,10 +43,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// Description of the case.
         /// </summary>
-        [Required]
         [DataMember]
         [YamlMember(Order = 6)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -60,7 +59,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             yield return ("-p", CasePath);
             yield return ("-n", CaseName);
-            yield return ("-d", Description);
+            if(Description != null)
+                yield return ("-d", Description);
             yield return ("-i", Investigator);
         }
     }

@@ -31,7 +31,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-requiredArguments = [:pathArg, :folderNameArg, :folderDescriptionArg, :folderCustodianArg, :filePathArg] #processingProfileName is optional
+requiredArguments = [:pathArg, :folderNameArg, :folderCustodianArg, :filePathArg] #processingProfileName, :folderDescriptionArg are optional
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
@@ -52,7 +52,8 @@ else
 
     folder = processor.new_evidence_container(hash_options[:folderNameArg])
 
-    folder.description = hash_options[:folderDescriptionArg]
+
+    folder.description = hash_options[:folderDescriptionArg] if hash_options[:folderDescriptionArg] != nil
     folder.initial_custodian = hash_options[:folderCustodianArg]
 
     folder.add_file(hash_options[:filePathArg])

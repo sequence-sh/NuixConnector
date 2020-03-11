@@ -25,7 +25,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-requiredArguments = [:pathArg, :nameArg, :descriptionArg, :investigatorArg]
+requiredArguments = [:pathArg, :nameArg, :investigatorArg] # :descriptionArg is optional
 
 unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"

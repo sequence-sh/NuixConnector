@@ -7,9 +7,9 @@ using YamlDotNet.Serialization;
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// A process that reads searches a case and outputs to a file the values of particular properties of the results
+    /// A process that the searches a case for items and outputs the values of item properties.
     /// </summary>
-    public sealed class NuixGetParticularProperties : RubyScriptWithOutputProcess
+    public sealed class NuixGetItemProperties : RubyScriptWithOutputProcess
     {
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
