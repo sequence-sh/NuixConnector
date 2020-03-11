@@ -55,8 +55,9 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             {
                 _propertyInfo = propertyInfo;
                 Required = _propertyInfo.CustomAttributes.Any(att => att.AttributeType == typeof(RequiredAttribute)) && defaultValueString == null;
-                DefaultValueString =
-                    propertyInfo.GetCustomAttribute<DefaultValueExplanationAttribute>()?.Explanation ?? defaultValueString;
+
+                var explanation = propertyInfo.GetCustomAttribute<DefaultValueExplanationAttribute>()?.Explanation;
+                DefaultValueString = explanation == null ? defaultValueString : $"*{explanation}*";
 
                 Example = propertyInfo.GetCustomAttribute<ExampleValueAttribute>()?.ExampleValue.ToString();
             }

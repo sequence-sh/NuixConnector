@@ -2,12 +2,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// Adds a file or folder to a Nuix Case
+    /// Adds a file or directory to a Nuix Case.
     /// </summary>
     public sealed class NuixAddItem : RubyScriptProcess
     {
@@ -23,6 +24,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [DataMember]
         [YamlMember( Order = 3)]
+        [ExampleValue("C:/Data/File.txt")]
         public string Path { get; set; }
 
         /// <summary>
@@ -54,15 +56,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [DataMember]
         [YamlMember(Order = 7)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
 
         /// <summary>
         /// The name of the processing profile to use.
-        /// If null, the default processing profile will be used.
         /// </summary>
         [DataMember]
         [YamlMember(Order = 7)]
+        [ExampleValue("MyProcessingProfile")]
+        [DefaultValueExplanation("The default processing profile will be used.")]
         public string? ProcessingProfileName { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 

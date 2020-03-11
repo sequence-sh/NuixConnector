@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Reductech.EDR.Connectors.Nuix.Search;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
@@ -17,7 +18,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public override string GetName() => "Remove items from Production Set";
 
         /// <summary>
-        /// The production set to remove results from
+        /// The production set to remove results from.
         /// </summary>
         [DataMember]
         [Required]
@@ -27,10 +28,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The search term to use for choosing which items to remove. If null, all items will be removed.
+        /// The search term to use for choosing which items to remove.
         /// </summary>
         [DataMember]
         [YamlMember(Order = 4)]
+        [DefaultValueExplanation("All items will be removed.")]
+        [ExampleValue("Tag:sushi")]
         public string? SearchTerm { get; set; }
 
         /// <summary>

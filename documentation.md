@@ -99,13 +99,13 @@ Enumerates through files in a directory
 <a name="Injection"></a>
 ## Injection
 
-Injects a value from the enumerator into a process property in a foreach loop
+Injects a value from the enumerator into a property of a loop's process.
 
-|Parameter|Type    |Required|Summary                                                                                                                                                                                                     |
-|:-------:|:------:|:------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|Property |`string`|☑️      |The property of the subProcess to injection with the element of enumeration                                                                                                                                 |
-|Regex    |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used. Will be ignored if null.                                                                             |
-|Template |`string`|        |The template to apply to the element before injection. If null the element will be used without modification. The string '$s' in the template will be replaced with the element. Is applied after the Regex.|
+|Parameter|Type    |Required|Summary                                                                                                                                                                |Default                                 |Example    |
+|:-------:|:------:|:------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------:|:---------:|
+|Property |`string`|☑️      |The property of the subProcess to injection with the element of enumeration                                                                                            |                                        |SearchTerm |
+|Regex    |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used.                                                                 |*The entire value will be injected.*    |prefix-(.+)|
+|Template |`string`|        |The template to apply to the element before injection. The string '$s' in the template will be replaced with the element. The template will be applied after the Regex.|*The value will be injected on its own.*|$s.txt     |
 
 <a name="List"></a>
 ## List
@@ -136,16 +136,16 @@ Adds data from a Concordance file to a NUIX case.
 <a name="NuixAddItem"></a>
 ## NuixAddItem
 
-Adds a file or folder to a Nuix Case
+Adds a file or directory to a Nuix Case.
 
-|Parameter            |Type    |Required|Summary                                                                                         |
-|:-------------------:|:------:|:------:|:----------------------------------------------------------------------------------------------:|
-|Path                 |`string`|☑️      |The path of the file or folder to add to the case.                                              |
-|Custodian            |`string`|☑️      |The custodian to assign to the new folder.                                                      |
-|Description          |`string`|☑️      |The description of the new folder.                                                              |
-|FolderName           |`string`|☑️      |The name of the folder to create.                                                               |
-|CasePath             |`string`|☑️      |The path to the case.                                                                           |
-|ProcessingProfileName|`string`|        |The name of the processing profile to use. If null, the default processing profile will be used.|
+|Parameter            |Type    |Required|Summary                                           |Default                                       |Example            |
+|:-------------------:|:------:|:------:|:------------------------------------------------:|:--------------------------------------------:|:-----------------:|
+|Path                 |`string`|☑️      |The path of the file or folder to add to the case.|                                              |C:/Data/File.txt   |
+|Custodian            |`string`|☑️      |The custodian to assign to the new folder.        |                                              |                   |
+|Description          |`string`|☑️      |The description of the new folder.                |                                              |                   |
+|FolderName           |`string`|☑️      |The name of the folder to create.                 |                                              |                   |
+|CasePath             |`string`|☑️      |The path to the case.                             |                                              |C:/Cases/MyCase    |
+|ProcessingProfileName|`string`|        |The name of the processing profile to use.        |*The default processing profile will be used.*|MyProcessingProfile|
 
 <a name="NuixAddToItemSet"></a>
 ## NuixAddToItemSet
@@ -338,7 +338,7 @@ Performs optical character recognition on files which need it in a NUIX case.
 |Parameter     |Type    |Required|Summary                                        |Default                                                                                                                                         |Example        |
 |:------------:|:------:|:------:|:---------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
 |CasePath      |`string`|☑️      |The path to the case                           |                                                                                                                                                |C:/Cases/MyCase|
-|OCRProfileName|`string`|        |The name of the OCR profile to use.            |The default profile will be used.                                                                                                               |MyOcrProfile   |
+|OCRProfileName|`string`|        |The name of the OCR profile to use.            |*The default profile will be used.*                                                                                                             |MyOcrProfile   |
 |SearchTerm    |`string`|        |The term to use for searching for files to OCR.|NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))|               |
 
 <a name="NuixRemoveFromProductionSet"></a>
@@ -346,11 +346,11 @@ Performs optical character recognition on files which need it in a NUIX case.
 
 A process that removes particular items from a Nuix production set
 
-|Parameter        |Type    |Required|Summary                                                                                       |
-|:---------------:|:------:|:------:|:--------------------------------------------------------------------------------------------:|
-|ProductionSetName|`string`|☑️      |The production set to remove results from                                                     |
-|SearchTerm       |`string`|        |The search term to use for choosing which items to remove. If null, all items will be removed.|
-|CasePath         |`string`|☑️      |The path of the case to search                                                                |
+|Parameter        |Type    |Required|Summary                                                   |Default                     |Example  |
+|:---------------:|:------:|:------:|:--------------------------------------------------------:|:--------------------------:|:-------:|
+|ProductionSetName|`string`|☑️      |The production set to remove results from.                |                            |         |
+|SearchTerm       |`string`|        |The search term to use for choosing which items to remove.|*All items will be removed.*|Tag:sushi|
+|CasePath         |`string`|☑️      |The path of the case to search                            |                            |         |
 
 <a name="NuixReorderProductionSet"></a>
 ## NuixReorderProductionSet
