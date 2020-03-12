@@ -6,6 +6,7 @@ using System.Text;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.enumerations;
+using Reductech.EDR.Utilities.Processes.injection;
 using Reductech.Utilities.InstantConsole;
 using Process = Reductech.EDR.Utilities.Processes.Process;
 

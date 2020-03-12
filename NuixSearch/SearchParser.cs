@@ -27,7 +27,6 @@ namespace Reductech.EDR.Connectors.Nuix.Search
                 return (false, tokensResult.ToString(), null);
 
             //If we get to here the search term is made of valid tokens, but they still may be in an invalid order
-            
             var errors = new List<string>();
             var results = new List<ISearchTerm>();
             var tokens = tokensResult.Value;

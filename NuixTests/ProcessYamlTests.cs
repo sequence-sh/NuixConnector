@@ -5,6 +5,7 @@ using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.asserts;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.enumerations;
+using Reductech.EDR.Utilities.Processes.injection;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -82,7 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         {
                             Delimiter = ",",
                             CSVFilePath = "CSV Path",
-                            InjectColumn = new Dictionary<string, Injection>()
+                            InjectColumn = new Dictionary<string, Injection>
                             {
                                 {
                                     "SearchTerm",

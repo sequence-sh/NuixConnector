@@ -42,24 +42,22 @@ Deletes a file or a directory.
 <a name="Loop"></a>
 ## Loop
 
-Performs a nested process once for each element in an enumeration
+Performs a nested process once for each element in an enumeration.
 
-|Parameter|Type                       |Required|Summary                                 |
-|:-------:|:-------------------------:|:------:|:--------------------------------------:|
-|For      |[Enumeration](#Enumeration)|☑️      |The enumeration to iterate through.     |
-|Do       |[Process](#Process)        |☑️      |The process to run once for each element|
+|Parameter|Type                       |Required|Summary                                  |
+|:-------:|:-------------------------:|:------:|:---------------------------------------:|
+|For      |[Enumeration](#Enumeration)|☑️      |The enumeration to iterate through.      |
+|Do       |[Process](#Process)        |☑️      |The process to run once for each element.|
 
 <a name="RunExternalProcess"></a>
 ## RunExternalProcess
 
-Runs an external process
+Runs an external process.
 
-|Parameter          |Type                         |Required|Summary                                                                        |
-|:-----------------:|:---------------------------:|:------:|:-----------------------------------------------------------------------------:|
-|ProcessPath        |`string`                     |☑️      |The path to the process to run                                                 |
-|Parameters         |Dictionary<`string`,`string`>|☑️      |Pairs of parameters to give to the process                                     |
-|ExtraParameterName |`string`                     |        |The name of an additional parameter. This is intended for use with injection.  |
-|ExtraParameterValue|`string`                     |        |The value of the additional parameter. This is intended for use with injection.|
+|Parameter  |Type                         |Required|Summary                                   |
+|:---------:|:---------------------------:|:------:|:----------------------------------------:|
+|ProcessPath|`string`                     |☑️      |The path to the process to run            |
+|Parameters |Dictionary<`string`,`string`>|☑️      |Pairs of parameters to give to the process|
 
 <a name="Sequence"></a>
 ## Sequence
