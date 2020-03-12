@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
@@ -20,152 +21,85 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         public static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "data");
 
-        [Test]
-        [Category(Integration)]
-        public async Task TestCreateCase()
-        {
-            var sequence = new Sequence
+        private static readonly Process DeleteCaseFolder = new DeleteItem { Path = DirectoryPath};
+        private static readonly Process AssertCaseDoesNotExist = new NuixCaseExists {CasePath = DirectoryPath, ShouldExist = false};
+        private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Case Name", CasePath = DirectoryPath, Investigator = "Mark"};
+        private static Process AssertTotalCount(int expected) => AssertCount(expected, "*");
+        private static Process AssertCount(int expected, string searchTerm) => new NuixCount {CasePath = DirectoryPath, Minimum = expected, Maximum = expected,  SearchTerm = searchTerm};
+
+        private static readonly Process AddData = new NuixAddItem {CasePath = DirectoryPath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
+
+        public static readonly List<TestSequence> TestProcesses =
+            new List<TestSequence>
             {
-                Steps = new List<Process>
-                {
-                    new DeleteItem
-                    {
-                        Path = DirectoryPath
-                    },
-                    new NuixCaseExists
-                    {
-                        CasePath = DirectoryPath,
-                        ShouldExist = false
-                    },
-
-                    new NuixCreateCase
-                    {
-                        CaseName = "Case Name",
-                        CasePath = DirectoryPath,
-                        Investigator = "Mark",
-                        Description = "Description"
-                    },
-
+                
+                new TestSequence("Create Case",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
                     new NuixCaseExists
                     {
                         CasePath = DirectoryPath,
                         ShouldExist = true
                     },
-
-                    new NuixCaseExists
-                    {
-                        CasePath = DirectoryPath,
-                        ShouldExist = false
-                    },
-                    new DeleteItem
-                    {
-                        Path = DirectoryPath
-                    },
-                }
-            };
-            await AssertNoErrors(sequence.Execute(NuixSettings));
-        }
-
-        [Test]
-        [Category(Integration)]
-        public async Task TestAddFileToCase()
-        {
-            var sequence = new Sequence
-            {
-                Steps = new List<Process>
-                {
-                    new DeleteItem
-                    {
-                        Path = DirectoryPath
-                    },
-                    new NuixCreateCase
-                    {
-                        CaseName = "Case Name",
-                        CasePath = DirectoryPath,
-                        Investigator = "Mark",
-                        Description = "Description"
-                    },
-                    new NuixCount
-                    {
-                        CasePath = DirectoryPath,
-                        Maximum = 0,
-                        SearchTerm = "*"
-                    },
-
-                    new NuixAddItem
-                    {
-                        CasePath = DirectoryPath,
-                        Custodian = "Mark",
-                        Description = "Description",
-                        Path = DataPath,
-                        FolderName = "New Folder"
-                    },
-                    new NuixCount
-                    {
-                        CasePath = DirectoryPath,
-                        Minimum = 2,
-                        Maximum = 2,
-                        SearchTerm = "*"
-                    },
-                    new DeleteItem
-                    {
-                        Path = DirectoryPath
-                    },
-                }
-            };
-            await AssertNoErrors(sequence.Execute(NuixSettings));
-        }
-
-
-        [Test]
-        [Category(Integration)]
-        public async Task TestSearchAndTag()
-        {
-
-            var sequence = new Sequence
-            {
-                Steps = new List<Process>
-                {
-                    new DeleteItem
-                    {
-                        Path = DirectoryPath
-                    },
-
-                    new NuixCreateCase
-                    {
-                        CaseName = "Case Name",
-                        CasePath = DirectoryPath,
-                        Investigator = "Mark",
-                        Description = "Description"
-                    },
-                    new NuixAddItem
-                    {
-                        CasePath = DirectoryPath,
-                        Custodian = "Mark",
-                        Description = "Description",
-                        Path = DataPath,
-                        FolderName = "New Folder"
-                    },
+                    DeleteCaseFolder),
+                new TestSequence("Add file to case",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    AssertTotalCount(0),
+                    CreateCase,
+                    AddData,
+                    AssertTotalCount(2),
+                    DeleteCaseFolder
+                    ),
+                new TestSequence("Search and tag",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
                     new NuixSearchAndTag
                     {
                         CasePath = DirectoryPath,SearchTerm = "charm",
                         Tag = "charm"
                     },
-                    new NuixCount
+                    AssertCount(1, "tag:charm"),
+                    DeleteCaseFolder
+                    
+                    ),
+                //TODO AddConcordance
+                new TestSequence("Add To Item Set", 
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
+                    new NuixAddToItemSet
                     {
-                        CasePath = DirectoryPath,
-                        Minimum = 1,
-                        Maximum = 1,
-                        SearchTerm = "tag:charm"
+                        CasePath = DirectoryPath,SearchTerm = "charm",
+                        ItemSetName = "charm set"
                     },
-                    new DeleteItem
+                    AssertCount(1, "item-Set:\"charm set\""),
+                    DeleteCaseFolder),
+                new TestSequence("Add To Production Set", 
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
+                    new NuixAddToProductionSet()
                     {
-                        Path = DirectoryPath
+                        CasePath = DirectoryPath,SearchTerm = "charm",
+                        ProductionSetName = "charm set"
                     },
-                }
+                    AssertCount(1, "production-Set:\"charm set\""),
+                    DeleteCaseFolder),
             };
+
+
+
+        [Test]
+        [TestCaseSource(nameof(TestProcesses))]
+        [Category(Integration)]
+        public async Task Test(Sequence sequence)
+        {
             await AssertNoErrors(sequence.Execute(NuixSettings));
         }
+
 
         private static async Task AssertNoErrors(IAsyncEnumerable<Result<string>> lines)
         {
@@ -178,6 +112,23 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             }
             
             CollectionAssert.IsEmpty(errors);
+        }
+
+        public class TestSequence : Sequence
+        {
+            public TestSequence(string name, params  Process[] steps)
+            {
+                Name = name;
+                Steps = steps.ToList()
+            }
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return Name;
+            }
+
+            public string Name { get; }
         }
     }
 }
