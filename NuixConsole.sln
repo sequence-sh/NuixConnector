@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixSearch", "NuixSearch\Nu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixSearchTests", "NuixSearchTests\NuixSearchTests.csproj", "{35426298-230A-484B-8A50-BFCBFEBF6532}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstantConsole", "instantconsole\InstantConsole\InstantConsole.csproj", "{86DD3539-7553-4B83-A937-8ACD25AD31C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstantConsole", "InstantConsole\InstantConsole\InstantConsole.csproj", "{86DD3539-7553-4B83-A937-8ACD25AD31C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Processes", "processes\Processes\Processes.csproj", "{4D4373FF-D809-4402-98C9-E55D8E48A120}"
 EndProject
