@@ -50,7 +50,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [DataMember]
         [Required]
         [YamlMember(Order = 6)]
-        public string OutputFilePath { get; set; }
+        public string OutputFileName { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -60,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("-p", CasePath);
             yield return ("-s", SearchTerm);
             yield return ("-r", PropertyRegex);
-            yield return ("-f", OutputFilePath);
+            yield return ("-f", OutputFileName);
         }
     }
 }

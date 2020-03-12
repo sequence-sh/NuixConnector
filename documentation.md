@@ -305,7 +305,7 @@ A process that the searches a case for items and outputs the values of item prop
 |SearchTerm    |`string`|☑️      |The term to search for                           |
 |OutputFolder  |`string`|☑️      |The path to the folder to put the output files in|
 |PropertyRegex |`string`|☑️      |The term to search for                           |
-|OutputFilePath|`string`|☑️      |The name of the file to write the results to     |
+|OutputFileName|`string`|☑️      |The name of the file to write the results to     |
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds
