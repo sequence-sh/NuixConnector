@@ -295,6 +295,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             [DataMember]
             [Required]
             [YamlMember]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
             public string FilePath { get; set; }
 
             [DataMember]
@@ -302,6 +303,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             [YamlMember]
             public string ExpectedContents { get;set; }
 
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
             /// <inheritdoc />
             public override IEnumerable<string> GetArgumentErrors()
             {
