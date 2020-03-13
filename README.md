@@ -19,7 +19,6 @@ Steps:
   Custodian: Custodian
   FolderName: Folder Name
   CasePath: Case Path
-  ProcessingProfileName: Default
 - !NuixCreateReport
   OutputFolder: Report Output Folder
   CasePath: Case Path
@@ -42,13 +41,10 @@ Steps:
   ItemSetName: TaggedItems
   SearchTerm: Tag:*
   CasePath: Case Path
-  ItemSetDeduplication: Default
-  DeduplicateBy: Individual
 - !NuixAddToProductionSet
   ProductionSetName: Production Set Name
   SearchTerm: ItemSet:TaggedItems
   CasePath: Case Path
-  Description: Production Set Description`
 - !NuixExportConcordance
   MetadataProfileName: Default
   ProductionSetName: Production Set Name
