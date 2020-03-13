@@ -12,18 +12,18 @@ The following yaml will create a case, add evidence from both a file and a conco
 Steps:
 - !NuixCreateCase
   CaseName: Case Name
-  CasePath: Case Path
+  CasePath: &CasePath Case Path
   Investigator: Investigator
 - !NuixAddItem
   Path: File Path
   Custodian: Custodian
   FolderName: Folder Name
-  CasePath: Case Path
+  CasePath: *CasePath
 - !NuixCreateReport
   OutputFolder: Report Output Folder
-  CasePath: Case Path
+  CasePath: *CasePath
 - !NuixPerformOCR
-  CasePath: Case Path
+  CasePath: *CasePath
   OCRProfileName: OCR Profile
 - !Loop
   For: !CSV
@@ -36,20 +36,20 @@ Steps:
     Delimiter: ','
     HasFieldsEnclosedInQuotes: false
   RunProcess: !NuixSearchAndTag
-    CasePath: Case Path
+    CasePath: *CasePath
 - !NuixAddToItemSet
   ItemSetName: TaggedItems
   SearchTerm: Tag:*
-  CasePath: Case Path
+  CasePath: *CasePath
 - !NuixAddToProductionSet
-  ProductionSetName: Production Set Name
+  ProductionSetName: &ProductionSetName Production Set Name
   SearchTerm: ItemSet:TaggedItems
-  CasePath: Case Path
+  CasePath: *CasePath
 - !NuixExportConcordance
   MetadataProfileName: Default
-  ProductionSetName: Production Set Name
+  ProductionSetName: *ProductionSetName
   ExportPath: Export Path
-  CasePath: Case Path
+  CasePath: *CasePath
 
 
 ```
