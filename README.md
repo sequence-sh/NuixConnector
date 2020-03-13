@@ -11,51 +11,45 @@ The following yaml will create a case, add evidence from both a file and a conco
 !Sequence
 Steps:
 - !NuixCreateCase
-  CaseName: MyCase
-  CasePath: &casePath C:/Cases/MyCase
-  Investigator: Taj
-  Description: Case Description
-- !NuixAddFile
-  FilePath: C:/Evidence/CaseEvidence
+  CaseName: Case Name
+  CasePath: &CasePath Case Path
+  Investigator: Investigator
+- !NuixAddItem
+  Path: File Path
   Custodian: Custodian
-  Description: Description
-  FolderName: CaseEvidence
-  CasePath: *casePath
-  ProcessingProfileName: Default
+  FolderName: Folder Name
+  CasePath: *CasePath
 - !NuixCreateReport
-  OutputFolder: C:/Reports/MyCase
-  CasePath: *casePath
+  OutputFolder: Report Output Folder
+  CasePath: *CasePath
 - !NuixPerformOCR
-  CasePath: *casePath
-  OCRProfileName: Default
-- !ForEach
-  Enumeration: !CSVEnumeration
-    FilePath: C:/TermsAndTags.csv
+  CasePath: *CasePath
+  OCRProfileName: OCR Profile
+- !Loop
+  For: !CSV
+    CSVFilePath: CSV Path
+    InjectColumns:
+      SearchTerm:
+        Property: SearchTerm
+      Tag:
+        Property: Tag
     Delimiter: ','
-    HeaderInjections:
-    - Header: TermToSeach
-      PropertyToInject: SearchTerm
-    - Header: TagToApply
-      PropertyToInject: Tag
     HasFieldsEnclosedInQuotes: false
-    RemoveDuplicates: false
-  SubProcess: !NuixSearchAndTag
-    CasePath: *casePath
+  RunProcess: !NuixSearchAndTag
+    CasePath: *CasePath
 - !NuixAddToItemSet
   ItemSetName: TaggedItems
   SearchTerm: Tag:*
-  CasePath: *casePath
-  ItemSetDeduplication: Default
-  DeduplicateBy: Individual
+  CasePath: *CasePath
 - !NuixAddToProductionSet
-  ProductionSetName:&productionSetName ItemsToExport
+  ProductionSetName: &ProductionSetName Production Set Name
   SearchTerm: ItemSet:TaggedItems
-  CasePath: *casePath
-  Description: Production Set Description
+  CasePath: *CasePath
 - !NuixExportConcordance
   MetadataProfileName: Default
-  ProductionSetName: *productionSetName
-  ExportPath: c:/Exports
-  CasePath: *casePath
+  ProductionSetName: *ProductionSetName
+  ExportPath: Export Path
+  CasePath: *CasePath
+
 
 ```
