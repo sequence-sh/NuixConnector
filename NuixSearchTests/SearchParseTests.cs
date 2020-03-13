@@ -12,6 +12,8 @@ namespace Reductech.EDR.Connectors.Nuix.Search.Tests
 
         public static readonly IReadOnlyList<TestCase> TestCases = new List<TestCase>()
         {
+            new TestCase("*", "*"),
+            new TestCase("*.txt", "*.txt"),
             new TestCase("hello", "hello"),
             new TestCase("hello world", "hello AND world"),
             new TestCase("\"hello world\"", "\"hello world\""),
@@ -75,8 +77,8 @@ namespace Reductech.EDR.Connectors.Nuix.Search.Tests
             new ErrorTestCase("NOT", "Syntax error: unexpected end of input"),
             new ErrorTestCase("()", "Syntax error: unexpected end of input"),
             new ErrorTestCase("hello AND", "Syntax error: unexpected end of input"),
-            new ErrorTestCase("File-size:[* TO *]", "Either the start or the end of the range must have a value."),
-            new ErrorTestCase("File-size:dinosaur", "Could not parse 'dinosaur' as a range"),
+            new ErrorTestCase("file-size:[* TO *]", "Either the start or the end of the range must have a value."),
+            new ErrorTestCase("file-size:dinosaur", "Could not parse 'dinosaur' as a range"),
         };
 
         [Test]

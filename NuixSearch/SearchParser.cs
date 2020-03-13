@@ -86,8 +86,8 @@ namespace Reductech.EDR.Connectors.Nuix.Search
             .Match(Span.EqualToIgnoreCase("and"), SearchToken.And, true)
             .Match(Span.EqualToIgnoreCase("or"), SearchToken.Or, true)
             .Match(Span.EqualToIgnoreCase("not"), SearchToken.Not, true)
-            .Match(Span.Regex("[a-z0-9-'_]+", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.Text, true)
-            .Build();
+            .Match(Span.Regex("[a-z0-9-'_*\\.]+", RegexOptions.Compiled | RegexOptions.IgnoreCase), SearchToken.Text, true)
+            .Build(); //TODO add wildcard
 
 
         private static readonly TokenListParser<SearchToken, PropertyValue> SinglePropertyValue =

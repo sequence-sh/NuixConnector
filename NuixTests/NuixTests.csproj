@@ -53,4 +53,13 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="data\Jellyfish.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="data\Theme in Yellow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

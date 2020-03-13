@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
@@ -29,7 +30,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private static readonly Process DeleteOutputFolder = new DeleteItem { Path = OutputFolder};
         private static readonly Process AssertCaseDoesNotExist = new NuixCaseExists {CasePath = CasePath, ShouldExist = false};
         private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Case Name", CasePath = CasePath, Investigator = "Mark"};
-        private static Process AssertTotalCount(int expected) => AssertCount(expected, "*");
+        //private static Process AssertTotalCount(int expected) => AssertCount(expected, "*");
         private static Process AssertCount(int expected, string searchTerm) => new NuixCount {CasePath = CasePath, Minimum = expected, Maximum = expected,  SearchTerm = searchTerm};
 
         private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
@@ -59,11 +60,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder),
                 new TestSequence("Add file to case",
                     DeleteCaseFolder,
-                    AssertCaseDoesNotExist,
-                    AssertTotalCount(0),
+                    AssertCaseDoesNotExist,                    
                     CreateCase,
+                    AssertCount(0, "*.txt"),
                     AddData,
-                    AssertTotalCount(2),
+                    AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                     ),
                 new TestSequence("Search and tag",
@@ -87,9 +88,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixAddToItemSet
                     {
                         CasePath = CasePath,SearchTerm = "charm",
-                        ItemSetName = "charm set"
+                        ItemSetName = "charmset"
                     },
-                    AssertCount(1, "item-Set:\"charm set\""),
+                    AssertCount(1, "item-set:charmset"),
                     DeleteCaseFolder),
 
                 new TestSequence("Add To Production Set", 
@@ -100,9 +101,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = CasePath,
                         SearchTerm = "charm",
-                        ProductionSetName = "charm set"
+                        ProductionSetName = "charmset"
                     },
-                    AssertCount(1, "production-Set:\"charm set\""),
+                    AssertCount(1, "production-set:charmset"),
                     DeleteCaseFolder),
 
                 new TestSequence("Remove From Production Set", 
@@ -112,16 +113,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixAddToProductionSet
                     {
                         CasePath = CasePath,
-                        SearchTerm = "*",
-                        ProductionSetName = "full set"
+                        SearchTerm = "*.txt",
+                        ProductionSetName = "fullset"
                     },
                     new NuixRemoveFromProductionSet()
                     {
                         CasePath = CasePath,
                         SearchTerm = "Charm",
-                        ProductionSetName = "full set"
+                        ProductionSetName = "fullset"
                     },
-                    AssertCount(1, "production-Set:\"full set\""),
+                    AssertCount(1, "production-set:fullset"),
                     DeleteCaseFolder),
                 
 
@@ -263,14 +264,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private static async Task AssertNoErrors(IAsyncEnumerable<Result<string>> lines)
         {
             var errors = new List<string>();
+            var sb = new StringBuilder();
 
-            await foreach (var (_, isFailure, _, error) in lines)
+            await foreach (var (_, isFailure, l, error) in lines)
             {
                 if (isFailure)
                     errors.Add(error);
+                else sb.AppendLine(l);
             }
             
-            CollectionAssert.IsEmpty(errors);
+            CollectionAssert.IsEmpty(errors, sb.ToString());
         }
 
         public class TestSequence : Sequence

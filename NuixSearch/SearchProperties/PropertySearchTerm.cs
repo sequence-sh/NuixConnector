@@ -105,13 +105,14 @@ namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
                 new StringSearchProperty("custodian1"),
                 new StringSearchProperty("document-id"),
                 new StringSearchProperty("flag"),
-
+                new StringSearchProperty("production-set"),
+                new StringSearchProperty("item-set"),
 
                 new GuidSearchProperty("item-set-guid"),
                 new GuidSearchProperty("path-guid"),
                 new GuidSearchProperty("production-set-guid"),
                 
                 //TODO other properties
-            }.ToDictionary(x => x.PropertyName, StringComparer.OrdinalIgnoreCase);
+            }.ToDictionary(x => x.PropertyName); //Note this is and should be case sensitive
     }
 }
