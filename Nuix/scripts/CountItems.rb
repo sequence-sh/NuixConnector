@@ -9,8 +9,6 @@ OptionParser.new do |opts|
   opts.on('-s [ARG]', '--searchTerm [ARG]', "Search Term") do |v|
     hash_options[:searchArg] = v
   end
-  end  
-
   opts.on('--version', 'Display the version') do 
     puts "VERSION"
     exit
