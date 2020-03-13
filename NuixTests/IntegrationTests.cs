@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -10,11 +8,10 @@ using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.asserts;
 using Reductech.EDR.Utilities.Processes;
-using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
-    class IntegrationTests
+    partial class IntegrationTests
     {
         private static readonly INuixProcessSettings NuixSettings = new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe");
         //TODO set these from a config file
@@ -28,6 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly Process DeleteCaseFolder = new DeleteItem { Path = CasePath};
         private static readonly Process DeleteOutputFolder = new DeleteItem { Path = OutputFolder};
+        private static readonly Process CreateOutputFolder = new CreateDirectory { Path = OutputFolder };
         private static readonly Process AssertCaseDoesNotExist = new NuixCaseExists {CasePath = CasePath, ShouldExist = false};
         private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Case Name", CasePath = CasePath, Investigator = "Mark"};
         //private static Process AssertTotalCount(int expected) => AssertCount(expected, "*");
@@ -124,30 +122,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     AssertCount(1, "production-set:fullset"),
                     DeleteCaseFolder),
-                
-
-                new TestSequence("Create Irregular Items Report",
-                    DeleteCaseFolder,
-                    DeleteOutputFolder,
-                    CreateCase,
-                    AddData,
-                    new NuixCreateIrregularItemsReport
-                    {
-                        CasePath = CasePath,
-                        OutputFolder = OutputFolder
-                    },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/file.txt", //TODO set these field
-                        ExpectedContents = "ABCD"
-                    },
-
-                    DeleteCaseFolder,
-                    DeleteOutputFolder
-                ),
                 new TestSequence("Create Report",
                     DeleteCaseFolder,
                     DeleteOutputFolder,
+                    CreateOutputFolder,
                     CreateCase,
                     AddData,
                     new NuixCreateReport
@@ -157,8 +135,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     new AssertFileContents
                     {
-                        FilePath = OutputFolder + "/file.txt", //TODO set these field
-                        ExpectedContents = "ABCD"
+                        FilePath = OutputFolder + "/stats.txt", //TODO set these field
+                        ExpectedContents = "Mark	type	text/plain	2"
                     },
 
                     DeleteCaseFolder,
@@ -167,6 +145,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 new TestSequence("Create Term List",
                     DeleteCaseFolder,
                     DeleteOutputFolder,
+                    CreateOutputFolder,
                     CreateCase,
                     AddData,
                     new NuixCreateTermList
@@ -176,37 +155,39 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     new AssertFileContents
                     {
-                        FilePath = OutputFolder + "/file.txt", //TODO set these field
-                        ExpectedContents = "ABCD"
+                        FilePath = OutputFolder + "/Terms.txt", //TODO set these field
+                        ExpectedContents = "yellow	2"
                     },
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
                     ),
 
-                new TestSequence("Extract Entities",
-                    DeleteCaseFolder,
-                    DeleteOutputFolder,
-                    CreateCase,
-                    AddData,
-                    new NuixExtractEntities
-                    {
-                        CasePath = CasePath,
-                        OutputFolder = OutputFolder
-                    },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/file.txt", //TODO set these field
-                        ExpectedContents = "ABCD"
-                    },
+                //new TestSequence("Extract Entities", //TODO put some entities in
+                //    DeleteCaseFolder,
+                //    DeleteOutputFolder,
+                //    CreateOutputFolder,
+                //    CreateCase,
+                //    AddData,
+                //    new NuixExtractEntities
+                //    {
+                //        CasePath = CasePath,
+                //        OutputFolder = OutputFolder
+                //    },
+                //    new AssertFileContents
+                //    {
+                //        FilePath = OutputFolder + "/file.txt", //TODO set these field
+                //        ExpectedContents = "ABCD"
+                //    },
 
-                    DeleteCaseFolder,
-                    DeleteOutputFolder
-                ),
+                //    DeleteCaseFolder,
+                //    DeleteOutputFolder
+                //),
 
                 new TestSequence("Irregular Items",
                     DeleteCaseFolder,
                     DeleteOutputFolder,
+                    CreateOutputFolder,
                     CreateCase,
                     AddData,
                     new NuixCreateIrregularItemsReport()
@@ -216,9 +197,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     new AssertFileContents
                     {
-                        FilePath = OutputFolder + "/file.txt", //TODO set these field
-                        ExpectedContents = "ABCD"
+                        FilePath = OutputFolder + "/Unrecognised.txt",
+                        ExpectedContents = "New Folder/data/Theme in Yellow.txt"
                     },
+                    new AssertFileContents
+                    {
+                        FilePath = OutputFolder + "/NeedManualExamination.txt",
+                        ExpectedContents = "New Folder/data/Jellyfish.txt"
+                    },
+                    new AssertFileContents
+                    {
+                        FilePath = OutputFolder + "/Irregular.txt",
+                        ExpectedContents = "Unrecognised	2"
+                    },
+
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -227,6 +219,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 new TestSequence("Get Item Properties",
                     DeleteCaseFolder,
                     DeleteOutputFolder,
+                    CreateOutputFolder,
                     CreateCase,
                     AddData,
                     new NuixGetItemProperties()
@@ -240,8 +233,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     new AssertFileContents
                     {
-                        FilePath = OutputFolder + "/ItemProperties.txt", //TODO set these field
-                        ExpectedContents = "ABCD"
+                        FilePath = OutputFolder + "/ItemProperties.txt",
+                        ExpectedContents = "Character Set	UTF-8	New Folder/data/Jellyfish.txt"
                     },
 
                     DeleteCaseFolder,
@@ -276,7 +269,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             CollectionAssert.IsEmpty(errors, sb.ToString());
         }
 
-        public class TestSequence : Sequence
+        internal class TestSequence : Sequence
         {
             public TestSequence(string name, params  Process[] steps)
             {
@@ -291,59 +284,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             }
 
             public string Name { get; }
-        }
-
-        public class AssertFileContents : Process
-        {
-            [DataMember]
-            [Required]
-            [YamlMember]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-            public string FilePath { get; set; }
-
-            [DataMember]
-            [Required]
-            [YamlMember]
-            public string ExpectedContents { get;set; }
-
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-            /// <inheritdoc />
-            public override IEnumerable<string> GetArgumentErrors()
-            {
-                if (string.IsNullOrWhiteSpace(FilePath))
-                    yield return "FilePath is empty";
-            }
-
-            /// <inheritdoc />
-            public override IEnumerable<string> GetSettingsErrors(IProcessSettings processSettings)
-            {
-                yield break;
-            }
-
-            /// <inheritdoc />
-            public override string GetName()
-            {
-                return "Assert file contains";
-            }
-
-            /// <inheritdoc />
-            public override async IAsyncEnumerable<Result<string>> Execute(IProcessSettings processSettings)
-            {
-                if (!File.Exists(FilePath))
-                    yield return Result.Failure<string>("File does not exist");
-                else
-                {
-                    var text = await File.ReadAllTextAsync(FilePath);
-
-                    if (ExpectedContents == text)
-                        yield return Result.Success("Contents Match");
-                    else
-                    {
-                        yield return Result.Failure<string>("Contents do not match");
-                    }
-                }
-                
-            }
         }
     }
 }
