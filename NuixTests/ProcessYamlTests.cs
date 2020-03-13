@@ -83,7 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         {
                             Delimiter = ",",
                             CSVFilePath = "CSV Path",
-                            InjectColumn = new Dictionary<string, Injection>
+                            InjectColumns = new Dictionary<string, Injection>
                             {
                                 {
                                     "SearchTerm",

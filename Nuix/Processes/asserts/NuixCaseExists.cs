@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 {
     /// <summary>
-    /// A process that succeeds or fails depending on whether or not a particular case exists.
+    /// Succeeds or fails depending on whether or not a particular case exists.
     /// Useful in Conditionals.
     /// </summary>
     public sealed class NuixCaseExists : RubyScriptAssertionProcess
@@ -57,16 +57,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         /// If false, asserts that the case does not exist.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 2)]
         public bool ShouldExist { get; set; } = true;
 
         /// <summary>
-        /// The case path to check
+        /// The path to the case.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 3)]
+        [ExampleValue("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.

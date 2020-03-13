@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.Search;
 using Reductech.EDR.Utilities.Processes;
@@ -21,9 +20,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The item set to add results to. Will be created if it doesn't already exist
+        /// The item set to add results to. Will be created if it doesn't already exist.
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -31,39 +30,37 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The term to search for
+        /// The term to search for.
         /// </summary>
-        [DataMember]
         [Required]
         [YamlMember(Order = 4)]
         public string SearchTerm { get; set; }
 
         /// <summary>
-        /// The path of the case to search
+        /// The path of the case to search.
         /// </summary>
-        [DataMember]
         [Required]
         [YamlMember(Order = 5)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
         /// <summary>
         /// The means of deduplicating items by key and prioritizing originals in a tie-break.
         /// </summary>
-        [DataMember]
         [YamlMember(Order = 6)]
         public ItemSetDeduplication ItemSetDeduplication { get; set; }
 
         /// <summary>
-        /// The description of the item set as a string.
+        /// The description of the item set.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 7)]
         public string? ItemSetDescription { get; set; }
 
         /// <summary>
-        /// Whether to deduplicate as a family or individual
+        /// Whether to deduplicate as a family or individual.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 8)]
         public DeduplicateBy DeduplicateBy { get; set; }
 
@@ -71,7 +68,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// A list of custodian names ordered from highest ranked to lowest ranked.
         /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 9)]
         public List<string>? CustodianRanking { get; set; }
 

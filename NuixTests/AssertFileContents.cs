@@ -10,7 +10,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     internal class AssertFileContents : Process
     {
-        [DataMember]
+        
         [Required]
         [YamlMember]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -19,7 +19,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// <summary>
         /// The file must contain this string
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember]
         public string ExpectedContents { get; set; }

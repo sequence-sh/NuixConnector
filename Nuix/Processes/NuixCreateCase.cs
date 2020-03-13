@@ -1,25 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// Creates a new case
+    /// Creates a new case.
     /// </summary>
     internal class NuixCreateCase : RubyScriptProcess
     {
-        /// <summary>
-        /// The name of this process
-        /// </summary>
+        
         public override string GetName() => "Create Case";
 
         /// <summary>
         /// The name of the case to create.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CaseName { get; set; }
@@ -28,22 +25,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The path to the folder to create the case in.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 4)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
         /// <summary>
         /// Name of the investigator.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 5)]
         public string Investigator { get; set; }
 
         /// <summary>
         /// Description of the case.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 6)]
         public string? Description { get; set; }
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using Reductech.EDR.Connectors.Nuix.Search;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
@@ -9,7 +8,7 @@ using YamlDotNet.Serialization;
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// A process that removes particular items from a Nuix production set
+    /// Removes particular items from a Nuix production set.
     /// </summary>
     public sealed class NuixRemoveFromProductionSet : RubyScriptProcess
     {
@@ -20,7 +19,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The production set to remove results from.
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -30,18 +29,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The search term to use for choosing which items to remove.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 4)]
         [DefaultValueExplanation("All items will be removed.")]
         [ExampleValue("Tag:sushi")]
         public string? SearchTerm { get; set; }
 
         /// <summary>
-        /// The path of the case to search
+        /// The path to the case.
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 5)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
         /// <inheritdoc />

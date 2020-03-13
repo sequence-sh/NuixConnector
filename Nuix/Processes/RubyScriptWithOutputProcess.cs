@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
@@ -16,7 +15,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 {
 
     /// <summary>
-    /// A process that runs a ruby script in Nuix and also writes something to a file on the file system
+    /// A process that runs a ruby script in Nuix and also writes something to a file on the file system.
     /// </summary>
     public abstract class RubyScriptWithOutputProcess : RubyScriptProcess
     {
@@ -91,10 +90,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The path to the folder to put the output files in
+        /// The path to the folder to put the output files in.
         /// </summary>
         [Required]
-        [DataMember]
+        
         [YamlMember(Order = 4)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string OutputFolder { get; set; }

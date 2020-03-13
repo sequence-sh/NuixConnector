@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using Reductech.EDR.Connectors.Nuix.Search;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The production set to add results to. Will be created if it doesn't already exist
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -31,7 +31,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The term to search for
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 4)]
         public string SearchTerm { get; set; }
@@ -39,31 +39,29 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The path of the case to search
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 5)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
         /// <summary>
-        /// Description of the production set
+        /// Description of the production set.
         /// </summary>
-        [DataMember]
-        [Required]
         [YamlMember(Order = 6)]
         public string? Description { get; set; }
 
         /// <summary>
         /// How to order the items to be added to the production set.
-        /// e.g. "name ASC", "item-date DESC",  or "name ASC, item-date DESC" etc
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 7)]
+        [ExampleValue("name ASC, item-date DESC")]
         public string? Order { get; set; }
 
         /// <summary>
         /// The maximum number of items to add to the production set.
         /// </summary>
-        [DataMember]
         [YamlMember(Order = 8)]
         public int? Limit { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
@@ -33,46 +33,43 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
-        /// The case folder path.
+        /// The path to the case.
         /// </summary>
         [Required]
-        [DataMember]
+        
         [YamlMember(Order = 3)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
         /// <summary>
-        /// The NRT file path
+        /// The NRT file path.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 4)]
         public string NRTPath { get; set; }
 
         /// <summary>
         /// The format of the report file that will be created.
-        /// e.g. PDF or HTML
         /// </summary>
         [Required]
-        [DataMember]
+        [ExampleValue("PDF")]
         [YamlMember(Order = 5)]
         public string OutputFormat { get; set; }
 
         /// <summary>
         /// The path to the local resources folder.
         /// To load the logo's etc.
-        /// e.g. C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\
         /// </summary>
         [Required]
-        [DataMember]
+        [ExampleValue(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
         [YamlMember(Order = 6)]
         public string LocalResourcesURL { get; set; }
 
         /// <summary>
-        /// The path to output the file at. 
-        /// e.g. C:/Temp/report.pdf
+        /// The path to output the file at.
         /// </summary>
         [Required]
-        [DataMember]
+        [ExampleValue("C:/Temp/report.pdf")]
         [YamlMember(Order = 7)]
         public string OutputPath { get; set; }
 

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using Reductech.EDR.Connectors.Nuix.Search;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// Searches a NUIX case with a particular search string and tags all files it finds
+    /// Searches a NUIX case with a particular search string and tags all files it finds.
     /// </summary>
     public sealed class NuixSearchAndTag : RubyScriptProcess
     {
@@ -18,9 +18,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The tag to assign to found results
+        /// The tag to assign to found results.
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -28,19 +28,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The term to search for
+        /// The term to search for.
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 4)]
+        [ExampleValue("*.txt")]
         public string SearchTerm { get; set; }
 
         /// <summary>
-        /// The path of the case to search
+        /// The path to the case.
         /// </summary>
-        [DataMember]
         [Required]
         [YamlMember(Order = 5)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.

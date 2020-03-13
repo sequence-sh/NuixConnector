@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
@@ -18,9 +18,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <summary>
         /// The name of the metadata profile to use.
-        /// Will use the Default profile if this is null
         /// </summary>
-        [DataMember]
+        [ExampleValue("MyMetadataProfile")]
+        [DefaultValueExplanation("Use the Default profile.")]
         [YamlMember(Order = 3)]
         public string? MetadataProfileName { get; set; }
 
@@ -28,7 +28,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The name of the production set to export.
         /// </summary>
-        [DataMember]
         [Required]
         [YamlMember(Order = 4)]
         public string ProductionSetName { get; set; }
@@ -36,17 +35,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// Where to export the Concordance to.
         /// </summary>
-        [DataMember]
         [Required]
         [YamlMember(Order = 5)]
         public string ExportPath { get; set; }
 
         /// <summary>
-        /// The path of the case to export Concordance from.
+        /// The path to the case.
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 6)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 

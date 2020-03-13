@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// Generates print previews for items in the production set
+    /// Generates print previews for items in a production set.
     /// </summary>
     public sealed class NuixGeneratePrintPreviews : RubyScriptProcess
     {
@@ -16,20 +16,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Generate print previews";
         /// <summary>
-        /// The production set to generate print previews for
+        /// The production set to generate print previews for.
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string ProductionSetName { get; set; }
 
         /// <summary>
-        /// The path of the case to search
+        /// The path to the case.
         /// </summary>
-        [DataMember]
+        
         [Required]
         [YamlMember(Order = 4)]
+        [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -40,8 +41,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             yield break;
         }
-
-        
 
         internal override string ScriptName => "GeneratePrintPreviews.rb";
 

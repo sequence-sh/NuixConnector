@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using Reductech.EDR.Connectors.Nuix.Search;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.asserts
@@ -71,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         /// Inclusive minimum of the expected range.
         /// Either this, Maximum, or both must be set.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 2 )]
         public int? Minimum { get; set; }
 
@@ -79,16 +79,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         /// Inclusive maximum of the expected range.
         /// Either this, Minimum, or both must be set.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 3 )]
         public int? Maximum { get; set; }
 
         /// <summary>
-        /// The path to the case to check.
+        /// The path to the case.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 4)]
+        [ExampleValue("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
 
@@ -96,7 +96,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         /// The search term to count.
         /// </summary>
         [Required]
-        [DataMember]
+        [ExampleValue("*.txt")]
         [YamlMember(Order = 5)]
         public string SearchTerm { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.

@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// Performs optical character recognition on files which need it in a NUIX case.
+    /// Performs optical character recognition on files in a NUIX case.
     /// </summary>
     public sealed class NuixPerformOCR : RubyScriptProcess
     {
@@ -17,10 +16,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public override string GetName() => "RunOCR";
 
         /// <summary>
-        /// The path to the case
+        /// The path to the case.
         /// </summary>
         [Required]
-        [DataMember]
+        
         [YamlMember(Order = 3)]
         [ExampleValue("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -30,7 +29,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The term to use for searching for files to OCR.
         /// </summary>
         [Required]
-        [DataMember]
+        
         [YamlMember(Order = 3)]
         public string SearchTerm { get; set; } =
             "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
@@ -38,7 +37,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The name of the OCR profile to use.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 3)]
         [DefaultValueExplanation("The default profile will be used.")]
         [ExampleValue("MyOcrProfile")]

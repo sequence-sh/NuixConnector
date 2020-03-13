@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
@@ -19,10 +18,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
-        /// The path of the file or folder to add to the case.
+        /// The path of the file or directory to add to the case.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember( Order = 3)]
         [ExampleValue("C:/Data/File.txt")]
         public string Path { get; set; }
@@ -31,14 +29,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The custodian to assign to the new folder.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 4)]
         public string Custodian { get; set; }
 
         /// <summary>
         /// The description of the new folder.
         /// </summary>
-        [Required]
         [YamlMember(Order = 5)]
         public string? Description { get; set; }
 
@@ -46,7 +42,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The name of the folder to create.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 6)]
         public string FolderName { get; set; }
 
@@ -54,7 +49,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 7)]
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
@@ -63,7 +57,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The name of the processing profile to use.
         /// </summary>
-        [DataMember]
+        
         [YamlMember(Order = 7)]
         [ExampleValue("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]

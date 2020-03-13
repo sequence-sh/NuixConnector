@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
@@ -19,36 +19,37 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The path of the case to examine.
+        /// The path to the case.
         /// </summary>
         [Required]
-        [DataMember]
         [YamlMember(Order = 2)]
+        [ExampleValue("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
 
         /// <summary>
-        /// The term to search for
+        /// The term to search for.
         /// </summary>
-        [DataMember]
         [Required]
+        [ExampleValue("*.txt")]
         [YamlMember(Order = 3)]
         public string SearchTerm { get; set; }
 
 
         /// <summary>
-        /// The term to search for
+        /// The term to search for.
         /// </summary>
-        [DataMember]
+        [ExampleValue("Date")]
         [Required]
         [YamlMember(Order = 5)]
         public string PropertyRegex { get; set; }
 
         /// <summary>
-        /// The name of the file to write the results to
+        /// The name of the text file to write the results to.
+        /// Should not include the extension.
         /// </summary>
-        [DataMember]
         [Required]
+        [ExampleValue("Results")]
         [YamlMember(Order = 6)]
         public string OutputFileName { get; set; }
 
