@@ -30,6 +30,15 @@ A process that runs a process depending on the success of an assertion.
 |Then     |[Process](#Process)|☑️      |If the 'If' process was successful then run this.  |
 |Else     |[Process](#Process)|        |If the 'If' process was unsuccessful then run this.|
 
+<a name="CreateDirectory"></a>
+## CreateDirectory
+
+Creates a new directory
+
+|Parameter|Type    |Required|Summary                             |
+|:-------:|:------:|:------:|:----------------------------------:|
+|Path     |`string`|☑️      |The path to the directory to create.|
+
 <a name="DeleteItem"></a>
 ## DeleteItem
 
