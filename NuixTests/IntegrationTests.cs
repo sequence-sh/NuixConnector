@@ -18,17 +18,19 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private const string Integration = "Integration";
 
-        private const string CasePath = "D:/Test/TestCase";
-        private const string OutputFolder = "D:/Test/OutputFolder";
+        private const string CasePath = "D:/IntegrationTest/TestCase";
+        private const string OutputFolder = "D:/IntegrationTest/OutputFolder";
+        private const string ConcordanceFolder = "D:/IntegrationTest/ConocordanceFolder";
 
         public static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "data");
+        public static readonly string ConcordancePath = Path.Combine(Directory.GetCurrentDirectory(), "Concordance", "loadfile.dat");
+
 
         private static readonly Process DeleteCaseFolder = new DeleteItem { Path = CasePath};
         private static readonly Process DeleteOutputFolder = new DeleteItem { Path = OutputFolder};
         private static readonly Process CreateOutputFolder = new CreateDirectory { Path = OutputFolder };
         private static readonly Process AssertCaseDoesNotExist = new NuixCaseExists {CasePath = CasePath, ShouldExist = false};
-        private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Case Name", CasePath = CasePath, Investigator = "Mark"};
-        //private static Process AssertTotalCount(int expected) => AssertCount(expected, "*");
+        private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Integration Test Case", CasePath = CasePath, Investigator = "Mark"};
         private static Process AssertCount(int expected, string searchTerm) => new NuixCount {CasePath = CasePath, Minimum = expected, Maximum = expected,  SearchTerm = searchTerm};
 
         private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
@@ -39,7 +41,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 //TODO AddConcordance
                 //TODO AnnotateDocumentIdList
                 //TODO CreateNRTReport
-                //TODO ExportConcordance
                 //TODO ImportDocumentIds
                 //TODO MigrateCase
                 //TODO perform OCR
@@ -58,13 +59,31 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder),
                 new TestSequence("Add file to case",
                     DeleteCaseFolder,
-                    AssertCaseDoesNotExist,                    
+                    AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*.txt"),
                     AddData,
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                     ),
+                new TestSequence("Add concordance to case",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new NuixAddConcordance{
+                        ConcordanceProfileName = "IntegrationTestProfile",
+                        ConcordanceDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                        FilePath = ConcordancePath,
+                        Custodian = "Mark",
+                        FolderName = "New Folder",
+                        CasePath = CasePath
+                    },
+                    AssertCount(2, "*.txt"),
+                    DeleteCaseFolder
+                    ),
+
+
                 new TestSequence("Search and tag",
                     DeleteCaseFolder,
                     CreateCase,
@@ -103,6 +122,31 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     AssertCount(1, "production-set:charmset"),
                     DeleteCaseFolder),
+
+                new TestSequence("Export Concordance",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
+                    new NuixAddToProductionSet
+                    {
+                        CasePath = CasePath,
+                        SearchTerm = "charm",
+                        ProductionSetName = "charmset"
+                    },
+                    new NuixExportConcordance
+                    {
+                        CasePath = CasePath,
+                        ProductionSetName = "charmset",
+                        ExportPath = ConcordanceFolder
+                    },
+                    new AssertFileContents
+                    {
+                        FilePath = ConcordanceFolder + "/loadfile.dat",
+                        ExpectedContents = "þDOCIDþþPARENT_DOCIDþþATTACH_DOCIDþþBEGINBATESþþENDBATESþþBEGINGROUPþþENDGROUPþþPAGECOUNTþþITEMPATHþþTEXTPATHþ"
+                    },
+                    DeleteOutputFolder,
+                    DeleteCaseFolder
+                    ),
 
                 new TestSequence("Remove From Production Set", 
                     DeleteCaseFolder,
@@ -163,26 +207,27 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteOutputFolder
                     ),
 
-                //new TestSequence("Extract Entities", //TODO put some entities in
-                //    DeleteCaseFolder,
-                //    DeleteOutputFolder,
-                //    CreateOutputFolder,
-                //    CreateCase,
-                //    AddData,
-                //    new NuixExtractEntities
-                //    {
-                //        CasePath = CasePath,
-                //        OutputFolder = OutputFolder
-                //    },
-                //    new AssertFileContents
-                //    {
-                //        FilePath = OutputFolder + "/file.txt", //TODO set these field
-                //        ExpectedContents = "ABCD"
-                //    },
+                new TestSequence("Extract Entities",
+                    DeleteCaseFolder,
+                    DeleteOutputFolder,
+                    CreateOutputFolder,
+                    CreateCase,
+                    //Note - we have to add items with a special profile in order to extract entities
+                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder", ProcessingProfileName = "ExtractEntities"},
+                    new NuixExtractEntities
+                    {
+                        CasePath = CasePath,
+                        OutputFolder = OutputFolder
+                    },
+                    new AssertFileContents
+                    {
+                        FilePath = OutputFolder + "/email.txt",
+                        ExpectedContents = "Marianne.Moore@yahoo.com"
+                    },
 
-                //    DeleteCaseFolder,
-                //    DeleteOutputFolder
-                //),
+                    DeleteCaseFolder,
+                    DeleteOutputFolder
+                ),
 
                 new TestSequence("Irregular Items",
                     DeleteCaseFolder,
