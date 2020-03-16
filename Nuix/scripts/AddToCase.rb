@@ -43,15 +43,9 @@ else
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
     processor = the_case.create_processor
-    processor.processing_settings = { :create_thumbnails       => false,
-                                    :additional_digests      => [ 'SHA-1' ] }
-
-
     processor.setProcessingProfile(hash_options[:processingProfileNameArg]) if hash_options[:processingProfileNameArg] != nil
 
-
     folder = processor.new_evidence_container(hash_options[:folderNameArg])
-
 
     folder.description = hash_options[:folderDescriptionArg] if hash_options[:folderDescriptionArg] != nil
     folder.initial_custodian = hash_options[:folderCustodianArg]
