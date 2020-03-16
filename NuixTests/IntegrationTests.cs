@@ -21,8 +21,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private const string CasePath = "D:/IntegrationTest/TestCase";
         private const string OutputFolder = "D:/IntegrationTest/OutputFolder";
         private const string ConcordanceFolder = "D:/IntegrationTest/ConocordanceFolder";
+        private const string NRTFolder = "D:/IntegrationTest/NRT";
 
         public static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "data");
+        public static readonly string PoemTextImagePath = Path.Combine(Directory.GetCurrentDirectory(), "PoemText.png");
         public static readonly string ConcordancePath = Path.Combine(Directory.GetCurrentDirectory(), "Concordance", "loadfile.dat");
 
 
@@ -38,14 +40,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static readonly List<TestSequence> TestProcesses =
             new List<TestSequence>
             {
-                //TODO AddConcordance
                 //TODO AnnotateDocumentIdList
-                //TODO CreateNRTReport
                 //TODO ImportDocumentIds
                 //TODO MigrateCase
-                //TODO perform OCR
-                //TODO generate print previews
-
                 
                 new TestSequence("Create Case",
                     DeleteCaseFolder,
@@ -97,7 +94,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder
                     
                     ),
-                
+                new TestSequence("Perform OCR",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AssertCount(0, "sheep"),
+                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
+                    new NuixPerformOCR(){CasePath= CasePath, SearchTerm = "*.png"  },
+                    AssertCount(1, "sheep"),
+                    DeleteCaseFolder
+                    ),                
                 new TestSequence("Add To Item Set", 
                     DeleteCaseFolder,
                     CreateCase,
@@ -122,6 +127,66 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     AssertCount(1, "production-set:charmset"),
                     DeleteCaseFolder),
+
+
+                new TestSequence("Generate Print Previews",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
+                    new NuixAddToProductionSet
+                    {
+                        CasePath = CasePath,
+                        SearchTerm = "*.txt",
+                        ProductionSetName = "prodSet"
+                    },
+                    AssertCount(2, "production-set:prodSet"),
+                    new NuixCheckPrintPreviewState
+                    {
+                        CasePath = CasePath,
+                        ProductionSetName = "prodSet",
+                        ExpectedState = enums.PrintPreviewState.None
+                    },
+                    new NuixGeneratePrintPreviews
+                    {
+                        CasePath = CasePath,
+                        ProductionSetName = "prodSet"
+                    },
+                    new NuixCheckPrintPreviewState
+                    {
+                        CasePath = CasePath,
+                        ProductionSetName = "prodSet",
+                        ExpectedState = enums.PrintPreviewState.All
+                    },
+
+                    DeleteCaseFolder),
+
+                new TestSequence("Export NRT Report",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
+                    new NuixAddToProductionSet
+                    {
+                        CasePath = CasePath,
+                        SearchTerm = "*.txt",
+                        ProductionSetName = "prodset",
+                    },
+                    new NuixCreateNRTReport
+                    {
+                        CasePath = CasePath,
+                        NRTPath = @"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary.nrt",
+                        OutputFormat = "PDF",
+                        LocalResourcesURL = @"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary\Resources\",
+                        OutputPath = NRTFolder
+                    },
+                    new AssertFileContents
+                    {
+                        FilePath = NRTFolder,
+                        ExpectedContents = "PDF-1.4"
+                    },
+                    DeleteOutputFolder,
+                    DeleteCaseFolder
+
+                    ),
 
                 new TestSequence("Export Concordance",
                     DeleteCaseFolder,
@@ -287,7 +352,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 ),
 
             };
-
 
 
         [Test]
