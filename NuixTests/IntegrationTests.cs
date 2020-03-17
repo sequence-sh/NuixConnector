@@ -18,15 +18,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private const string Integration = "Integration";
 
-        private const string CasePath = "D:/IntegrationTest/TestCase";
-        private const string OutputFolder = "D:/IntegrationTest/OutputFolder";
-        private const string ConcordanceFolder = "D:/IntegrationTest/ConocordanceFolder";
-        private const string NRTFolder = "D:/IntegrationTest/NRT";
+        private const string GeneralDataFolder = "D:/IntegrationTest";
 
-        public static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "data");
-        public static readonly string PoemTextImagePath = Path.Combine(Directory.GetCurrentDirectory(), "PoemText.png");
-        public static readonly string ConcordancePath = Path.Combine(Directory.GetCurrentDirectory(), "Concordance", "loadfile.dat");
+        private static readonly string CasePath = Path.Combine(GeneralDataFolder,  "TestCase");
+        private static readonly string OutputFolder = Path.Combine(GeneralDataFolder, "OutputFolder");
+        private static readonly string ConcordanceFolder = Path.Combine(GeneralDataFolder, "ConocordanceFolder");
+        private static readonly string NRTFolder = Path.Combine(GeneralDataFolder, "NRT");
+        private static readonly string MigrationTestCaseFolder = Path.Combine(GeneralDataFolder, "MigrationTest");
 
+        private static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data");
+        private static readonly string PoemTextImagePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png");
+        private static readonly string ConcordancePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat");
+        private static readonly string MigrationPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip" );
 
         private static readonly Process DeleteCaseFolder = new DeleteItem { Path = CasePath};
         private static readonly Process DeleteOutputFolder = new DeleteItem { Path = OutputFolder};
@@ -54,6 +57,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         ShouldExist = true
                     },
                     DeleteCaseFolder),
+
+                new TestSequence("Migrate Case",
+                    new DeleteItem(){Path = MigrationTestCaseFolder},
+                    new Unzip(){ArchiveFilePath = MigrationPath, DestinationDirectory = GeneralDataFolder},
+                    new AssertFail(){Process = new NuixCount(){ CasePath = MigrationTestCaseFolder, Minimum = 0, SearchTerm = "*"} }, //This should fail because we can't open the case
+                    new NuixMigrateCase(){ CasePath = MigrationTestCaseFolder},
+                    new NuixCount(){ CasePath = MigrationTestCaseFolder, Minimum = 0, Maximum = 0, SearchTerm = "*"},
+                    new DeleteItem(){Path = MigrationTestCaseFolder}
+                    ),
+
                 new TestSequence("Add file to case",
                     DeleteCaseFolder,
                     AssertCaseDoesNotExist,
@@ -162,6 +175,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 new TestSequence("Export NRT Report",
                     DeleteCaseFolder,
+                    new DeleteItem(){Path = NRTFolder },
                     CreateCase,
                     AddData,
                     new NuixAddToProductionSet
@@ -183,13 +197,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         FilePath = NRTFolder,
                         ExpectedContents = "PDF-1.4"
                     },
-                    DeleteOutputFolder,
+                    new DeleteItem(){Path = NRTFolder },
                     DeleteCaseFolder
 
                     ),
 
                 new TestSequence("Export Concordance",
                     DeleteCaseFolder,
+                    new  DeleteItem() {Path = ConcordanceFolder },
                     CreateCase,
                     AddData,
                     new NuixAddToProductionSet
@@ -209,7 +224,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         FilePath = ConcordanceFolder + "/loadfile.dat",
                         ExpectedContents = "þDOCIDþþPARENT_DOCIDþþATTACH_DOCIDþþBEGINBATESþþENDBATESþþBEGINGROUPþþENDGROUPþþPAGECOUNTþþITEMPATHþþTEXTPATHþ"
                     },
-                    DeleteOutputFolder,
+                    new  DeleteItem() {Path = ConcordanceFolder },
                     DeleteCaseFolder
                     ),
 
