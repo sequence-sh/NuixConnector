@@ -19,6 +19,15 @@ Run process defined in a yaml string.
 
 <a name="Process"></a>
 # General Processes
+<a name="AssertFail"></a>
+## AssertFail
+
+Asserts that a particular process will fail.
+
+|Parameter|Type               |Required|Summary                              |
+|:-------:|:-----------------:|:------:|:-----------------------------------:|
+|Process  |[Process](#Process)|☑️      |The process that is expected to fail.|
+
 <a name="Conditional"></a>
 ## Conditional
 
@@ -76,6 +85,17 @@ Executes each step, one after the another. Will stop if a process fails.
 |Parameter|Type                     |Required|Summary                         |
 |:-------:|:-----------------------:|:------:|:------------------------------:|
 |Steps    |List<[Process](#Process)>|☑️      |Steps that make up this process.|
+
+<a name="Unzip"></a>
+## Unzip
+
+Unzips a file.
+
+|Parameter           |Type    |Required|Summary                                                          |Default|
+|:------------------:|:------:|:------:|:---------------------------------------------------------------:|:-----:|
+|ArchiveFilePath     |`string`|☑️      |The path to the archive to unzip.                                |       |
+|DestinationDirectory|`string`|☑️      |The path to the directory in which to place the extracted files. |       |
+|OverwriteFiles      |`bool`  |        |Should files be overwritten in the destination directory.        |False  |
 
 <a name="Enumeration"></a>
 # Enumerations
