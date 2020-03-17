@@ -17,6 +17,12 @@ namespace Reductech.EDR.Connectors.Nuix.Search
             return searchProperty.TryRender(Value);
         }
 
+        /// <inheritdoc />
+        public override bool Matches(string s)
+        {
+            return Value.Equals(s);
+        }
+
         public override string ToString()
         {
             return Value;

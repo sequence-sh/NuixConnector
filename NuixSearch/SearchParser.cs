@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Search.SearchProperties;
 using Superpower;
 using Superpower.Parsers;
@@ -18,13 +19,13 @@ namespace Reductech.EDR.Connectors.Nuix.Search
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static (bool success, string? error, ISearchTerm? result) TryParse(string s)
+        public static Result<ISearchTerm> TryParse(string s)
         {
             //try to split the search term up into tokens
             var tokensResult = Tokenizer.TryTokenize(s);
 
             if (!tokensResult.HasValue)
-                return (false, tokensResult.ToString(), null);
+                return Result.Failure<ISearchTerm>(tokensResult.ToString());
 
             //If we get to here the search term is made of valid tokens, but they still may be in an invalid order
             var errors = new List<string>();
@@ -54,21 +55,17 @@ namespace Reductech.EDR.Connectors.Nuix.Search
             {
                 var errorString = string.Join("\r\n", errors);
 
-                return (false, errorString, null);
+                return Result.Failure<ISearchTerm>(errorString);
             }
             else
             {
                 if (results.Count == 1)
-                    return (true, null, results.Single());
+                    return Result.Success(results.Single());
+                var allTerms = results.SelectMany(x => x is ConjunctionTerm ct ? ct.Terms : new[] {x});
 
-                else
-                {
-                    var allTerms = results.SelectMany(x => x is ConjunctionTerm ct ? ct.Terms : new[] {x});
+                var finalResult = new ConjunctionTerm(allTerms);
 
-                    var finalResult = new ConjunctionTerm(allTerms);
-
-                    return (true, null, finalResult);
-                }
+                return Result.Success<ISearchTerm>(finalResult);
             }
         }
 

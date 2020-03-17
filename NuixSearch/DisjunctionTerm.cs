@@ -24,6 +24,12 @@ namespace Reductech.EDR.Connectors.Nuix.Search
 
         public IEnumerable<string> ErrorMessages => Terms.SelectMany(x => x.ErrorMessages);
 
+        /// <inheritdoc />
+        public bool Matches(ISearchableObject searchableObject)
+        {
+            return Terms.Any(x => x.Matches(searchableObject));
+        }
+
         public DisjunctionTerm(IEnumerable<ISearchTerm> terms)
         {
             Terms = terms.ToList();
@@ -45,5 +51,7 @@ namespace Reductech.EDR.Connectors.Nuix.Search
         {
             return obj is ISearchTerm st && st.AsString == AsString;
         }
+
+        
     }
 }

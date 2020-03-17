@@ -32,5 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
         /// <param name="t">The value of the property. Must have the correct type</param>
         /// <returns></returns>
         public abstract Result<string> TryRender(string t);
+
+        public abstract bool Matches(ISearchableObject searchableObject, PropertyValue propertyValue);
     }
 }

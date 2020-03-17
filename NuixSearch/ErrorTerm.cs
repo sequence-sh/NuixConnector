@@ -13,5 +13,11 @@ namespace Reductech.EDR.Connectors.Nuix.Search
 
         public string AsString => ErrorString;
         public IEnumerable<string> ErrorMessages { get{ yield return ErrorString;}}
+
+        /// <inheritdoc />
+        public bool Matches(ISearchableObject searchableObject)
+        {
+            return false;
+        }
     }
 }

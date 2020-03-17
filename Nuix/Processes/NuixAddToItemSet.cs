@@ -78,11 +78,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
-            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = SearchParser.TryParse(SearchTerm);
+            var r = SearchParser.TryParse(SearchTerm);
 
-            if (!searchTermParseSuccess || searchTermParsed == null)
+            if (r.IsFailure)
             {
-                yield return $"Error parsing search term: {searchTermParseError}";
+                yield return $"Error parsing search term: {r.Error}";
             }
 
             //TODO check other argument validity

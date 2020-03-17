@@ -43,5 +43,11 @@ namespace Reductech.EDR.Connectors.Nuix.Search
         }
 
         public IEnumerable<string> ErrorMessages => Term.ErrorMessages;
+
+        /// <inheritdoc />
+        public bool Matches(ISearchableObject searchableObject)
+        {
+            return !Term.Matches(searchableObject);
+        }
     }
 }

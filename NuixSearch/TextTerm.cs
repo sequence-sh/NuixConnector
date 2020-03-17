@@ -9,9 +9,6 @@ namespace Reductech.EDR.Connectors.Nuix.Search
         {
             if (text.StartsWith("\"") && text.EndsWith("\""))
                 text = text[1..^1];
-
-            //TODO escape quotes??
-
             Text = text;
         }
 
@@ -29,6 +26,12 @@ namespace Reductech.EDR.Connectors.Nuix.Search
         }
 
         public IEnumerable<string> ErrorMessages => Enumerable.Empty<string>();
+
+        /// <inheritdoc />
+        public bool Matches(ISearchableObject searchableObject)
+        {
+            return searchableObject.AllPropertyValues.Any(x => x.Contains(Text));
+        }
 
         public override string ToString()
         {

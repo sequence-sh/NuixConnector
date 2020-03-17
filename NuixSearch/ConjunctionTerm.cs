@@ -45,5 +45,11 @@ namespace Reductech.EDR.Connectors.Nuix.Search
         }
 
         public IEnumerable<string> ErrorMessages => Terms.SelectMany(x=>x.ErrorMessages);
+
+        /// <inheritdoc />
+        public bool Matches(ISearchableObject searchableObject)
+        {
+            return Terms.All(t => t.Matches(searchableObject));
+        }
     }
 }

@@ -44,5 +44,13 @@ namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
 
             return r.Map(ConvertToString);
         }
+
+        /// <inheritdoc />
+        public override bool Matches(ISearchableObject searchableObject, PropertyValue propertyValue)
+        {
+            var expectedPropValue = searchableObject[PropertyName];
+
+            return expectedPropValue != null && propertyValue.Matches(expectedPropValue);
+        }
     }
 }

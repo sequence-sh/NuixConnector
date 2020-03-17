@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using CSharpFunctionalExtensions;
 
 namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
 {
@@ -27,15 +27,15 @@ namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
             if (!AllProperties.TryGetValue(propertyName, out var sp))
                 return new ErrorTerm($"'{propertyString}' is not a recognized property");
 
-            var r = value.TryRender(sp);
+            var (isSuccess, _, s, error) = value.TryRender(sp);
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse - for compiler
-            if (r.IsSuccess)
+            if (isSuccess)
                 return subProperty == null
-                    ? new RegularPropertySearchTerm(sp, value, r.Value) as PropertySearchTerm
-                    : new CompoundPropertySearchTerm(sp, value, r.Value, subProperty);
+                    ? new RegularPropertySearchTerm(sp, value, s) as PropertySearchTerm
+                    : new CompoundPropertySearchTerm(sp, value, s, subProperty);
 
-            return new ErrorTerm(string.Join("\r\n", r.Error));
+            return new ErrorTerm(string.Join("\r\n", error));
 
         }
 
@@ -55,6 +55,12 @@ namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
 
         public abstract string AsString { get; }
         public IEnumerable<string> ErrorMessages => Enumerable.Empty<string>();
+
+        /// <inheritdoc />
+        public bool Matches(ISearchableObject searchableObject)
+        {
+            return SearchProperty.Matches(searchableObject, PropertyValue);
+        }
 
         public override string ToString()
         {

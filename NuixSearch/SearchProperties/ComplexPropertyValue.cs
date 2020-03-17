@@ -25,6 +25,12 @@ namespace Reductech.EDR.Connectors.Nuix.Search.SearchProperties
             return result;
         }
 
+        /// <inheritdoc />
+        public override bool Matches(string s)
+        {
+            return Disjunction.Any(x => x.Matches(s));
+        }
+
         public override string ToString()
         {
             return @$"({string.Join(" OR ", Disjunction.Select(x => x.ToString()))})";
