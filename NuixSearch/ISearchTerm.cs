@@ -20,11 +20,23 @@ namespace Reductech.EDR.Connectors.Nuix.Search
 
         public static SearchableObject FromString(string s)
         {
+
             var properties = s.Split('|')
-                .Select(x => new KeyValuePair<string, string>(
-                    x.Substring(0, x.LastIndexOf(':')).Trim(), x.Substring(x.LastIndexOf(':') + 1).Trim())).ToArray();
+                .Select(Split).ToArray();
 
             return new SearchableObject(properties);
+
+            static KeyValuePair<string, string> Split(string str)
+            {
+                var i = str.LastIndexOf(':');
+                if (i < 0)
+                    return new KeyValuePair<string, string>("name", str);
+
+                var k = str.Substring(0, str.LastIndexOf(':'));
+                var v = str.Substring(str.LastIndexOf(':') + 1).Trim();
+
+                return new KeyValuePair<string, string>(k, v);
+            }
         }
 
         /// <inheritdoc />
