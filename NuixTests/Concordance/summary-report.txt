@@ -1,0 +1,73 @@
+Export Details
+-------------------------------------------------------------------------------
+Started at: Mon Mar 16 10:26:38 2020 (Europe/London)
+Completed at: Mon Mar 16 10:26:53 2020 (Europe/London)
+Export duration: 14s
+Processing duration: 14s
+Case: Integration Test Case
+Case location: D:\IntegrationTest\TestCase
+Nuix Version 8.2.0.123 (amd64)
+
+Export Configuration
+-------------------------------------------------------------------------------
+Options for load file: Concordance
+  Export load file encoding: UTF-8
+Sort order: Result set order
+Numbering options:
+  Item numbering: Production set numbering
+  Production set: charmset
+Imaging options:
+  Imaging profile: Default
+Convert mail, contacts, calendars to: Native (MSG for MAPI items, otherwise EML)
+Items exported to: D:\IntegrationTest\ConocordanceFolder
+Time zone: (GMT) Greenwich Mean Time (Europe/London)
+Separate attachments from emails: false
+Native export with file naming: Prefix, Box, Folder, Page
+Text export with file naming: Prefix, Box, Folder, Page
+Text export file encoding: UTF-8
+Exporting selected items
+Resemblance threshold: 0.85
+
+Export Statistics
+-------------------------------------------------------------------------------
+Items selected for export: 1
+Total items removed due to exclusions: 0
+Total items and descendants discovered for export: 1
+Total number of failed items: 0
+First document number exported: DOC-000000001_0001
+Last document number exported: DOC-000000001_0001
+
+Exported File Statistics
+-------------------------------------------------------------------------------
+Total native files generated: 1
+Native files from binary store: 0
+Native files with invalid times: 0
+Native slip-sheet files generated: 0
+Total TXT files generated: 1
+Text place-holder files generated: 0
+
+Exported Stage Durations
+-------------------------------------------------------------------------------
+Stage 'WORK_QUEUE' took: 1s
+Stage 'NATIVE' took: 7s
+Stage 'STORED_EMAIL_FIXUP' took: 1s
+Stage 'NUMBERING' took: 0s
+Stage 'BINARY_STORE' took: 0s
+Stage 'PRINT_STORE' took: 0s
+Stage 'MARKUP' took: 1s
+Stage 'TEXT' took: 1s
+Stage 'FILE_NAMING' took: 1s
+Stage 'SET_FILE_TIMES' took: 0s
+Stage 'DIGEST' took: 0s
+Stage 'LOAD_FILES' took: 0s
+
+Exported File Throughput Statistics
+-------------------------------------------------------------------------------
+Generated native files/second: 0.11
+Generated TXT files/second: 0.91
+
+File Type Statistics
+-------------------------------------------------------------------------------
+Total number of exported items by MIME type (1):
+ Plain Text (text/plain): 1
+
