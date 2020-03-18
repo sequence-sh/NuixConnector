@@ -19,6 +19,15 @@ Run process defined in a yaml string.
 
 <a name="Process"></a>
 # General Processes
+<a name="AssertFail"></a>
+## AssertFail
+
+Asserts that a particular process will fail.
+
+|Parameter|Type               |Required|Summary                              |
+|:-------:|:-----------------:|:------:|:-----------------------------------:|
+|Process  |[Process](#Process)|☑️      |The process that is expected to fail.|
+
 <a name="Conditional"></a>
 ## Conditional
 
@@ -76,6 +85,17 @@ Executes each step, one after the another. Will stop if a process fails.
 |Parameter|Type                     |Required|Summary                         |
 |:-------:|:-----------------------:|:------:|:------------------------------:|
 |Steps    |List<[Process](#Process)>|☑️      |Steps that make up this process.|
+
+<a name="Unzip"></a>
+## Unzip
+
+Unzips a file.
+
+|Parameter           |Type    |Required|Summary                                                          |Default|
+|:------------------:|:------:|:------:|:---------------------------------------------------------------:|:-----:|
+|ArchiveFilePath     |`string`|☑️      |The path to the archive to unzip.                                |       |
+|DestinationDirectory|`string`|☑️      |The path to the directory in which to place the extracted files. |       |
+|OverwriteFiles      |`bool`  |        |Should files be overwritten in the destination directory.        |False  |
 
 <a name="Enumeration"></a>
 # Enumerations
@@ -203,6 +223,17 @@ Succeeds or fails depending on whether or not a particular case exists. Useful i
 |:---------:|:------:|:------:|:----------------------------------------------------------------------------------------:|:-----:|:-------------:|
 |ShouldExist|`bool`  |        |If true, asserts that the case does exist. If false, asserts that the case does not exist.|True   |               |
 |CasePath   |`string`|☑️      |The path to the case.                                                                     |       |C:/Cases/MyCase|
+
+<a name="NuixCheckPrintPreviewState"></a>
+## NuixCheckPrintPreviewState
+
+Checks the print preview state of the production set.
+
+|Parameter        |Type                                   |Required|Summary                                                |Default|Example        |
+|:---------------:|:-------------------------------------:|:------:|:-----------------------------------------------------:|:-----:|:-------------:|
+|ExpectedState    |[PrintPreviewState](#PrintPreviewState)|        |The expected print preview state of the production set;|All    |               |
+|ProductionSetName|`string`                               |☑️      |The production set to reorder.                         |       |               |
+|CasePath         |`string`                               |☑️      |The path to the case.                                  |       |C:/Cases/MyCase|
 
 <a name="NuixCount"></a>
 ## NuixCount
@@ -403,6 +434,16 @@ The means of deduplicating items by key and prioritizing originals in a tie-brea
 |MD5RankedCustodian|MD5 Ranked Custodian results in items with MD5 hash being identical. Tie breaking is by the item with the highest ranked custodian or highest path order if custodian ranking is equal.                 |
 |Scripted          |Scripted results in items being deduplicated based on an expression defined by the script and passed to ItemSet.addItems. It is an error to add items to this Item Set without supplying the expression.|
 |None              |None results in all items being added to the set without deduplication.                                                                                                                                 |
+
+<a name="PrintPreviewState"></a>
+## PrintPreviewState
+The state of print previews in the production set.
+
+|Name|Summary                             |
+|:--:|:----------------------------------:|
+|All |All documents have a print preview. |
+|Some|Some documents have a print preview.|
+|None|No documents have a print preview.  |
 
 <a name="ProductionSetSortOrder"></a>
 ## ProductionSetSortOrder

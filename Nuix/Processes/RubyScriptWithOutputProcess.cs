@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Search;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 

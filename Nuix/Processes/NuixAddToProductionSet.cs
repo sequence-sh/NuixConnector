@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Search;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
@@ -71,12 +70,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
-            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = SearchParser.TryParse(SearchTerm);
-
-            if (!searchTermParseSuccess || searchTermParsed == null)
-            {
-                yield return $"Error parsing search term: {searchTermParseError}";
-            }
+            yield break;
+            //TODO validate search
         }
 
         internal override string ScriptName => "AddToProductionSet.rb";

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Nuix version="8.2.0.123" architecture="amd64">
+  <Export
+    startTime="Mon Mar 16 10:26:38 2020 (Europe/London)"
+    endTime="Mon Mar 16 10:26:53 2020 (Europe/London)"
+    exportDuration="14s"
+    processingDuration="14s">
+
+    <ExportConfiguration>
+
+      <LoadFiles>
+        <LoadFile>
+          <LoadFileType>Concordance</LoadFileType>
+          <Encoding>UTF-8</Encoding>
+        </LoadFile>
+      </LoadFiles>
+
+      <MessageFormat>NATIVE</MessageFormat>
+      <ExportDirectory>D:\IntegrationTest\ConocordanceFolder</ExportDirectory>
+      <SeparateEmailAttachments>false</SeparateEmailAttachments>
+      <RegenerateNatives>false</RegenerateNatives>
+      <RegeneratePdfs>false</RegeneratePdfs>
+      <FindTopLevelItems>false</FindTopLevelItems>
+      <DescendantItems>false</DescendantItems>
+      <ExportContainers>false</ExportContainers>
+      <SortOrder>none</SortOrder>
+
+      <CaseName>Integration Test Case</CaseName>
+      <CaseLocation>D:\IntegrationTest\TestCase</CaseLocation>
+
+      <TimeZone>Europe/London</TimeZone>
+
+      <TextExportOptions>
+        <CharacterSet>UTF-8</CharacterSet>
+        <LineSeparator>\r\n</LineSeparator>
+      </TextExportOptions>
+
+      <Numbering>
+        <Strategy>Document ID numbering</Strategy>
+        <DocumentPagesInSameFolder>true</DocumentPagesInSameFolder>
+        <FamilyDocumentsInSameFolder>false</FamilyDocumentsInSameFolder>
+        <ProductionSetName>charmset</ProductionSetName>
+      </Numbering>
+
+      <Imaging>
+        <ImagingProfile>Default</ImagingProfile>
+      </Imaging>
+
+      <Naming>
+        <NativeNamingScheme>Prefix, Box, Folder, Page</NativeNamingScheme>
+        <TextNamingScheme>Prefix, Box, Folder, Page</TextNamingScheme>
+      </Naming>
+
+      <ResemblanceThreshold>0.85</ResemblanceThreshold>
+
+    </ExportConfiguration>
+
+    <ExportStatistics>
+      <SelectedItems>1</SelectedItems>
+      <ExcludedCount>0</ExcludedCount>
+      <TotalItemsToExport>1</TotalItemsToExport>
+      <FailedItems>0</FailedItems>
+      <DocumentNumbers>
+        <First>DOC-000000001_0001</First>
+        <Last>DOC-000000001_0001</Last>
+      </DocumentNumbers>
+    </ExportStatistics>
+
+    <ExportStageDetails>
+      <Stage
+        name="WORK_QUEUE"
+        successfulItems="1"
+        failedItems="0"
+        duration="1s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="NATIVE"
+        successfulItems="1"
+        failedItems="0"
+        duration="7s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="STORED_EMAIL_FIXUP"
+        successfulItems="1"
+        failedItems="0"
+        duration="1s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="NUMBERING"
+        successfulItems="1"
+        failedItems="0"
+        duration="0s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="BINARY_STORE"
+        successfulItems="0"
+        failedItems="0"
+        duration="0s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="PRINT_STORE"
+        successfulItems="0"
+        failedItems="0"
+        duration="0s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="MARKUP"
+        successfulItems="1"
+        failedItems="0"
+        duration="1s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="TEXT"
+        successfulItems="1"
+        failedItems="0"
+        duration="1s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="FILE_NAMING"
+        successfulItems="1"
+        failedItems="0"
+        duration="1s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="SET_FILE_TIMES"
+        successfulItems="1"
+        failedItems="0"
+        duration="0s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="DIGEST"
+        successfulItems="1"
+        failedItems="0"
+        duration="0s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="LOAD_FILES"
+        successfulItems="1"
+        failedItems="0"
+        duration="0s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+    </ExportStageDetails>
+
+    <FileStatistics>
+      <NativeFilesExported>1</NativeFilesExported>
+      <NativeFilesFromStore>0</NativeFilesFromStore>
+      <NativeFilesExportedInline>0</NativeFilesExportedInline>
+      <NativeFilesExportedParallel>1</NativeFilesExportedParallel>
+      <NativeFilesExportedParallelLocal>0</NativeFilesExportedParallelLocal>
+      <NativeFilesWithInvalidTimes>0</NativeFilesWithInvalidTimes>
+      <NativePlaceHolderFilesExported>0</NativePlaceHolderFilesExported>
+      <NativeFilesRegenerated>0</NativeFilesRegenerated>
+      <TextFilesExported>1</TextFilesExported>
+      <TextPlaceHolderFilesExported>0</TextPlaceHolderFilesExported>
+      <PdfFilesExported>0</PdfFilesExported>
+      <PdfFilesStamped>0</PdfFilesStamped>
+      <TiffFilesExported>0</TiffFilesExported>
+
+    </FileStatistics>
+
+    <ThroughputStatistics>
+      <NativeDocRate>0.10698619878035734</NativeDocRate>
+      <TextDocRate>0.9074410163339383</TextDocRate>
+    </ThroughputStatistics>
+
+    <MimeTypeStatistics>
+      <MimeTypes>
+        <MimeType name="text/plain" count="1" />
+      </MimeTypes>
+    </MimeTypeStatistics>
+
+  </Export>
+</Nuix>

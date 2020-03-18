@@ -54,12 +54,43 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="data\Jellyfish.txt">
+    <None Update="AllData\Concordance\loadfile.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="data\Theme in Yellow.txt">
+    <None Update="AllData\Concordance\loadfile.opt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="AllData\Concordance\Native\DOC-\000000001\DOC-0000000010001.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Concordance\summary-report.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Concordance\summary-report.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Concordance\Text\DOC-\000000001\DOC-0000000010001.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Concordance\top-level-MD5-digests.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\data\Jellyfish.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\data\Theme in Yellow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\MigrationTest.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\PoemText.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AllData\Concordance\" />
   </ItemGroup>
 
 </Project>

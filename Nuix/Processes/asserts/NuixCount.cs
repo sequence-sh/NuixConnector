@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using Reductech.EDR.Connectors.Nuix.Search;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
@@ -18,13 +17,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         {
             if(Minimum == null && Maximum == null)
                 yield return  "Either minimum or maximum must be set.";
-
-            var (searchTermParseSuccess, searchTermParseError, searchTermParsed) = SearchParser.TryParse(SearchTerm);
-
-            if (!searchTermParseSuccess || searchTermParsed == null)
-            {
-                yield return  $"Error parsing search term: '{searchTermParseError}'.";
-            }
+            //TODO validate search term
         }
 
         /// <inheritdoc />
