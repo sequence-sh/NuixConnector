@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NuixSearch\NuixSearch.csproj" />
     <ProjectReference Include="..\processes\Processes\Processes.csproj" />
   </ItemGroup>
 

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Search;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
@@ -49,15 +47,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override IEnumerable<string> GetArgumentErrors()
         {
-            if (SearchTerm != null)
-            {
-                var (_, isFailure, _, error) = SearchParser.TryParse(SearchTerm);
-
-                if (isFailure)
-                {
-                    yield return $"Error parsing search term: {error}";
-                }
-            }
+            yield break;
+            //TODO validate search term if there is one
         }
         
 
