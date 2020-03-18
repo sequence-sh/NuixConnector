@@ -6,6 +6,7 @@ image: mcr.microsoft.com/dotnet/core/sdk:3.1
 stages:
     - build
     - test
+    - integrationTest
 
 build:
     stage: build
@@ -19,3 +20,12 @@ test:
     stage: test
     script: 
         - "dotnet test --filter TestCategory!=\"Integration\""
+  
+integrationTest:
+    stage: integrationTest
+    only: 
+        - schedules
+    tags:
+    - nuix
+    script:
+        - "dotnet test --filter TestCategory=\"Integration\""
