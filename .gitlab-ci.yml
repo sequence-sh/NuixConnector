@@ -11,9 +11,6 @@ build:
     image: mcr.microsoft.com/dotnet/core/sdk:3.1
     script:
         - "dotnet build"
-    artifacts:
-      paths:
-        - bin/
 
 test:
     stage: test
