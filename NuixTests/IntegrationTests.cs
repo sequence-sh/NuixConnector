@@ -11,18 +11,18 @@ using Reductech.EDR.Utilities.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
-    partial class IntegrationTests
+    public class IntegrationTests
     {
         private static readonly INuixProcessSettings NuixSettings = new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe");
         //TODO set these from a config file
 
         private const string Integration = "Integration";
 
-        private const string GeneralDataFolder = "D:/IntegrationTest";
+        private static readonly string GeneralDataFolder = Path.Combine(Directory.GetCurrentDirectory(), "IntegrationTest");
 
         private static readonly string CasePath = Path.Combine(GeneralDataFolder,  "TestCase");
         private static readonly string OutputFolder = Path.Combine(GeneralDataFolder, "OutputFolder");
-        private static readonly string ConcordanceFolder = Path.Combine(GeneralDataFolder, "ConocordanceFolder");
+        private static readonly string ConcordanceFolder = Path.Combine(GeneralDataFolder, "ConcordanceFolder");
         private static readonly string NRTFolder = Path.Combine(GeneralDataFolder, "NRT");
         private static readonly string MigrationTestCaseFolder = Path.Combine(GeneralDataFolder, "MigrationTest");
 
@@ -40,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
 
-        public static readonly List<TestSequence> TestProcesses =
+        public static readonly IReadOnlyCollection<Process> TestProcesses =
             new List<TestSequence>
             {
                 //TODO AnnotateDocumentIdList
