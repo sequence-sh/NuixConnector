@@ -40,6 +40,6 @@ else
             :investigator => hash_options[:investigatorArg])
     puts "Case Created"
         the_case.close
-    puts "Case Closed"
+    
     
 end

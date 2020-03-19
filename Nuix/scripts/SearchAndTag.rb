@@ -37,7 +37,7 @@ unless requiredArguments.all? {|a| hash_options[a] != nil}
 
 
 else
-    puts "Opening Case"
+    
     
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
@@ -62,6 +62,6 @@ else
     puts "#{j} items tagged"
 
     the_case.close
-    puts "Case Closed"
+    
     
 end

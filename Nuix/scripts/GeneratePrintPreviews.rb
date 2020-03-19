@@ -25,7 +25,7 @@ unless requiredArguments.all? {|a| hash_options[a] != nil}
     puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
 
 else
-    puts "Opening Case"
+    
     
     the_case = utilities.case_factory.open(hash_options[:pathArg])
 
@@ -44,6 +44,6 @@ else
         end 
 
     the_case.close
-    puts "Case Closed"
+    
     
 end

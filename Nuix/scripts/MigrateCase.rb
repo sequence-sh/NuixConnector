@@ -28,6 +28,6 @@ else
     options = {migrate: true}
 
     the_case = utilities.case_factory.open(hash_options[:pathArg], options)
-    puts "Case Closed"
+    
     
 end
