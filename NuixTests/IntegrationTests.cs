@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
+using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.asserts;
 using Reductech.EDR.Utilities.Processes;
@@ -59,12 +60,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder),
 
                 new TestSequence("Migrate Case",
-                    new DeleteItem(){Path = MigrationTestCaseFolder},
-                    new Unzip(){ArchiveFilePath = MigrationPath, DestinationDirectory = GeneralDataFolder},
-                    new AssertFail(){Process = new NuixCount(){ CasePath = MigrationTestCaseFolder, Minimum = 0, SearchTerm = "*"} }, //This should fail because we can't open the case
-                    new NuixMigrateCase(){ CasePath = MigrationTestCaseFolder},
-                    new NuixCount(){ CasePath = MigrationTestCaseFolder, Minimum = 0, Maximum = 0, SearchTerm = "*"},
-                    new DeleteItem(){Path = MigrationTestCaseFolder}
+                    new DeleteItem {Path = MigrationTestCaseFolder},
+                    new Unzip {ArchiveFilePath = MigrationPath, DestinationDirectory = GeneralDataFolder},
+                    new AssertFail {Process = new NuixCount { CasePath = MigrationTestCaseFolder, Minimum = 0, SearchTerm = "*"} }, //This should fail because we can't open the case
+                    new NuixMigrateCase { CasePath = MigrationTestCaseFolder},
+                    new NuixCount { CasePath = MigrationTestCaseFolder, Minimum = 0, Maximum = 0, SearchTerm = "*"},
+                    new DeleteItem {Path = MigrationTestCaseFolder}
                     ),
 
                 new TestSequence("Add file to case",
@@ -114,7 +115,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateCase,
                     AssertCount(0, "sheep"),
                     new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
-                    new NuixPerformOCR(){CasePath= CasePath, SearchTerm = "*.png"  },
+                    new NuixPerformOCR {CasePath= CasePath, SearchTerm = "*.png"  },
                     AssertCount(1, "sheep"),
                     DeleteCaseFolder
                     ),                
@@ -159,7 +160,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = CasePath,
                         ProductionSetName = "prodSet",
-                        ExpectedState = enums.PrintPreviewState.None
+                        ExpectedState = PrintPreviewState.None
                     },
                     new NuixGeneratePrintPreviews
                     {
@@ -170,21 +171,21 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = CasePath,
                         ProductionSetName = "prodSet",
-                        ExpectedState = enums.PrintPreviewState.All
+                        ExpectedState = PrintPreviewState.All
                     },
 
                     DeleteCaseFolder),
 
                 new TestSequence("Export NRT Report",
                     DeleteCaseFolder,
-                    new DeleteItem(){Path = NRTFolder },
+                    new DeleteItem {Path = NRTFolder },
                     CreateCase,
                     AddData,
                     new NuixAddToProductionSet
                     {
                         CasePath = CasePath,
                         SearchTerm = "*.txt",
-                        ProductionSetName = "prodset",
+                        ProductionSetName = "prodset"
                     },
                     new NuixCreateNRTReport
                     {
@@ -199,14 +200,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         FilePath = NRTFolder,
                         ExpectedContents = "PDF-1.4"
                     },
-                    new DeleteItem(){Path = NRTFolder },
+                    new DeleteItem {Path = NRTFolder },
                     DeleteCaseFolder
 
                     ),
 
                 new TestSequence("Export Concordance",
                     DeleteCaseFolder,
-                    new  DeleteItem() {Path = ConcordanceFolder },
+                    new  DeleteItem {Path = ConcordanceFolder },
                     CreateCase,
                     AddData,
                     new NuixAddToProductionSet
@@ -226,7 +227,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         FilePath = ConcordanceFolder + "/loadfile.dat",
                         ExpectedContents = "þDOCIDþþPARENT_DOCIDþþATTACH_DOCIDþþBEGINBATESþþENDBATESþþBEGINGROUPþþENDGROUPþþPAGECOUNTþþITEMPATHþþTEXTPATHþ"
                     },
-                    new  DeleteItem() {Path = ConcordanceFolder },
+                    new  DeleteItem {Path = ConcordanceFolder },
                     DeleteCaseFolder
                     ),
 
@@ -240,7 +241,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         SearchTerm = "*.txt",
                         ProductionSetName = "fullset"
                     },
-                    new NuixRemoveFromProductionSet()
+                    new NuixRemoveFromProductionSet
                     {
                         CasePath = CasePath,
                         SearchTerm = "Charm",
@@ -317,7 +318,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new NuixCreateIrregularItemsReport()
+                    new NuixCreateIrregularItemsReport
                     {
                         CasePath = CasePath,
                         OutputFolder = OutputFolder
@@ -349,7 +350,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new NuixGetItemProperties()
+                    new NuixGetItemProperties
                     {
                         CasePath = CasePath,
                         OutputFolder = OutputFolder,
@@ -366,7 +367,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
-                ),
+                )
 
             };
 
