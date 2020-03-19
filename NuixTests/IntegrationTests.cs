@@ -76,22 +76,24 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                     ),
-                new TestSequence("Add concordance to case",
-                    DeleteCaseFolder,
-                    AssertCaseDoesNotExist,
-                    CreateCase,
-                    AssertCount(0, "*.txt"),
-                    new NuixAddConcordance{
-                        ConcordanceProfileName = "IntegrationTestProfile",
-                        ConcordanceDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
-                        FilePath = ConcordancePath,
-                        Custodian = "Mark",
-                        FolderName = "New Folder",
-                        CasePath = CasePath
-                    },
-                    AssertCount(2, "*.txt"),
-                    DeleteCaseFolder
-                    ),
+
+
+                //new TestSequence("Add concordance to case",
+                //    DeleteCaseFolder,
+                //    AssertCaseDoesNotExist,
+                //    CreateCase,
+                //    AssertCount(0, "*.txt"),
+                //    new NuixAddConcordance{
+                //        ConcordanceProfileName = "IntegrationTestProfile",
+                //        ConcordanceDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                //        FilePath = ConcordancePath,
+                //        Custodian = "Mark",
+                //        FolderName = "New Folder",
+                //        CasePath = CasePath
+                //    },
+                //    AssertCount(2, "*.txt"),
+                //    DeleteCaseFolder
+                //    ),
 
 
                 new TestSequence("Search and tag",
