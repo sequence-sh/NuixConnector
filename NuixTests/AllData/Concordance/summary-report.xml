@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Nuix version="8.2.0.123" architecture="amd64">
   <Export
-    startTime="Mon Mar 16 10:26:38 2020 (Europe/London)"
-    endTime="Mon Mar 16 10:26:53 2020 (Europe/London)"
-    exportDuration="14s"
-    processingDuration="14s">
+    startTime="Mon Mar 23 17:50:40 2020 (Europe/London)"
+    endTime="Mon Mar 23 17:50:57 2020 (Europe/London)"
+    exportDuration="16s"
+    processingDuration="16s">
 
     <ExportConfiguration>
 
       <LoadFiles>
         <LoadFile>
           <LoadFileType>Concordance</LoadFileType>
-          <Encoding>UTF-8</Encoding>
+          <Encoding>windows-1252</Encoding>
+          <MetadataProfile>CSE001</MetadataProfile>
         </LoadFile>
       </LoadFiles>
 
       <MessageFormat>NATIVE</MessageFormat>
-      <ExportDirectory>D:\IntegrationTest\ConocordanceFolder</ExportDirectory>
+      <ExportDirectory>D:\IntegrationTest\Export2</ExportDirectory>
       <SeparateEmailAttachments>false</SeparateEmailAttachments>
       <RegenerateNatives>false</RegenerateNatives>
       <RegeneratePdfs>false</RegeneratePdfs>
       <FindTopLevelItems>false</FindTopLevelItems>
       <DescendantItems>false</DescendantItems>
       <ExportContainers>false</ExportContainers>
-      <SortOrder>none</SortOrder>
+      <SortOrder>document_id</SortOrder>
 
-      <CaseName>Integration Test Case</CaseName>
-      <CaseLocation>D:\IntegrationTest\TestCase</CaseLocation>
+      <CaseName>Case 1</CaseName>
+      <CaseLocation>D:\IntegrationTest\Case 1</CaseLocation>
 
       <TimeZone>Europe/London</TimeZone>
 
@@ -39,16 +40,19 @@
         <Strategy>Document ID numbering</Strategy>
         <DocumentPagesInSameFolder>true</DocumentPagesInSameFolder>
         <FamilyDocumentsInSameFolder>false</FamilyDocumentsInSameFolder>
-        <ProductionSetName>charmset</ProductionSetName>
+        <ProductionSetName>Production00001</ProductionSetName>
       </Numbering>
 
       <Imaging>
         <ImagingProfile>Default</ImagingProfile>
       </Imaging>
 
+      <ProductionProfile>ProductionProfile01</ProductionProfile>
+
       <Naming>
-        <NativeNamingScheme>Prefix, Box, Folder, Page</NativeNamingScheme>
-        <TextNamingScheme>Prefix, Box, Folder, Page</TextNamingScheme>
+        <NativeNamingScheme>Document ID</NativeNamingScheme>
+        <PdfNamingScheme>Document ID</PdfNamingScheme>
+        <TextNamingScheme>Document ID</TextNamingScheme>
       </Naming>
 
       <ResemblanceThreshold>0.85</ResemblanceThreshold>
@@ -61,8 +65,8 @@
       <TotalItemsToExport>1</TotalItemsToExport>
       <FailedItems>0</FailedItems>
       <DocumentNumbers>
-        <First>DOC-000000001_0001</First>
-        <Last>DOC-000000001_0001</Last>
+        <First>SET-00000001_0001</First>
+        <Last>SET-00000001_0001</Last>
       </DocumentNumbers>
     </ExportStatistics>
 
@@ -71,7 +75,7 @@
         name="WORK_QUEUE"
         successfulItems="1"
         failedItems="0"
-        duration="1s">
+        duration="0s">
 
         <SlipSheetItemDetails>
         </SlipSheetItemDetails>
@@ -83,7 +87,7 @@
         name="NATIVE"
         successfulItems="1"
         failedItems="0"
-        duration="7s">
+        duration="9s">
 
         <SlipSheetItemDetails>
         </SlipSheetItemDetails>
@@ -93,6 +97,18 @@
       </Stage>
       <Stage
         name="STORED_EMAIL_FIXUP"
+        successfulItems="1"
+        failedItems="0"
+        duration="1s">
+
+        <SlipSheetItemDetails>
+        </SlipSheetItemDetails>
+
+        <FailedItemDetails>
+        </FailedItemDetails>
+      </Stage>
+      <Stage
+        name="PDF"
         successfulItems="1"
         failedItems="0"
         duration="1s">
@@ -129,7 +145,7 @@
       </Stage>
       <Stage
         name="PRINT_STORE"
-        successfulItems="0"
+        successfulItems="1"
         failedItems="0"
         duration="0s">
 
@@ -140,7 +156,7 @@
         </FailedItemDetails>
       </Stage>
       <Stage
-        name="MARKUP"
+        name="TEXT"
         successfulItems="1"
         failedItems="0"
         duration="1s">
@@ -152,7 +168,7 @@
         </FailedItemDetails>
       </Stage>
       <Stage
-        name="TEXT"
+        name="STAMPING"
         successfulItems="1"
         failedItems="0"
         duration="1s">
@@ -224,15 +240,38 @@
       <NativeFilesRegenerated>0</NativeFilesRegenerated>
       <TextFilesExported>1</TextFilesExported>
       <TextPlaceHolderFilesExported>0</TextPlaceHolderFilesExported>
-      <PdfFilesExported>0</PdfFilesExported>
-      <PdfFilesStamped>0</PdfFilesStamped>
+      <PdfFilesExported>1</PdfFilesExported>
+      <PdfFilesStamped>1</PdfFilesStamped>
       <TiffFilesExported>0</TiffFilesExported>
 
+      <PdfDetails>
+        <PdfFilesFromStore>0</PdfFilesFromStore>
+        <PdfFilesRegenerated>1</PdfFilesRegenerated>
+        <PdfFilesExportedInline>0</PdfFilesExportedInline>
+        <PdfFilesExportedParallel>1</PdfFilesExportedParallel>
+        <PdfFilesExportedParallelLocal>0</PdfFilesExportedParallelLocal>
+        <UserImportedPdfs>0</UserImportedPdfs>
+        <PrintedPdfs>1</PrintedPdfs>
+        <UnformattedTextPdfs>0</UnformattedTextPdfs>
+        <ItemEncryptedPdfs>0</ItemEncryptedPdfs>
+        <UnprintableItemPdfs>0</UnprintableItemPdfs>
+      </PdfDetails>
     </FileStatistics>
 
+    <PageCountStatistics>
+      <PdfPages>1</PdfPages>
+      <StampedPages>1</StampedPages>
+      <FailedStampedPages>0</FailedStampedPages>
+      <AveragePageCount>1.0</AveragePageCount>
+    </PageCountStatistics>
+
     <ThroughputStatistics>
-      <NativeDocRate>0.10698619878035734</NativeDocRate>
-      <TextDocRate>0.9074410163339383</TextDocRate>
+      <NativeDocRate>0.09163383121048291</NativeDocRate>
+      <TextDocRate>0.9746588693957114</TextDocRate>
+      <PdfDocRate>0.7168458781362007</PdfDocRate>
+      <StampedDocRate>0.7173601147776184</StampedDocRate>
+      <PdfPageRate>0.7168458781362007</PdfPageRate>
+      <StampingPageRate>0.7173601147776184</StampingPageRate>
     </ThroughputStatistics>
 
     <MimeTypeStatistics>
