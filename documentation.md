@@ -1,4 +1,7 @@
 # Yaml
+<a name="ConvertRubyFunctions"></a>
+## ConvertRubyFunctions
+
 <a name="RunProcessFromYaml"></a>
 ## RunProcessFromYaml
 
