@@ -4,8 +4,9 @@ using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.asserts;
 using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.enumerations;
-using Reductech.EDR.Utilities.Processes.injection;
+using Reductech.EDR.Utilities.Processes.mutable;
+using Reductech.EDR.Utilities.Processes.mutable.enumerations;
+using Reductech.EDR.Utilities.Processes.mutable.injection;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -313,7 +314,7 @@ Steps:
 
             Assert.IsTrue(isSuccess, error);
 
-            Assert.AreEqual(expectedProcess, value);
+            Assert.AreEqual(expectedProcess.ToString(), value.ToString());
 
         }
 

@@ -66,13 +66,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override IEnumerable<string> GetArgumentErrors()
-        {
-            yield break;
-            //TODO validate search
-        }
 
         internal override string ScriptName => "AddToProductionSet.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()

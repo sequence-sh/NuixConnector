@@ -35,12 +35,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 
 
         /// <inheritdoc />
-        public override IEnumerable<string> GetArgumentErrors()
-        {
-            yield break;
-        }
-
-        /// <inheritdoc />
         public override string GetName()
         {
             return ShouldExist ? "Case should exist" : "Case should not exist";

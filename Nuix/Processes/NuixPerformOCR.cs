@@ -43,12 +43,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [ExampleValue("MyOcrProfile")]
         public string? OCRProfileName { get; set; }
 
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override IEnumerable<string> GetArgumentErrors()
-        {
-            yield break;      
-        }
         internal override string ScriptName => "RunOCR.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {

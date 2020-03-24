@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Utilities.Processes.immutable;
+using Reductech.EDR.Utilities.Processes.mutable;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -17,142 +19,91 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <returns></returns>
         internal abstract string ScriptName { get; }
 
+        /// <summary>
+        /// Get arguments that will be given to the nuix script.
+        /// </summary>
+        /// <returns></returns>
         internal abstract IEnumerable<(string arg, string val)> GetArgumentValuePairs();
 
-        /// <summary>
-        /// Do something with a line returned from the script
-        /// </summary>
-        /// <param name="rl">The line to look at</param>
-        /// <param name="processState">The current state of the process</param>
-        /// <returns>True if the line should continue through the pipeline</returns>
-        internal virtual bool HandleLine(Result<string> rl, ProcessState processState)
+        //Some processes will override this
+        internal virtual Result<ImmutableProcess, ErrorList> TryGetImmutableProcess(string name, string nuixExeConsolePath,
+            IReadOnlyCollection<string> arguments)
         {
-            return true;
+            return Result.Success<ImmutableProcess, ErrorList>(new ImmutableRubyScriptProcess(name, nuixExeConsolePath, arguments));
         }
 
-        /// <summary>
-        /// What to do before the script starts.
-        /// </summary>
-        internal virtual IEnumerable<Result<string>> BeforeScriptStart(ProcessState processState)
+        internal virtual IEnumerable<string> GetAdditionalArgumentErrors()
         {
             yield break;
         }
 
-        /// <summary>
-        /// What to do when the script finishes
-        /// </summary>
-        internal virtual IEnumerable<Result<string>> OnScriptFinish(ProcessState processState)
+        /// <inheritdoc />
+        public override Result<ImmutableProcess, ErrorList> TryFreeze(IProcessSettings processSettings)
         {
-            yield break;
+            var argsResult = TryGetArguments(processSettings, ScriptName, GetArgumentValuePairs(), GetAdditionalArgumentErrors());
+
+            if (argsResult.IsFailure)
+                return argsResult.ConvertFailure<ImmutableProcess>();
+
+            var ip = TryGetImmutableProcess(GetName(), argsResult.Value.nuixExePath, argsResult.Value.arguments);
+
+            return ip;
         }
 
-        /// <summary>
-        /// Gets errors in the settings object
-        /// </summary>
-        /// <param name="processSettings"></param>
-        /// <returns></returns>
-        public override IEnumerable<string> GetSettingsErrors(IProcessSettings processSettings)
+
+        private static Result<(string nuixExePath, IReadOnlyCollection<string> arguments) , ErrorList> TryGetArguments(
+            IProcessSettings processSettings,
+            string scriptName,
+            IEnumerable<(string arg, string val)> parameters,
+            IEnumerable<string> additionalErrors)
         {
-            if (!(processSettings is INuixProcessSettings nps))
-            {
-                yield return $"Process settings must be an instance of {nameof(INuixProcessSettings)}";
-                yield break;
-            }
-
-            if (string.IsNullOrWhiteSpace(nps.NuixExeConsolePath))
-                yield return $"'{nameof(nps.NuixExeConsolePath)}' must not be empty";
-        }
-
-        /// <summary>
-        /// Execute this process
-        /// </summary>
-        /// <returns></returns>
-        public sealed override async IAsyncEnumerable<Result<string>> Execute(IProcessSettings processSettings)
-        {
-            if (!(processSettings is INuixProcessSettings nuixProcessSettings))
-            {
-                yield return Result.Failure<string>($"Process Settings must be an instance of {typeof(INuixProcessSettings).Name}");
-                yield break;
-            }
-
-            var errors = GetArgumentErrors().Concat(GetSettingsErrors(processSettings)).ToList();
-
-            if (errors.Any())
-            {
-                foreach (var ae in errors)
-                    yield return Result.Failure<string>(ae);
-                yield break;
-            }
-
-
-            var currentDirectory = System.AppContext.BaseDirectory;
-            var scriptPath = Path.Combine(currentDirectory,  "scripts", ScriptName);
-            
-            var args = new List<string>();
-
-            foreach (var (key, value) in GetArgumentValuePairs())
-            {
-                args.Add(key);
-                args.Add(value.Replace(@"\", @"\\"));//Escape backslashes
-            }
-
-            var processState = new ProcessState();
+            var errors = new List<string>();
 
             var arguments = new List<string>();
+            var nuixExePath = "";
 
-            if (nuixProcessSettings.UseDongle)
+            if (!(processSettings is INuixProcessSettings nps))
+                errors.Add($"Process Settings must be an instance of {typeof(INuixProcessSettings).Name}");
+            else
             {
-                // ReSharper disable once StringLiteralTypo
-                arguments.Add("-licencesourcetype");
-                arguments.Add("dongle");  
+                if (string.IsNullOrWhiteSpace(nps.NuixExeConsolePath))
+                    errors.Add($"'{nameof(nps.NuixExeConsolePath)}' must not be empty");
+                else
+                    nuixExePath = nps.NuixExeConsolePath;
+
+                if (nps.UseDongle)
+                {
+                    // ReSharper disable once StringLiteralTypo
+                    arguments.Add("-licencesourcetype");
+                    arguments.Add("dongle");  
+                }
             }
+
+            var currentDirectory = System.AppContext.BaseDirectory;
+            var scriptPath = Path.Combine(currentDirectory,  "scripts", scriptName);
 
             if (!string.IsNullOrWhiteSpace(scriptPath))
                 arguments.Add(scriptPath);
 
-            arguments.AddRange(args);
-
-
-            await foreach (var rl in ExternalProcessHelper.RunExternalProcess(nuixProcessSettings.NuixExeConsolePath, arguments))
+            foreach (var (key, value) in parameters)
             {
-                if(HandleLine(rl, processState))
-                    yield return rl;
+                arguments.Add(key);
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    errors.Add($"Argument '{key}' must not be null"); //todo - this may not actually be very helpful to users with the current argument names
+                }
+                else
+                    arguments.Add(value.Replace(@"\", @"\\")); //Escape backslashes
             }
 
-            foreach (var l in OnScriptFinish(processState))
-                yield return l;
-        }
+            errors.AddRange(additionalErrors);
 
-        /// <summary>
-        /// Determines if two processes are equal.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public override bool Equals(object? obj)
-        {
-            return obj is RubyScriptProcess rsp && ScriptName == rsp.ScriptName &&
-                   GetArgumentValuePairs().SequenceEqual(rsp.GetArgumentValuePairs());
-        }
-
-        /// <summary>
-        /// Get the hash code for this process.
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            var t = 2;
-
-            unchecked
-            {
-                t += 3 * GetType().GetHashCode();
-
-                // ReSharper disable once LoopCanBeConvertedToQuery - possible overflow exception
-                foreach (var argumentValuePair in GetArgumentValuePairs()) 
-                    t += argumentValuePair.GetHashCode();
-            }
-            
-
-            return t;
+            if (errors.Any())
+                return Result.Failure<(string nuixExePath, IReadOnlyCollection<string> arguments), ErrorList>(
+                    new ErrorList(errors));
+            else
+                return Result.Success<(string nuixExePath, IReadOnlyCollection<string> arguments), ErrorList>((
+                    nuixExePath, arguments));
         }
     }
 }

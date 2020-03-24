@@ -42,15 +42,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         
         [YamlMember(Order = 6)]
         public string? Description { get; set; }
-
-
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public override IEnumerable<string> GetArgumentErrors()
-        {
-            yield break;
-        }
+
 
         internal override string ScriptName => "CreateCase.rb";
+
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {
             yield return ("-p", CasePath);

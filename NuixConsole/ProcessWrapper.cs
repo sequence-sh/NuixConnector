@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Utilities.Processes;
-using Process = Reductech.EDR.Utilities.Processes.Process;
+using Reductech.EDR.Utilities.Processes.mutable;
+using Process = Reductech.EDR.Utilities.Processes.mutable.Process;
 using Reductech.Utilities.InstantConsole;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
@@ -50,10 +50,20 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
             if (errors.Any())
                 return Result.Failure<Func<object?>, List<string?[]>>(errors);
-            
-            var func = new Func<object?>(()=> instance.Execute(_processSettings));
 
-            return Result.Success<Func<object?>, List<string?[]>>(func);
+
+            var (isSuccess, _, value, error) = instance.TryFreeze(_processSettings);
+
+            if (isSuccess)
+            {
+                var func = new Func<object?>(() => value.Execute());
+
+                return Result.Success<Func<object?>, List<string?[]>>(func);
+            }
+
+            return Result.Failure<Func<object?>, List<string?[]>>(new List<string?[]> {error.ToArray()});
+
+            
         }
 
     }

@@ -72,10 +72,10 @@ Performs a nested process once for each element in an enumeration.
 
 Runs an external process.
 
-|Parameter  |Type                         |Required|Summary                                    |
-|:---------:|:---------------------------:|:------:|:-----------------------------------------:|
-|ProcessPath|`string`                     |☑️      |The path to the process to run.            |
-|Parameters |Dictionary<`string`,`string`>|☑️      |Pairs of parameters to give to the process.|
+|Parameter  |Type                         |Required|Summary                                    |Default                                                             |
+|:---------:|:---------------------------:|:------:|:-----------------------------------------:|:------------------------------------------------------------------:|
+|ProcessPath|`string`                     |☑️      |The path to the process to run.            |                                                                    |
+|Parameters |Dictionary<`string`,`string`>|        |Pairs of parameters to give to the process.|System.Collections.Generic.Dictionary`2[System.String,System.String]|
 
 <a name="Sequence"></a>
 ## Sequence

@@ -1,4 +1,4 @@
-﻿using Reductech.EDR.Utilities.Processes;
+﻿using Reductech.EDR.Utilities.Processes.mutable;
 
 namespace Reductech.EDR.Connectors.Nuix
 {
