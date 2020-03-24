@@ -12,12 +12,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     public sealed class NuixCheckPrintPreviewState : RubyScriptAssertionProcess
     {
         /// <inheritdoc />
-        public override IEnumerable<string> GetArgumentErrors()
-        {
-            yield break;
-        }
-
-        /// <inheritdoc />
         public override string GetName()
         {
             return $"Assert preview state is {ExpectedState}";

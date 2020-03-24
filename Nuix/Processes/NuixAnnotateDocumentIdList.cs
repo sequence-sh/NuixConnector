@@ -43,13 +43,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-
-        public override IEnumerable<string> GetArgumentErrors()
-        {
-            if (!File.Exists(DataPath))
-                yield return $"'{DataPath}' does not exist";
-        }
-
         internal override string ScriptName => "AnnotateDocumentIds.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {

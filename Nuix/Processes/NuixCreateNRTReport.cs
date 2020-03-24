@@ -25,11 +25,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             
         }
 
-        /// <inheritdoc />
-        public override IEnumerable<string> GetArgumentErrors()
-        {
-            yield break; //TODO
-        }
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>

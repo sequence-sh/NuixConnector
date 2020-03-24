@@ -42,16 +42,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 5)]
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
-
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override IEnumerable<string> GetArgumentErrors()
-        {
-            yield break;
-            //TODO validate search term if there is one
-        }
         
-
         internal override string ScriptName => "RemoveFromProductionSet.rb";
         internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
         {

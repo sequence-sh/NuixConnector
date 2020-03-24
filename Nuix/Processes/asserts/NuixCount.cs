@@ -12,12 +12,46 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     /// </summary>
     public sealed class NuixCount : RubyScriptAssertionProcess
     {
+        /// <summary>
+        /// Inclusive minimum of the expected range.
+        /// Either this, Maximum, or both must be set.
+        /// </summary>
+        
+        [YamlMember(Order = 2 )]
+        public int? Minimum { get; set; }
+
+        /// <summary>
+        /// Inclusive maximum of the expected range.
+        /// Either this, Minimum, or both must be set.
+        /// </summary>
+        
+        [YamlMember(Order = 3 )]
+        public int? Maximum { get; set; }
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [YamlMember(Order = 4)]
+        [ExampleValue("C:/Cases/MyCase")]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        public string CasePath { get; set; }
+
+        /// <summary>
+        /// The search term to count.
+        /// </summary>
+        [Required]
+        [ExampleValue("*.txt")]
+        [YamlMember(Order = 5)]
+        public string SearchTerm { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+
         /// <inheritdoc />
-        public override IEnumerable<string> GetArgumentErrors()
+        internal override IEnumerable<string> GetAdditionalArgumentErrors()
         {
             if(Minimum == null && Maximum == null)
                 yield return  "Either minimum or maximum must be set.";
-            //TODO validate search term
         }
 
         /// <inheritdoc />
@@ -59,39 +93,5 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         
         /// <inheritdoc />
         protected override string DefaultFailureMessage => "Could not confirm count";
-
-        /// <summary>
-        /// Inclusive minimum of the expected range.
-        /// Either this, Maximum, or both must be set.
-        /// </summary>
-        
-        [YamlMember(Order = 2 )]
-        public int? Minimum { get; set; }
-
-        /// <summary>
-        /// Inclusive maximum of the expected range.
-        /// Either this, Minimum, or both must be set.
-        /// </summary>
-        
-        [YamlMember(Order = 3 )]
-        public int? Maximum { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("C:/Cases/MyCase")]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string CasePath { get; set; }
-
-        /// <summary>
-        /// The search term to count.
-        /// </summary>
-        [Required]
-        [ExampleValue("*.txt")]
-        [YamlMember(Order = 5)]
-        public string SearchTerm { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }
 }
