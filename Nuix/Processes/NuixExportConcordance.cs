@@ -49,14 +49,53 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        internal override string ScriptName => "ExportConcordance.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+
+        /// <inheritdoc />
+        internal override string ScriptText =>
+            @"    the_case = utilities.case_factory.open(pathArg)
+
+    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+
+    if productionSet == nil
+
+        puts ""Could not find production set with name '#{:productionSetNameArg.to_s}'""
+
+    else
+        batchExporter = utilities.createBatchExporter(exportPathArg)
+
+        batchExporter.addLoadFile(""concordance"",{
+        :metadataProfile => metadataProfileArg
+		})
+
+        batchExporter.addProduct(""native"", {
+        :naming=> ""full"",
+        :path => ""Native""
+        })
+
+        batchExporter.addProduct(""text"", {
+        :naming=> ""full"",
+        :path => ""Text""
+        })
+
+
+        puts 'Starting export.'
+        batchExporter.exportItems(productionSet)        
+        puts 'Export complete.'
+
+    end
+
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "ExportConcordance";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-x", ExportPath);
-            yield return ("-n", ProductionSetName);
-            if(MetadataProfileName != null)
-                yield return ("-m", MetadataProfileName);
+            yield return ("pathArg", CasePath, false);
+            yield return ("exportPathArg", ExportPath, false);
+            yield return ("productionSetNameArg", ProductionSetName, false);
+            yield return ("metadataProfileArg", MetadataProfileName, true);
         }
     }
 }

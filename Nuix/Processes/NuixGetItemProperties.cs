@@ -15,8 +15,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Get particular properties";
 
-        internal override string ScriptName => "GetParticularProperties.rb";
-
 
         /// <summary>
         /// The path to the case.
@@ -56,12 +54,33 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        /// <inheritdoc />
+        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
+
+    puts ""Finding Entities""
+    items = the_case.search(searchArg, {})
+    puts ""#{items.length} items found""
+    regex = Regexp.new(regexArg)    
+    puts ""Output#{fileArg}:Key\tValue\tPath\tGuid""
+
+    items.each do |i| 
+        i.getProperties().each do |k,v|
+          puts ""Output#{fileArg}:#{k}\t#{v}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}"" if regex =~ k
+        end
+    end
+   
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "GetParticularProperties";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-s", SearchTerm);
-            yield return ("-r", PropertyRegex);
-            yield return ("-f", OutputFileName);
+            yield return ("pathArg", CasePath, false);
+            yield return ("searchArg", SearchTerm, false);
+            yield return ("regexArg", PropertyRegex, false);
+            yield return ("fileArg", OutputFileName, false);
         }
     }
 }

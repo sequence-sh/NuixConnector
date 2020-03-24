@@ -48,6 +48,25 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 
 
         /// <inheritdoc />
+        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
+
+    puts ""Counting '#{searchArg}'""
+    searchOptions = {}
+    count = the_case.count(searchArg, searchOptions)
+    puts ""#{count} found""
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "CountItems";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        {
+            yield return ("pathArg", CasePath, false);
+            yield return ("searchArg", SearchTerm, false);
+        }
+
+        /// <inheritdoc />
         internal override IEnumerable<string> GetAdditionalArgumentErrors()
         {
             if(Minimum == null && Maximum == null)
@@ -66,13 +85,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
                 : $"Assert {Minimum.Value} <= count of '{SearchTerm}' <= {Maximum.Value}";
         } 
 
-        internal override string ScriptName => "CountItems.rb";
-
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
-        {
-            yield return ("-p", CasePath);
-            yield return ("-s", SearchTerm);
-        }
 
         private static readonly Regex CountRegex = new Regex( @"\A(?<count>\d+)\sfound\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

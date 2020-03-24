@@ -47,7 +47,7 @@ else
 
             options = 
             {
-                sourceProductionSetsInData: hash_options[:pathArg] == "true",
+                sourceProductionSetsInData: hash_options[:sourceProductionSetsInDataArg] == "true",
                 dataPath: hash_options[:dataPathArg]
             }
 

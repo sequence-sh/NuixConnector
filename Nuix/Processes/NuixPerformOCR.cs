@@ -42,14 +42,48 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [DefaultValueExplanation("The default profile will be used.")]
         [ExampleValue("MyOcrProfile")]
         public string? OCRProfileName { get; set; }
+        
 
-        internal override string ScriptName => "RunOCR.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        /// <inheritdoc />
+        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
+
+            searchTerm = searchTermArg    
+    
+        items = the_case.searchUnsorted(searchTerm).to_a
+
+            puts ""Running OCR on #{items.length} items""
+    
+            processor = utilities.createOcrProcessor()
+
+
+                if ocrProfileArg != nil
+            ocrProfileStore = the_case.getOcrProfileStore()
+
+        puts ""Got profile store""
+
+        profile = ocrProfileStore.getProfile(ocrProfileArg)
+
+        if profile != nil
+            processor.process(items, profile)
+        puts ""Items Processed""
+        else
+        puts ""Could not find profile '#{ocrProfileArg}'""
+        end
+        else
+        processor.process(items)
+            puts ""Items Processed""
+        end    
+        the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "RunOCR";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-s", SearchTerm);
-            if(OCRProfileName != null)
-                yield return ("-o", OCRProfileName);
+            yield return ("pathArg", CasePath, false);
+            yield return ("searchTermArg", SearchTerm, false);
+            yield return ("ocrProfileArg", OCRProfileName, true);
         }
     }
 }

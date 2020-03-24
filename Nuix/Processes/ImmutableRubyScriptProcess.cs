@@ -1,23 +1,79 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
+    //TODO seal this class and get rid of virtual methods - they do not work with composition
     internal class ImmutableRubyScriptProcess : ImmutableProcess
     {
         /// <inheritdoc />
-        public ImmutableRubyScriptProcess(string name, string nuixExeConsolePath, IReadOnlyCollection<string> arguments) : base(name)
+        public ImmutableRubyScriptProcess(
+            string name, 
+            string nuixExeConsolePath,
+            bool useDongle,
+            IReadOnlyCollection<string> methodSet, 
+            IReadOnlyCollection<MethodCall> methodCalls) : base(name)
         {
             _nuixExeConsolePath = nuixExeConsolePath;
-            _arguments = arguments;
+            _useDongle = useDongle;
+            _methodSet = methodSet;
+            _methodCalls = methodCalls;
         }
 
         private readonly string _nuixExeConsolePath;
+        private readonly bool _useDongle;
 
-        private readonly IReadOnlyCollection<string> _arguments;
+        /// <summary>
+        /// All the ruby methods that might be used
+        /// </summary>
+        private readonly IReadOnlyCollection<string> _methodSet;
+
+
+        private readonly IReadOnlyCollection<MethodCall> _methodCalls;
+
+        private (string scriptText, IReadOnlyCollection<string> arguments) CompileScript()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var method in _methodSet)
+            {
+                sb.AppendLine(method);
+                sb.AppendLine();
+            }
+
+            var arguments = new List<string>();
+
+            foreach (var methodCall in _methodCalls)
+            {
+                var callLine = new StringBuilder(methodCall.MethodName + "(");
+
+                var first = true;
+                foreach (var (_, value) in methodCall.MethodParameters)
+                {
+                    if (!first) callLine.Append(", ");
+
+                    if (value == null) callLine.Append("nil");
+                    else
+                    {
+                        callLine.Append($"ARGV[{arguments.Count}]");
+                        arguments.Add(value);
+                    }
+                    
+                    first = false;
+                }
+
+                callLine.Append(")");
+
+                sb.AppendLine(callLine.ToString());
+            }
+
+            return (sb.ToString(), arguments);
+        }
+
 
         /// <inheritdoc />
         public override async IAsyncEnumerable<Result<string>> Execute()
@@ -27,7 +83,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             foreach (var lb in BeforeScriptStart(processState))
                 yield return lb;
 
-            await foreach (var rl in ExternalProcessHelper.RunExternalProcess(_nuixExeConsolePath, _arguments))
+            var (scriptText, arguments) = CompileScript();
+
+            var trueArguments = new List<string>();
+            if (_useDongle)
+            {
+                // ReSharper disable once StringLiteralTypo
+                trueArguments.Add("-licencesourcetype");
+                trueArguments.Add("dongle");  
+            }
+            trueArguments.Add("-command");
+            trueArguments.Add(scriptText);
+            trueArguments.AddRange(arguments);
+
+            await foreach (var rl in ExternalProcessHelper.RunExternalProcess(_nuixExeConsolePath, trueArguments))
             {
                 if(HandleLine(rl, processState))
                     yield return rl;
@@ -36,6 +105,31 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             foreach (var l in OnScriptFinish(processState))
                 yield return l;
         }
+
+        /// <inheritdoc />
+        public override Result<ImmutableProcess> TryCombine(ImmutableProcess nextProcess)
+        {
+            //TODO this DOES NOT WORK with derived methods - get rid of them!
+
+            if (CanBeCombined &&
+                nextProcess is ImmutableRubyScriptProcess np 
+                && np.CanBeCombined
+                && _nuixExeConsolePath == np._nuixExeConsolePath && _useDongle == np._useDongle)
+            {
+                var newProcess = new ImmutableRubyScriptProcess(
+                    $"{Name} then {np.Name}", 
+                    _nuixExeConsolePath, 
+                    _useDongle,
+                    _methodSet.Concat(np._methodSet).Distinct().ToList(),
+                    _methodCalls.Concat(np._methodCalls).ToList()
+                    );
+
+                return Result.Success<ImmutableProcess>(newProcess);
+            }
+
+            return Result.Failure<ImmutableProcess>("Could not combine");
+        }
+
         /// <summary>
         /// Do something with a line returned from the script
         /// </summary>
@@ -63,6 +157,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield break;
         }
 
+        internal virtual bool CanBeCombined => true;
+
         /// <inheritdoc />
         public override int GetHashCode()
         {
@@ -76,7 +172,38 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 return false;
 
             return Name == rsp.Name && _nuixExeConsolePath.Equals(rsp._nuixExeConsolePath) &&
-                   _arguments.SequenceEqual(rsp._arguments);
+                   _methodCalls.SequenceEqual(rsp._methodCalls);
+        }
+
+        public class MethodCall
+        {
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return MethodName;
+            }
+
+            /// <summary>
+            /// The name of the method.
+            /// </summary>
+            public readonly string MethodName;
+
+            /// <summary>
+            /// The parameters to send to the method
+            /// </summary>
+            public readonly IReadOnlyList<KeyValuePair<string, string?>> MethodParameters;
+
+            public MethodCall(string methodName, IEnumerable<KeyValuePair<string, string?>> methodParameters)
+            {
+                MethodName = methodName;
+                MethodParameters = methodParameters.ToList();
+            }
+
+            /// <inheritdoc />
+            public override int GetHashCode()
+            {
+                return System.HashCode.Combine(MethodName);
+            }
         }
     }
 }

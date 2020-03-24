@@ -15,7 +15,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     public abstract class RubyScriptWithOutputProcess : RubyScriptProcess
     {
         /// <inheritdoc />
-        internal override Result<ImmutableProcess, ErrorList> TryGetImmutableProcess(string name, string nuixExeConsolePath, IReadOnlyCollection<string> arguments)
+        internal override Result<ImmutableProcess, ErrorList> TryGetImmutableProcess(string name, string nuixExeConsolePath, bool useDongle, IReadOnlyCollection<string> methodSet,
+            IReadOnlyCollection<ImmutableRubyScriptProcess.MethodCall> methodCalls)
         {
             if (string.IsNullOrWhiteSpace(OutputFolder))
                 return Result.Failure<ImmutableProcess, ErrorList>(new ErrorList($"{nameof(OutputFolder)} field must not be empty."));
@@ -25,8 +26,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
             return Result.Success<ImmutableProcess, ErrorList>(
-                new ImmutableRubyScriptWithOutputProcess(name, nuixExeConsolePath, arguments, OutputFolder));
+                new ImmutableRubyScriptWithOutputProcess(name, nuixExeConsolePath, useDongle, methodSet, methodCalls, OutputFolder));
         }
+
 
 
 

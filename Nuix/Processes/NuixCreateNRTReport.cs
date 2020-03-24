@@ -10,21 +10,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// </summary>
     public sealed class NuixCreateNRTReport : RubyScriptProcess
     {
-        internal override string ScriptName => "CreateNRTReport.rb";
-
         /// <inheritdoc />
         public override string GetName() => "Create NRT Report";
-
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
-        {
-            yield return ("-p", CasePath);
-            yield return ("-n", NRTPath);
-            yield return ("-f", OutputFormat);
-            yield return ("-o", OutputPath);
-            yield return ("-l", LocalResourcesURL);
-            
-        }
-
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
@@ -70,5 +57,43 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
+        /// <inheritdoc />
+        internal override string ScriptText =>
+            @"the_case = utilities.case_factory.open(pathArg)
+    puts 'Generating NRT Report:'
+
+    reportGenerator = utilities.getReportGenerator();
+    reportContext = {
+    'NUIX_USER' => 'Mark',
+    'NUIX_APP_NAME' => 'AppName',
+    'NUIX_REPORT_TITLE' => 'ReportTitle',
+    'NUIX_APP_VERSION' => NUIX_VERSION,
+    'LOCAL_RESOURCES_URL' => localResourcesUrlArg,
+    'currentCase' => the_case,
+    'utilities' => $utilities,
+    'dedupeEnabled' => true
+    }
+
+    reportGenerator.generateReport(
+    NRTPathArg,
+    reportContext.to_java,
+    OutputFormatArg,
+    OutputPathArg
+    )
+
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "CreateNRTReport";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        {
+            yield return ("pathArg", CasePath, false);
+            yield return ("NRTPathArg", NRTPath, false);
+            yield return ("OutputFormatArg", OutputFormat, false);
+            yield return ("OutputPathArg", OutputPath, false);
+            yield return ("localResourcesUrlArg", LocalResourcesURL, false);
+        }
     }
 }

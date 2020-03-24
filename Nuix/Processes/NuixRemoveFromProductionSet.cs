@@ -43,13 +43,48 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
         
-        internal override string ScriptName => "RemoveFromProductionSet.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+
+        /// <inheritdoc />
+        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
+
+    puts ""Searching""
+
+        productionSet = the_case.findProductionSetByName(productionSetNameArg)
+
+        if(productionSet == nil)
+            puts ""Production Set Not Found""
+        else
+            puts ""Production Set Found""
+
+            if searchArg != nil
+                items = the_case.searchUnsorted(searchArg)
+                productionSetItems = productionSet.getItems();
+                itemsToRemove = items.to_a & productionSetItems
+                productionSet.removeItems(itemsToRemove)
+                puts ""#{itemsToRemove.length} removed""
+
+            else
+                previousTotal = getItems().length
+
+                productionSet.removeAllItems()
+                puts ""All items (#{previousTotal}) removed""
+            end
+
+            
+
+        end
+
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "RemoveFromProductionSet";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            if(SearchTerm != null)
-                yield return ("-s", SearchTerm);
-            yield return ("-n", ProductionSetName);
+            yield return ("pathArg", CasePath, false);
+            yield return ("productionSetNameArg", SearchTerm, true);
+            yield return ("searchArg", ProductionSetName, false);
         }
     }
 }

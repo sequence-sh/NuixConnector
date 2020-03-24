@@ -40,12 +40,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
             return ShouldExist ? "Case should exist" : "Case should not exist";
         }
 
-        internal override string ScriptName => "DoesCaseExist.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
-        {
-            yield return ("-p", CasePath);
-        }
-
         /// <summary>
         /// If true, asserts that the case does exist.
         /// If false, asserts that the case does not exist.
@@ -63,6 +57,26 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        
+
+        /// <inheritdoc />
+        internal override string ScriptText =>
+            @"
+    begin
+        the_case = utilities.case_factory.open(pathArg)
+        puts ""Case Exists""
+        the_case.close
+    rescue
+         puts ""Case does not exist""
+    end
+";
+
+        /// <inheritdoc />
+        internal override string MethodName => "DoesCaseExist";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        {
+            yield return ("pathArg", CasePath, false);
+        }
     }
 }

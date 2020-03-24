@@ -18,16 +18,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         }
 
         /// <inheritdoc />
-        internal override string ScriptName => "GetPrintPreviewState.rb";
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
-        {
-            yield return ("-p", CasePath);
-            yield return ("-n", ProductionSetName);
-        }
-
-        /// <inheritdoc />
         protected override (bool success, string? failureMessage)? InterpretLine(string s)
         {
             var pps = s.ToLowerInvariant() switch
@@ -72,5 +62,33 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+        
+        /// <inheritdoc />
+        internal override string ScriptText =>
+        @"    the_case = utilities.case_factory.open(pathArg)
+    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+
+        if(productionSet == nil)        
+            puts ""Production Set Not Found""
+        else            
+            puts ""Production Set Found""
+
+            r = productionSet.getPrintPreviewState()
+
+            puts r
+        end 
+
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "GetPrintPreviewState";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        {
+            yield return ("pathArg", CasePath, false);
+            yield return ("productionSetNameArg", ProductionSetName, false);
+        }
     }
 }

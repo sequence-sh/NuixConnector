@@ -71,37 +71,84 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 9)]
         public List<string>? CustodianRanking { get; set; }
 
+        
+        /// <summary>
+        /// How to order the items to be added to the item set.
+        /// </summary>
+        [YamlMember(Order = 7)]
+        [ExampleValue("name ASC, item-date DESC")]
+        public string? Order { get; set; }
+
+        /// <summary>
+        /// The maximum number of items to add to the item set.
+        /// </summary>
+        [YamlMember(Order = 8)]
+        public int? Limit { get; set; }
+
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable
 
 
-        internal override string ScriptName => "AddToItemSet.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        /// <inheritdoc />
+        internal override string ScriptText =>
+            @"  the_case = utilities.case_factory.open(pathArg)
+
+    itemSet = the_case.findItemSetByName(itemSetNameArg)
+
+    if(itemSet == nil)
+        itemSetOptions = {}
+
+        itemSetOptions[:deduplication] = deduplicationArg if deduplicationArg != nil
+        itemSetOptions[:description] = descriptionArg if descriptionArg != nil
+        itemSetOptions[:deduplicateBy] = deduplicateByArg if deduplicateByArg != nil
+        itemSetOptions[:custodianRanking] = custodianRankingArg.split("","") if custodianRankingArg != nil
+
+        itemSet = the_case.createItemSet(productionSetNameArg, itemSetOptions)
+        
+        puts ""Item Set Created""
+    else
+        puts ""Item Set Found""
+    end    
+
+    puts ""Searching""
+
+    searchOptions = {}
+    searchOptions[:order] = orderArg if orderArg != nil
+    searchOptions[:limit] = limitArg.to_i if limitArg != nil
+
+    items = the_case.search(searchArg, searchOptions)
+
+    puts ""#{items.length} found""
+
+    itemSet.addItems(items)
+
+    puts ""items added""
+
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "AddToItemSet";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-s", SearchTerm);
-            yield return ("-n", ItemSetName);
+            yield return ("pathArg", CasePath, false);
+            yield return ("searchArg", SearchTerm, false);
+            yield return ("itemSetNameArg", ItemSetName, false);
 
-            //TODO order and limit
-            
-            if (ItemSetDeduplication != ItemSetDeduplication.Default)
-            {
-                yield return("-d", ItemSetDeduplication.GetDescription());
-            }
+            yield return ("deduplicationArg",
+                ItemSetDeduplication != ItemSetDeduplication.Default ? ItemSetDeduplication.GetDescription() : null,
+                true);
 
-            if (ItemSetDescription != null)
-            {
-                yield return("-r", ItemSetDescription);
-            }
+            yield return("descriptionArg", ItemSetDescription, true);
 
-            if (DeduplicateBy != DeduplicateBy.Individual)
-            {
-                yield return("-b", DeduplicateBy.GetDescription());
-            }
+            yield return("deduplicateByArg",DeduplicateBy.GetDescription(), false);
 
-            if (CustodianRanking != null)
-            {
-                yield return("-c", string.Join(",", CustodianRanking));
-            }
+            yield return("custodianRankingArg",
+                CustodianRanking != null?
+                    string.Join(",", CustodianRanking) : null, true);
+
+            yield return ("orderArg", Order, true);
+            yield return ("limitArg", Limit?.ToString(), true);
         }
     }
 }

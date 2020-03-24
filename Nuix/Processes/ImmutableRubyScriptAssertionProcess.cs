@@ -7,16 +7,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 {
     internal class ImmutableRubyScriptAssertionProcess : ImmutableRubyScriptProcess
     {
-        /// <inheritdoc />
-        public ImmutableRubyScriptAssertionProcess(
-            string name, 
-            string nuixExeConsolePath, 
-            IReadOnlyCollection<string> arguments, 
-            Func<string, (bool success, string? failureMessage)?> interpretLine, string defaultFailureMessage) : base(name, nuixExeConsolePath, arguments)
-        {
-            _interpretLine = interpretLine;
-            _defaultFailureMessage = defaultFailureMessage;
-        }
 
         private readonly Func<string, (bool success, string? failureMessage)?> _interpretLine;
         /// <summary>
@@ -63,5 +53,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return Result.Failure<string>(failureMessage);
         }
 
+        /// <inheritdoc />
+        internal override bool CanBeCombined => false;
+
+        /// <inheritdoc />
+        public ImmutableRubyScriptAssertionProcess(string name, string nuixExeConsolePath, bool useDongle, IReadOnlyCollection<string> methodSet, IReadOnlyCollection<MethodCall> methodCalls, Func<string, (bool success, string? failureMessage)?> interpretLine, string defaultFailureMessage) : base(name, nuixExeConsolePath, useDongle, methodSet, methodCalls)
+        {
+            _interpretLine = interpretLine;
+            _defaultFailureMessage = defaultFailureMessage;
+        }
     }
 }

@@ -11,8 +11,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 {
     internal class ImmutableRubyScriptWithOutputProcess : ImmutableRubyScriptProcess
     {
+
         /// <inheritdoc />
-        public ImmutableRubyScriptWithOutputProcess(string name, string nuixExeConsolePath, IReadOnlyCollection<string> arguments, string outputFolder) : base(name, nuixExeConsolePath, arguments)
+        public ImmutableRubyScriptWithOutputProcess(string name, string nuixExeConsolePath, bool useDongle, IReadOnlyCollection<string> methodSet, IReadOnlyCollection<MethodCall> methodCalls, string outputFolder) : base(name, nuixExeConsolePath, useDongle, methodSet, methodCalls)
         {
             _outputFolder = outputFolder;
         }
@@ -77,5 +78,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             }
             else return base.HandleLine(rl, processState);
         }
+
+        /// <inheritdoc />
+        internal override bool CanBeCombined => false;
     }
 }

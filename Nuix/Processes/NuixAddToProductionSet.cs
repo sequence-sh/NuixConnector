@@ -53,7 +53,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// How to order the items to be added to the production set.
         /// </summary>
-        
         [YamlMember(Order = 7)]
         [ExampleValue("name ASC, item-date DESC")]
         public string? Order { get; set; }
@@ -67,19 +66,56 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
-        internal override string ScriptName => "AddToProductionSet.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-s", SearchTerm);
-            yield return ("-n", ProductionSetName);
-
-            if(Description != null)
-                yield return ("-d", Description);
-            if(Order != null)
-                yield return ("-o", Order);
-            if(Limit.HasValue)
-                yield return ("-l", Limit.Value.ToString());
+            yield return ("pathArg", CasePath, false);
+            yield return ("searchArg", SearchTerm, false);
+            yield return ("productionSetNameArg", ProductionSetName, false);
+            yield return ("descriptionArg", Description, true);
+            yield return ("orderArg", Order, true);
+            yield return ("limitArg", Limit?.ToString(), true);
         }
+
+        /// <inheritdoc />
+        internal override string ScriptText =>
+            @"  the_case = utilities.case_factory.open(pathArg)
+
+    puts ""Searching""
+
+    searchOptions = {}
+    searchOptions[:order] = orderArg if orderArg != nil
+    searchOptions[:limit] = limitArg.to_i if limitArg != nil
+
+    items = the_case.search(searchArg, searchOptions)
+
+    puts ""#{items.length} found""
+
+    if items.length > 0
+
+        productionSet = the_case.findProductionSetByName(productionSetNameArg)
+
+        if(productionSet == nil)
+
+            options = {}
+            options[:description] = descriptionArg.to_i if descriptionArg != nil
+
+            productionSet = the_case.newProductionSet(productionSetNameArg, options)
+        
+            puts ""Production Set Created""
+        else
+            puts ""Production Set Found""
+        end
+
+        productionSet.addItems(items)
+
+        puts ""items added""
+    end    
+
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "AddToProductionSet";
+        
     }
 }

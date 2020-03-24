@@ -26,10 +26,22 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Migrate Case";
 
-        internal override string ScriptName => "MigrateCase.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        /// <inheritdoc />
+        internal override string ScriptText => @"def (pathArg)
+
+    puts ""Opening Case, migrating if necessary""
+    
+    options = {migrate: true}
+
+    the_case = utilities.case_factory.open(pathArg, options)";
+
+        /// <inheritdoc />
+        internal override string MethodName => "MigrateCase";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
+            yield return ("pathArg", CasePath, false);
         }
     }
 }

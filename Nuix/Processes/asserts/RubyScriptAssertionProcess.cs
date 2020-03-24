@@ -11,10 +11,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     public abstract class RubyScriptAssertionProcess : RubyScriptProcess
     {
         /// <inheritdoc />
-        internal override Result<ImmutableProcess, ErrorList> TryGetImmutableProcess(string name, string nuixExeConsolePath, IReadOnlyCollection<string> arguments)
+        internal override Result<ImmutableProcess, ErrorList> TryGetImmutableProcess(string name, string nuixExeConsolePath, bool useDongle, IReadOnlyCollection<string> methodSet,
+            IReadOnlyCollection<ImmutableRubyScriptProcess.MethodCall> methodCalls)
         {
             return Result.Success<ImmutableProcess, ErrorList>(
-                new ImmutableRubyScriptAssertionProcess(name, nuixExeConsolePath, arguments, InterpretLine, DefaultFailureMessage));
+                new ImmutableRubyScriptAssertionProcess(name, nuixExeConsolePath, useDongle, methodSet, methodCalls, InterpretLine, DefaultFailureMessage));
         }
 
 

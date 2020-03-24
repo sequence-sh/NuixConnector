@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
@@ -51,13 +50,43 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
-        internal override string ScriptName => "ImportDocumentIds.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        /// <inheritdoc />
+        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
+
+    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+
+        if(productionSet == nil)        
+            puts ""Production Set Not Found""
+        else            
+            puts ""Production Set Found""
+
+            options = 
+            {
+                sourceProductionSetsInData: pathArg == ""true"",
+                dataPath: dataPathArg
+            }
+
+            failedItemsCount = productionSet.importDocumentIds(options)
+
+            if failedItemsCount == 0
+                puts ""All document ids imported successfully""
+            else
+                puts ""#{failedItemsCount} items failed to import""
+
+        end 
+
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "ImportDocumentIds";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-s", AreSourceProductionSetsInData.ToString().ToLower());
-            yield return ("-n", ProductionSetName);
-            yield return ("-d", DataPath);
+            yield return ("pathArg", CasePath, false);
+            yield return ("sourceProductionSetsInDataArg", AreSourceProductionSetsInData.ToString().ToLower(), false);
+            yield return ("productionSetNameArg", ProductionSetName, false);
+            yield return ("dataPathArg", DataPath, false);
         }
     }
 }

@@ -1,7 +1,4 @@
 # Yaml
-<a name="ConvertRubyFunctions"></a>
-## ConvertRubyFunctions
-
 <a name="RunProcessFromYaml"></a>
 ## RunProcessFromYaml
 
@@ -182,15 +179,17 @@ Adds a file or directory to a Nuix Case.
 
 Searches a case with a particular search string and adds all items it finds to a particular item set. Will create a new item set if one doesn't already exist.
 
-|Parameter           |Type                                         |Required|Summary                                                                                                                                                                                      |Default   |Example        |
-|:------------------:|:-------------------------------------------:|:------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------:|:-------------:|
-|ItemSetName         |`string`                                     |☑️      |The item set to add results to. Will be created if it doesn't already exist.                                                                                                                 |          |               |
-|SearchTerm          |`string`                                     |☑️      |The term to search for.                                                                                                                                                                      |          |               |
-|CasePath            |`string`                                     |☑️      |The path of the case to search.                                                                                                                                                              |          |C:/Cases/MyCase|
-|ItemSetDeduplication|[ItemSetDeduplication](#ItemSetDeduplication)|        |The means of deduplicating items by key and prioritizing originals in a tie-break.                                                                                                           |Default   |               |
-|ItemSetDescription  |`string`                                     |        |The description of the item set.                                                                                                                                                             |          |               |
-|DeduplicateBy       |[DeduplicateBy](#DeduplicateBy)              |        |Whether to deduplicate as a family or individual.                                                                                                                                            |Individual|               |
-|CustodianRanking    |List<`string`>                               |        |A list of custodian names ordered from highest ranked to lowest ranked. If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.|          |               |
+|Parameter           |Type                                         |Required|Summary                                                                                                                                                                                      |Default   |Example                 |
+|:------------------:|:-------------------------------------------:|:------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------:|:----------------------:|
+|ItemSetName         |`string`                                     |☑️      |The item set to add results to. Will be created if it doesn't already exist.                                                                                                                 |          |                        |
+|SearchTerm          |`string`                                     |☑️      |The term to search for.                                                                                                                                                                      |          |                        |
+|CasePath            |`string`                                     |☑️      |The path of the case to search.                                                                                                                                                              |          |C:/Cases/MyCase         |
+|ItemSetDeduplication|[ItemSetDeduplication](#ItemSetDeduplication)|        |The means of deduplicating items by key and prioritizing originals in a tie-break.                                                                                                           |Default   |                        |
+|ItemSetDescription  |`string`                                     |        |The description of the item set.                                                                                                                                                             |          |                        |
+|Order               |`string`                                     |        |How to order the items to be added to the item set.                                                                                                                                          |          |name ASC, item-date DESC|
+|DeduplicateBy       |[DeduplicateBy](#DeduplicateBy)              |        |Whether to deduplicate as a family or individual.                                                                                                                                            |Individual|                        |
+|Limit               |`int`?                                       |        |The maximum number of items to add to the item set.                                                                                                                                          |          |                        |
+|CustodianRanking    |List<`string`>                               |        |A list of custodian names ordered from highest ranked to lowest ranked. If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.|          |                        |
 
 <a name="NuixAddToProductionSet"></a>
 ## NuixAddToProductionSet

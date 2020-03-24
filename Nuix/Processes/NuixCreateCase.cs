@@ -45,15 +45,28 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
-        internal override string ScriptName => "CreateCase.rb";
 
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+
+        /// <inheritdoc />
+        internal override string ScriptText => @"puts 'Creating Case'
+    
+        the_case = utilities.case_factory.create(pathArg,
+        :name => nameArg,
+        :description => descriptionArg,
+        :investigator => investigatorArg)
+        puts 'Case Created'
+        the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "CreateCase";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-n", CaseName);
-            if(Description != null)
-                yield return ("-d", Description);
-            yield return ("-i", Investigator);
+            yield return ("pathArg", CasePath, false);
+            yield return ("nameArg", CaseName, false);
+            yield return ("descriptionArg", Description, true);
+            yield return ("investigatorArg", Investigator, false);
         }
     }
 }

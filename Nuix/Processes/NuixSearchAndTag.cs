@@ -45,15 +45,36 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
+        
+        /// <inheritdoc />
+        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
 
-        internal override string ScriptName => "SearchAndTag.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+    puts ""Searching for '#{searchArg}'""
+
+    searchOptions = {}
+    items = the_case.search(searchArg, searchOptions)
+    puts ""#{items.length} found""
+
+    j = 0
+
+    items.each {|i|
+       added = i.addTag(tagArg)
+       j += 1 if added
+    }
+
+    puts ""#{j} items tagged""
+
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "SearchAndTag";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-s", SearchTerm);
-            yield return ("-t", Tag);
-
-            //TODO limit and order
+            yield return ("pathArg", CasePath, false);
+            yield return ("searchArg", SearchTerm, false);
+            yield return ("tagArg", Tag, false);
         }
     }
 }

@@ -65,17 +65,36 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
-        internal override string ScriptName => "AddToCase.rb";
-        internal override IEnumerable<(string arg, string val)> GetArgumentValuePairs()
+        /// <inheritdoc />
+        internal override string ScriptText => @"the_case = utilities.case_factory.open(pathArg)
+    processor = the_case.create_processor
+    processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
+
+    folder = processor.new_evidence_container(folderNameArg)
+
+    folder.description = folderDescriptionArg if folderDescriptionArg != nil
+    folder.initial_custodian = folderCustodianArg
+
+    folder.add_file(filePathArg)
+    folder.save
+
+    puts 'Starting processing.'
+    processor.process
+    puts 'Processing complete.'
+    the_case.close";
+
+        /// <inheritdoc />
+        internal override string MethodName => "AddToCase";
+
+        /// <inheritdoc />
+        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("-p", CasePath);
-            yield return ("-n", FolderName);
-            if(Description != null)
-                yield return ("-d", Description);
-            yield return ("-c", Custodian);
-            yield return ("-f", Path);
-            if(ProcessingProfileName != null)
-                yield return ("-r", ProcessingProfileName);
+            yield return ("pathArg", CasePath, false);
+            yield return ("folderNameArg", FolderName, false);
+            yield return ("folderDescriptionArg", Description, true);
+            yield return ("folderCustodianArg", Custodian, false);
+            yield return ("filePathArg", Path, false);
+            yield return ("processingProfileNameArg", ProcessingProfileName, true);
         }
     }
 }
