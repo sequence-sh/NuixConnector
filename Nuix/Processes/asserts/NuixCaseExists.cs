@@ -63,10 +63,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
             @"
     begin
         the_case = utilities.case_factory.open(pathArg)
-        puts ""Case Exists""
+        puts 'Case Exists'
         the_case.close
     rescue
-         puts ""Case does not exist""
+         puts 'Case does not exist'
     end
 ";
 

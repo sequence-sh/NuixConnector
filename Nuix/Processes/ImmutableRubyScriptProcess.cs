@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
@@ -84,6 +87,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 yield return lb;
 
             var (scriptText, arguments) = CompileScript();
+            var scriptFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()), "rb");
+            
+            await System.IO.File.WriteAllTextAsync(scriptFilePath, scriptText);
 
             var trueArguments = new List<string>();
             if (_useDongle)
@@ -92,9 +98,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 trueArguments.Add("-licencesourcetype");
                 trueArguments.Add("dongle");  
             }
-            trueArguments.Add("-command");
-            trueArguments.Add(scriptText);
-            trueArguments.AddRange(arguments);
+            trueArguments.Add(scriptFilePath);
+            trueArguments.AddRange(arguments.Select(EncodeParameterArgumentMultiLine));
 
             await foreach (var rl in ExternalProcessHelper.RunExternalProcess(_nuixExeConsolePath, trueArguments))
             {
@@ -104,6 +109,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
             foreach (var l in OnScriptFinish(processState))
                 yield return l;
+        }
+
+        private static string EncodeParameterArgumentMultiLine(string original)
+        {
+            if (string.IsNullOrEmpty(original))
+                return original;
+            string value = Regex.Replace(original, @"(\\*)" + "\"", @"$1\$0");
+            value = Regex.Replace(value, @"^(.*\s.*?)(\\*)$", "\"$1$2$2\"", RegexOptions.Singleline);
+
+            return value;
         }
 
         /// <inheritdoc />

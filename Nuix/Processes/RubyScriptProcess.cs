@@ -64,7 +64,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 else
                 {
                     parameterNames.Add(key);
-                    arguments.Add(new KeyValuePair<string, string?>(key,value?.Replace(@"\", @"\\") )); //Escape backslashes
+                    arguments.Add(new KeyValuePair<string, string?>(key,value)); //Argument will be escaped later
                 }
             }
 
@@ -84,9 +84,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
                 var methodCalls = new ImmutableRubyScriptProcess.MethodCall(MethodName, arguments);
 
-                var ip = new ImmutableRubyScriptProcess(GetName(), nuixExePath, useDongle,new List<string>(){scriptBuilder.ToString()} , new []{methodCalls});
+                var ip = TryGetImmutableProcess(GetName(), nuixExePath, useDongle,new List<string>(){scriptBuilder.ToString()} , new []{methodCalls});
 
-                return Result.Success<ImmutableProcess, ErrorList>(ip);
+                return ip;
             }
         }
 
