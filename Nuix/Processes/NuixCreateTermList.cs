@@ -73,7 +73,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("pathArg", CasePath, false);
+            yield return ("casePathArg", CasePath, false);
 
             var fullFilePath = Path.Combine(OutputFolder, FileName);
 
