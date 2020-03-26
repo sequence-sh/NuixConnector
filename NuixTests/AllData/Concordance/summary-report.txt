@@ -1,29 +1,32 @@
 Export Details
 -------------------------------------------------------------------------------
-Started at: Mon Mar 16 10:26:38 2020 (Europe/London)
-Completed at: Mon Mar 16 10:26:53 2020 (Europe/London)
-Export duration: 14s
-Processing duration: 14s
-Case: Integration Test Case
-Case location: D:\IntegrationTest\TestCase
+Started at: Mon Mar 23 17:50:40 2020 (Europe/London)
+Completed at: Mon Mar 23 17:50:57 2020 (Europe/London)
+Export duration: 16s
+Processing duration: 16s
+Case: Case 1
+Case location: D:\IntegrationTest\Case 1
 Nuix Version 8.2.0.123 (amd64)
 
 Export Configuration
 -------------------------------------------------------------------------------
 Options for load file: Concordance
-  Export load file encoding: UTF-8
-Sort order: Result set order
+  Export load file encoding: windows-1252
+  Metadata Profile: CSE001
+Sort order: Document ID
 Numbering options:
   Item numbering: Production set numbering
-  Production set: charmset
+  Production set: Production00001
 Imaging options:
   Imaging profile: Default
+Production profile: ProductionProfile01
 Convert mail, contacts, calendars to: Native (MSG for MAPI items, otherwise EML)
-Items exported to: D:\IntegrationTest\ConocordanceFolder
+Items exported to: D:\IntegrationTest\Export2
 Time zone: (GMT) Greenwich Mean Time (Europe/London)
 Separate attachments from emails: false
-Native export with file naming: Prefix, Box, Folder, Page
-Text export with file naming: Prefix, Box, Folder, Page
+Native export with file naming: Document ID
+PDF export with file naming: Document ID
+Text export with file naming: Document ID
 Text export file encoding: UTF-8
 Exporting selected items
 Resemblance threshold: 0.85
@@ -34,8 +37,8 @@ Items selected for export: 1
 Total items removed due to exclusions: 0
 Total items and descendants discovered for export: 1
 Total number of failed items: 0
-First document number exported: DOC-000000001_0001
-Last document number exported: DOC-000000001_0001
+First document number exported: SET-00000001_0001
+Last document number exported: SET-00000001_0001
 
 Exported File Statistics
 -------------------------------------------------------------------------------
@@ -45,17 +48,26 @@ Native files with invalid times: 0
 Native slip-sheet files generated: 0
 Total TXT files generated: 1
 Text place-holder files generated: 0
+Total PDF files exported: 1
+PDF files from PDF store: 0
+User generated PDFs: 0
+PDFs which were properly printed: 1
+PDFs which were generated using unformatted text: 0
+Item encrypted PDFs: 0
+PDF slip-sheet files generated: 0
+Total PDF files stamped: 1
 
 Exported Stage Durations
 -------------------------------------------------------------------------------
-Stage 'WORK_QUEUE' took: 1s
-Stage 'NATIVE' took: 7s
+Stage 'WORK_QUEUE' took: 0s
+Stage 'NATIVE' took: 9s
 Stage 'STORED_EMAIL_FIXUP' took: 1s
+Stage 'PDF' took: 1s
 Stage 'NUMBERING' took: 0s
 Stage 'BINARY_STORE' took: 0s
 Stage 'PRINT_STORE' took: 0s
-Stage 'MARKUP' took: 1s
 Stage 'TEXT' took: 1s
+Stage 'STAMPING' took: 1s
 Stage 'FILE_NAMING' took: 1s
 Stage 'SET_FILE_TIMES' took: 0s
 Stage 'DIGEST' took: 0s
@@ -63,8 +75,22 @@ Stage 'LOAD_FILES' took: 0s
 
 Exported File Throughput Statistics
 -------------------------------------------------------------------------------
-Generated native files/second: 0.11
-Generated TXT files/second: 0.91
+Generated native files/second: 0.09
+Generated TXT files/second: 0.97
+Generated PDF files/second: 0.72
+PDF files stamped/second: 0.72
+
+Exported Page Count Statistics
+-------------------------------------------------------------------------------
+Total PDF pages generated: 1
+Total PDF pages stamped: 1
+Failed stamped PDF pages: 0
+Average page count: 1.0
+
+Exported Page Count Throughput Statistics
+-------------------------------------------------------------------------------
+Generated PDF pages/second: 0.72
+Stamped PDF pages/second: 0.72
 
 File Type Statistics
 -------------------------------------------------------------------------------
