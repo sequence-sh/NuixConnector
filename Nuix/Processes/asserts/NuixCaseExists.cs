@@ -9,31 +9,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     /// Succeeds or fails depending on whether or not a particular case exists.
     /// Useful in Conditionals.
     /// </summary>
-    public sealed class NuixCaseExists : RubyScriptAssertionProcess
+    public sealed class NuixCaseExists : RubyScriptProcess
     {
-        /// <inheritdoc />
-        protected override (bool, string?)? InterpretLine(string s)
-        {
-            bool? exists = s switch
-            {
-                "Case Exists" => true,
-                "Case does not exist" => false,
-                _ => null,
-            };
-            if (!exists.HasValue)
-                return null;
-
-
-            if (ShouldExist)
-                return exists.Value ? (true, null) : (false, $"Case '{CasePath}' should exist but does not.");
-
-            return exists.Value ? (false, $"Case '{CasePath}' should not exist but does.") : (true, null);
-        }
-
-        /// <inheritdoc />
-        protected override string DefaultFailureMessage => "Could not confirm whether or not case exists";
-
-
         /// <inheritdoc />
         public override string GetName()
         {
@@ -63,10 +40,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
             @"
     begin
         the_case = utilities.case_factory.open(pathArg)
-        puts 'Case Exists'
-        the_case.close
-    rescue
-         puts 'Case does not exist'
+        the_case.close()
+        if expectExistsArg == 'false'
+            puts 'Case Exists but should not'
+            abort
+        end
+    rescue #Case does not exist
+        if expectExistsArg == 'false'
+            puts 'Case does not exist but should'
+            abort
+        end
     end
 ";
 
@@ -77,6 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
+            yield return ("expectExistsArg", ShouldExist.ToString(), false);
         }
     }
 }
