@@ -17,16 +17,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Create Termlist";
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string CasePath { get; set; }
-
 
         /// <summary>
         /// The path to the folder to put the output files in.
@@ -36,9 +27,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 4)]
         public string OutputFolder { get; set; }
 
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [YamlMember(Order = 5)]
+        [ExampleValue("C:/Cases/MyCase")]
+        public string CasePath { get; set; }
+
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        
 
 
         /// <inheritdoc />
@@ -68,7 +66,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The name of the file that will be created.
         /// </summary>
-        public const string FileName = "terms.txt";
+        public const string FileName = "Terms.txt";
 
         /// <inheritdoc />
         internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
