@@ -92,7 +92,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 yield return lb;
 
             var (scriptText, arguments) = CompileScript();
-            var scriptFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()), "rb");
+            var scriptFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), "NuixScript" + Guid.NewGuid().ToString()), "rb");
             
             await System.IO.File.WriteAllTextAsync(scriptFilePath, scriptText);
 

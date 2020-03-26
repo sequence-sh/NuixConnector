@@ -41,15 +41,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     begin
         the_case = utilities.case_factory.open(pathArg)
         the_case.close()
-        if expectExistsArg == 'false'
-            puts 'Case Exists but should not'
-            abort
+        if expectExistsArg == 'False'
+            puts 'Case Exists but was expected not to'
+            exit
         end
+        puts 'Case Exists as expected'
     rescue #Case does not exist
-        if expectExistsArg == 'false'
-            puts 'Case does not exist but should'
-            abort
+        if expectExistsArg == 'True'
+            puts 'Case does not exist but was expected to'
+            exit
         end
+        puts 'Case does not exist, this was expected'
     end
 ";
 
