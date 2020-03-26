@@ -16,7 +16,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             new YamlProcessTest(new Conditional
             {
-                If = new NuixCaseExists
+                If = new NuixAssertCaseExists
                 {
                     CasePath = "cp",
                     ShouldExist = true

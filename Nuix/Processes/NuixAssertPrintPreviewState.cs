@@ -9,35 +9,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     /// <summary>
     /// Checks the print preview state of the production set.
     /// </summary>
-    public sealed class NuixCheckPrintPreviewState : RubyScriptAssertionProcess
+    public sealed class NuixAssertPrintPreviewState : RubyScriptProcess
     {
         /// <inheritdoc />
         public override string GetName()
         {
             return $"Assert preview state is {ExpectedState}";
         }
-
-        /// <inheritdoc />
-        protected override (bool success, string? failureMessage)? InterpretLine(string s)
-        {
-            var pps = s.ToLowerInvariant() switch
-            {
-                "all" => PrintPreviewState.All,
-                "some" => PrintPreviewState.Some,
-                "none" => PrintPreviewState.None,
-                _ => null as PrintPreviewState?
-            };
-
-            if (pps == null) return null;
-
-            if (pps == ExpectedState)
-                return (true, null);
-
-            return (false, $"Expected print preview state '{ExpectedState}' but was '{pps.Value}'");
-        }
-
-        /// <inheritdoc />
-        protected override string DefaultFailureMessage => "Could not confirm print preview state";
 
         /// <summary>
         /// The expected print preview state of the production set;
@@ -70,16 +48,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
         if(productionSet == nil)        
-            puts ""Production Set Not Found""
-        else            
-            puts ""Production Set Found""
-
+            puts 'Production Set Not Found'
+            the_case.close
+            exit
+        else 
             r = productionSet.getPrintPreviewState()
+            the_case.close
 
-            puts r
-        end 
-
-    the_case.close";
+            if r == expectedStateArg
+                puts ""Print preview state was #{r}, as expected.""
+            else
+                puts ""Print preview state was #{r}, but expected #{expectedStateArg}""
+                exit
+            end
+        end";
 
         /// <inheritdoc />
         internal override string MethodName => "GetPrintPreviewState";
@@ -89,6 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         {
             yield return ("pathArg", CasePath, false);
             yield return ("productionSetNameArg", ProductionSetName, false);
+            yield return ("expectedStateArg", ExpectedState.ToString().ToLower(), false);
         }
     }
 }

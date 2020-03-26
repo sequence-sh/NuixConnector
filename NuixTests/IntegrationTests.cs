@@ -35,9 +35,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private static readonly Process DeleteCaseFolder = new DeleteItem { Path = CasePath};
         private static readonly Process DeleteOutputFolder = new DeleteItem { Path = OutputFolder};
         private static readonly Process CreateOutputFolder = new CreateDirectory { Path = OutputFolder };
-        private static readonly Process AssertCaseDoesNotExist = new NuixCaseExists {CasePath = CasePath, ShouldExist = false};
+        private static readonly Process AssertCaseDoesNotExist = new NuixAssertCaseExists {CasePath = CasePath, ShouldExist = false};
         private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Integration Test Case", CasePath = CasePath, Investigator = "Mark"};
-        private static Process AssertCount(int expected, string searchTerm) => new NuixCount {CasePath = CasePath, Minimum = expected, Maximum = expected,  SearchTerm = searchTerm};
+        private static Process AssertCount(int expected, string searchTerm) => new NuixAssertCount {CasePath = CasePath, Minimum = expected, Maximum = expected,  SearchTerm = searchTerm};
 
         private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "NewFolder"};
 
@@ -52,7 +52,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder,
                     AssertCaseDoesNotExist,
                     CreateCase,
-                    new NuixCaseExists
+                    new NuixAssertCaseExists
                     {
                         CasePath = CasePath,
                         ShouldExist = true
@@ -62,9 +62,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 new TestSequence("Migrate Case",
                     new DeleteItem {Path = MigrationTestCaseFolder},
                     new Unzip {ArchiveFilePath = MigrationPath, DestinationDirectory = GeneralDataFolder},
-                    new AssertFail {Process = new NuixCount { CasePath = MigrationTestCaseFolder, Minimum = 0, SearchTerm = "*"} }, //This should fail because we can't open the case
+                    new AssertFail {Process = new NuixAssertCount { CasePath = MigrationTestCaseFolder, Minimum = 0, SearchTerm = "*"} }, //This should fail because we can't open the case
                     new NuixMigrateCase { CasePath = MigrationTestCaseFolder},
-                    new NuixCount { CasePath = MigrationTestCaseFolder, Minimum = 0, Maximum = 0, SearchTerm = "*"},
+                    new NuixAssertCount { CasePath = MigrationTestCaseFolder, Minimum = 0, Maximum = 0, SearchTerm = "*"},
                     new DeleteItem {Path = MigrationTestCaseFolder}
                     ),
 
@@ -156,7 +156,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         ProductionSetName = "prodSet"
                     },
                     AssertCount(2, "production-set:prodSet"),
-                    new NuixCheckPrintPreviewState
+                    new NuixAssertPrintPreviewState
                     {
                         CasePath = CasePath,
                         ProductionSetName = "prodSet",
@@ -167,7 +167,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         ProductionSetName = "prodSet"
                     },
-                    new NuixCheckPrintPreviewState
+                    new NuixAssertPrintPreviewState
                     {
                         CasePath = CasePath,
                         ProductionSetName = "prodSet",

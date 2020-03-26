@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
@@ -10,7 +9,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     /// A process that succeed if the numbers of items returned by a search is within a particular range and fails if it is not.
     /// Useful in Conditionals.
     /// </summary>
-    public sealed class NuixCount : RubyScriptAssertionProcess
+    public sealed class NuixAssertCount : RubyScriptProcess
     {
         /// <summary>
         /// Inclusive minimum of the expected range.
@@ -53,8 +52,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     puts ""Counting '#{searchArg}'""
     searchOptions = {}
     count = the_case.count(searchArg, searchOptions)
+    the_case.close
+
+    if minArg != nil && to_i(minArg) > count
+        puts ""Count was #{count} which was less than the minimum of #{minArg}"" 
+        exit
+    end
+    if maxArg != nil && to_i(maxArg) < count
+        puts ""Count was #{count} which was more than the maximum of #{maxArg}""
+        exit
+    end
+
     puts ""#{count} found""
-    the_case.close";
+    ";
 
         /// <inheritdoc />
         internal override string MethodName => "CountItems";
@@ -64,6 +74,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
+            yield return ("minArg", Minimum?.ToString(), true);
+            yield return ("maxArg", Maximum?.ToString(), true);
         }
 
         /// <inheritdoc />
@@ -83,27 +95,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
             return Maximum == null
                 ? $"Assert {Minimum.Value} <= count of '{SearchTerm}'"
                 : $"Assert {Minimum.Value} <= count of '{SearchTerm}' <= {Maximum.Value}";
-        } 
-
-
-        private static readonly Regex CountRegex = new Regex( @"\A(?<count>\d+)\sfound\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        /// <inheritdoc />
-        protected override (bool success, string? failureMessage)? InterpretLine(string s)
-        {
-            if (!CountRegex.TryMatch(s, out var m) || !int.TryParse(m.Groups["count"].Value, out var c)) return null;
-
-            if (Maximum.HasValue && c > Maximum)
-                return (false, $"Expected {Maximum.Value} or fewer matches for '{SearchTerm}' but found {c}");
-
-            if (Minimum.HasValue && c < Minimum)
-                return (false, $"Expected {Minimum.Value} or more matches for '{SearchTerm}' but found {c}");
-
-            return (true, null);
-
         }
-        
-        /// <inheritdoc />
-        protected override string DefaultFailureMessage => "Could not confirm count";
     }
 }

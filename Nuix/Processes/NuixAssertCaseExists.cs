@@ -9,7 +9,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     /// Succeeds or fails depending on whether or not a particular case exists.
     /// Useful in Conditionals.
     /// </summary>
-    public sealed class NuixCaseExists : RubyScriptProcess
+    public sealed class NuixAssertCaseExists : RubyScriptProcess
     {
         /// <inheritdoc />
         public override string GetName()

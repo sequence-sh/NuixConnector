@@ -216,8 +216,8 @@ Annotates a document ID list to add production set names to it.
 |CasePath         |`string`|☑️      |The path to the case.                           |C:/Cases/MyCase|
 |DataPath         |`string`|☑️      |Specifies the file path of the document ID list.|               |
 
-<a name="NuixCaseExists"></a>
-## NuixCaseExists
+<a name="NuixAssertCaseExists"></a>
+## NuixAssertCaseExists
 
 Succeeds or fails depending on whether or not a particular case exists. Useful in Conditionals.
 
@@ -226,19 +226,8 @@ Succeeds or fails depending on whether or not a particular case exists. Useful i
 |ShouldExist|`bool`  |        |If true, asserts that the case does exist. If false, asserts that the case does not exist.|True   |               |
 |CasePath   |`string`|☑️      |The path to the case.                                                                     |       |C:/Cases/MyCase|
 
-<a name="NuixCheckPrintPreviewState"></a>
-## NuixCheckPrintPreviewState
-
-Checks the print preview state of the production set.
-
-|Parameter        |Type                                   |Required|Summary                                                |Default|Example        |
-|:---------------:|:-------------------------------------:|:------:|:-----------------------------------------------------:|:-----:|:-------------:|
-|ExpectedState    |[PrintPreviewState](#PrintPreviewState)|        |The expected print preview state of the production set;|All    |               |
-|ProductionSetName|`string`                               |☑️      |The production set to reorder.                         |       |               |
-|CasePath         |`string`                               |☑️      |The path to the case.                                  |       |C:/Cases/MyCase|
-
-<a name="NuixCount"></a>
-## NuixCount
+<a name="NuixAssertCount"></a>
+## NuixAssertCount
 
 A process that succeed if the numbers of items returned by a search is within a particular range and fails if it is not. Useful in Conditionals.
 
@@ -248,6 +237,17 @@ A process that succeed if the numbers of items returned by a search is within a 
 |Maximum   |`int`?  |        |Inclusive maximum of the expected range. Either this, Minimum, or both must be set.|               |
 |CasePath  |`string`|☑️      |The path to the case.                                                              |C:/Cases/MyCase|
 |SearchTerm|`string`|☑️      |The search term to count.                                                          |*.txt          |
+
+<a name="NuixAssertPrintPreviewState"></a>
+## NuixAssertPrintPreviewState
+
+Checks the print preview state of the production set.
+
+|Parameter        |Type                                   |Required|Summary                                                |Default|Example        |
+|:---------------:|:-------------------------------------:|:------:|:-----------------------------------------------------:|:-----:|:-------------:|
+|ExpectedState    |[PrintPreviewState](#PrintPreviewState)|        |The expected print preview state of the production set;|All    |               |
+|ProductionSetName|`string`                               |☑️      |The production set to reorder.                         |       |               |
+|CasePath         |`string`                               |☑️      |The path to the case.                                  |       |C:/Cases/MyCase|
 
 <a name="NuixCreateCase"></a>
 ## NuixCreateCase
