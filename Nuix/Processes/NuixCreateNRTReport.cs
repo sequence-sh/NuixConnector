@@ -75,10 +75,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     }
 
     reportGenerator.generateReport(
-    NRTPathArg,
+    nrtPathArg,
     reportContext.to_java,
-    OutputFormatArg,
-    OutputPathArg
+    outputFormatArg,
+    outputPathArg
     )
 
     the_case.close";
@@ -90,9 +90,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
-            yield return ("NRTPathArg", NRTPath, false);
-            yield return ("OutputFormatArg", OutputFormat, false);
-            yield return ("OutputPathArg", OutputPath, false);
+            yield return ("nrtPathArg", NRTPath, false);
+            yield return ("outputFormatArg", OutputFormat, false);
+            yield return ("outputPathArg", OutputPath, false);
             yield return ("localResourcesUrlArg", LocalResourcesURL, false);
         }
     }

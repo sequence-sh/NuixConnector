@@ -83,8 +83,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
-            yield return ("productionSetNameArg", SearchTerm, true);
-            yield return ("searchArg", ProductionSetName, false);
+            yield return ("searchArg", SearchTerm, true); 
+            yield return ("productionSetNameArg", ProductionSetName, false);
         }
     }
 }

@@ -91,18 +91,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override string ScriptText =>
             @"  the_case = utilities.case_factory.open(pathArg)
-
     itemSet = the_case.findItemSetByName(itemSetNameArg)
-
     if(itemSet == nil)
         itemSetOptions = {}
-
         itemSetOptions[:deduplication] = deduplicationArg if deduplicationArg != nil
         itemSetOptions[:description] = descriptionArg if descriptionArg != nil
         itemSetOptions[:deduplicateBy] = deduplicateByArg if deduplicateByArg != nil
         itemSetOptions[:custodianRanking] = custodianRankingArg.split("","") if custodianRankingArg != nil
-
-        itemSet = the_case.createItemSet(productionSetNameArg, itemSetOptions)
+        itemSet = the_case.createItemSet(itemSetNameArg, itemSetOptions)
         
         puts ""Item Set Created""
     else
@@ -110,19 +106,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     end    
 
     puts ""Searching""
-
     searchOptions = {}
     searchOptions[:order] = orderArg if orderArg != nil
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
-
     items = the_case.search(searchArg, searchOptions)
-
     puts ""#{items.length} found""
-
     itemSet.addItems(items)
-
     puts ""items added""
-
     the_case.close";
 
         /// <inheritdoc />

@@ -27,8 +27,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public override string GetName() => "Migrate Case";
 
         /// <inheritdoc />
-        internal override string ScriptText => @"def (pathArg)
-
+        internal override string ScriptText => @"
     puts ""Opening Case, migrating if necessary""
     
     options = {migrate: true}

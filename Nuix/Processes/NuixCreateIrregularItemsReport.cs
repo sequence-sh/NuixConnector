@@ -74,7 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         end
     end
 
-    File.write(File.join(outputFolderPathArg, 'Irregular.txt'), text)
+    File.write(File.join(outputFolderPathArg, 'Irregular.txt'), irregularText)
 
     the_case.close";
 

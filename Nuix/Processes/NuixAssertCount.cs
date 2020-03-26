@@ -54,11 +54,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
     count = the_case.count(searchArg, searchOptions)
     the_case.close
 
-    if minArg != nil && to_i(minArg) > count
+    if minArg != nil && minArg.to_i > count
         puts ""Count was #{count} which was less than the minimum of #{minArg}"" 
         exit
     end
-    if maxArg != nil && to_i(maxArg) < count
+    if maxArg != nil && maxArg.to_i < count
         puts ""Count was #{count} which was more than the maximum of #{maxArg}""
         exit
     end
