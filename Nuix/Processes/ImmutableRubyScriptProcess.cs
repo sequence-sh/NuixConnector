@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
-    //TODO seal this class and get rid of virtual methods - they do not work with composition
-    internal class ImmutableRubyScriptProcess : ImmutableProcess
+    internal sealed class ImmutableRubyScriptProcess : ImmutableProcess
     {
         /// <inheritdoc />
         public ImmutableRubyScriptProcess(
@@ -42,11 +40,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             var sb = new StringBuilder();
 
-            var printArguments = false;
+            // ReSharper disable once JoinDeclarationAndInitializer
+            bool printArguments;
 
 #if DEBUG
             printArguments = true;
 #endif
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if(printArguments)
                 sb.AppendLine("puts ARGV.join('; ')");
 
@@ -79,8 +79,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 sb.AppendLine(callLine.ToString());
             }
 
+            sb.AppendLine($"puts '{SuccessToken}'");
+
             return (sb.ToString(), arguments);
         }
+
+        public const string SuccessToken = "--Script Completed Successfully--";
 
 
         /// <inheritdoc />
@@ -88,13 +92,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             var processState = new ProcessState();
 
-            foreach (var lb in BeforeScriptStart(processState))
-                yield return lb;
-
             var (scriptText, arguments) = CompileScript();
             var scriptFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), "NuixScript" + Guid.NewGuid().ToString()), "rb");
             
-            await System.IO.File.WriteAllTextAsync(scriptFilePath, scriptText);
+            await File.WriteAllTextAsync(scriptFilePath, scriptText);
 
             var trueArguments = new List<string>(); //note that the arguments will be escaped in the next step
             if (_useDongle)
@@ -119,25 +120,18 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         public override Result<ImmutableProcess> TryCombine(ImmutableProcess nextProcess)
         {
-            //TODO this DOES NOT WORK with derived methods - get rid of them!
+            if (!(nextProcess is ImmutableRubyScriptProcess np) || _nuixExeConsolePath != np._nuixExeConsolePath ||
+                _useDongle != np._useDongle) return Result.Failure<ImmutableProcess>("Could not combine");
 
-            if (CanBeCombined &&
-                nextProcess is ImmutableRubyScriptProcess np 
-                && np.CanBeCombined
-                && _nuixExeConsolePath == np._nuixExeConsolePath && _useDongle == np._useDongle)
-            {
-                var newProcess = new ImmutableRubyScriptProcess(
-                    $"{Name} then {np.Name}", 
-                    _nuixExeConsolePath, 
-                    _useDongle,
-                    _methodSet.Concat(np._methodSet).Distinct().ToList(),
-                    _methodCalls.Concat(np._methodCalls).ToList()
-                    );
+            var newProcess = new ImmutableRubyScriptProcess(
+                $"{Name} then {np.Name}", 
+                _nuixExeConsolePath, 
+                _useDongle,
+                _methodSet.Concat(np._methodSet).Distinct().ToList(),
+                _methodCalls.Concat(np._methodCalls).ToList()
+            );
 
-                return Result.Success<ImmutableProcess>(newProcess);
-            }
-
-            return Result.Failure<ImmutableProcess>("Could not combine");
+            return Result.Success<ImmutableProcess>(newProcess);
         }
 
         /// <summary>
@@ -146,28 +140,22 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <param name="rl">The line to look at</param>
         /// <param name="processState">The current state of the process</param>
         /// <returns>True if the line should continue through the pipeline</returns>
-        internal virtual bool HandleLine(Result<string> rl, ProcessState processState)
+        internal bool HandleLine(Result<string> rl, ProcessState processState)
         {
-            return true;
-        }
-
-        /// <summary>
-        /// What to do before the script starts.
-        /// </summary>
-        internal virtual IEnumerable<Result<string>> BeforeScriptStart(ProcessState processState)
-        {
-            yield break;
+            var (isSuccess, _, value) = rl;
+            if (!isSuccess || value != SuccessToken) return true;
+            processState.Artifacts.Add(SuccessToken, true);
+            return false;
         }
 
         /// <summary>
         /// What to do when the script finishes
         /// </summary>
-        internal virtual IEnumerable<Result<string>> OnScriptFinish(ProcessState processState)
+        internal IEnumerable<Result<string>> OnScriptFinish(ProcessState processState)
         {
-            yield break;
+            if (!(processState.Artifacts.TryGetValue(SuccessToken, out var s) && s is bool b && b))
+                yield return Result.Failure<string>("Process did not complete successfully");
         }
-
-        internal virtual bool CanBeCombined => true;
 
         /// <inheritdoc />
         public override int GetHashCode()

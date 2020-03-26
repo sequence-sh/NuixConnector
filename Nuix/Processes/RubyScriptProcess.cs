@@ -59,7 +59,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             {
                 if (string.IsNullOrWhiteSpace(value) && !canBeNull)
                 {
-                    errors.Add($"Argument '{key}' must not be null"); //todo - this may not actually be very helpful to users with the current argument names
+                    errors.Add($"Argument '{key}' must not be null"); //todo - this isn't the real argument names -> fix that
                 }
                 else
                 {
@@ -75,7 +75,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             else
             {
                 var methodBuilder = new StringBuilder();
-
                 var methodHeader = $@"def {MethodName}({string.Join(",", parameterNames)})";
 
                 methodBuilder.AppendLine(methodHeader);
@@ -84,20 +83,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
                 var methodCalls = new ImmutableRubyScriptProcess.MethodCall(MethodName, arguments);
 
-                var ip = TryGetImmutableProcess(GetName(), nuixExePath, useDongle,new List<string>(){methodBuilder.ToString()} , new []{methodCalls});
+                var ip = new ImmutableRubyScriptProcess(GetName(), 
+                        nuixExePath, 
+                        useDongle, new List<string>{methodBuilder.ToString()} , new []{methodCalls});
 
-                return ip;
+                return  Result.Success<ImmutableProcess, ErrorList>(ip);
             }
-        }
-
-        internal virtual Result<ImmutableProcess, ErrorList> TryGetImmutableProcess(string name,
-            string nuixExeConsolePath, bool useDongle, IReadOnlyCollection<string> methodSet,
-            IReadOnlyCollection<ImmutableRubyScriptProcess.MethodCall> methodCalls)
-        {
-            return Result.Success<ImmutableProcess, ErrorList>(
-                new ImmutableRubyScriptProcess(name, 
-                    nuixExeConsolePath, 
-                    useDongle, methodSet, methodCalls));
         }
     }
 }
