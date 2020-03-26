@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
@@ -9,27 +10,36 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Creates a report for a Nuix case.
     /// </summary>
-    public sealed class NuixCreateReport : RubyScriptWithOutputProcess
+    public sealed class NuixCreateReport : RubyScriptProcess
     {
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Create Report";
 
+
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+        /// <summary>
+        /// The path to the folder to put the output files in.
+        /// </summary>
+        [Required]
+        [ExampleValue("C:/Output")]
+        [YamlMember(Order = 4)]
+        public string OutputFolder { get; set; }
+
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        
         [YamlMember(Order = 5)]
         [ExampleValue("C:/Cases/MyCase")]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
         /// <inheritdoc />
         internal override string ScriptText =>
-            @"the_case = utilities.case_factory.open(pathArg)
+            @"the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Generating Report:""
 
@@ -83,27 +93,38 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     puts ""Created results for #{allItems.length} items""
 
-    puts ""OutputStats:Custodian\tType\tValue\tCount""
+    text = ""Custodian\tType\tValue\tCount""
 
     puts ""#{results.length - 1} custodians""
     results.each do |custodian, hash1|
         hash1.each do |type, hash2|
             puts ""#{custodian} has #{hash2.length} #{type}s"" if custodian != ""*""
             hash2.sort_by{|value, count| -count}.each do |value, count|
-                puts ""OutputStats:#{custodian}\t#{type}\t#{value}\t#{count}""
+                text =  ""#{custodian}\t#{type}\t#{value}\t#{count}""
             end
         end
     end
+    
+    File.write(outputFilePathArg, text)
 
     the_case.close";
 
         /// <inheritdoc />
         internal override string MethodName => "CreateReport";
 
+        /// <summary>
+        /// The name of the file that will be created.
+        /// </summary>
+        public const string FileName = "Stats.txt";
+
         /// <inheritdoc />
         internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("pathArg", CasePath, false);
+            yield return ("casePathArg", CasePath, false);
+
+            var fullFilePath = Path.Combine(OutputFolder, FileName);
+
+            yield return ("outputFilePathArg", fullFilePath, false);
         }
     }
 }

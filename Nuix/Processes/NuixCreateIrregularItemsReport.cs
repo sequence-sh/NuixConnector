@@ -9,11 +9,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Creates a report detailing the irregular items in a case.
     /// </summary>
-    public sealed class NuixCreateIrregularItemsReport : RubyScriptWithOutputProcess
+    public sealed class NuixCreateIrregularItemsReport : RubyScriptProcess
     {
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Create Irregular Items report";
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+        /// <summary>
+        /// The path to the folder to put the output files in.
+        /// </summary>
+        [Required]
+        [ExampleValue("C:/Output")]
+        [YamlMember(Order = 4)]
+        public string OutputFolder { get; set; }
+
 
         /// <summary>
         /// The path to the case.
@@ -21,14 +31,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [YamlMember(Order = 5)]
         [ExampleValue("C:/Cases/MyCase")]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
+        internal override string ScriptText => @"   the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Generating Report:""
    
@@ -48,24 +57,24 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     }
     
-    puts ""OutputIrregular:Reason\tCount""
+    irregularText = ""OutputIrregular:Reason\tCount""
 
     fields.each do |key, value|
         items = the_case.search(value)
-        puts ""OutputIrregular:#{key.to_s}\t#{items.length}""
+        irregularText << ""#{key.to_s}\t#{items.length}""
         
         if items.length > 0
-            puts ""Output#{key.to_s}:Path\tGuid""
+            fieldText = ""Path\tGuid""
             items.each do |i|
                 path = i.getPathNames().join(""/"")
                 guid = i.getGuid()
-                puts ""Output#{key.to_s}:#{path}\t#{guid}""
-
-        end
-
-        
+                fieldText << ""#{path}\t#{guid}""
+            end
+            File.write(File.join(outputFolderPathArg, key.to_s + '.txt'), fieldText)
         end
     end
+
+    File.write(File.join(outputFolderPathArg, 'Irregular.txt'), text)
 
     the_case.close";
 
@@ -75,7 +84,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
         {
-            yield return ("pathArg", CasePath, false);
+            yield return ("casePathArg", CasePath, false);
+            yield return ("outputFolderPathArg", OutputFolder, false);
         }
     }
 }

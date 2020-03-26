@@ -268,7 +268,7 @@ Creates a report detailing the irregular items in a case.
 
 |Parameter   |Type    |Required|Summary                                           |Example        |
 |:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|               |
+|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
 |CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
 
 <a name="NuixCreateNRTReport"></a>
@@ -291,7 +291,7 @@ Creates a report for a Nuix case.
 
 |Parameter   |Type    |Required|Summary                                           |Example        |
 |:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|               |
+|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
 |CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
 
 <a name="NuixCreateTermList"></a>
@@ -301,7 +301,7 @@ Creates a list of all terms appearing in the case and their frequencies.
 
 |Parameter   |Type    |Required|Summary                                           |Example        |
 |:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|               |
+|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
 |CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
 
 <a name="NuixExportConcordance"></a>
@@ -323,7 +323,7 @@ Extract Entities from a Nuix Case.
 
 |Parameter   |Type    |Required|Summary                                           |Example        |
 |:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|               |
+|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
 |CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
 
 <a name="NuixGeneratePrintPreviews"></a>
@@ -341,13 +341,13 @@ Generates print previews for items in a production set.
 
 A process that the searches a case for items and outputs the values of item properties.
 
-|Parameter     |Type    |Required|Summary                                                                             |Example        |
-|:------------:|:------:|:------:|:----------------------------------------------------------------------------------:|:-------------:|
-|CasePath      |`string`|☑️      |The path to the case.                                                               |C:/Cases/MyCase|
-|SearchTerm    |`string`|☑️      |The term to search for.                                                             |*.txt          |
-|OutputFolder  |`string`|☑️      |The path to the folder to put the output files in.                                  |               |
-|PropertyRegex |`string`|☑️      |The term to search for.                                                             |Date           |
-|OutputFileName|`string`|☑️      |The name of the text file to write the results to. Should not include the extension.|Results        |
+|Parameter     |Type    |Required|Summary                                                                                                                                                                                       |Example        |
+|:------------:|:------:|:------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
+|CasePath      |`string`|☑️      |The path to the case.                                                                                                                                                                         |C:/Cases/MyCase|
+|SearchTerm    |`string`|☑️      |The term to search for.                                                                                                                                                                       |*.txt          |
+|PropertyRegex |`string`|☑️      |The term to search for.                                                                                                                                                                       |Date           |
+|OutputFolder  |`string`|☑️      |The path to the folder to put the output files in.                                                                                                                                            |C:/Output      |
+|OutputFileName|`string`|☑️      |The name of the text file to write the results to. The file will be overwritten. Should not include the extension. This is separate from the output folder property to allow easier injection.|Results        |
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds
