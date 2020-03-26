@@ -21,8 +21,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             if (string.IsNullOrWhiteSpace(OutputFolder))
                 return Result.Failure<ImmutableProcess, ErrorList>(new ErrorList($"{nameof(OutputFolder)} field must not be empty."));
 
-            if (!Directory.Exists(OutputFolder))
-                return Result.Failure<ImmutableProcess, ErrorList>(new ErrorList($"{OutputFolder} does not exist."));
+            //if (!Directory.Exists(OutputFolder))
+            //    return Result.Failure<ImmutableProcess, ErrorList>(new ErrorList($"{OutputFolder} does not exist."));
 
 
             return Result.Success<ImmutableProcess, ErrorList>(

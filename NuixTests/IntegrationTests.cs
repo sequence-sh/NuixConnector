@@ -39,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Integration Test Case", CasePath = CasePath, Investigator = "Mark"};
         private static Process AssertCount(int expected, string searchTerm) => new NuixCount {CasePath = CasePath, Minimum = expected, Maximum = expected,  SearchTerm = searchTerm};
 
-        private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
+        private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "NewFolder"};
 
         public static readonly IReadOnlyCollection<Process> TestProcesses =
             new List<TestSequence>

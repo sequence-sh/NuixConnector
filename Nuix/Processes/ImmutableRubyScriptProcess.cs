@@ -42,6 +42,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             var sb = new StringBuilder();
 
+            var printArguments = false;
+
+#if DEBUG
+            printArguments = true;
+#endif
+            if(printArguments)
+                sb.AppendLine("puts ARGV.join('; ')");
+
+
             foreach (var method in _methodSet)
             {
                 sb.AppendLine(method);
@@ -52,21 +61,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
             foreach (var methodCall in _methodCalls)
             {
-                var callLine = new StringBuilder(methodCall.MethodName + "(");
+                var callLine = new StringBuilder(methodCall.MethodName + "(utilities"); //utilities is always first argument
 
-                var first = true;
                 foreach (var (_, value) in methodCall.MethodParameters)
                 {
-                    if (!first) callLine.Append(", ");
-
+                    callLine.Append(", ");
                     if (value == null) callLine.Append("nil");
                     else
                     {
                         callLine.Append($"ARGV[{arguments.Count}]");
                         arguments.Add(value);
                     }
-                    
-                    first = false;
                 }
 
                 callLine.Append(")");
@@ -91,7 +96,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             
             await System.IO.File.WriteAllTextAsync(scriptFilePath, scriptText);
 
-            var trueArguments = new List<string>();
+            var trueArguments = new List<string>(); //note that the arguments will be escaped in the next step
             if (_useDongle)
             {
                 // ReSharper disable once StringLiteralTypo
@@ -99,7 +104,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 trueArguments.Add("dongle");  
             }
             trueArguments.Add(scriptFilePath);
-            trueArguments.AddRange(arguments.Select(EncodeParameterArgumentMultiLine));
+            trueArguments.AddRange(arguments);
 
             await foreach (var rl in ExternalProcessHelper.RunExternalProcess(_nuixExeConsolePath, trueArguments))
             {
@@ -109,17 +114,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
             foreach (var l in OnScriptFinish(processState))
                 yield return l;
-        }
-
-        private static string EncodeParameterArgumentMultiLine(string original)
-        {
-            if (string.IsNullOrEmpty(original))
-                return original;
-            string value = Regex.Replace(original, @"(\\*)" + "\"", @"$1\$0");
-            value = Regex.Replace(value, @"^(.*\s.*?)(\\*)$", "\"$1$2$2\"", RegexOptions.Singleline);
-
-            return value;
-        }
+        }        
 
         /// <inheritdoc />
         public override Result<ImmutableProcess> TryCombine(ImmutableProcess nextProcess)
@@ -217,7 +212,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             /// <inheritdoc />
             public override int GetHashCode()
             {
-                return System.HashCode.Combine(MethodName);
+                return HashCode.Combine(MethodName);
             }
         }
     }

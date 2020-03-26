@@ -40,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             var errors = new List<string>();
 
             var arguments = new List<KeyValuePair<string, string?>>();
-            var parameterNames = new List<string>();
+            var parameterNames = new List<string>() {"utilities" }; //always provide the utilities argument
             var nuixExePath = "";
             var useDongle = false;
 
@@ -74,17 +74,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 return Result.Failure<ImmutableProcess, ErrorList>(new ErrorList(errors));
             else
             {
-                var scriptBuilder = new StringBuilder();
+                var methodBuilder = new StringBuilder();
 
                 var methodHeader = $@"def {MethodName}({string.Join(",", parameterNames)})";
 
-                scriptBuilder.AppendLine(methodHeader);
-                scriptBuilder.AppendLine(ScriptText);
-                scriptBuilder.AppendLine("end");
+                methodBuilder.AppendLine(methodHeader);
+                methodBuilder.AppendLine(ScriptText);
+                methodBuilder.AppendLine("end");
 
                 var methodCalls = new ImmutableRubyScriptProcess.MethodCall(MethodName, arguments);
 
-                var ip = TryGetImmutableProcess(GetName(), nuixExePath, useDongle,new List<string>(){scriptBuilder.ToString()} , new []{methodCalls});
+                var ip = TryGetImmutableProcess(GetName(), nuixExePath, useDongle,new List<string>(){methodBuilder.ToString()} , new []{methodCalls});
 
                 return ip;
             }
