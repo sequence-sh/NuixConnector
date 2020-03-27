@@ -60,14 +60,14 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
                     callStringBuilder.Append(", ");
                     if (argumentValue != null) 
                     {
-                        arguments.Add($"-{newParameterName}");
+                        arguments.Add($"--{newParameterName}");
                         arguments.Add(argumentValue);
                     }
 
                     callStringBuilder.Append($"{hashSetName}[:{newParameterName}]");
                     var argTerm = valueCanBeNull ? "[ARG]" : "ARG";
 
-                    setupStringBuilder.AppendLine($"opts.on('-{newParameterName} {argTerm})'");
+                    setupStringBuilder.AppendLine($"opts.on('--{newParameterName} {argTerm}')");
                 }
 
                 callStringBuilder.Append(")");
