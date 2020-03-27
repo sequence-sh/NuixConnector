@@ -21,6 +21,9 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
 
         internal abstract string MethodName { get; }
 
+        /// <inheritdoc />
+        public override string GetReturnTypeInfo() => nameof(Unit);
+
 
         /// <summary>
         /// Get arguments that will be given to the nuix script.

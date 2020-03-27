@@ -56,14 +56,12 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
             if (isSuccess)
             {
-                var func = new Func<object?>(() => value.Execute());
+                var func = new Func<object?>(() => value.ExecuteUntyped());
 
                 return Result.Success<Func<object?>, List<string?[]>>(func);
             }
 
             return Result.Failure<Func<object?>, List<string?[]>>(new List<string?[]> {error.ToArray()});
-
-            
         }
 
     }

@@ -6,12 +6,13 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
 using Reductech.EDR.Utilities.Processes.mutable;
+using Reductech.EDR.Utilities.Processes.output;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
 
-    internal class ImmutableAssertFileContents : ImmutableProcess
+    internal class ImmutableAssertFileContents : ImmutableProcess<Unit> //TODO move into processes
     {
         /// <inheritdoc />
         public ImmutableAssertFileContents(string name, string filePath, string expectedContents) : base(name)
@@ -25,19 +26,19 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private readonly string _expectedContents;
 
         /// <inheritdoc />
-        public override async IAsyncEnumerable<Result<string>> Execute()
+        public override async IAsyncEnumerable<IProcessOutput<Unit>> Execute()
         {
             if (!File.Exists(_filePath))
-                yield return Result.Failure<string>("File does not exist");
+                yield return ProcessOutput<Unit>.Error("File does not exist");
             else
             {
                 var text = await File.ReadAllTextAsync(_filePath);
 
                 if (text.Contains(_expectedContents))
-                    yield return Result.Success("Contents Match");
+                    yield return ProcessOutput<Unit>.Success(Unit.Instance);
                 else
                 {
-                    yield return Result.Failure<string>("Contents do not match");
+                    yield return ProcessOutput<Unit>.Error("Contents do not match");
                 }
             }
         }
@@ -58,6 +59,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Required]
         [YamlMember]
         public string ExpectedContents { get; set; }
+
+        /// <inheritdoc />
+        public override string GetReturnTypeInfo() => nameof(Unit);
 
         /// <inheritdoc />
         public override string GetName()

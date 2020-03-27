@@ -6,10 +6,11 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
+using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.Processes
 {
-    internal sealed class ImmutableRubyScriptProcess : ImmutableProcess
+    internal sealed class ImmutableRubyScriptProcess : ImmutableProcess<Unit>
     {
         /// <inheritdoc />
         public ImmutableRubyScriptProcess(
@@ -103,7 +104,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
 
 
         /// <inheritdoc />
-        public override async IAsyncEnumerable<Result<string>> Execute()
+        public override async IAsyncEnumerable<IProcessOutput<Unit>> Execute()
         {
             var processState = new ProcessState();
 
@@ -122,43 +123,42 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
             trueArguments.Add(scriptFilePath);
             trueArguments.AddRange(arguments);
 
-            await foreach (var rl in ExternalProcessHelper.RunExternalProcess(_nuixExeConsolePath, trueArguments))
+            await foreach (var output in ExternalProcessHelper.RunExternalProcess(_nuixExeConsolePath, trueArguments))
             {
-                if(HandleLine(rl, processState))
-                    yield return rl;
+                if(HandleLine(output, processState))
+                    yield return output;
             }
 
             foreach (var l in OnScriptFinish(processState))
                 yield return l;
-        }        
+        }
 
         /// <inheritdoc />
-        public override Result<ImmutableProcess> TryCombine(ImmutableProcess nextProcess)
+        public override Result<ImmutableProcess<Unit>> TryCombine(ImmutableProcess<Unit> nextProcess)
         {
             if (!(nextProcess is ImmutableRubyScriptProcess np) || _nuixExeConsolePath != np._nuixExeConsolePath ||
-                _useDongle != np._useDongle) return Result.Failure<ImmutableProcess>("Could not combine");
+                    _useDongle != np._useDongle) return Result.Failure<ImmutableProcess<Unit>>("Could not combine");
 
             var newProcess = new ImmutableRubyScriptProcess(
-                $"{Name} then {np.Name}", 
-                _nuixExeConsolePath, 
+                $"{Name} then {np.Name}",
+                _nuixExeConsolePath,
                 _useDongle,
                 _methodSet.Concat(np._methodSet).Distinct().ToList(),
                 _methodCalls.Concat(np._methodCalls).ToList()
             );
 
-            return Result.Success<ImmutableProcess>(newProcess);
+            return Result.Success<ImmutableProcess<Unit>>(newProcess);
         }
 
         /// <summary>
         /// Do something with a line returned from the script
         /// </summary>
-        /// <param name="rl">The line to look at</param>
+        /// <param name="output">The line to look at</param>
         /// <param name="processState">The current state of the process</param>
         /// <returns>True if the line should continue through the pipeline</returns>
-        internal bool HandleLine(Result<string> rl, ProcessState processState)
+        internal bool HandleLine(IProcessOutput<Unit> output, ProcessState processState)
         {
-            var (isSuccess, _, value) = rl;
-            if (!isSuccess || value != SuccessToken) return true;
+            if (output.OutputType == OutputType.Success) return true;
             processState.Artifacts.Add(SuccessToken, true);
             return false;
         }
@@ -166,10 +166,10 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// <summary>
         /// What to do when the script finishes
         /// </summary>
-        internal IEnumerable<Result<string>> OnScriptFinish(ProcessState processState)
+        internal IEnumerable<IProcessOutput<Unit>> OnScriptFinish(ProcessState processState)
         {
             if (!(processState.Artifacts.TryGetValue(SuccessToken, out var s) && s is bool b && b))
-                yield return Result.Failure<string>("Process did not complete successfully");
+                yield return ProcessOutput<Unit>.Error("Process did not complete successfully");
         }
 
         /// <inheritdoc />

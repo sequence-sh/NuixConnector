@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Namotion.Reflection;
 using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Utilities.Processes.mutable;
 using Reductech.Utilities.InstantConsole;
 using YamlDotNet.Serialization;
 
@@ -45,6 +46,9 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
         /// <inheritdoc />
         public IEnumerable<IParameter> Parameters { get; }
+
+        /// <inheritdoc />
+        public string? ReturnType => Activator.CreateInstance(_processType) is Process p ? p.GetReturnTypeInfo() : null;
 
 
         protected class PropertyWrapper : IParameter

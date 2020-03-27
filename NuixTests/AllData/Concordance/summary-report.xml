@@ -10,13 +10,13 @@
 
       <LoadFiles>
         <LoadFile>
-          <LoadFileType>Concordance</LoadFileType>
+          <LoadFileTypeDescription>Concordance</LoadFileTypeDescription>
           <Encoding>windows-1252</Encoding>
           <MetadataProfile>CSE001</MetadataProfile>
         </LoadFile>
       </LoadFiles>
 
-      <MessageFormat>NATIVE</MessageFormat>
+      <TextFormat>NATIVE</TextFormat>
       <ExportDirectory>D:\IntegrationTest\Export2</ExportDirectory>
       <SeparateEmailAttachments>false</SeparateEmailAttachments>
       <RegenerateNatives>false</RegenerateNatives>
@@ -274,11 +274,11 @@
       <StampingPageRate>0.7173601147776184</StampingPageRate>
     </ThroughputStatistics>
 
-    <MimeTypeStatistics>
-      <MimeTypes>
-        <MimeType name="text/plain" count="1" />
-      </MimeTypes>
-    </MimeTypeStatistics>
+    <MimeTypeDescriptionStatistics>
+      <MimeTypeDescriptions>
+        <MimeTypeDescription name="text/plain" count="1" />
+      </MimeTypeDescriptions>
+    </MimeTypeDescriptionStatistics>
 
   </Export>
 </Nuix>

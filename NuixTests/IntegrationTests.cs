@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.Processes;
 using Reductech.EDR.Utilities.Processes.mutable;
+using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -61,7 +61,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 new TestSequence("Migrate Case",
                     new DeleteItem {Path = MigrationTestCaseFolder},
                     new Unzip {ArchiveFilePath = MigrationPath, DestinationDirectory = GeneralDataFolder},
-                    new AssertFail {Process = new NuixAssertCount { CasePath = MigrationTestCaseFolder, Minimum = 0, SearchTerm = "*"} }, //This should fail because we can't open the case
+                    new AssertError {Process = new NuixAssertCount { CasePath = MigrationTestCaseFolder, Minimum = 0, SearchTerm = "*"} }, //This should fail because we can't open the case
                     new NuixMigrateCase { CasePath = MigrationTestCaseFolder},
                     new NuixAssertCount { CasePath = MigrationTestCaseFolder, Minimum = 0, Maximum = 0, SearchTerm = "*"},
                     new DeleteItem {Path = MigrationTestCaseFolder}
@@ -380,23 +380,28 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             Assert.IsTrue(isSuccess, error?.ToString());
 
-            await AssertNoErrors(value.Execute());
+            await AssertNoErrors(value.ExecuteUntyped());
         }
 
 
-        private static async Task AssertNoErrors(IAsyncEnumerable<Result<string>> lines)
+        public static async Task<IReadOnlyCollection<string>> AssertNoErrors(IAsyncEnumerable<IProcessOutput> output)
         {
             var errors = new List<string>();
-            var sb = new StringBuilder();
+            var results = new List<string>();
 
-            await foreach (var (_, isFailure, l, error) in lines)
+            await foreach (var o in output)
             {
-                if (isFailure)
-                    errors.Add(error);
-                else sb.AppendLine(l);
+                if (o.OutputType == OutputType.Error)
+                    errors.Add(o.Text);
+                else
+                {
+                    results.Add(o.Text);
+                }
             }
             
-            CollectionAssert.IsEmpty(errors, sb.ToString());
+            CollectionAssert.IsEmpty(errors);
+
+            return results;
         }
 
         internal class TestSequence : Sequence

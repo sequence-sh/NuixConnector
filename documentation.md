@@ -1,6 +1,7 @@
 # Yaml
 <a name="RunProcessFromYaml"></a>
 ## RunProcessFromYaml
+##### IAsyncEnumerable`1
 
 Run process defined in a yaml file.
 
@@ -10,6 +11,7 @@ Run process defined in a yaml file.
 
 <a name="RunProcessFromYamlString"></a>
 ## RunProcessFromYamlString
+##### IAsyncEnumerable`1
 
 Run process defined in a yaml string.
 
@@ -19,10 +21,11 @@ Run process defined in a yaml string.
 
 <a name="Process"></a>
 # General Processes
-<a name="AssertFail"></a>
-## AssertFail
+<a name="AssertError"></a>
+## AssertError
+##### Unit
 
-Asserts that a particular process will fail.
+Asserts that a particular process will produce an error.
 
 |Parameter|Type               |Required|Summary                              |
 |:-------:|:-----------------:|:------:|:-----------------------------------:|
@@ -30,17 +33,19 @@ Asserts that a particular process will fail.
 
 <a name="Conditional"></a>
 ## Conditional
+##### Returns the same type as the 'Then' and 'Else' processes. Returns void if there is no Else process.
 
 Runs the 'If' process. If it completed successfully then run the 'Then' process, otherwise run the 'Else' process.
 
-|Parameter|Type               |Required|Summary                                            |
-|:-------:|:-----------------:|:------:|:-------------------------------------------------:|
-|If       |[Process](#Process)|☑️      |The process to use as the assertion.               |
-|Then     |[Process](#Process)|☑️      |If the 'If' process was successful then run this.  |
-|Else     |[Process](#Process)|        |If the 'If' process was unsuccessful then run this.|
+|Parameter|Type               |Required|Summary                                                                                                                                             |
+|:-------:|:-----------------:|:------:|:--------------------------------------------------------------------------------------------------------------------------------------------------:|
+|If       |[Process](#Process)|☑️      |The process to use as the assertion. Must have the boolean result type.                                                                             |
+|Then     |[Process](#Process)|☑️      |If the 'If' process was successful then run this. Must have the same result type as the 'Else' process, if there is one and the void type otherwise.|
+|Else     |[Process](#Process)|        |If the 'If' process was unsuccessful then run this. Must have the same result type as the 'Then' process.                                           |
 
 <a name="CreateDirectory"></a>
 ## CreateDirectory
+##### Unit
 
 Creates a new directory in the file system.
 
@@ -50,6 +55,7 @@ Creates a new directory in the file system.
 
 <a name="DeleteItem"></a>
 ## DeleteItem
+##### Unit
 
 Deletes a file or a directory.
 
@@ -59,6 +65,7 @@ Deletes a file or a directory.
 
 <a name="Loop"></a>
 ## Loop
+##### Unit
 
 Performs a nested process once for each element in an enumeration.
 
@@ -69,25 +76,28 @@ Performs a nested process once for each element in an enumeration.
 
 <a name="RunExternalProcess"></a>
 ## RunExternalProcess
+##### Unit
 
 Runs an external process.
 
-|Parameter  |Type                         |Required|Summary                                    |Default                                                             |
-|:---------:|:---------------------------:|:------:|:-----------------------------------------:|:------------------------------------------------------------------:|
-|ProcessPath|`string`                     |☑️      |The path to the process to run.            |                                                                    |
-|Parameters |Dictionary<`string`,`string`>|        |Pairs of parameters to give to the process.|System.Collections.Generic.Dictionary`2[System.String,System.String]|
+|Parameter  |Type          |Required|Summary                          |Default                                         |
+|:---------:|:------------:|:------:|:-------------------------------:|:----------------------------------------------:|
+|ProcessPath|`string`      |☑️      |The path to the process to run.  |                                                |
+|Arguments  |List<`string`>|        |Arguments to give to the process.|System.Collections.Generic.List`1[System.String]|
 
 <a name="Sequence"></a>
 ## Sequence
+##### Unit
 
 Executes each step, one after the another. Will stop if a process fails.
 
-|Parameter|Type                     |Required|Summary                         |
-|:-------:|:-----------------------:|:------:|:------------------------------:|
-|Steps    |List<[Process](#Process)>|☑️      |Steps that make up this process.|
+|Parameter|Type                     |Required|Summary                                                                 |
+|:-------:|:-----------------------:|:------:|:----------------------------------------------------------------------:|
+|Steps    |List<[Process](#Process)>|☑️      |Steps that make up this process. These should all have result type void.|
 
 <a name="Unzip"></a>
 ## Unzip
+##### Unit
 
 Unzips a file.
 
@@ -147,6 +157,7 @@ Enumerates through elements of a list.
 # Nuix Processes
 <a name="NuixAddConcordance"></a>
 ## NuixAddConcordance
+##### Unit
 
 Adds data from a Concordance file to a NUIX case.
 
@@ -162,6 +173,7 @@ Adds data from a Concordance file to a NUIX case.
 
 <a name="NuixAddItem"></a>
 ## NuixAddItem
+##### Unit
 
 Adds a file or directory to a Nuix Case.
 
@@ -176,6 +188,7 @@ Adds a file or directory to a Nuix Case.
 
 <a name="NuixAddToItemSet"></a>
 ## NuixAddToItemSet
+##### Unit
 
 Searches a case with a particular search string and adds all items it finds to a particular item set. Will create a new item set if one doesn't already exist.
 
@@ -193,6 +206,7 @@ Searches a case with a particular search string and adds all items it finds to a
 
 <a name="NuixAddToProductionSet"></a>
 ## NuixAddToProductionSet
+##### Unit
 
 Searches a case with a particular search string and adds all items it finds to a production set. Will create a new production set if one with the given name does not already exist.
 
@@ -207,6 +221,7 @@ Searches a case with a particular search string and adds all items it finds to a
 
 <a name="NuixAnnotateDocumentIdList"></a>
 ## NuixAnnotateDocumentIdList
+##### Unit
 
 Annotates a document ID list to add production set names to it.
 
@@ -218,6 +233,7 @@ Annotates a document ID list to add production set names to it.
 
 <a name="NuixAssertCaseExists"></a>
 ## NuixAssertCaseExists
+##### Unit
 
 Succeeds or fails depending on whether or not a particular case exists. Useful in Conditionals.
 
@@ -228,6 +244,7 @@ Succeeds or fails depending on whether or not a particular case exists. Useful i
 
 <a name="NuixAssertCount"></a>
 ## NuixAssertCount
+##### Unit
 
 A process that succeed if the numbers of items returned by a search is within a particular range and fails if it is not. Useful in Conditionals.
 
@@ -240,6 +257,7 @@ A process that succeed if the numbers of items returned by a search is within a 
 
 <a name="NuixAssertPrintPreviewState"></a>
 ## NuixAssertPrintPreviewState
+##### Unit
 
 Checks the print preview state of the production set.
 
@@ -251,6 +269,7 @@ Checks the print preview state of the production set.
 
 <a name="NuixCreateCase"></a>
 ## NuixCreateCase
+##### Unit
 
 Creates a new case.
 
@@ -263,6 +282,7 @@ Creates a new case.
 
 <a name="NuixCreateIrregularItemsReport"></a>
 ## NuixCreateIrregularItemsReport
+##### Unit
 
 Creates a report detailing the irregular items in a case.
 
@@ -273,6 +293,7 @@ Creates a report detailing the irregular items in a case.
 
 <a name="NuixCreateNRTReport"></a>
 ## NuixCreateNRTReport
+##### Unit
 
 Creates a report using an NRT file.
 
@@ -286,6 +307,7 @@ Creates a report using an NRT file.
 
 <a name="NuixCreateReport"></a>
 ## NuixCreateReport
+##### Unit
 
 Creates a report for a Nuix case.
 
@@ -296,6 +318,7 @@ Creates a report for a Nuix case.
 
 <a name="NuixCreateTermList"></a>
 ## NuixCreateTermList
+##### Unit
 
 Creates a list of all terms appearing in the case and their frequencies.
 
@@ -306,6 +329,7 @@ Creates a list of all terms appearing in the case and their frequencies.
 
 <a name="NuixExportConcordance"></a>
 ## NuixExportConcordance
+##### Unit
 
 Exports Concordance for a particular production set.
 
@@ -318,6 +342,7 @@ Exports Concordance for a particular production set.
 
 <a name="NuixExtractEntities"></a>
 ## NuixExtractEntities
+##### Unit
 
 Extract Entities from a Nuix Case.
 
@@ -328,6 +353,7 @@ Extract Entities from a Nuix Case.
 
 <a name="NuixGeneratePrintPreviews"></a>
 ## NuixGeneratePrintPreviews
+##### Unit
 
 Generates print previews for items in a production set.
 
@@ -338,6 +364,7 @@ Generates print previews for items in a production set.
 
 <a name="NuixGetItemProperties"></a>
 ## NuixGetItemProperties
+##### Unit
 
 A process that the searches a case for items and outputs the values of item properties.
 
@@ -351,6 +378,7 @@ A process that the searches a case for items and outputs the values of item prop
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds
+##### Unit
 
 Imports the given document IDs into this production set. Only works if this production set has imported numbering.
 
@@ -363,6 +391,7 @@ Imports the given document IDs into this production set. Only works if this prod
 
 <a name="NuixMigrateCase"></a>
 ## NuixMigrateCase
+##### Unit
 
 Migrates a case to the latest version if necessary.
 
@@ -372,6 +401,7 @@ Migrates a case to the latest version if necessary.
 
 <a name="NuixPerformOCR"></a>
 ## NuixPerformOCR
+##### Unit
 
 Performs optical character recognition on files in a NUIX case.
 
@@ -383,6 +413,7 @@ Performs optical character recognition on files in a NUIX case.
 
 <a name="NuixRemoveFromProductionSet"></a>
 ## NuixRemoveFromProductionSet
+##### Unit
 
 Removes particular items from a Nuix production set.
 
@@ -394,6 +425,7 @@ Removes particular items from a Nuix production set.
 
 <a name="NuixReorderProductionSet"></a>
 ## NuixReorderProductionSet
+##### Unit
 
 Reorders and renumbers the items in a production set.
 
@@ -405,6 +437,7 @@ Reorders and renumbers the items in a production set.
 
 <a name="NuixSearchAndTag"></a>
 ## NuixSearchAndTag
+##### Unit
 
 Searches a NUIX case with a particular search string and tags all files it finds.
 

@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -74,5 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
             ConsoleView.Run(args, methods);
         }
+
+        
     }
 }

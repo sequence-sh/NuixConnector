@@ -43,7 +43,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
 
     results = Hash.new { |h, k| h[k] = Hash.new { [] } }
 
-    entitiesText = ""Type\tValue\tCount"" #The headers for the entities file
+    entitiesText = ""TypeDescription\tValue\tCount"" #The headers for the entities file
 
     if entityTypes.length > 0
         allItems = the_case.searchUnsorted(""named-entities:*"")    
