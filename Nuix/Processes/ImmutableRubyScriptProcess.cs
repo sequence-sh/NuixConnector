@@ -7,7 +7,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
 
-namespace Reductech.EDR.Connectors.Nuix.processes
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     internal sealed class ImmutableRubyScriptProcess : ImmutableProcess
     {
@@ -38,50 +38,65 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         private (string scriptText, IReadOnlyCollection<string> arguments) CompileScript()
         {
-            var sb = new StringBuilder();
+            const string hashSetName = "params";
+            var setupStringBuilder = new StringBuilder();
+
+            setupStringBuilder.AppendLine("require 'optparse'");
+            setupStringBuilder.AppendLine($"#{Name}");
+
+            setupStringBuilder.AppendLine(hashSetName + " = {}");
+            setupStringBuilder.AppendLine("OptionParser.new do |opts|");
+
+            var methodCallsStringBuilder = new StringBuilder();
+            var methodNumber = 0;
+            var arguments = new List<string>();
+            foreach (var methodCall in _methodCalls)
+            {
+                var callStringBuilder = new StringBuilder(methodCall.MethodName + "(utilities"); //utilities is always first argument
+                
+                foreach (var (argumentName, argumentValue, valueCanBeNull) in methodCall.MethodParameters)
+                {
+                    var newParameterName = argumentName + methodNumber;
+                    callStringBuilder.Append(", ");
+                    if (argumentValue != null) 
+                    {
+                        arguments.Add($"-{newParameterName}");
+                        arguments.Add(argumentValue);
+                    }
+
+                    callStringBuilder.Append($"{hashSetName}[:{newParameterName}]");
+                    var argTerm = valueCanBeNull ? "[ARG]" : "ARG";
+
+                    setupStringBuilder.AppendLine($"opts.on('-{newParameterName} {argTerm})'");
+                }
+
+                callStringBuilder.Append(")");
+
+                methodCallsStringBuilder.AppendLine(callStringBuilder.ToString());
+                methodNumber++;
+            }
+            setupStringBuilder.AppendLine($"end.parse!(into: {hashSetName})");
 
             // ReSharper disable once JoinDeclarationAndInitializer
             bool printArguments;
-
-#if DEBUG
+#if DEBUG 
             printArguments = true;
 #endif
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if(printArguments)
-                sb.AppendLine("puts ARGV.join('; ')");
-
+                setupStringBuilder.AppendLine($"puts {hashSetName}");
 
             foreach (var method in _methodSet)
             {
-                sb.AppendLine(method);
-                sb.AppendLine();
+                setupStringBuilder.AppendLine(method);
+                setupStringBuilder.AppendLine();
             }
 
-            var arguments = new List<string>();
+            setupStringBuilder.Append(methodCallsStringBuilder);
 
-            foreach (var methodCall in _methodCalls)
-            {
-                var callLine = new StringBuilder(methodCall.MethodName + "(utilities"); //utilities is always first argument
+            setupStringBuilder.AppendLine($"puts '{SuccessToken}'");
 
-                foreach (var (_, value) in methodCall.MethodParameters)
-                {
-                    callLine.Append(", ");
-                    if (value == null) callLine.Append("nil");
-                    else
-                    {
-                        callLine.Append($"ARGV[{arguments.Count}]");
-                        arguments.Add(value);
-                    }
-                }
-
-                callLine.Append(")");
-
-                sb.AppendLine(callLine.ToString());
-            }
-
-            sb.AppendLine($"puts '{SuccessToken}'");
-
-            return (sb.ToString(), arguments);
+            return (setupStringBuilder.ToString(), arguments);
         }
 
         public const string SuccessToken = "--Script Completed Successfully--";
@@ -189,9 +204,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             /// <summary>
             /// The parameters to send to the method
             /// </summary>
-            public readonly IReadOnlyList<KeyValuePair<string, string?>> MethodParameters;
+            public readonly IReadOnlyList<(string argumentName, string? argumentValue, bool valueCanBeNull)> MethodParameters;
 
-            public MethodCall(string methodName, IEnumerable<KeyValuePair<string, string?>> methodParameters)
+            public MethodCall(string methodName, IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> methodParameters)
             {
                 MethodName = methodName;
                 MethodParameters = methodParameters.ToList();

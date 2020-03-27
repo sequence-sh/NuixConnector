@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.processes
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     /// <summary>
     /// Generates print previews for items in a production set.
@@ -60,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "GeneratePrintPreviews";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("productionSetNameArg", ProductionSetName, false);

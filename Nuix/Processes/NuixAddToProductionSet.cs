@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.processes
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     /// <summary>
     /// Searches a case with a particular search string and adds all items it finds to a production set.
@@ -67,7 +67,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);

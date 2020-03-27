@@ -4,7 +4,7 @@ using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.asserts
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     /// <summary>
     /// Checks the print preview state of the production set.
@@ -17,6 +17,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
             return $"Assert preview state is {ExpectedState}";
         }
 
+        
         /// <summary>
         /// The expected print preview state of the production set;
         /// </summary>
@@ -67,7 +68,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         internal override string MethodName => "GetPrintPreviewState";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("productionSetNameArg", ProductionSetName, false);

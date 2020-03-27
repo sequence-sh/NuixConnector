@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.enums;
-using Reductech.EDR.Connectors.Nuix.processes;
-using Reductech.EDR.Connectors.Nuix.processes.asserts;
+using Reductech.EDR.Connectors.Nuix.Processes;
 using Reductech.EDR.Utilities.Processes.mutable;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.processes
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     /// <summary>
     /// Adds a file or directory to a Nuix Case.
@@ -87,7 +87,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "AddToCase";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("folderNameArg", FolderName, false);

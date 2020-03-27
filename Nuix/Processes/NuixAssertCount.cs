@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.asserts
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     /// <summary>
     /// A process that succeed if the numbers of items returned by a search is within a particular range and fails if it is not.
@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         internal override string MethodName => "CountItems";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);

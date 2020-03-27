@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
-using Reductech.EDR.Connectors.Nuix.processes;
-using Reductech.EDR.Connectors.Nuix.processes.asserts;
+using Reductech.EDR.Connectors.Nuix.Processes;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.mutable;
 using Reductech.EDR.Utilities.Processes.mutable.enumerations;

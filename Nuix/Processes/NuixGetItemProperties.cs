@@ -5,7 +5,7 @@ using System.IO;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.processes
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     /// <summary>
     /// A process that the searches a case for items and outputs the values of item properties.
@@ -89,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "GetParticularProperties";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);

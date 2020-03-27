@@ -5,7 +5,7 @@ using System.IO;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.processes
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     /// <summary>
     /// Creates a report for a Nuix case.
@@ -118,7 +118,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public const string FileName = "Stats.txt";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
 

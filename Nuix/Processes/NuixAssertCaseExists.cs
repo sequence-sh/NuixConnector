@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.asserts
+namespace Reductech.EDR.Connectors.Nuix.Processes
 {
     /// <summary>
     /// Succeeds or fails depending on whether or not a particular case exists.
@@ -59,7 +59,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.asserts
         internal override string MethodName => "DoesCaseExist";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string arg, string? val, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("expectExistsArg", ShouldExist.ToString(), false);
