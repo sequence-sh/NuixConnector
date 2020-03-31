@@ -98,7 +98,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new []{_methodCall}));
 
 
-            var fullMethodLine = $"finalResult = {_methodCall}";
+            var fullMethodLine = $"finalResult = {_methodCall.GetMethodLine(0)}";
 
             scriptBuilder.AppendLine(fullMethodLine);
 
