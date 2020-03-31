@@ -45,7 +45,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 //TODO AnnotateDocumentIdList
                 //TODO ImportDocumentIds
-                //TODO MigrateCase
                 
                 new TestSequence("Create Case",
                     DeleteCaseFolder,
@@ -370,11 +369,29 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             };
 
+        /// <summary>
+        /// Tests just the freezing of the processes. Suitable as a unit test.
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <returns></returns>
+        [Test]
+        [TestCaseSource(nameof(TestProcesses))]
+        public void TestFreeze(Sequence sequence)
+        {
+            var (isSuccess, _, _, error) = sequence.TryFreeze(NuixSettings);
 
+            Assert.IsTrue(isSuccess, error?.ToString());
+        }
+
+        /// <summary>
+        /// Tests freezing and execution - much slower
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <returns></returns>
         [Test]
         [TestCaseSource(nameof(TestProcesses))]
         [Category(Integration)]
-        public async Task Test(Sequence sequence)
+        public async Task TestExecution(Sequence sequence)
         {
             var (isSuccess, _, value, error) = sequence.TryFreeze(NuixSettings);
 
