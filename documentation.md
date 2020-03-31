@@ -1,7 +1,6 @@
 # Yaml
 <a name="RunProcessFromYaml"></a>
 ## RunProcessFromYaml
-##### IAsyncEnumerable`1
 
 Run process defined in a yaml file.
 
@@ -11,7 +10,6 @@ Run process defined in a yaml file.
 
 <a name="RunProcessFromYamlString"></a>
 ## RunProcessFromYamlString
-##### IAsyncEnumerable`1
 
 Run process defined in a yaml string.
 
@@ -23,7 +21,6 @@ Run process defined in a yaml string.
 # General Processes
 <a name="AssertCount"></a>
 ## AssertCount
-##### Unit
 
 Asserts that the count of the SubProcess is within a particular range.
 
@@ -35,7 +32,6 @@ Asserts that the count of the SubProcess is within a particular range.
 
 <a name="AssertError"></a>
 ## AssertError
-##### Unit
 
 Asserts that a particular process will produce an error.
 
@@ -45,7 +41,6 @@ Asserts that a particular process will produce an error.
 
 <a name="AssertFalse"></a>
 ## AssertFalse
-##### Unit
 
 Asserts that the SubProcess will return false.
 
@@ -55,7 +50,6 @@ Asserts that the SubProcess will return false.
 
 <a name="AssertFileContents"></a>
 ## AssertFileContents
-##### Unit
 
 Asserts that a particular file contains a particular string.
 
@@ -66,7 +60,6 @@ Asserts that a particular file contains a particular string.
 
 <a name="AssertTrue"></a>
 ## AssertTrue
-##### Unit
 
 Asserts that the SubProcess will return true.
 
@@ -76,7 +69,6 @@ Asserts that the SubProcess will return true.
 
 <a name="Conditional"></a>
 ## Conditional
-##### Returns the same type as the 'Then' and 'Else' processes. Returns void if there is no Else process.
 
 Runs the 'If' process. If it completed successfully then run the 'Then' process, otherwise run the 'Else' process.
 
@@ -88,7 +80,6 @@ Runs the 'If' process. If it completed successfully then run the 'Then' process,
 
 <a name="CreateDirectory"></a>
 ## CreateDirectory
-##### Unit
 
 Creates a new directory in the file system.
 
@@ -98,7 +89,6 @@ Creates a new directory in the file system.
 
 <a name="DeleteItem"></a>
 ## DeleteItem
-##### Unit
 
 Deletes a file or a directory.
 
@@ -108,7 +98,6 @@ Deletes a file or a directory.
 
 <a name="Loop"></a>
 ## Loop
-##### Unit
 
 Performs a nested process once for each element in an enumeration.
 
@@ -119,7 +108,6 @@ Performs a nested process once for each element in an enumeration.
 
 <a name="RunExternalProcess"></a>
 ## RunExternalProcess
-##### Unit
 
 Runs an external process.
 
@@ -130,7 +118,6 @@ Runs an external process.
 
 <a name="Sequence"></a>
 ## Sequence
-##### Unit
 
 Executes each step, one after the another. Will stop if a process fails.
 
@@ -140,7 +127,6 @@ Executes each step, one after the another. Will stop if a process fails.
 
 <a name="Unzip"></a>
 ## Unzip
-##### Unit
 
 Unzips a file.
 
@@ -200,7 +186,6 @@ Enumerates through elements of a list.
 # Nuix Processes
 <a name="NuixAddConcordance"></a>
 ## NuixAddConcordance
-##### Unit
 
 Adds data from a Concordance file to a NUIX case.
 
@@ -216,7 +201,6 @@ Adds data from a Concordance file to a NUIX case.
 
 <a name="NuixAddItem"></a>
 ## NuixAddItem
-##### Unit
 
 Adds a file or directory to a Nuix Case.
 
@@ -231,7 +215,6 @@ Adds a file or directory to a Nuix Case.
 
 <a name="NuixAddToItemSet"></a>
 ## NuixAddToItemSet
-##### Unit
 
 Searches a case with a particular search string and adds all items it finds to a particular item set. Will create a new item set if one doesn't already exist.
 
@@ -249,7 +232,6 @@ Searches a case with a particular search string and adds all items it finds to a
 
 <a name="NuixAddToProductionSet"></a>
 ## NuixAddToProductionSet
-##### Unit
 
 Searches a case with a particular search string and adds all items it finds to a production set. Will create a new production set if one with the given name does not already exist.
 
@@ -264,7 +246,6 @@ Searches a case with a particular search string and adds all items it finds to a
 
 <a name="NuixAnnotateDocumentIdList"></a>
 ## NuixAnnotateDocumentIdList
-##### Unit
 
 Annotates a document ID list to add production set names to it.
 
@@ -276,7 +257,6 @@ Annotates a document ID list to add production set names to it.
 
 <a name="NuixAssertPrintPreviewState"></a>
 ## NuixAssertPrintPreviewState
-##### Unit
 
 Checks the print preview state of the production set.
 
@@ -288,7 +268,6 @@ Checks the print preview state of the production set.
 
 <a name="NuixCountItems"></a>
 ## NuixCountItems
-##### Unit
 
 Returns the number of items matching a particular search term
 
@@ -299,7 +278,6 @@ Returns the number of items matching a particular search term
 
 <a name="NuixCreateCase"></a>
 ## NuixCreateCase
-##### Unit
 
 Creates a new case.
 
@@ -312,7 +290,6 @@ Creates a new case.
 
 <a name="NuixCreateIrregularItemsReport"></a>
 ## NuixCreateIrregularItemsReport
-##### Unit
 
 Creates a report detailing the irregular items in a case.
 
@@ -323,7 +300,6 @@ Creates a report detailing the irregular items in a case.
 
 <a name="NuixCreateNRTReport"></a>
 ## NuixCreateNRTReport
-##### Unit
 
 Creates a report using an NRT file.
 
@@ -337,7 +313,6 @@ Creates a report using an NRT file.
 
 <a name="NuixCreateReport"></a>
 ## NuixCreateReport
-##### Unit
 
 Creates a report for a Nuix case.
 
@@ -348,7 +323,6 @@ Creates a report for a Nuix case.
 
 <a name="NuixCreateTermList"></a>
 ## NuixCreateTermList
-##### Unit
 
 Creates a list of all terms appearing in the case and their frequencies.
 
@@ -359,7 +333,6 @@ Creates a list of all terms appearing in the case and their frequencies.
 
 <a name="NuixDoesCaseExists"></a>
 ## NuixDoesCaseExists
-##### Unit
 
 Returns whether or not a case exists.
 
@@ -369,7 +342,6 @@ Returns whether or not a case exists.
 
 <a name="NuixExportConcordance"></a>
 ## NuixExportConcordance
-##### Unit
 
 Exports Concordance for a particular production set.
 
@@ -382,7 +354,6 @@ Exports Concordance for a particular production set.
 
 <a name="NuixExtractEntities"></a>
 ## NuixExtractEntities
-##### Unit
 
 Extract Entities from a Nuix Case.
 
@@ -393,7 +364,6 @@ Extract Entities from a Nuix Case.
 
 <a name="NuixGeneratePrintPreviews"></a>
 ## NuixGeneratePrintPreviews
-##### Unit
 
 Generates print previews for items in a production set.
 
@@ -404,7 +374,6 @@ Generates print previews for items in a production set.
 
 <a name="NuixGetItemProperties"></a>
 ## NuixGetItemProperties
-##### Unit
 
 A process that the searches a case for items and outputs the values of item properties.
 
@@ -418,7 +387,6 @@ A process that the searches a case for items and outputs the values of item prop
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds
-##### Unit
 
 Imports the given document IDs into this production set. Only works if this production set has imported numbering.
 
@@ -431,7 +399,6 @@ Imports the given document IDs into this production set. Only works if this prod
 
 <a name="NuixMigrateCase"></a>
 ## NuixMigrateCase
-##### Unit
 
 Migrates a case to the latest version if necessary.
 
@@ -441,7 +408,6 @@ Migrates a case to the latest version if necessary.
 
 <a name="NuixPerformOCR"></a>
 ## NuixPerformOCR
-##### Unit
 
 Performs optical character recognition on files in a NUIX case.
 
@@ -453,7 +419,6 @@ Performs optical character recognition on files in a NUIX case.
 
 <a name="NuixRemoveFromProductionSet"></a>
 ## NuixRemoveFromProductionSet
-##### Unit
 
 Removes particular items from a Nuix production set.
 
@@ -465,7 +430,6 @@ Removes particular items from a Nuix production set.
 
 <a name="NuixReorderProductionSet"></a>
 ## NuixReorderProductionSet
-##### Unit
 
 Reorders and renumbers the items in a production set.
 
@@ -477,7 +441,6 @@ Reorders and renumbers the items in a production set.
 
 <a name="NuixSearchAndTag"></a>
 ## NuixSearchAndTag
-##### Unit
 
 Searches a NUIX case with a particular search string and tags all files it finds.
 

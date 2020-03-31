@@ -53,6 +53,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
     internal abstract class ImmutableRubyScriptProcessTyped<T> : ImmutableProcess<T>
     {
+
+
         private readonly IMethodCall<T> _methodCall;
 
         private readonly INuixProcessSettings _nuixProcessSettings;
@@ -127,5 +129,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         protected abstract bool TryParseResult(string r, out T value);
 
+        /// <inheritdoc />
+        public override IProcessConverter? ProcessConverter => NuixProcessConverter.Instance;
     }
 }

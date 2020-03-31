@@ -4,6 +4,7 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
+using Reductech.EDR.Utilities.Processes.mutable;
 using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
@@ -64,16 +65,24 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public override Result<ImmutableProcess<Unit>> TryCombine(ImmutableProcess<Unit> nextProcess)
+        public override Result<ImmutableProcess<Unit>> TryCombine(ImmutableProcess<Unit> nextProcess, IProcessSettings processSettings)
         {
-            if (!(nextProcess is ImmutableRubyScriptProcess np) ||
-                NuixProcessSettingsComparer.Instance.Equals(_nuixProcessSettings, np._nuixProcessSettings)) 
+            var np = nextProcess as ImmutableRubyScriptProcess;
+            if (np == null)
+            {
+                var (isSuccess, _, value) = NuixProcessConverter.Instance.TryConvert(nextProcess, processSettings);
+
+                if (isSuccess)
+                    np = value as ImmutableRubyScriptProcess;
+            }
+
+            if (np == null ||  !NuixProcessSettingsComparer.Instance.Equals(_nuixProcessSettings, np._nuixProcessSettings))
                 return Result.Failure<ImmutableProcess<Unit>>("Could not combine");
 
+            
             var newProcess = new ImmutableRubyScriptProcess(
                 _nuixProcessSettings,
-                _methodCalls.Concat(np._methodCalls).ToList()
-            );
+                _methodCalls.Concat(np._methodCalls).ToList());
 
             return Result.Success<ImmutableProcess<Unit>>(newProcess);
         }
@@ -82,7 +91,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            return System.HashCode.Combine(Name);
         }
 
         /// <inheritdoc />
@@ -99,6 +108,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         /// <inheritdoc />
         public override string Name => ProcessNameHelper.GetSequenceName(_methodCalls.Select(x => x.MethodName));
+
+        /// <inheritdoc />
+        public override IProcessConverter? ProcessConverter => NuixProcessConverter.Instance;
     }
 
 }
