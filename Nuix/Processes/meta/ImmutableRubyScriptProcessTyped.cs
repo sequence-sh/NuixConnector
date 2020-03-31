@@ -11,7 +11,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class ImmutableRubyScriptProcessString : ImmutableRubyScriptProcessTyped<string>
     {
         /// <inheritdoc />
-        public ImmutableRubyScriptProcessString(string name, IMethodCall<string> methodCall, INuixProcessSettings nuixProcessSettings) : base(name, methodCall, nuixProcessSettings)
+        public ImmutableRubyScriptProcessString(IMethodCall<string> methodCall, INuixProcessSettings nuixProcessSettings) : base(methodCall, nuixProcessSettings)
         {
         }
 
@@ -26,7 +26,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class ImmutableRubyScriptProcessBool : ImmutableRubyScriptProcessTyped<bool>
     {
         /// <inheritdoc />
-        public ImmutableRubyScriptProcessBool(string name, IMethodCall<bool> methodCall, INuixProcessSettings nuixProcessSettings) : base(name, methodCall, nuixProcessSettings)
+        public ImmutableRubyScriptProcessBool(IMethodCall<bool> methodCall, INuixProcessSettings nuixProcessSettings) : base(methodCall, nuixProcessSettings)
         {
         }
 
@@ -40,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class ImmutableRubyScriptProcessInt : ImmutableRubyScriptProcessTyped<int>
     {
         /// <inheritdoc />
-        public ImmutableRubyScriptProcessInt(string name, IMethodCall<int> methodCall, INuixProcessSettings nuixProcessSettings) : base(name, methodCall, nuixProcessSettings)
+        public ImmutableRubyScriptProcessInt(IMethodCall<int> methodCall, INuixProcessSettings nuixProcessSettings) : base( methodCall, nuixProcessSettings)
         {
         }
 
@@ -58,11 +58,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         private readonly INuixProcessSettings _nuixProcessSettings;
 
         /// <inheritdoc />
-        protected ImmutableRubyScriptProcessTyped(string name, IMethodCall<T> methodCall, INuixProcessSettings nuixProcessSettings) : base(name)
+        protected ImmutableRubyScriptProcessTyped( IMethodCall<T> methodCall, INuixProcessSettings nuixProcessSettings) 
+            
         {
             _methodCall = methodCall;
             _nuixProcessSettings = nuixProcessSettings;
         }
+
+        /// <inheritdoc />
+        public override string Name => _methodCall.MethodName;
 
         /// <inheritdoc />
         public override async IAsyncEnumerable<IProcessOutput<T>> Execute()

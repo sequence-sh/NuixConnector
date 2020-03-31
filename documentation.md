@@ -31,6 +31,17 @@ Asserts that a particular process will produce an error.
 |:-------:|:-----------------:|:------:|:-----------------------------------:|
 |Process  |[Process](#Process)|☑️      |The process that is expected to fail.|
 
+<a name="AssertFileContents"></a>
+## AssertFileContents
+##### Unit
+
+Asserts that a particular file contains a particular string.
+
+|Parameter       |Type    |Required|Summary                           |
+|:--------------:|:------:|:------:|:--------------------------------:|
+|ExpectedContents|`string`|☑️      |The file must contain this string.|
+|FilePath        |`string`|☑️      |The path to the file to check.    |
+
 <a name="Conditional"></a>
 ## Conditional
 ##### Returns the same type as the 'Then' and 'Else' processes. Returns void if there is no Else process.

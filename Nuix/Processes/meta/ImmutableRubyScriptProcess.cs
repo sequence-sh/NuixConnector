@@ -12,8 +12,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     {
         /// <inheritdoc />
         public ImmutableRubyScriptProcess(
-            string name, INuixProcessSettings nuixProcessSettings,
-            IReadOnlyCollection<IMethodCall<Unit>> methodCalls) : base(name)
+            INuixProcessSettings nuixProcessSettings,
+            IReadOnlyCollection<IMethodCall<Unit>> methodCalls)
         {
             _nuixProcessSettings = nuixProcessSettings;
             _methodCalls = methodCalls;
@@ -71,7 +71,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 return Result.Failure<ImmutableProcess<Unit>>("Could not combine");
 
             var newProcess = new ImmutableRubyScriptProcess(
-                $"{Name} then {np.Name}",
                 _nuixProcessSettings,
                 _methodCalls.Concat(np._methodCalls).ToList()
             );
@@ -97,6 +96,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                     &&
                    _methodCalls.SequenceEqual(rsp._methodCalls);
         }
+
+        /// <inheritdoc />
+        public override string Name => ProcessNameHelper.GetSequenceName(_methodCalls.Select(x => x.MethodName));
     }
 
 }

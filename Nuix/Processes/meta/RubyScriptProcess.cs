@@ -87,7 +87,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 {
                     var methodCalls = new BasicMethodCall<Unit>(MethodName, methodBuilder.ToString(), arguments);
 
-                    var ip = new ImmutableRubyScriptProcess(GetName(), 
+                    var ip = new ImmutableRubyScriptProcess(
                         nuixProcessSettings, new []{methodCalls});
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
@@ -95,21 +95,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 case NuixReturnType.Boolean:
                 {
                     var methodCall = new BasicMethodCall<bool>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessBool(GetName(), methodCall, nuixProcessSettings);
+                    var ip = new ImmutableRubyScriptProcessBool( methodCall, nuixProcessSettings);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.Integer:
                 {
                     var methodCall = new BasicMethodCall<int>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessInt(GetName(), methodCall, nuixProcessSettings);
+                    var ip = new ImmutableRubyScriptProcessInt( methodCall, nuixProcessSettings);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.String:
                 {
                     var methodCall = new BasicMethodCall<string>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessString(GetName(), methodCall, nuixProcessSettings);
+                    var ip = new ImmutableRubyScriptProcessString( methodCall, nuixProcessSettings);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
