@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.enums;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Checks the print preview state of the production set.
@@ -12,12 +13,14 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
     public sealed class NuixAssertPrintPreviewState : RubyScriptProcess
     {
         /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
+        /// <inheritdoc />
         public override string GetName()
         {
             return $"Assert preview state is {ExpectedState}";
         }
 
-        
         /// <summary>
         /// The expected print preview state of the production set;
         /// </summary>

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Searches a NUIX case with a particular search string and tags all files it finds.
@@ -12,14 +13,15 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
     public sealed class NuixSearchAndTag : RubyScriptProcess
     {
         /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
+        /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => $"Search and Tag with '{Tag}'";
-
 
         /// <summary>
         /// The tag to assign to found results.
         /// </summary>
-        
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.

@@ -2,16 +2,20 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Creates a report for a Nuix case.
     /// </summary>
     public sealed class NuixCreateReport : RubyScriptProcess
     {
+        /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Create Report";

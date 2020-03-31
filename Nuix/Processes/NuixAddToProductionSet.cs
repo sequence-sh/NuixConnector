@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Searches a case with a particular search string and adds all items it finds to a production set.
@@ -13,14 +14,15 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
     public sealed class NuixAddToProductionSet : RubyScriptProcess
     {
         /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
+        /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => $"Search and add to production set.";
-
 
         /// <summary>
         /// The production set to add results to. Will be created if it doesn't already exist
         /// </summary>
-        
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.

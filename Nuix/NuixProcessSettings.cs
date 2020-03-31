@@ -1,4 +1,5 @@
-﻿using Reductech.EDR.Utilities.Processes.mutable;
+﻿using System.Collections.Generic;
+using Reductech.EDR.Utilities.Processes.mutable;
 
 namespace Reductech.EDR.Connectors.Nuix
 {
@@ -41,5 +42,28 @@ namespace Reductech.EDR.Connectors.Nuix
         /// The path to the nuix console executable.
         /// </summary>
         public string NuixExeConsolePath { get; }
+    }
+
+    internal class NuixProcessSettingsComparer : IEqualityComparer<INuixProcessSettings>
+    {
+        private NuixProcessSettingsComparer()
+        {
+        }
+
+        public static NuixProcessSettingsComparer Instance = new NuixProcessSettingsComparer();
+
+        /// <inheritdoc />
+        public bool Equals(INuixProcessSettings x, INuixProcessSettings y)
+        {
+            if (x == null || y == null) return x == y;
+            
+            return x.UseDongle == y.UseDongle && x.NuixExeConsolePath == y.NuixExeConsolePath;
+        }
+
+        /// <inheritdoc />
+        public int GetHashCode(INuixProcessSettings obj)
+        {
+            return System.HashCode.Combine(obj.UseDongle, obj.NuixExeConsolePath);
+        }
     }
 }

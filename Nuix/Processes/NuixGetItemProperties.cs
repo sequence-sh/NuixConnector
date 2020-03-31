@@ -2,16 +2,20 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// A process that the searches a case for items and outputs the values of item properties.
     /// </summary>
     public sealed class NuixGetItemProperties : RubyScriptProcess
     {
+        /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Get particular properties";

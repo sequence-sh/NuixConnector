@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Generates print previews for items in a production set.
     /// </summary>
     public sealed class NuixGeneratePrintPreviews : RubyScriptProcess
     {
+        /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
 
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]

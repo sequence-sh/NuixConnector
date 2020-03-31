@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Creates a new case.
     /// </summary>
     internal class NuixCreateCase : RubyScriptProcess
     {
-        
+        /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
         public override string GetName() => "Create Case";
 
         /// <summary>

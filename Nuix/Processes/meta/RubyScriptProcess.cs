@@ -6,7 +6,7 @@ using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
 using Reductech.EDR.Utilities.Processes.mutable;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
     /// <summary>
     /// A process that runs a ruby script against NUIX
@@ -14,7 +14,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
     public abstract class RubyScriptProcess : Process
     {
         /// <summary>
-        /// Checks if the current set of arguments is valid
+        /// Checks if the current set of arguments is valid.
         /// </summary>
         /// <returns></returns>
         internal abstract string ScriptText { get; }
@@ -23,7 +23,11 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
 
         /// <inheritdoc />
         public override string GetReturnTypeInfo() => nameof(Unit);
-
+        
+        /// <summary>
+        /// The type that this method returns within Nuix.
+        /// </summary>
+        protected abstract NuixReturnType ReturnType { get; }
 
         /// <summary>
         /// Get arguments that will be given to the nuix script.
@@ -42,20 +46,17 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         {
             var errors = new List<string>();
 
-            
-            var parameterNames = new List<string>() {"utilities" }; //always provide the utilities argument
-            var nuixExePath = "";
-            var useDongle = false;
+            var parameterNames = new List<string> {"utilities" }; //always provide the utilities argument
+            INuixProcessSettings nuixProcessSettings;
 
             if (!(processSettings is INuixProcessSettings nps))
+            {
+                nuixProcessSettings = new NuixProcessSettings(false, "");
                 errors.Add($"Process Settings must be an instance of {typeof(INuixProcessSettings).Name}");
+            }
             else
             {
-                if (string.IsNullOrWhiteSpace(nps.NuixExeConsolePath))
-                    errors.Add($"'{nameof(nps.NuixExeConsolePath)}' must not be empty");
-                else
-                    nuixExePath = nps.NuixExeConsolePath;
-                useDongle = nps.UseDongle;
+                nuixProcessSettings = nps;
             }
 
             var arguments = GetArgumentValues();
@@ -80,13 +81,44 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
             methodBuilder.AppendLine(ScriptText);
             methodBuilder.AppendLine("end");
 
-            var methodCalls = new ImmutableRubyScriptProcess.MethodCall(MethodName, arguments);
+            switch (ReturnType)
+            {
+                case NuixReturnType.Unit:
+                {
+                    var methodCalls = new BasicMethodCall<Unit>(MethodName, methodBuilder.ToString(), arguments);
 
-            var ip = new ImmutableRubyScriptProcess(GetName(), 
-                nuixExePath, 
-                useDongle, new List<string>{methodBuilder.ToString()} , new []{methodCalls});
+                    var ip = new ImmutableRubyScriptProcess(GetName(), 
+                        nuixProcessSettings, new []{methodCalls});
 
-            return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                    return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                }
+                case NuixReturnType.Boolean:
+                {
+                    var methodCall = new BasicMethodCall<bool>(MethodName, methodBuilder.ToString(), arguments);
+                    var ip = new ImmutableRubyScriptProcessBool(GetName(), methodCall, nuixProcessSettings);
+
+                    return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                }
+                case NuixReturnType.Integer:
+                {
+                    var methodCall = new BasicMethodCall<int>(MethodName, methodBuilder.ToString(), arguments);
+                    var ip = new ImmutableRubyScriptProcessInt(GetName(), methodCall, nuixProcessSettings);
+
+                    return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                }
+                case NuixReturnType.String:
+                {
+                    var methodCall = new BasicMethodCall<string>(MethodName, methodBuilder.ToString(), arguments);
+                    var ip = new ImmutableRubyScriptProcessString(GetName(), methodCall, nuixProcessSettings);
+
+                    return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                }
+                default:
+                    return Result.Failure<ImmutableProcess, ErrorList>(
+                        new ErrorList($"Cannot freeze a process with type {ReturnType}"));
+            }
+
+            
         }
     }
 }

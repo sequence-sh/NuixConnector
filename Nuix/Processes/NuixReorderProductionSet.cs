@@ -2,10 +2,11 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.enums;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Reorders and renumbers the items in a production set.
@@ -13,9 +14,11 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
     public sealed class NuixReorderProductionSet : RubyScriptProcess
     {
         /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
+        /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => $"Renumbers the items in the production set.";
-
 
         /// <summary>
         /// The production set to reorder.

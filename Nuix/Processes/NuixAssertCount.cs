@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Processes
+namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// A process that succeed if the numbers of items returned by a search is within a particular range and fails if it is not.
@@ -11,6 +12,9 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
     /// </summary>
     public sealed class NuixAssertCount : RubyScriptProcess
     {
+        /// <inheritdoc />
+        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
         /// <summary>
         /// Inclusive minimum of the expected range.
         /// Either this, Maximum, or both must be set.
