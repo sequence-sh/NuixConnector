@@ -7,27 +7,18 @@ using YamlDotNet.Serialization;
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// Succeeds or fails depending on whether or not a particular case exists.
-    /// Useful in Conditionals.
+    /// Returns whether or not a case exists.
     /// </summary>
-    public sealed class NuixAssertCaseExists : RubyScriptProcess
+    public sealed class NuixDoesCaseExists : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        protected override NuixReturnType ReturnType => NuixReturnType.Boolean;
 
         /// <inheritdoc />
         public override string GetName()
         {
-            return ShouldExist ? "Case should exist" : "Case should not exist";
+            return "Does Case Exist?";
         }
-
-        /// <summary>
-        /// If true, asserts that the case does exist.
-        /// If false, asserts that the case does not exist.
-        /// </summary>
-        [Required]
-        [YamlMember(Order = 2)]
-        public bool ShouldExist { get; set; } = true;
 
         /// <summary>
         /// The path to the case.
@@ -45,17 +36,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     begin
         the_case = utilities.case_factory.open(pathArg)
         the_case.close()
-        if expectExistsArg == 'False'
-            puts 'Case Exists but was expected not to'
-            exit
-        end
-        puts 'Case Exists as expected'
+        return true
     rescue #Case does not exist
-        if expectExistsArg == 'True'
-            puts 'Case does not exist but was expected to'
-            exit
-        end
-        puts 'Case does not exist, this was expected'
+        return false
     end
 ";
 
@@ -66,7 +49,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
-            yield return ("expectExistsArg", ShouldExist.ToString(), false);
         }
     }
 }

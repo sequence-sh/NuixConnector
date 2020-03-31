@@ -34,9 +34,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private static readonly Process DeleteCaseFolder = new DeleteItem { Path = CasePath};
         private static readonly Process DeleteOutputFolder = new DeleteItem { Path = OutputFolder};
         private static readonly Process CreateOutputFolder = new CreateDirectory { Path = OutputFolder };
-        private static readonly Process AssertCaseDoesNotExist = new NuixAssertCaseExists {CasePath = CasePath, ShouldExist = false};
+        private static readonly Process AssertCaseDoesNotExist = new AssertFalse(){SubProcess = new NuixDoesCaseExists {CasePath = CasePath}};
         private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Integration Test Case", CasePath = CasePath, Investigator = "Mark"};
-        private static Process AssertCount(int expected, string searchTerm) => new NuixAssertCount {CasePath = CasePath, Minimum = expected, Maximum = expected,  SearchTerm = searchTerm};
+        private static Process AssertCount(int expected, string searchTerm) => new AssertCount{SubProcess = new NuixCountItems {CasePath = CasePath,  SearchTerm = searchTerm}, Maximum = expected, Minimum = expected};
 
         private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
 
@@ -50,19 +50,21 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder,
                     AssertCaseDoesNotExist,
                     CreateCase,
-                    new NuixAssertCaseExists
+                    new AssertTrue
                     {
-                        CasePath = CasePath,
-                        ShouldExist = true
+                        SubProcess = new NuixDoesCaseExists
+                        {
+                            CasePath = CasePath
+                        }
                     },
                     DeleteCaseFolder),
 
                 new TestSequence("Migrate Case",
                     new DeleteItem {Path = MigrationTestCaseFolder},
                     new Unzip {ArchiveFilePath = MigrationPath, DestinationDirectory = GeneralDataFolder},
-                    new AssertError {Process = new NuixAssertCount { CasePath = MigrationTestCaseFolder, Minimum = 0, SearchTerm = "*"} }, //This should fail because we can't open the case
+                    new AssertError {Process = new NuixSearchAndTag() { CasePath = MigrationTestCaseFolder, SearchTerm = "*", Tag = "item"} }, //This should fail because we can't open the case
                     new NuixMigrateCase { CasePath = MigrationTestCaseFolder},
-                    new NuixAssertCount { CasePath = MigrationTestCaseFolder, Minimum = 0, Maximum = 0, SearchTerm = "*"},
+                    new AssertCount{Maximum = 0, Minimum = 0, SubProcess = new NuixCountItems { CasePath = MigrationTestCaseFolder, SearchTerm = "*"}},
                     new DeleteItem {Path = MigrationTestCaseFolder}
                     ),
 

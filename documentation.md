@@ -21,6 +21,18 @@ Run process defined in a yaml string.
 
 <a name="Process"></a>
 # General Processes
+<a name="AssertCount"></a>
+## AssertCount
+##### Unit
+
+Asserts that the count of the SubProcess is within a particular range.
+
+|Parameter |Type               |Required|Summary                                                                            |
+|:--------:|:-----------------:|:------:|:---------------------------------------------------------------------------------:|
+|Minimum   |`int`?             |        |Inclusive minimum of the expected range. Either this, Maximum, or both must be set.|
+|Maximum   |`int`?             |        |Inclusive maximum of the expected range. Either this, Minimum, or both must be set.|
+|SubProcess|[Process](#Process)|        |The process whose count should be checked. Should have a return type of int.       |
+
 <a name="AssertError"></a>
 ## AssertError
 ##### Unit
@@ -30,6 +42,16 @@ Asserts that a particular process will produce an error.
 |Parameter|Type               |Required|Summary                              |
 |:-------:|:-----------------:|:------:|:-----------------------------------:|
 |Process  |[Process](#Process)|☑️      |The process that is expected to fail.|
+
+<a name="AssertFalse"></a>
+## AssertFalse
+##### Unit
+
+Asserts that the SubProcess will return false.
+
+|Parameter |Type               |Required|Summary                                                                       |
+|:--------:|:-----------------:|:------:|:----------------------------------------------------------------------------:|
+|SubProcess|[Process](#Process)|        |The process whose result should be checked. Should have a return type of bool.|
 
 <a name="AssertFileContents"></a>
 ## AssertFileContents
@@ -41,6 +63,16 @@ Asserts that a particular file contains a particular string.
 |:--------------:|:------:|:------:|:--------------------------------:|
 |ExpectedContents|`string`|☑️      |The file must contain this string.|
 |FilePath        |`string`|☑️      |The path to the file to check.    |
+
+<a name="AssertTrue"></a>
+## AssertTrue
+##### Unit
+
+Asserts that the SubProcess will return true.
+
+|Parameter |Type               |Required|Summary                                                                       |
+|:--------:|:-----------------:|:------:|:----------------------------------------------------------------------------:|
+|SubProcess|[Process](#Process)|        |The process whose result should be checked. Should have a return type of bool.|
 
 <a name="Conditional"></a>
 ## Conditional
@@ -242,30 +274,6 @@ Annotates a document ID list to add production set names to it.
 |CasePath         |`string`|☑️      |The path to the case.                           |C:/Cases/MyCase|
 |DataPath         |`string`|☑️      |Specifies the file path of the document ID list.|               |
 
-<a name="NuixAssertCaseExists"></a>
-## NuixAssertCaseExists
-##### Unit
-
-Succeeds or fails depending on whether or not a particular case exists. Useful in Conditionals.
-
-|Parameter  |Type    |Required|Summary                                                                                   |Default|Example        |
-|:---------:|:------:|:------:|:----------------------------------------------------------------------------------------:|:-----:|:-------------:|
-|ShouldExist|`bool`  |        |If true, asserts that the case does exist. If false, asserts that the case does not exist.|True   |               |
-|CasePath   |`string`|☑️      |The path to the case.                                                                     |       |C:/Cases/MyCase|
-
-<a name="NuixAssertCount"></a>
-## NuixAssertCount
-##### Unit
-
-A process that succeed if the numbers of items returned by a search is within a particular range and fails if it is not. Useful in Conditionals.
-
-|Parameter |Type    |Required|Summary                                                                            |Example        |
-|:--------:|:------:|:------:|:---------------------------------------------------------------------------------:|:-------------:|
-|Minimum   |`int`?  |        |Inclusive minimum of the expected range. Either this, Maximum, or both must be set.|               |
-|Maximum   |`int`?  |        |Inclusive maximum of the expected range. Either this, Minimum, or both must be set.|               |
-|CasePath  |`string`|☑️      |The path to the case.                                                              |C:/Cases/MyCase|
-|SearchTerm|`string`|☑️      |The search term to count.                                                          |*.txt          |
-
 <a name="NuixAssertPrintPreviewState"></a>
 ## NuixAssertPrintPreviewState
 ##### Unit
@@ -277,6 +285,17 @@ Checks the print preview state of the production set.
 |ExpectedState    |[PrintPreviewState](#PrintPreviewState)|        |The expected print preview state of the production set;|All    |               |
 |ProductionSetName|`string`                               |☑️      |The production set to reorder.                         |       |               |
 |CasePath         |`string`                               |☑️      |The path to the case.                                  |       |C:/Cases/MyCase|
+
+<a name="NuixCountItems"></a>
+## NuixCountItems
+##### Unit
+
+Returns the number of items matching a particular search term
+
+|Parameter |Type    |Required|Summary                  |Example        |
+|:--------:|:------:|:------:|:-----------------------:|:-------------:|
+|CasePath  |`string`|☑️      |The path to the case.    |C:/Cases/MyCase|
+|SearchTerm|`string`|☑️      |The search term to count.|*.txt          |
 
 <a name="NuixCreateCase"></a>
 ## NuixCreateCase
@@ -337,6 +356,16 @@ Creates a list of all terms appearing in the case and their frequencies.
 |:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
 |OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
 |CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
+
+<a name="NuixDoesCaseExists"></a>
+## NuixDoesCaseExists
+##### Unit
+
+Returns whether or not a case exists.
+
+|Parameter|Type    |Required|Summary              |Example        |
+|:-------:|:------:|:------:|:-------------------:|:-------------:|
+|CasePath |`string`|☑️      |The path to the case.|C:/Cases/MyCase|
 
 <a name="NuixExportConcordance"></a>
 ## NuixExportConcordance
