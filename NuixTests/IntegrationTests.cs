@@ -260,7 +260,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     new AssertFileContents
                     {
-                        FilePath = OutputFolder + "/Stats.txt", //TODO set these field
+                        FilePath = OutputFolder + "/Stats.txt",
                         ExpectedContents = "Mark	type	text/plain	2"
                     },
 
@@ -280,7 +280,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     },
                     new AssertFileContents
                     {
-                        FilePath = OutputFolder + "/Terms.txt", //TODO set these field
+                        FilePath = OutputFolder + "/Terms.txt",
                         ExpectedContents = "yellow	2"
                     },
 
