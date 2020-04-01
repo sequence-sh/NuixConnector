@@ -14,7 +14,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         public const string HashSetName = "params";
 
-        public static string CompileScriptSetup(string name, IEnumerable<IMethodCall> methodCalls)
+        public static string CompileScriptSetup(string name, IEnumerable<IRubyBlock> rubyBlocks)
         {
             var scriptStringBuilder = new StringBuilder();
 
@@ -25,8 +25,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             scriptStringBuilder.AppendLine(HashSetName + " = {}");
             scriptStringBuilder.AppendLine("OptionParser.new do |opts|");
 
-            foreach (var extraOptParseLine in methodCalls.SelectMany((x, i) => x.GetOptParseLines(i)))
-                scriptStringBuilder.AppendLine(extraOptParseLine);
+            var i = 0;
+            foreach (var methodCall in rubyBlocks)
+            {
+                var optParseLines = methodCall.GetOptParseLines(ref i);
+                foreach (var optParseLine in optParseLines) scriptStringBuilder.AppendLine(optParseLine);
+            }
+
             scriptStringBuilder.AppendLine($"end.parse!(into: {HashSetName})");
 
             // ReSharper disable once JoinDeclarationAndInitializer
@@ -42,11 +47,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
 
-        public static string CompileScriptMethodText(IReadOnlyCollection<IMethodCall> methodCalls)
+        public static string CompileScriptMethodText(IReadOnlyCollection<IRubyBlock> rubyBlocks)
         {
             var methodsTextStringBuilder = new StringBuilder();
 
-            foreach (var method in methodCalls.Select(x=>x.MethodText).Distinct())
+            foreach (var method in rubyBlocks.SelectMany(x=>x.FunctionDefinitions).Distinct())
             {
                 methodsTextStringBuilder.AppendLine(method);
                 methodsTextStringBuilder.AppendLine();
@@ -55,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return methodsTextStringBuilder.ToString();
         }
 
-        public static async Task<List<string>> GetTrueArgumentsAsync(string scriptText, INuixProcessSettings nuixProcessSettings, IEnumerable<IMethodCall> methodCalls)
+        public static async Task<List<string>> GetTrueArgumentsAsync(string scriptText, INuixProcessSettings nuixProcessSettings, IEnumerable<IRubyBlock> rubyBlocks)
         {
             
             var scriptFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), "NuixScript" + Guid.NewGuid()), "rb");
@@ -70,7 +75,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 trueArguments.Add("dongle");  
             }
             trueArguments.Add(scriptFilePath);
-            trueArguments.AddRange(methodCalls.SelectMany((x,i)=> x.GetArguments(i)));
+            var i = 0;
+            foreach (var methodCall in rubyBlocks)
+            {
+                var arguments = methodCall.GetArguments(ref i);
+                trueArguments.AddRange(arguments);
+            }
 
             return trueArguments;
         }

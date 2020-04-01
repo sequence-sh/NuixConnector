@@ -34,7 +34,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         /// <returns></returns>
         internal abstract IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues();
-
+        //TODO change to RubyMethodParameters
 
         internal virtual IEnumerable<string> GetAdditionalArgumentErrors()
         {
@@ -59,14 +59,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 nuixProcessSettings = nps;
             }
 
-            var arguments = GetArgumentValues();
+            var arguments = GetArgumentValues()
+                .Select(x => new RubyMethodParameter(x.argumentName, x.argumentValue, x.valueCanBeNull))
+                .ToList();
 
-            foreach (var (argumentName, argumentValue, valueCanBeNull) in GetArgumentValues())
+
+            foreach (var (parameterName, argumentValue, valueCanBeNull) in arguments)
             {
                 if (string.IsNullOrWhiteSpace(argumentValue) && !valueCanBeNull) 
-                    errors.Add($"Argument '{argumentName}' must not be null"); //todo - this isn't the real argument names -> fix that
+                    errors.Add($"Argument '{parameterName}' must not be null"); //todo - this isn't the real argument names -> fix that
                 
-                parameterNames.Add(argumentName);
+                parameterNames.Add(parameterName);
             }
 
             errors.AddRange(GetAdditionalArgumentErrors());
@@ -85,31 +88,31 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 case NuixReturnType.Unit:
                 {
-                    var methodCalls = new BasicMethodCall<Unit>(MethodName, methodBuilder.ToString(), arguments);
+                    var block = new BasicRubyBlock(MethodName, methodBuilder.ToString(), arguments);
 
                     var ip = new ImmutableRubyScriptProcess(
-                        nuixProcessSettings, new []{methodCalls});
+                        nuixProcessSettings, new []{block});
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.Boolean:
                 {
-                    var methodCall = new BasicMethodCall<bool>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessBool( methodCall, nuixProcessSettings);
+                    var block = new BasicTypedRubyBlock<bool>(MethodName, methodBuilder.ToString(), arguments);
+                    var ip = new ImmutableRubyScriptProcessBool( block, nuixProcessSettings);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.Integer:
                 {
-                    var methodCall = new BasicMethodCall<int>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessInt( methodCall, nuixProcessSettings);
+                    var block = new BasicTypedRubyBlock<int>(MethodName, methodBuilder.ToString(), arguments);
+                    var ip = new ImmutableRubyScriptProcessInt( block, nuixProcessSettings);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.String:
                 {
-                    var methodCall = new BasicMethodCall<string>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessString( methodCall, nuixProcessSettings);
+                    var block = new BasicTypedRubyBlock<string>(MethodName, methodBuilder.ToString(), arguments);
+                    var ip = new ImmutableRubyScriptProcessString( block, nuixProcessSettings);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }

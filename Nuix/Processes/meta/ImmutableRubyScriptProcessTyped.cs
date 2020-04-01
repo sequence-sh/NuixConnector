@@ -11,7 +11,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class ImmutableRubyScriptProcessString : ImmutableRubyScriptProcessTyped<string>
     {
         /// <inheritdoc />
-        public ImmutableRubyScriptProcessString(IMethodCall<string> methodCall, INuixProcessSettings nuixProcessSettings) : base(methodCall, nuixProcessSettings)
+        public ImmutableRubyScriptProcessString(ITypedRubyBlock<string> rubyBlock, INuixProcessSettings nuixProcessSettings) : base(rubyBlock, nuixProcessSettings)
         {
         }
 
@@ -26,7 +26,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class ImmutableRubyScriptProcessBool : ImmutableRubyScriptProcessTyped<bool>
     {
         /// <inheritdoc />
-        public ImmutableRubyScriptProcessBool(IMethodCall<bool> methodCall, INuixProcessSettings nuixProcessSettings) : base(methodCall, nuixProcessSettings)
+        public ImmutableRubyScriptProcessBool(ITypedRubyBlock<bool> rubyBlock, INuixProcessSettings nuixProcessSettings) : base(rubyBlock, nuixProcessSettings)
         {
         }
 
@@ -40,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class ImmutableRubyScriptProcessInt : ImmutableRubyScriptProcessTyped<int>
     {
         /// <inheritdoc />
-        public ImmutableRubyScriptProcessInt(IMethodCall<int> methodCall, INuixProcessSettings nuixProcessSettings) : base( methodCall, nuixProcessSettings)
+        public ImmutableRubyScriptProcessInt(ITypedRubyBlock<int> rubyBlock, INuixProcessSettings nuixProcessSettings) : base( rubyBlock, nuixProcessSettings)
         {
         }
 
@@ -53,28 +53,25 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
     internal abstract class ImmutableRubyScriptProcessTyped<T> : ImmutableProcess<T>
     {
-
-
-        private readonly IMethodCall<T> _methodCall;
-
+        public readonly ITypedRubyBlock<T> RubyBlock;
         private readonly INuixProcessSettings _nuixProcessSettings;
 
         /// <inheritdoc />
-        protected ImmutableRubyScriptProcessTyped( IMethodCall<T> methodCall, INuixProcessSettings nuixProcessSettings) 
+        protected ImmutableRubyScriptProcessTyped( ITypedRubyBlock<T> rubyBlock, INuixProcessSettings nuixProcessSettings) 
             
         {
-            _methodCall = methodCall;
+            RubyBlock = rubyBlock;
             _nuixProcessSettings = nuixProcessSettings;
         }
 
         /// <inheritdoc />
-        public override string Name => _methodCall.MethodName;
+        public override string Name => RubyBlock.BlockName;
 
         /// <inheritdoc />
         public override async IAsyncEnumerable<IProcessOutput<T>> Execute()
         {
             var scriptText = CompileScript();
-            var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, _nuixProcessSettings, new []{_methodCall});
+            var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, _nuixProcessSettings, new []{RubyBlock});
 
             IProcessOutput<T>? successOutput = null;
 
@@ -96,15 +93,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
             var scriptBuilder = new StringBuilder();
 
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, new []{_methodCall}));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new []{_methodCall}));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, new []{RubyBlock}));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new []{RubyBlock}));
 
-
-            var fullMethodLine = $"finalResult = {_methodCall.GetMethodLine(0)}";
+            var i = 0;
+            var fullMethodLine = RubyBlock.GetCallText(ref i, out var resultVariableName);
 
             scriptBuilder.AppendLine(fullMethodLine);
-
-            scriptBuilder.AppendLine("puts \"--Final Result: #{finalResult}\"");
+            scriptBuilder.AppendLine($"puts \"--Final Result: #{{{resultVariableName}}}\"");
 
             return (scriptBuilder.ToString());
         }
