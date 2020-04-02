@@ -14,7 +14,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
         }
 
-
         /// <inheritdoc />
         public Result<ImmutableProcess<T>> TryConvert<T>(ImmutableProcess<T> immutableProcess, IProcessSettings processSettings)
         {

@@ -19,17 +19,6 @@ Run process defined in a yaml string.
 
 <a name="Process"></a>
 # General Processes
-<a name="AssertCount"></a>
-## AssertCount
-
-Asserts that the count of the SubProcess is within a particular range.
-
-|Parameter |Type               |Required|Summary                                                                            |
-|:--------:|:-----------------:|:------:|:---------------------------------------------------------------------------------:|
-|Minimum   |`int`?             |        |Inclusive minimum of the expected range. Either this, Maximum, or both must be set.|
-|Maximum   |`int`?             |        |Inclusive maximum of the expected range. Either this, Minimum, or both must be set.|
-|SubProcess|[Process](#Process)|        |The process whose count should be checked. Should have a return type of int.       |
-
 <a name="AssertError"></a>
 ## AssertError
 
@@ -42,30 +31,31 @@ Asserts that a particular process will produce an error.
 <a name="AssertFalse"></a>
 ## AssertFalse
 
-Asserts that the SubProcess will return false.
+Asserts that the Check will return false.
 
-|Parameter |Type               |Required|Summary                                                                       |
-|:--------:|:-----------------:|:------:|:----------------------------------------------------------------------------:|
-|SubProcess|[Process](#Process)|        |The process whose result should be checked. Should have a return type of bool.|
-
-<a name="AssertFileContents"></a>
-## AssertFileContents
-
-Asserts that a particular file contains a particular string.
-
-|Parameter       |Type    |Required|Summary                           |
-|:--------------:|:------:|:------:|:--------------------------------:|
-|ExpectedContents|`string`|☑️      |The file must contain this string.|
-|FilePath        |`string`|☑️      |The path to the file to check.    |
+|Parameter|Type               |Required|Summary                                                                       |
+|:-------:|:-----------------:|:------:|:----------------------------------------------------------------------------:|
+|ResultOf |[Process](#Process)|        |The process whose result should be checked. Should have a return type of bool.|
 
 <a name="AssertTrue"></a>
 ## AssertTrue
 
-Asserts that the SubProcess will return true.
+Asserts that the Check will return true.
 
-|Parameter |Type               |Required|Summary                                                                       |
-|:--------:|:-----------------:|:------:|:----------------------------------------------------------------------------:|
-|SubProcess|[Process](#Process)|        |The process whose result should be checked. Should have a return type of bool.|
+|Parameter|Type               |Required|Summary                                                                       |
+|:-------:|:-----------------:|:------:|:----------------------------------------------------------------------------:|
+|ResultOf |[Process](#Process)|        |The process whose result should be checked. Should have a return type of bool.|
+
+<a name="CheckNumber"></a>
+## CheckNumber
+
+Checks that the count of the Check is within a particular range.
+
+|Parameter|Type               |Required|Summary                                                                            |
+|:-------:|:-----------------:|:------:|:---------------------------------------------------------------------------------:|
+|Minimum  |`int`?             |        |Inclusive minimum of the expected range. Either this, Maximum, or both must be set.|
+|Maximum  |`int`?             |        |Inclusive maximum of the expected range. Either this, Minimum, or both must be set.|
+|Check    |[Process](#Process)|        |The process whose count should be checked. Should have a return type of int.       |
 
 <a name="Conditional"></a>
 ## Conditional
@@ -95,6 +85,16 @@ Deletes a file or a directory.
 |Parameter|Type    |Required|Summary                                     |
 |:-------:|:------:|:------:|:------------------------------------------:|
 |Path     |`string`|☑️      |The path to the file or directory to delete.|
+
+<a name="DoesFileContain"></a>
+## DoesFileContain
+
+Checks whether a particular file contains a particular string.
+
+|Parameter       |Type    |Required|Summary                           |
+|:--------------:|:------:|:------:|:--------------------------------:|
+|ExpectedContents|`string`|☑️      |The file must contain this string.|
+|FilePath        |`string`|☑️      |The path to the file to check.    |
 
 <a name="Loop"></a>
 ## Loop

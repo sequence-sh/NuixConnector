@@ -34,9 +34,26 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private static readonly Process DeleteCaseFolder = new DeleteItem { Path = CasePath};
         private static readonly Process DeleteOutputFolder = new DeleteItem { Path = OutputFolder};
         private static readonly Process CreateOutputFolder = new CreateDirectory { Path = OutputFolder };
-        private static readonly Process AssertCaseDoesNotExist = new AssertFalse(){SubProcess = new NuixDoesCaseExists {CasePath = CasePath}};
+        private static readonly Process AssertCaseDoesNotExist = new AssertFalse{ResultOf = new NuixDoesCaseExists {CasePath = CasePath}};
         private static readonly Process CreateCase = new NuixCreateCase {CaseName = "Integration Test Case", CasePath = CasePath, Investigator = "Mark"};
-        private static Process AssertCount(int expected, string searchTerm) => new AssertCount{SubProcess = new NuixCountItems {CasePath = CasePath,  SearchTerm = searchTerm}, Maximum = expected, Minimum = expected};
+
+        private static Process AssertFileContains(string filePath, string expectedContents)
+        {
+            return new AssertTrue
+            {
+                ResultOf = new DoesFileContain
+                {
+                    ExpectedContents = expectedContents,
+                    FilePath = filePath
+                }
+            };
+        }
+
+        private static Process AssertCount(int expected, string searchTerm) => 
+            new AssertTrue
+            {
+                ResultOf = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = searchTerm}, Maximum = expected, Minimum = expected}
+            };
 
         private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
 
@@ -52,7 +69,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateCase,
                     new AssertTrue
                     {
-                        SubProcess = new NuixDoesCaseExists
+                        ResultOf = new NuixDoesCaseExists
                         {
                             CasePath = CasePath
                         }
@@ -62,9 +79,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 new TestSequence("Migrate Case",
                     new DeleteItem {Path = MigrationTestCaseFolder},
                     new Unzip {ArchiveFilePath = MigrationPath, DestinationDirectory = GeneralDataFolder},
-                    new AssertError {Process = new NuixSearchAndTag() { CasePath = MigrationTestCaseFolder, SearchTerm = "*", Tag = "item"} }, //This should fail because we can't open the case
+                    new AssertError {Process = new NuixSearchAndTag { CasePath = MigrationTestCaseFolder, SearchTerm = "*", Tag = "item"} }, //This should fail because we can't open the case
                     new NuixMigrateCase { CasePath = MigrationTestCaseFolder},
-                    new AssertCount{Maximum = 0, Minimum = 0, SubProcess = new NuixCountItems { CasePath = MigrationTestCaseFolder, SearchTerm = "*"}},
+                    new AssertTrue{ResultOf = new CheckNumber{Maximum = 0, Minimum = 0, Check = new NuixCountItems { CasePath = MigrationTestCaseFolder, SearchTerm = "*"}}},
                     new DeleteItem {Path = MigrationTestCaseFolder}
                     ),
 
@@ -77,6 +94,63 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                     ),
+
+                new TestSequence("Conditionally Add file to case",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new Conditional()
+                    {
+                        If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
+                        Then = AddData
+                    },
+                    AssertCount(2, "*.txt"),
+                    new Conditional
+                    {
+                        If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
+                        Then = AddData
+                    },
+                    AssertCount(2, "*.txt"),
+                    DeleteCaseFolder
+                ),
+
+                new TestSequence("Conditionally Add file to case with nested if",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new Conditional
+                    {
+                        If = new CheckNumber
+                        {
+                            Check = new Conditional
+                            {
+                                If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
+                                Then = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"},
+                                Else = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}
+                            }, Maximum = 0
+                        },
+
+                        Then = AddData
+                    },
+                    AssertCount(2, "*.txt"),
+                    new Conditional
+                    {
+                        If = new CheckNumber
+                        {
+                            Check = new Conditional
+                            {
+                                If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
+                                Then = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"},
+                                Else = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}
+                            }, Maximum = 0
+                        },
+                        Then = AddData
+                    },
+                    AssertCount(2, "*.txt"),
+                    DeleteCaseFolder
+                ),
 
 
                 new TestSequence("Add concordance to case",
@@ -195,11 +269,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         LocalResourcesURL = @"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary\Resources\",
                         OutputPath = NRTFolder
                     },
-                    new AssertFileContents
-                    {
-                        FilePath = NRTFolder,
-                        ExpectedContents = "PDF-1.4"
-                    },
+                    AssertFileContains(NRTFolder, "PDF-1.4"),
                     new DeleteItem {Path = NRTFolder },
                     DeleteCaseFolder
 
@@ -222,11 +292,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         ProductionSetName = "charmset",
                         ExportPath = ConcordanceFolder
                     },
-                    new AssertFileContents
-                    {
-                        FilePath = ConcordanceFolder + "/loadfile.dat",
-                        ExpectedContents = "þDOCIDþþPARENT_DOCIDþþATTACH_DOCIDþþBEGINBATESþþENDBATESþþBEGINGROUPþþENDGROUPþþPAGECOUNTþþITEMPATHþþTEXTPATHþ"
-                    },
+                    AssertFileContains(ConcordanceFolder + "/loadfile.dat", "þDOCIDþþPARENT_DOCIDþþATTACH_DOCIDþþBEGINBATESþþENDBATESþþBEGINGROUPþþENDGROUPþþPAGECOUNTþþITEMPATHþþTEXTPATHþ"),
+
                     new  DeleteItem {Path = ConcordanceFolder },
                     DeleteCaseFolder
                     ),
@@ -260,11 +327,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         OutputFolder = OutputFolder
                     },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/Stats.txt",
-                        ExpectedContents = "Mark	type	text/plain	2"
-                    },
+                    AssertFileContains(OutputFolder + "/Stats.txt","Mark	type	text/plain	2"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -280,11 +343,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         OutputFolder = OutputFolder
                     },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/Terms.txt",
-                        ExpectedContents = "yellow	2"
-                    },
+                    AssertFileContains(OutputFolder + "/Terms.txt","yellow	2"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -302,11 +361,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         OutputFolder = OutputFolder
                     },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/email.txt",
-                        ExpectedContents = "Marianne.Moore@yahoo.com"
-                    },
+                    AssertFileContains(OutputFolder + "/email.txt","Marianne.Moore@yahoo.com"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -323,23 +378,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         OutputFolder = OutputFolder
                     },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/Unrecognised.txt",
-                        ExpectedContents = "New Folder/data/Theme in Yellow.txt"
-                    },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/NeedManualExamination.txt",
-                        ExpectedContents = "New Folder/data/Jellyfish.txt"
-                    },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/Irregular.txt",
-                        ExpectedContents = "Unrecognised	2"
-                    },
-
-
+                    AssertFileContains(OutputFolder + "/Unrecognised.txt","New Folder/data/Theme in Yellow.txt"),
+                    AssertFileContains(OutputFolder + "/NeedManualExamination.txt","New Folder/data/Jellyfish.txt"),
+                    AssertFileContains(OutputFolder + "/Irregular.txt","Unrecognised	2"),
                     DeleteCaseFolder,
                     DeleteOutputFolder
                 ),
@@ -359,11 +400,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         SearchTerm = "*"
 
                     },
-                    new AssertFileContents
-                    {
-                        FilePath = OutputFolder + "/ItemProperties.txt",
-                        ExpectedContents = "Character Set	UTF-8	New Folder/data/Jellyfish.txt"
-                    },
+                    AssertFileContains(OutputFolder + "/ItemProperties.txt", "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
