@@ -8,6 +8,6 @@
         /// <summary>
         /// Gets the main block of ruby code.
         /// </summary>
-        public string GetCallText(ref int blockNumber, out string resultVariableName);
+        public string GetBlockText(ref int blockNumber, out string resultVariableName);
     }
 }

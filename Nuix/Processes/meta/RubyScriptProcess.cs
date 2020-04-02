@@ -90,29 +90,28 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 {
                     var block = new BasicRubyBlock(MethodName, methodBuilder.ToString(), arguments);
 
-                    var ip = new ImmutableRubyScriptProcess(
-                        nuixProcessSettings, new []{block});
+                    var ip = new ImmutableRubyScriptProcess(new []{block}, nuixProcessSettings);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.Boolean:
                 {
                     var block = new BasicTypedRubyBlock<bool>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessBool( block, nuixProcessSettings);
+                    var ip = new ImmutableRubyScriptProcessTyped<bool>( block, nuixProcessSettings, TryParseBool);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.Integer:
                 {
                     var block = new BasicTypedRubyBlock<int>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessInt( block, nuixProcessSettings);
+                    var ip = new ImmutableRubyScriptProcessTyped<int>( block, nuixProcessSettings, TryParseInt);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.String:
                 {
                     var block = new BasicTypedRubyBlock<string>(MethodName, methodBuilder.ToString(), arguments);
-                    var ip = new ImmutableRubyScriptProcessString( block, nuixProcessSettings);
+                    var ip = new ImmutableRubyScriptProcessTyped<string>( block, nuixProcessSettings, TryParseString);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
@@ -121,7 +120,27 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                         new ErrorList($"Cannot freeze a process with type {ReturnType}"));
             }
 
-            
+            static Result<string> TryParseString(string s)
+            {
+                return s == null ? Result.Failure<string>("String is null") : Result.Success(s);
+            }
+
+            static Result<int> TryParseInt(string s)
+            {
+                if (int.TryParse(s, out var i))
+                    return Result.Success(i);
+
+                return Result.Failure<int>("Could not parse");
+            }
+
+            static Result<bool> TryParseBool(string s)
+            {
+                if (bool.TryParse(s, out var b))
+                    return Result.Success(b);
+
+                return Result.Failure<bool>("Could not parse");
+            }
+
         }
     }
 }

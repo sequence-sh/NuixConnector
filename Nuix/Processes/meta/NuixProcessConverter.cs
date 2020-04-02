@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
@@ -46,12 +45,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
             if (process is ImmutableRubyScriptProcess immutableRubyScriptProcess) return immutableRubyScriptProcess;
 
-
-            return null;
-
             if (process is DoNothing)
             {
-                return new ImmutableRubyScriptProcess(ns, new List<IUnitRubyBlock>());
+                return new ImmutableRubyScriptProcess(new List<IUnitRubyBlock>(), ns);
             }
 
             if (process is Conditional<Unit> conditional)
@@ -65,24 +61,40 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                         var nuixElse = AsImmutableRubyScriptProcess(conditional.Else, ns);
                         if(nuixElse != null)
                         {
-                            //return new ImmutableRubyScriptProcess?(ns,
-                            //    new List<IRubyBlock>()
-                            //    {
-                            //        nuixIf.
-                            //    }
-                                
-                                
-                            //    );
+                            var r = new ConditionalRubyBlock(nuixIf.RubyBlock, nuixThen, nuixElse);
+
+                            return new ImmutableRubyScriptProcess(new List<IUnitRubyBlock> {r}, ns);
                         }
                     }
                 }
             }
+
+            return null;
         }
 
 
-        private static ImmutableRubyScriptProcessTyped<T>? AsImmutableRubyScriptProcessTyped<T>(ImmutableProcess<T> p,
+        private static ImmutableRubyScriptProcessTyped<T>? AsImmutableRubyScriptProcessTyped<T>(ImmutableProcess<T> process,
             INuixProcessSettings ns)
         {
+            if (process is Conditional<T> conditional)
+            {
+                var nuixIf = AsImmutableRubyScriptProcessTyped(conditional.If, ns);
+                if (nuixIf != null)
+                {
+                    var nuixThen = AsImmutableRubyScriptProcessTyped<T>(conditional.Then, ns);
+                    if (nuixThen != null)
+                    {
+                        var nuixElse = AsImmutableRubyScriptProcessTyped<T>(conditional.Else, ns);
+                        if(nuixElse != null)
+                        {
+                            var r = new TypedConditionalRubyBlock<T>(nuixIf.RubyBlock, nuixThen, nuixElse);
+
+                            return new ImmutableRubyScriptProcessTyped<T>(r, ns, nuixThen.TryParseFunc);
+                        }
+                    }
+                }
+            }
+
             return null;
         }
     }

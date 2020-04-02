@@ -14,7 +14,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public string GetCallText(ref int blockNumber, out string resultVariableName)
+        public string GetBlockText(ref int blockNumber, out string resultVariableName)
         {
             resultVariableName = "Result" + blockNumber;
             //BlockName is also the name of the method

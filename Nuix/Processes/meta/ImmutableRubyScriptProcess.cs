@@ -12,28 +12,27 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class ImmutableRubyScriptProcess : ImmutableProcess<Unit>
     {
         /// <inheritdoc />
-        public ImmutableRubyScriptProcess(
-            INuixProcessSettings nuixProcessSettings,
-            IReadOnlyCollection<IUnitRubyBlock> rubyBlocks)
+        public ImmutableRubyScriptProcess(IReadOnlyCollection<IUnitRubyBlock> rubyBlocks,
+            INuixProcessSettings nuixProcessSettings)
         {
             _nuixProcessSettings = nuixProcessSettings;
-            _rubyBlocks = rubyBlocks;
+            RubyBlocks = rubyBlocks;
         }
 
         private readonly INuixProcessSettings _nuixProcessSettings;
 
 
-        private readonly IReadOnlyCollection<IUnitRubyBlock> _rubyBlocks;
+        public readonly IReadOnlyCollection<IUnitRubyBlock> RubyBlocks;
 
         private string CompileScript()
         {
             var scriptBuilder = new StringBuilder();
 
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, _rubyBlocks));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(_rubyBlocks));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, RubyBlocks));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(RubyBlocks));
 
             var i = 0;
-            foreach (var rubyBlock in _rubyBlocks)
+            foreach (var rubyBlock in RubyBlocks)
             {
                 var blockText = rubyBlock.GetBlockText(ref i);
                 scriptBuilder.AppendLine(blockText);
@@ -50,10 +49,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public override async IAsyncEnumerable<IProcessOutput<Unit>> Execute()
         {
-            if (_rubyBlocks.Any())
+            if (RubyBlocks.Any())
             {
                 var scriptText = CompileScript();
-                var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, _nuixProcessSettings, _rubyBlocks);
+                var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, _nuixProcessSettings, RubyBlocks);
 
                 var succeeded = false;
 
@@ -86,9 +85,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 return Result.Failure<ImmutableProcess<Unit>>("Could not combine");
 
             
-            var newProcess = new ImmutableRubyScriptProcess(
-                _nuixProcessSettings,
-                _rubyBlocks.Concat(np._rubyBlocks).ToList());
+            var newProcess = new ImmutableRubyScriptProcess(RubyBlocks.Concat(np.RubyBlocks).ToList(), _nuixProcessSettings);
 
             return Result.Success<ImmutableProcess<Unit>>(newProcess);
         }
@@ -109,11 +106,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return Name == rsp.Name &&
                    NuixProcessSettingsComparer.Instance.Equals(_nuixProcessSettings, rsp._nuixProcessSettings)
                     &&
-                   _rubyBlocks.SequenceEqual(rsp._rubyBlocks);
+                   RubyBlocks.SequenceEqual(rsp.RubyBlocks);
         }
 
         /// <inheritdoc />
-        public override string Name => ProcessNameHelper.GetSequenceName(_rubyBlocks.Select(x => x.BlockName));
+        public override string Name => ProcessNameHelper.GetSequenceName(RubyBlocks.Select(x => x.BlockName));
 
         /// <inheritdoc />
         public override IProcessConverter? ProcessConverter => NuixProcessConverter.Instance;

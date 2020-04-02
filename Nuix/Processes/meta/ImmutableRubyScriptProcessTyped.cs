@@ -1,67 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
 using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
-
-    internal sealed class ImmutableRubyScriptProcessString : ImmutableRubyScriptProcessTyped<string>
-    {
-        /// <inheritdoc />
-        public ImmutableRubyScriptProcessString(ITypedRubyBlock<string> rubyBlock, INuixProcessSettings nuixProcessSettings) : base(rubyBlock, nuixProcessSettings)
-        {
-        }
-
-        /// <inheritdoc />
-        protected override bool TryParseResult(string r, out string value)
-        {
-            value = r;
-            return !string.IsNullOrWhiteSpace(value);
-        }
-    }
-
-    internal sealed class ImmutableRubyScriptProcessBool : ImmutableRubyScriptProcessTyped<bool>
-    {
-        /// <inheritdoc />
-        public ImmutableRubyScriptProcessBool(ITypedRubyBlock<bool> rubyBlock, INuixProcessSettings nuixProcessSettings) : base(rubyBlock, nuixProcessSettings)
-        {
-        }
-
-        /// <inheritdoc />
-        protected override bool TryParseResult(string r, out bool value)
-        {
-            return bool.TryParse(r, out value);
-        }
-    }
-
-    internal sealed class ImmutableRubyScriptProcessInt : ImmutableRubyScriptProcessTyped<int>
-    {
-        /// <inheritdoc />
-        public ImmutableRubyScriptProcessInt(ITypedRubyBlock<int> rubyBlock, INuixProcessSettings nuixProcessSettings) : base( rubyBlock, nuixProcessSettings)
-        {
-        }
-
-        /// <inheritdoc />
-        protected override bool TryParseResult(string r, out int value)
-        {
-            return int.TryParse(r, out value);
-        }
-    }
-
-    internal abstract class ImmutableRubyScriptProcessTyped<T> : ImmutableProcess<T>
+    internal sealed class ImmutableRubyScriptProcessTyped<T> : ImmutableProcess<T>
     {
         public readonly ITypedRubyBlock<T> RubyBlock;
         private readonly INuixProcessSettings _nuixProcessSettings;
+        public readonly Func<string, Result<T>> TryParseFunc;
 
         /// <inheritdoc />
-        protected ImmutableRubyScriptProcessTyped( ITypedRubyBlock<T> rubyBlock, INuixProcessSettings nuixProcessSettings) 
+        public ImmutableRubyScriptProcessTyped( ITypedRubyBlock<T> rubyBlock, INuixProcessSettings nuixProcessSettings, Func<string, Result<T>> tryParseFunc) 
             
         {
             RubyBlock = rubyBlock;
             _nuixProcessSettings = nuixProcessSettings;
+            TryParseFunc = tryParseFunc;
         }
 
         /// <inheritdoc />
@@ -97,7 +57,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new []{RubyBlock}));
 
             var i = 0;
-            var fullMethodLine = RubyBlock.GetCallText(ref i, out var resultVariableName);
+            var fullMethodLine = RubyBlock.GetBlockText(ref i, out var resultVariableName);
 
             scriptBuilder.AppendLine(fullMethodLine);
             scriptBuilder.AppendLine($"puts \"--Final Result: #{{{resultVariableName}}}\"");
@@ -114,7 +74,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 var resultString = m.Groups["result"].Value;
 
-                return TryParseResult(resultString, out value);
+                var (isSuccess, _, value1) = TryParseFunc(resultString);
+                if (isSuccess)
+                {
+                    value = value1;
+                    return true;
+                }
             }
 
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -123,7 +88,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return false;
         }
 
-        protected abstract bool TryParseResult(string r, out T value);
 
         /// <inheritdoc />
         public override IProcessConverter? ProcessConverter => NuixProcessConverter.Instance;
