@@ -16,7 +16,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public string GetBlockText(ref int blockNumber, out string resultVariableName)
         {
-            resultVariableName = "Result" + blockNumber;
+            resultVariableName = "result" + blockNumber;
             //BlockName is also the name of the method
             var callStringBuilder = new StringBuilder($"{resultVariableName} = {BlockName}(utilities"); //utilities is always first argument
 

@@ -29,25 +29,49 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
         {
-            return _numberBlock.GetArguments(ref blockNumber);
+            var args = new List<string>()
+            {
+                "min" + blockNumber,
+                "max" + blockNumber
+            };
+            blockNumber++;
+
+            args.AddRange(_numberBlock.GetArguments(ref blockNumber));                
+                
+            return args;
         }
 
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetOptParseLines(ref int blockNumber)
         {
-            return _numberBlock.GetOptParseLines(ref blockNumber);
+            var minArg = "min" + blockNumber;
+            var maxArg = "max" + blockNumber;
+
+            var lines = new List<string>()
+            {
+                $"opts.on('--{minArg} [ARG]')",
+                $"opts.on('--{maxArg} [ARG]')"
+
+            };
+            blockNumber++;
+            lines.AddRange(_numberBlock.GetOptParseLines(ref blockNumber));
+
+            return lines;
         }
 
         /// <inheritdoc />
         public string GetBlockText(ref int blockNumber, out string resultVariableName)
         {
             var sb = new StringBuilder();
+            var minArg = "min" + blockNumber;
+            var maxArg = "max" + blockNumber;
+            blockNumber++;
 
             sb.AppendLine(_numberBlock.GetBlockText(ref blockNumber, out var rvn));
 
             resultVariableName = $"checkNumberResult{blockNumber}";
 
-            sb.AppendLine($"{resultVariableName} = isNumberInRange?({rvn}, {_min}, {_max}) ");
+            sb.AppendLine($"{resultVariableName} = isNumberInRange?({rvn}, {RubyScriptCompilationHelper.HashSetName}[:{minArg}], {RubyScriptCompilationHelper.HashSetName}[:{maxArg}]) ");
 
             return sb.ToString();
         }

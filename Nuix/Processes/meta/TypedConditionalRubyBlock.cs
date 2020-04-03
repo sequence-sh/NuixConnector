@@ -62,7 +62,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             sb.AppendLine(_ifBlock.GetBlockText(ref blockNumber, out var ifResultVariableName));
 
-            resultVariableName = "ConditionalResult" + blockNumber;
+            resultVariableName = "conditionalResult" + blockNumber;
 
             sb.AppendLine($"if({ifResultVariableName})");
             sb.AppendLine(_thenProcess.RubyBlock.GetBlockText(ref blockNumber, out var thenResultVariableName));

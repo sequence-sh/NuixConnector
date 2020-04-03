@@ -22,7 +22,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         /// <inheritdoc />
         public IEnumerable<string> FunctionDefinitions =>
-            new[] {AssertFunctionText}.Concat(SubBlock.FunctionDefinitions);
+            new[] {
+                Expected? AssertTrueFunctionText : AssertFalseFunctionText
+                }
+            
+            .Concat(SubBlock.FunctionDefinitions);
 
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
@@ -43,15 +47,25 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             sb.AppendLine(SubBlock.GetBlockText(ref blockNumber, out var resultVariableName));
 
-            sb.AppendLine($"Assert({resultVariableName})");
+            if(Expected)
+                sb.AppendLine($"AssertTrue({resultVariableName})");
+            else sb.AppendLine($"AssertFalse({resultVariableName})");
 
             return sb.ToString();
         }
 
-        private const string AssertFunctionText = @"def Assert(b)
-if(!b)
-    puts 'Condition was not met'
-    exit
+        private const string AssertFalseFunctionText = @"def AssertFalse(b)
+    if(b)
+        puts 'Expected false but was true'
+        exit
+    end
+end";
+
+        private const string AssertTrueFunctionText = @"def AssertTrue(b)
+    if(!b)
+        puts 'Expected true, but was false'
+        exit
+    end
 end";
     }
 }

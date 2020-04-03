@@ -109,12 +109,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new Conditional
                     {
                         If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
-                        Then = AddData
+                        Then = new AssertError(){Process= AddData },
+                        Else = AssertCount(0, "*.txt")
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                 ),
-
+                
                 new TestSequence("Conditionally Add file to case with nested if",
                     DeleteCaseFolder,
                     AssertCaseDoesNotExist,
@@ -146,7 +147,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                                 Else = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}
                             }, Maximum = 0
                         },
-                        Then = AddData
+                        Then = new AssertError(){Process= AddData },
+                        Else = AssertCount(0, "*.txt")
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
