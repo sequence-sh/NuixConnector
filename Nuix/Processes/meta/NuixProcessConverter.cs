@@ -102,6 +102,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         private static ImmutableRubyScriptProcessTyped<T>? AsImmutableRubyScriptProcessTyped<T>(ImmutableProcess<T> process,
             INuixProcessSettings ns)
         {
+            if (process is ImmutableRubyScriptProcessTyped<T> immutableRubyScriptProcessTyped) return immutableRubyScriptProcessTyped;
+
             if (process is Utilities.Processes.immutable.CheckNumber checkNumber)
             {
                 var nuixSubprocess = AsImmutableRubyScriptProcessTyped(checkNumber.CountProcess, ns);
