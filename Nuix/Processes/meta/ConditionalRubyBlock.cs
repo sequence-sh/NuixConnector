@@ -23,7 +23,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         /// <inheritdoc />
         public IEnumerable<string> FunctionDefinitions => _ifBlock.FunctionDefinitions
-            .Concat(_thenProcess.RubyBlocks.SelectMany(x=>x.FunctionDefinitions)).Concat(_elseProcess.RubyBlocks.SelectMany(x=>x.FunctionDefinitions));
+            .Concat(_thenProcess.RubyBlocks.SelectMany(x=>x.FunctionDefinitions))
+            .Concat(_elseProcess.RubyBlocks.SelectMany(x=>x.FunctionDefinitions)).Distinct();
 
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)

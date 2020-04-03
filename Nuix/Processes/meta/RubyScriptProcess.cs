@@ -120,27 +120,30 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                         new ErrorList($"Cannot freeze a process with type {ReturnType}"));
             }
 
-            static Result<string> TryParseString(string s)
-            {
-                return s == null ? Result.Failure<string>("String is null") : Result.Success(s);
-            }
+            
 
-            static Result<int> TryParseInt(string s)
-            {
-                if (int.TryParse(s, out var i))
-                    return Result.Success(i);
+        }
 
-                return Result.Failure<int>("Could not parse");
-            }
 
-            static Result<bool> TryParseBool(string s)
-            {
-                if (bool.TryParse(s, out var b))
-                    return Result.Success(b);
+        internal static Result<string> TryParseString(string s)
+        {
+            return s == null ? Result.Failure<string>("String is null") : Result.Success(s);
+        }
 
-                return Result.Failure<bool>("Could not parse");
-            }
+        internal static Result<int> TryParseInt(string s)
+        {
+            if (int.TryParse(s, out var i))
+                return Result.Success(i);
 
+            return Result.Failure<int>("Could not parse");
+        }
+
+        internal static Result<bool> TryParseBool(string s)
+        {
+            if (bool.TryParse(s, out var b))
+                return Result.Success(b);
+
+            return Result.Failure<bool>("Could not parse");
         }
     }
 }
