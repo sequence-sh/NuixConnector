@@ -53,7 +53,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 sb.AppendLine(subProcessRubyBlock.GetBlockText(ref blockNumber));
 
             sb.AppendLine("rescue");
-            sb.AppendLine("Exception Caught, as expected");
+            sb.AppendLine("puts 'Exception Caught, as expected'");
             sb.AppendLine("else");
             sb.AppendLine("puts 'Exception expected but not thrown'");
             sb.AppendLine("exit");
