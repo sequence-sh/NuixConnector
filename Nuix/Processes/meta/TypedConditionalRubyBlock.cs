@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Reductech.EDR.Utilities.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
@@ -20,11 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public string BlockName => ProcessNameHelper.GetConditionalName(_ifBlock.BlockName, _thenProcess.Name, _elseProcess.Name);
 
-        /// <inheritdoc />
-        public string GetBlockText(ref int blockNumber, out string resultVariableName)
-        {
-            throw new System.NotImplementedException();
-        }
+        
 
 
         /// <inheritdoc />
@@ -56,6 +53,26 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             allLines.AddRange(_elseProcess.RubyBlock.GetOptParseLines(ref blockNumber));
 
             return allLines;
+        }
+
+        /// <inheritdoc />
+        public string GetBlockText(ref int blockNumber, out string resultVariableName)
+        {
+            var sb=  new StringBuilder();
+
+            sb.AppendLine(_ifBlock.GetBlockText(ref blockNumber, out var ifResultVariableName));
+
+            resultVariableName = "ConditionalResult" + blockNumber;
+
+            sb.AppendLine($"if({ifResultVariableName})");
+            sb.AppendLine(_thenProcess.RubyBlock.GetBlockText(ref blockNumber, out var thenResultVariableName));
+            sb.AppendLine($"{resultVariableName} = {thenResultVariableName}");
+            sb.AppendLine("else");
+            sb.AppendLine(_elseProcess.RubyBlock.GetBlockText(ref blockNumber, out var elseResultVariableName));
+            sb.AppendLine($"{resultVariableName} = {elseResultVariableName}");
+            sb.AppendLine("end");
+
+            return sb.ToString();
         }
     }
 }

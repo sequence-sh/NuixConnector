@@ -45,7 +45,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             sb.AppendLine(_numberBlock.GetBlockText(ref blockNumber, out var rvn));
 
-            blockNumber++;
             resultVariableName = $"checkNumberResult{blockNumber}";
 
             sb.AppendLine($"{resultVariableName} = isNumberInRange?({rvn}, {_min}, {_max}) ");
