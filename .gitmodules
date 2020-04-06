@@ -1,6 +1,3 @@
-[submodule "InstantConsole"]
-	path = InstantConsole
-	url = ../../../../utilities/instantconsole.git
 [submodule "processes"]
 	path = processes
 	url = ../../processes.git
