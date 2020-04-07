@@ -40,7 +40,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         
         /// <inheritdoc />
-        internal override string ScriptText => @"   the_case = utilities.case_factory.open(casePathArg)
+        internal override string ScriptText => @"
+    the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Extracting Entities:""
 

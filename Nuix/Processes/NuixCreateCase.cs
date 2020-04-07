@@ -52,14 +52,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"puts 'Creating Case'
-    
-        the_case = utilities.case_factory.create(pathArg,
-        :name => nameArg,
-        :description => descriptionArg,
-        :investigator => investigatorArg)
-        puts 'Case Created'
-        the_case.close";
+        internal override string ScriptText => @"
+    puts 'Creating Case'    
+    the_case = utilities.case_factory.create(pathArg,
+    :name => nameArg,
+    :description => descriptionArg,
+    :investigator => investigatorArg)
+    puts 'Case Created'
+    the_case.close";
 
         /// <inheritdoc />
         internal override string MethodName => "CreateCase";

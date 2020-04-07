@@ -50,8 +50,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         
         /// <inheritdoc />
-        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
-
+        internal override string ScriptText => @"
+    the_case = utilities.case_factory.open(pathArg)
     puts ""Searching for '#{searchArg}'""
 
     searchOptions = {}
@@ -66,7 +66,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     }
 
     puts ""#{j} items tagged""
-
     the_case.close";
 
         /// <inheritdoc />

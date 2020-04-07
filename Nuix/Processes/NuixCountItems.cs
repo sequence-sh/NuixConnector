@@ -35,7 +35,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"   the_case = utilities.case_factory.open(pathArg)
+        internal override string ScriptText => @"
+    the_case = utilities.case_factory.open(pathArg)
     searchOptions = {}
     count = the_case.count(searchArg, searchOptions)
     the_case.close  

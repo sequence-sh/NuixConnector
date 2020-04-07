@@ -38,6 +38,7 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe documentation &gt; $(SolutionDir)documentation.md" IgnoreExitCode="true" />
+    <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe GenerateScripts -folderPath $(SolutionDir)Scripts" IgnoreExitCode="true" />
   </Target>
 
 </Project>

@@ -72,7 +72,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"the_case = utilities.case_factory.open(pathArg)
+        internal override string ScriptText => @"
+    the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
     processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
 

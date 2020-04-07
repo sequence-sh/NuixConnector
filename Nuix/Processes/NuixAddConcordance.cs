@@ -80,8 +80,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         internal override string ScriptText =>
 //language=RUBY
-@"the_case = utilities.case_factory.open(pathArg)
-
+@"
+    the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
     processor.processing_settings = { :create_thumbnails       => false,
                                     :additional_digests      => [ 'SHA-1' ] }

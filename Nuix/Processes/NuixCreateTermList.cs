@@ -43,12 +43,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"   the_case = utilities.case_factory.open(casePathArg)
+        internal override string ScriptText => @"
+    the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Generating Report:""   
-
     caseStatistics = the_case.getStatistics()
-
     termStatistics = caseStatistics.getTermStatistics("""", {""sort"" => ""on"", ""deduplicate"" => ""md5""}) #for some reason this takes strings rather than symbols
     #todo terms per custodian
     puts ""#{termStatistics.length} terms""

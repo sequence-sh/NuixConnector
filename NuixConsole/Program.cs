@@ -63,6 +63,14 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                     .Select(x=>x.AsRunnable(new YamlRunner(nuixProcessSettings), new DocumentationCategory("Yaml")))
                 .OfType<IDocumented>()
                 .OrderBy(x=>x.Name)
+
+                .Concat(typeof(ScriptGenerator).GetMethods()
+                    .Where(m=>m.IsPublic && m.DeclaringType != typeof(object))
+                    .Select(x=> x.AsRunnable(new ScriptGenerator(nuixProcessSettings), new DocumentationCategory("Scripts")))
+                    .OfType<IDocumented>()
+                    .OrderBy(x=>x.Name)
+                )
+
                 .Concat(processAssembly.GetTypes()
                     .Where(t=> 
                         typeof(Process).IsAssignableFrom(t)
