@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
@@ -81,6 +82,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string MethodName => "RunOCR";
+
+        //NOTE: this is technically available since 5.0 but we are using then new preferred way of doing things.
+        /// <inheritdoc />
+        internal override Version RequiredVersion { get; } = new Version(7,6);
+
+        
+
+
+        /// <inheritdoc />
+        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.OCR_PROCESSING
+        };
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()

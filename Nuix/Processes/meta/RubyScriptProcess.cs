@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
@@ -20,6 +21,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         internal abstract string ScriptText { get; }
 
         internal abstract string MethodName { get; }
+
+        /// <summary>
+        /// The required Nuix version.
+        /// </summary>
+        internal abstract Version RequiredVersion { get; }
+
+        /// <summary>
+        /// The required Nuix features.
+        /// </summary>
+        internal abstract IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
 
         /// <inheritdoc />
         public override string GetReturnTypeInfo() => nameof(Unit);
@@ -51,12 +62,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             if (!(processSettings is INuixProcessSettings nps))
             {
-                nuixProcessSettings = new NuixProcessSettings(false, "");
+                nuixProcessSettings = new NuixProcessSettings(false, "", new Version(), new List<NuixFeature>() ); //dummy value for compiler
                 errors.Add($"Process Settings must be an instance of {typeof(INuixProcessSettings).Name}");
             }
             else
             {
                 nuixProcessSettings = nps;
+
+                if (nuixProcessSettings.NuixVersion.CompareTo(RequiredVersion) == -1)
+                    errors.Add($"Your version of Nuix ({nuixProcessSettings.NuixVersion.ToString(2)}) is less than the required version of ({RequiredVersion.ToString(2)}) for the process: '{MethodName}'");
+
+                var missingFeatures = RequiredFeatures.Except(nuixProcessSettings.NuixFeatures).Distinct().ToList();
+                if(missingFeatures.Any())
+                    errors.Add($"You lack the required features: '{string.Join(", ", missingFeatures.Select(x=>x.ToString()))}' for the process: '{MethodName}'");
             }
 
             var arguments = GetArgumentValues()
@@ -119,9 +137,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                     return Result.Failure<ImmutableProcess, ErrorList>(
                         new ErrorList($"Cannot freeze a process with type {ReturnType}"));
             }
-
-            
-
         }
 
 
@@ -144,6 +159,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 return Result.Success(b);
 
             return Result.Failure<bool>("Could not parse");
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> GetRequirements()
+        {
+            yield return $"Requires Nuix Version {RequiredVersion.ToString(2)}";
+
+            foreach (var nuixFeature in RequiredFeatures.OrderBy(x=>x))
+                yield return $"Requires Nuix Feature '{nuixFeature}'";
         }
     }
 }

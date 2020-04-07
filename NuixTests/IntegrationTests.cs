@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using CSharpFunctionalExtensions;
 using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes.mutable;
 using Reductech.EDR.Utilities.Processes.output;
 
@@ -13,7 +15,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     public class IntegrationTests
     {
-        private static readonly INuixProcessSettings NuixSettings = new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe");
+        private static readonly INuixProcessSettings NuixSettings = 
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8,2), new List<NuixFeature>()
+                {
+                    NuixFeature.PRODUCTION_SET, NuixFeature.ANALYSIS, NuixFeature.EXPORT_ITEMS, NuixFeature.OCR_PROCESSING, NuixFeature.METADATA_IMPORT, NuixFeature.CASE_CREATION
+                }
+            );
         //TODO set these from a config file
 
         private const string Integration = "Integration";

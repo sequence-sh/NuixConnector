@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
@@ -101,6 +102,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     processor.process
     puts 'Processing complete.'
     the_case.close";
+
+        /// <inheritdoc />
+        internal override Version RequiredVersion { get; } = new Version(7,6);
+
+        /// <inheritdoc />
+        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>{NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT };
+
 
         /// <inheritdoc />
         internal override string MethodName => "AddConcordanceToCase";
