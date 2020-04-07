@@ -1,28 +1,14 @@
-require 'optparse'
-
-hash_options = {}
+﻿require 'optparse'
+#CreateReport
+params = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: your_app [options]"
-  opts.on('-p [ARG]', '--path [ARG]', "Case Path") do |v|
-    hash_options[:pathArg] = v
-  end 
-  opts.on('-h', '--help', 'Display this help') do 
-    puts opts
-    exit
-  end
+opts.on('--casePathArg0 ARG')
+opts.on('--outputFilePathArg0 ARG')
+end.parse!(into: params)
+puts params
 
-end.parse!
-
-requiredArguments = [:pathArg]
-
-unless requiredArguments.all? {|a| hash_options[a] != nil}
-    puts "Missing arguments #{(requiredArguments.select {|a| hash_options[a] == nil}).to_s}"
-
-
-else
-    
-    
-    the_case = utilities.case_factory.open(hash_options[:pathArg])
+def CreateReport(utilities,casePathArg,outputFilePathArg)
+the_case = utilities.case_factory.open(casePathArg)
 
     puts "Generating Report:"
 
@@ -76,19 +62,24 @@ else
 
     puts "Created results for #{allItems.length} items"
 
-    puts "OutputStats:Custodian\tType\tValue\tCount"
+    text = "Custodian\tType\tValue\tCount"
 
     puts "#{results.length - 1} custodians"
     results.each do |custodian, hash1|
         hash1.each do |type, hash2|
             puts "#{custodian} has #{hash2.length} #{type}s" if custodian != "*"
             hash2.sort_by{|value, count| -count}.each do |value, count|
-                puts "OutputStats:#{custodian}\t#{type}\t#{value}\t#{count}"
+                text <<  "#{custodian}\t#{type}\t#{value}\t#{count}"
             end
         end
     end
+    
+    File.write(outputFilePathArg, text)
 
     the_case.close
-    
-    
 end
+
+
+
+CreateReport(utilities, params[:casePathArg0], params[:outputFilePathArg0])
+puts '--Script Completed Successfully--'

@@ -32,12 +32,14 @@ namespace Reductech.EDR.Connectors.Nuix
         /// </summary>
         /// <param name="folderPath">Path to the folder to create the scripts in.</param>
         [UsedImplicitly]
-        public Result GenerateScripts(string folderPath)
+        public string GenerateScripts(string folderPath)
         {
             var processTypes = AppDomain.CurrentDomain
                 .GetAssemblies().SelectMany(x=>x.GetTypes())
                 .Where(t => typeof(RubyScriptProcess).IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract).ToList();
+
+            //var folderPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
 
             foreach (var processType in processTypes)
             {
@@ -49,7 +51,7 @@ namespace Reductech.EDR.Connectors.Nuix
                 }
                 catch (Exception e)
                 {
-                    return Result.Failure(e.Message);
+                    return e.Message;
                 }
 
 
@@ -67,7 +69,7 @@ namespace Reductech.EDR.Connectors.Nuix
                     }
                     catch (Exception e)
                     {
-                        return Result.Failure(e.Message);
+                        return e.Message;
                     }
                 }
 
@@ -84,17 +86,17 @@ namespace Reductech.EDR.Connectors.Nuix
                     }
                     catch (Exception e)
                     {
-                        return Result.Failure(e.Message);
+                        return e.Message;
                     }
                     
                 }
                 else
                 {
-                    return scriptResult.ConvertFailure();
+                    return scriptResult.Error;
                 }
             }
 
-            return Result.Success();
+            return "Scripts generated successfully";
         }
 
         private Result<string> TryGenerateScript(RubyScriptProcess process)
