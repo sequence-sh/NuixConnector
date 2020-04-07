@@ -10,14 +10,13 @@ end.parse!(into: params)
 puts params
 
 def ExportConcordance(utilities,pathArg,exportPathArg,productionSetNameArg,metadataProfileArg)
+
     the_case = utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
     if productionSet == nil
-
         puts "Could not find production set with name '#{:productionSetNameArg.to_s}'"
-
     else
         batchExporter = utilities.createBatchExporter(exportPathArg)
 

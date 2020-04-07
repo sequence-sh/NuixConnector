@@ -95,7 +95,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string ScriptText =>
-            @"  the_case = utilities.case_factory.open(pathArg)
+            @"  
+    the_case = utilities.case_factory.open(pathArg)
     itemSet = the_case.findItemSetByName(itemSetNameArg)
     if(itemSet == nil)
         itemSetOptions = {}

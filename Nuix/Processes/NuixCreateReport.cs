@@ -44,12 +44,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string ScriptText =>
-            @"the_case = utilities.case_factory.open(casePathArg)
+            @"
+    the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Generating Report:""
-
     allItems = the_case.searchUnsorted("""")
-
     results = Hash.new { |h, k| h[k] = Hash.new { |hh, kk| hh[kk] = Hash.new{0} } }
 
     allItems.each do |i|
@@ -90,9 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 to.each { |a|  addressesHash[a] += 1} if to != nil
                 cc.each { |a|  addressesHash[a] += 1} if cc != nil
                 bcc.each { |a|  addressesHash[a] += 1} if bcc != nil
-            end
-
-            
+            end            
         end
     end
 

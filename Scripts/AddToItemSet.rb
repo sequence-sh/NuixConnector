@@ -15,7 +15,8 @@ end.parse!(into: params)
 puts params
 
 def AddToItemSet(utilities,pathArg,searchArg,itemSetNameArg,deduplicationArg,descriptionArg,deduplicateByArg,custodianRankingArg,orderArg,limitArg)
-  the_case = utilities.case_factory.open(pathArg)
+  
+    the_case = utilities.case_factory.open(pathArg)
     itemSet = the_case.findItemSetByName(itemSetNameArg)
     if(itemSet == nil)
         itemSetOptions = {}

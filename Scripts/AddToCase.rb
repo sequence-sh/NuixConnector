@@ -12,7 +12,8 @@ end.parse!(into: params)
 puts params
 
 def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg)
-the_case = utilities.case_factory.open(pathArg)
+
+    the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
     processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
 

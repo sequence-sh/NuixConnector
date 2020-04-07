@@ -10,7 +10,8 @@ end.parse!(into: params)
 puts params
 
 def GetParticularProperties(utilities,casePathArg,searchArg,regexArg,filePathArg)
-   the_case = utilities.case_factory.open(casePathArg)
+
+    the_case = utilities.case_factory.open(casePathArg)
 
     puts "Finding Entities"
     items = the_case.search(searchArg, {})

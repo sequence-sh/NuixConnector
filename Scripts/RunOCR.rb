@@ -9,35 +9,33 @@ end.parse!(into: params)
 puts params
 
 def RunOCR(utilities,pathArg,searchTermArg,ocrProfileArg)
-   the_case = utilities.case_factory.open(pathArg)
 
-            searchTerm = searchTermArg    
+    the_case = utilities.case_factory.open(pathArg)
+
+    searchTerm = searchTermArg    
+    items = the_case.searchUnsorted(searchTerm).to_a
+
+    puts "Running OCR on #{items.length} items"
     
-        items = the_case.searchUnsorted(searchTerm).to_a
+    processor = utilities.createOcrProcessor()
 
-            puts "Running OCR on #{items.length} items"
-    
-            processor = utilities.createOcrProcessor()
-
-
-                if ocrProfileArg != nil
-            ocrProfileStore = the_case.getOcrProfileStore()
-
+    if ocrProfileArg != nil
+        ocrProfileStore = the_case.getOcrProfileStore()
         puts "Got profile store"
 
         profile = ocrProfileStore.getProfile(ocrProfileArg)
 
         if profile != nil
             processor.process(items, profile)
-        puts "Items Processed"
-        else
-        puts "Could not find profile '#{ocrProfileArg}'"
-        end
-        else
-        processor.process(items)
             puts "Items Processed"
-        end    
-        the_case.close
+        else
+            puts "Could not find profile '#{ocrProfileArg}'"
+        end
+    else
+        processor.process(items)
+        puts "Items Processed"
+    end    
+    the_case.close
 end
 
 

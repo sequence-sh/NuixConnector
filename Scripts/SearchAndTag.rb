@@ -9,8 +9,8 @@ end.parse!(into: params)
 puts params
 
 def SearchAndTag(utilities,pathArg,searchArg,tagArg)
-   the_case = utilities.case_factory.open(pathArg)
 
+    the_case = utilities.case_factory.open(pathArg)
     puts "Searching for '#{searchArg}'"
 
     searchOptions = {}
@@ -25,7 +25,6 @@ def SearchAndTag(utilities,pathArg,searchArg,tagArg)
     }
 
     puts "#{j} items tagged"
-
     the_case.close
 end
 

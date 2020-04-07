@@ -83,8 +83,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string ScriptText =>
-            @"  the_case = utilities.case_factory.open(pathArg)
-
+            @"
+    the_case = utilities.case_factory.open(pathArg)
     puts ""Searching""
 
     searchOptions = {}
@@ -92,20 +92,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
 
     items = the_case.search(searchArg, searchOptions)
-
     puts ""#{items.length} found""
 
     if items.length > 0
-
         productionSet = the_case.findProductionSetByName(productionSetNameArg)
-
         if(productionSet == nil)
-
             options = {}
             options[:description] = descriptionArg.to_i if descriptionArg != nil
-
-            productionSet = the_case.newProductionSet(productionSetNameArg, options)
-        
+            productionSet = the_case.newProductionSet(productionSetNameArg, options)        
             puts ""Production Set Created""
         else
             puts ""Production Set Found""

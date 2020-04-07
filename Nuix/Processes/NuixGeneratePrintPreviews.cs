@@ -46,17 +46,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-        if(productionSet == nil)        
-            puts ""Production Set Not Found""
-        else            
-            puts ""Production Set Found""
+    if(productionSet == nil)        
+        puts ""Production Set Not Found""
+    else            
+        puts ""Production Set Found""
 
-            options = {}
+        options = {}
 
-            resultMap = productionSet.generatePrintPreviews(options)
+        resultMap = productionSet.generatePrintPreviews(options)
 
-            puts ""Print previews generated""
-        end 
+        puts ""Print previews generated""
+    end 
 
     the_case.close";
 

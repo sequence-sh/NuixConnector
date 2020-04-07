@@ -72,7 +72,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"   the_case = utilities.case_factory.open(casePathArg)
+        internal override string ScriptText => @"
+    the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Finding Entities""
     items = the_case.search(searchArg, {})

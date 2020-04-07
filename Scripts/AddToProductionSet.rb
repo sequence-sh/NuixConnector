@@ -12,8 +12,8 @@ end.parse!(into: params)
 puts params
 
 def AddToProductionSet(utilities,pathArg,searchArg,productionSetNameArg,descriptionArg,orderArg,limitArg)
-  the_case = utilities.case_factory.open(pathArg)
 
+    the_case = utilities.case_factory.open(pathArg)
     puts "Searching"
 
     searchOptions = {}
@@ -21,20 +21,14 @@ def AddToProductionSet(utilities,pathArg,searchArg,productionSetNameArg,descript
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
 
     items = the_case.search(searchArg, searchOptions)
-
     puts "#{items.length} found"
 
     if items.length > 0
-
         productionSet = the_case.findProductionSetByName(productionSetNameArg)
-
         if(productionSet == nil)
-
             options = {}
             options[:description] = descriptionArg.to_i if descriptionArg != nil
-
-            productionSet = the_case.newProductionSet(productionSetNameArg, options)
-        
+            productionSet = the_case.newProductionSet(productionSetNameArg, options)        
             puts "Production Set Created"
         else
             puts "Production Set Found"

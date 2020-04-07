@@ -11,7 +11,8 @@ end.parse!(into: params)
 puts params
 
 def CreateNRTReport(utilities,pathArg,nrtPathArg,outputFormatArg,outputPathArg,localResourcesUrlArg)
-the_case = utilities.case_factory.open(pathArg)
+
+    the_case = utilities.case_factory.open(pathArg)
     puts 'Generating NRT Report:'
 
     reportGenerator = utilities.getReportGenerator();

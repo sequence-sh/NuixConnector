@@ -8,12 +8,11 @@ end.parse!(into: params)
 puts params
 
 def CreateTermList(utilities,casePathArg,outputFilePathArg)
-   the_case = utilities.case_factory.open(casePathArg)
+
+    the_case = utilities.case_factory.open(casePathArg)
 
     puts "Generating Report:"   
-
     caseStatistics = the_case.getStatistics()
-
     termStatistics = caseStatistics.getTermStatistics("", {"sort" => "on", "deduplicate" => "md5"}) #for some reason this takes strings rather than symbols
     #todo terms per custodian
     puts "#{termStatistics.length} terms"

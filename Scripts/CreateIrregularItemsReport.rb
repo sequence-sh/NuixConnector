@@ -8,10 +8,10 @@ end.parse!(into: params)
 puts params
 
 def CreateIrregularItemsReport(utilities,casePathArg,outputFolderPathArg)
-   the_case = utilities.case_factory.open(casePathArg)
 
-    puts "Generating Report:"
-   
+    the_case = utilities.case_factory.open(casePathArg)
+
+    puts "Generating Report:"   
     fields = {    
         encrypted: "flag:encrypted",
         NonSearchablePDF: "mime-type:application/pdf AND NOT content:*",
@@ -25,7 +25,6 @@ def CreateIrregularItemsReport(utilities,casePathArg,outputFolderPathArg)
         UnrecognisedDeleted: "kind:unrecognised AND flag:deleted",
         NeedManualExamination: "kind:unrecognised AND NOT ( flag:deleted OR mime-type:( filesystem/x-ntfs-mft OR filesystem/x-ntfs-logfile OR filesystem/x-ntfs-file-record OR filesystem/x-ntfs-index-record OR filesystem/x-ntfs-logfile-record OR filesystem/x-ntfs-usnjrnl OR filesystem/x-ntfs-usnjrnl-record OR filesystem/x-ntfs-vss-catalog OR filesystem/x-ntfs-vss-store ) OR ( path-mime-type:filesystem/drive AND ( ( path-name:\"[File System Root]\" AND name:( \"$AttrDef\" OR \"$Bitmap\" OR \"$BadClus\" OR \"$BadClus:$Bad\" OR \"$Boot\" OR \"$Extend\" OR \"$Secure\" OR \"$Secure:$SDS\" OR \"$UpCase\" OR \"$UpCase:$Info\" OR \"$Volume\" ) ) OR path-name:\"[File System Root]/$Extend\" ) ) )",
         CodeTextFiles: "kind:unrecognised AND (content:(function OR def) AND IF)"
-
     }
     
     irregularText = "OutputIrregular:Reason\tCount"
@@ -46,7 +45,6 @@ def CreateIrregularItemsReport(utilities,casePathArg,outputFolderPathArg)
     end
 
     File.write(File.join(outputFolderPathArg, 'Irregular.txt'), irregularText)
-
     the_case.close
 end
 

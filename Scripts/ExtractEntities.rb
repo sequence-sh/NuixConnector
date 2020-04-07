@@ -8,7 +8,8 @@ end.parse!(into: params)
 puts params
 
 def ExtractEntities(utilities,casePathArg,outputFolderPathArg)
-   the_case = utilities.case_factory.open(casePathArg)
+
+    the_case = utilities.case_factory.open(casePathArg)
 
     puts "Extracting Entities:"
 
