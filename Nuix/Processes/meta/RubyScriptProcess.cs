@@ -160,5 +160,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             return Result.Failure<bool>("Could not parse");
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> GetRequirements()
+        {
+            yield return $"Requires Nuix Version {RequiredVersion.ToString(2)}";
+
+            foreach (var nuixFeature in RequiredFeatures.OrderBy(x=>x))
+                yield return $"Requires Nuix Feature '{nuixFeature}'";
+        }
     }
 }
