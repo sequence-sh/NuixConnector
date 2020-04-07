@@ -9,7 +9,7 @@ using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
-    internal sealed class ImmutableRubyScriptProcess : ImmutableProcess<Unit>
+    internal sealed class ImmutableRubyScriptProcess : ImmutableProcess<Unit>, IImmutableRubyScriptProcess
     {
         /// <inheritdoc />
         public ImmutableRubyScriptProcess(IReadOnlyCollection<IUnitRubyBlock> rubyBlocks,
@@ -24,7 +24,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         public readonly IReadOnlyCollection<IUnitRubyBlock> RubyBlocks;
 
-        private string CompileScript()
+        public string CompileScript()
         {
             var scriptBuilder = new StringBuilder();
 

@@ -17,6 +17,16 @@ Run process defined in a yaml string.
 |:--------:|:------:|:------:|:----------------------------:|
 |yamlString|`string`|☑️      |Yaml representing the process.|
 
+# Scripts
+<a name="GenerateScripts"></a>
+## GenerateScripts
+
+Generates ruby scripts for all RubyScriptProcesses in the AppDomain.
+
+|Parameter |Type    |Required|Summary                                     |
+|:--------:|:------:|:------:|:------------------------------------------:|
+|folderPath|`string`|☑️      |Path to the folder to create the scripts in.|
+
 <a name="Process"></a>
 # General Processes
 <a name="AssertError"></a>

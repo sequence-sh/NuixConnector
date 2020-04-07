@@ -9,7 +9,7 @@ using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
-    internal sealed class ImmutableRubyScriptProcessTyped<T> : ImmutableProcess<T>
+    internal sealed class ImmutableRubyScriptProcessTyped<T> : ImmutableProcess<T>, IImmutableRubyScriptProcess
     {
         public readonly ITypedRubyBlock<T> RubyBlock;
         private readonly INuixProcessSettings _nuixProcessSettings;
@@ -49,7 +49,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 yield return ProcessOutput<T>.Error("Process did not complete successfully");
         }
 
-        private string CompileScript()
+        public string CompileScript()
         {
             var scriptBuilder = new StringBuilder();
 
