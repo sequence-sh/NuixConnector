@@ -21,6 +21,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         internal abstract string MethodName { get; }
 
+        /// <summary>
+        /// The required Nuix version.
+        /// </summary>
+        internal abstract System.Version RequiredVersion { get; }
+
+        /// <summary>
+        /// The required Nuix features.
+        /// </summary>
+        internal abstract IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
+
         /// <inheritdoc />
         public override string GetReturnTypeInfo() => nameof(Unit);
         

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
@@ -32,7 +33,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The term to search for
         /// </summary>
-        
+
         [Required]
         [YamlMember(Order = 4)]
         public string SearchTerm { get; set; }
@@ -40,7 +41,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The path of the case to search
         /// </summary>
-        
+
         [Required]
         [YamlMember(Order = 5)]
         [ExampleValue("C:/Cases/MyCase")]
@@ -69,7 +70,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)>
+            GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
@@ -118,6 +120,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string MethodName => "AddToProductionSet";
-        
+
+        /// <inheritdoc />
+        internal override Version RequiredVersion { get; } = new Version(3, 6);
+
+        /// <inheritdoc />
+        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.PRODUCTION_SET
+        };
+
     }
 }
