@@ -10,14 +10,14 @@ build:
     stage: build
     image: mcr.microsoft.com/dotnet/core/sdk:3.1
     script:
-        - "nuget add source https://gitlab.com/api/v4/projects/17256122/packages/nuget/index.json -n InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
+        - "dotnet nuget add source https://gitlab.com/api/v4/projects/17256122/packages/nuget/index.json -n InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
         - "dotnet build"
 
 test:
     stage: test
     image: mcr.microsoft.com/dotnet/core/sdk:3.1
     script: 
-        - "nuget add source https://gitlab.com/api/v4/projects/17256122/packages/nuget/index.json -n InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
+        - "dotnet nuget add source https://gitlab.com/api/v4/projects/17256122/packages/nuget/index.json -n InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
         - "dotnet test --filter TestCategory!=\"Integration\""
   
 integrationTest:
@@ -27,5 +27,5 @@ integrationTest:
     tags:
         - nuix
     script:
-        - "nuget add source https://gitlab.com/api/v4/projects/17256122/packages/nuget/index.json -n InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
+        - "dotnet nuget add source https://gitlab.com/api/v4/projects/17256122/packages/nuget/index.json -n InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
         - "dotnet test --filter TestCategory=\"Integration\""
