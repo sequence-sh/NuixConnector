@@ -81,11 +81,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                     np = value as ImmutableRubyScriptProcess;
             }
 
-            if (np == null ||  !NuixProcessSettingsComparer.Instance.Equals(_nuixProcessSettings, np._nuixProcessSettings))
+            if (np == null || !(processSettings is INuixProcessSettings iNuixProcessSettings))
                 return Result.Failure<ImmutableProcess<Unit>>("Could not combine");
 
             
-            var newProcess = new ImmutableRubyScriptProcess(RubyBlocks.Concat(np.RubyBlocks).ToList(), _nuixProcessSettings);
+            var newProcess = new ImmutableRubyScriptProcess(RubyBlocks.Concat(np.RubyBlocks).ToList(), iNuixProcessSettings);
 
             return Result.Success<ImmutableProcess<Unit>>(newProcess);
         }
@@ -103,10 +103,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             if (!(obj is ImmutableRubyScriptProcess rsp))
                 return false;
 
-            return Name == rsp.Name &&
-                   NuixProcessSettingsComparer.Instance.Equals(_nuixProcessSettings, rsp._nuixProcessSettings)
-                    &&
-                   RubyBlocks.SequenceEqual(rsp.RubyBlocks);
+            return Name == rsp.Name && RubyBlocks.SequenceEqual(rsp.RubyBlocks);
         }
 
         /// <inheritdoc />

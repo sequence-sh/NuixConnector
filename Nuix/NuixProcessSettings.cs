@@ -23,7 +23,7 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// The version of Nuix
         /// </summary>
-        System.Version NuixVersion { get; }
+        Version NuixVersion { get; }
 
         /// <summary>
         /// A list of available Nuix features.
@@ -60,28 +60,5 @@ namespace Reductech.EDR.Connectors.Nuix
 
         /// <inheritdoc />
         public IReadOnlyCollection<NuixFeature> NuixFeatures { get; }
-    }
-
-    internal class NuixProcessSettingsComparer : IEqualityComparer<INuixProcessSettings>
-    {
-        private NuixProcessSettingsComparer()
-        {
-        }
-
-        public static NuixProcessSettingsComparer Instance = new NuixProcessSettingsComparer();
-
-        /// <inheritdoc />
-        public bool Equals(INuixProcessSettings x, INuixProcessSettings y)
-        {
-            if (x == null || y == null) return x == y;
-            
-            return x.UseDongle == y.UseDongle && x.NuixExeConsolePath == y.NuixExeConsolePath;
-        }
-
-        /// <inheritdoc />
-        public int GetHashCode(INuixProcessSettings obj)
-        {
-            return System.HashCode.Combine(obj.UseDongle, obj.NuixExeConsolePath);
-        }
     }
 }
