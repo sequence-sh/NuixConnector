@@ -25,7 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <summary>
         /// The required Nuix version.
         /// </summary>
-        internal abstract System.Version RequiredVersion { get; }
+        internal abstract Version RequiredVersion { get; }
 
         /// <summary>
         /// The required Nuix features.
@@ -68,6 +68,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             else
             {
                 nuixProcessSettings = nps;
+
+                if (nuixProcessSettings.NuixVersion.CompareTo(RequiredVersion) == -1)
+                    errors.Add($"Your version of Nuix ({nuixProcessSettings.NuixVersion.ToString(2)}) is less than the required version of ({RequiredVersion.ToString(2)}) for the process: '{MethodName}'");
+
+                var missingFeatures = RequiredFeatures.Except(nuixProcessSettings.NuixFeatures).Distinct().ToList();
+                if(missingFeatures.Any())
+                    errors.Add($"You lack the required features: '{string.Join(", ", missingFeatures.Select(x=>x.ToString()))}' for the process: '{MethodName}'");
             }
 
             var arguments = GetArgumentValues()
@@ -130,9 +137,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                     return Result.Failure<ImmutableProcess, ErrorList>(
                         new ErrorList($"Cannot freeze a process with type {ReturnType}"));
             }
-
-            
-
         }
 
 
