@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
@@ -61,7 +62,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             if (!(processSettings is INuixProcessSettings nps))
             {
-                nuixProcessSettings = new NuixProcessSettings(false, "");
+                nuixProcessSettings = new NuixProcessSettings(false, "", new Version(), new List<NuixFeature>() ); //dummy value for compiler
                 errors.Add($"Process Settings must be an instance of {typeof(INuixProcessSettings).Name}");
             }
             else

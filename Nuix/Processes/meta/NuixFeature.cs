@@ -1,15 +1,28 @@
-﻿namespace Reductech.EDR.Connectors.Nuix.processes.meta
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
     /// <summary>
     /// A Nuix feature requirement
     /// </summary>
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum NuixFeature
     {
-        CASE_CREATION,
-        METADATA_IMPORT,
+#pragma warning disable 1591
         ANALYSIS,
-        PRODUCTION_SET,
+
+        CASE_CREATION,
+
         EXPORT_ITEMS,
-        OCR_PROCESSING
+
+        METADATA_IMPORT,
+        
+        OCR_PROCESSING,
+
+
+        PRODUCTION_SET
+#pragma warning restore 1591
+        
+        
     }
 }

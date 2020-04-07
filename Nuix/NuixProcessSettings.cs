@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes.mutable;
 
 namespace Reductech.EDR.Connectors.Nuix
@@ -18,6 +20,16 @@ namespace Reductech.EDR.Connectors.Nuix
         /// </summary>
         string NuixExeConsolePath { get; }
 
+        /// <summary>
+        /// The version of Nuix
+        /// </summary>
+        System.Version NuixVersion { get; }
+
+        /// <summary>
+        /// A list of available Nuix features.
+        /// </summary>
+        IReadOnlyCollection<NuixFeature> NuixFeatures { get; }
+
     }
     /// <summary>
     /// Settings for a nuix process.
@@ -27,12 +39,12 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Create a new NuixProcessSettings.
         /// </summary>
-        /// <param name="useDongle"></param>
-        /// <param name="nuixExeConsolePath"></param>
-        public NuixProcessSettings(bool useDongle, string nuixExeConsolePath)
+        public NuixProcessSettings(bool useDongle, string nuixExeConsolePath, Version nuixVersion, IReadOnlyCollection<NuixFeature> nuixFeatures)
         {
             UseDongle = useDongle;
             NuixExeConsolePath = nuixExeConsolePath;
+            NuixVersion = nuixVersion;
+            NuixFeatures = nuixFeatures;
         }
         /// <summary>
         /// Whether to use a dongle for nuix authentication.
@@ -42,6 +54,12 @@ namespace Reductech.EDR.Connectors.Nuix
         /// The path to the nuix console executable.
         /// </summary>
         public string NuixExeConsolePath { get; }
+
+        /// <inheritdoc />
+        public Version NuixVersion { get; }
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<NuixFeature> NuixFeatures { get; }
     }
 
     internal class NuixProcessSettingsComparer : IEqualityComparer<INuixProcessSettings>

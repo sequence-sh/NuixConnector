@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
             var useDongleString =  ConfigurationManager.AppSettings["NuixUseDongle"];
             var nuixExeConsolePath = ConfigurationManager.AppSettings["NuixExeConsolePath"];
+            var nuixVersionString = ConfigurationManager.AppSettings["NuixVersion"];
+            var nuixFeaturesString = ConfigurationManager.AppSettings["NuixFeatures"];
 
             if (!bool.TryParse(useDongleString, out var useDongle))
             {
@@ -34,6 +37,18 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                 return;
             }
 
+            if (!Version.TryParse(nuixVersionString, out var nuixVersion))
+            {
+                System.Console.WriteLine("Please set the property 'NuixVersion' in the settings file to a valid version number");
+                return;
+            }
+
+            if (!TryParseNuixFeatures(nuixFeaturesString, out var nuixFeatures))
+            {
+                System.Console.WriteLine("Please set the property 'NuixFeatures' in the settings file to a comma separated list of nuix features or 'NO_FEATURES'");
+                return;
+            }
+
 
             var rubyScriptProcessAssembly = Assembly.GetAssembly(typeof(RubyScriptProcess));
             Debug.Assert(rubyScriptProcessAssembly != null, nameof(rubyScriptProcessAssembly) + " != null");
@@ -41,7 +56,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             var processAssembly = Assembly.GetAssembly(typeof(Process));
             Debug.Assert(processAssembly != null, nameof(processAssembly) + " != null");
 
-            var nuixProcessSettings = new NuixProcessSettings(useDongle, nuixExeConsolePath);
+            var nuixProcessSettings = new NuixProcessSettings(useDongle, nuixExeConsolePath, nuixVersion, nuixFeatures);
 
             var methods = typeof(YamlRunner).GetMethods()
                 .Where(m=>m.DeclaringType != typeof(object))
@@ -76,6 +91,30 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             ConsoleView.Run(args, methods);
         }
 
+        private static bool TryParseNuixFeatures(string? s, out IReadOnlyCollection<NuixFeature> nuixFeatures)
+        {
+            if(string.IsNullOrWhiteSpace(s))
+            {
+                nuixFeatures = new List<NuixFeature>();
+                return false;
+            }
+            else if (s == "NO_FEATURES")
+            {
+                nuixFeatures = new List<NuixFeature>();
+                return true;
+            }
+            else
+            {
+                var nfs = new HashSet<NuixFeature>();
+                var features = s.Split(',');
+                foreach (var feature in features)
+                    if (Enum.TryParse(typeof(NuixFeature), feature, true, out var nf) && nf is NuixFeature nuixFeature)
+                        nfs.Add(nuixFeature);
+
+                nuixFeatures = nfs;
+                return true;
+            }
+        }
         
     }
 }
