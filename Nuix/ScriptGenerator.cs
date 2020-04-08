@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -47,13 +46,18 @@ namespace Reductech.EDR.Connectors.Nuix
 
                 try
                 {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                     process = (RubyScriptProcess)Activator.CreateInstance(processType);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
                 {
                     return e.Message;
                 }
-
+#pragma warning restore CA1031 // Do not catch general exception types
+                if (process == null)
+                    return $"Could not create process '{processType.Name}'";
 
                 foreach (var propertyInfo in processType.GetProperties()
                     .Where(x=>x.GetCustomAttributes(typeof(YamlMemberAttribute)).Any()))
@@ -74,15 +78,15 @@ namespace Reductech.EDR.Connectors.Nuix
                 }
 
                 
-                var scriptResult = TryGenerateScript(process);
-                if (scriptResult.IsSuccess)
+                var (isSuccess, _, value, error) = TryGenerateScript(process);
+                if (isSuccess)
                 {
                     var fileName = process.MethodName + ".rb";
                     var newPath = Path.Combine(folderPath, fileName);
 
                     try
                     {
-                        File.WriteAllText(newPath, scriptResult.Value, Encoding.UTF8);
+                        File.WriteAllText(newPath, value, Encoding.UTF8);
                     }
                     catch (Exception e)
                     {
@@ -92,7 +96,7 @@ namespace Reductech.EDR.Connectors.Nuix
                 }
                 else
                 {
-                    return scriptResult.Error;
+                    return error;
                 }
             }
 
