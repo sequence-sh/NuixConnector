@@ -38,7 +38,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(ref int blockNumber)
+        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber)
         {
             var optParseLines = new List<string>();
 
@@ -47,7 +47,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 var newParameterName = argumentName + blockNumber;
                 var argTerm = valueCanBeNull ? "[ARG]" : "ARG";
 
-                optParseLines.Add($"opts.on('--{newParameterName} {argTerm}')");
+                optParseLines.Add($"opts.on('--{newParameterName} {argTerm}') do |o| {hashSetName}[:{newParameterName}] = o end");
             }
 
             blockNumber++;

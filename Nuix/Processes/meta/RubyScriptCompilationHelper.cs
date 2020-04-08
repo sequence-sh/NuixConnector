@@ -28,11 +28,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             var i = 0;
             foreach (var methodCall in rubyBlocks)
             {
-                var optParseLines = methodCall.GetOptParseLines(ref i);
+                var optParseLines = methodCall.GetOptParseLines(HashSetName, ref i);
                 foreach (var optParseLine in optParseLines) scriptStringBuilder.AppendLine(optParseLine);
             }
 
-            scriptStringBuilder.AppendLine($"end.parse!(into: {HashSetName})");
+            scriptStringBuilder.AppendLine($"end.parse!");
 
             // ReSharper disable once JoinDeclarationAndInitializer
             bool printArguments;

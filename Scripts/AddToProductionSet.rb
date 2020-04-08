@@ -2,13 +2,13 @@
 #AddToProductionSet
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--searchArg0 ARG')
-opts.on('--productionSetNameArg0 ARG')
-opts.on('--descriptionArg0 [ARG]')
-opts.on('--orderArg0 [ARG]')
-opts.on('--limitArg0 [ARG]')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
+opts.on('--productionSetNameArg0 ARG') do |o| params[:productionSetNameArg0] = o end
+opts.on('--descriptionArg0 [ARG]') do |o| params[:descriptionArg0] = o end
+opts.on('--orderArg0 [ARG]') do |o| params[:orderArg0] = o end
+opts.on('--limitArg0 [ARG]') do |o| params[:limitArg0] = o end
+end.parse!
 puts params
 
 def AddToProductionSet(utilities,pathArg,searchArg,productionSetNameArg,descriptionArg,orderArg,limitArg)

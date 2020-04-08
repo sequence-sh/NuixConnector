@@ -2,12 +2,12 @@
 #CreateNRTReport
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--nrtPathArg0 ARG')
-opts.on('--outputFormatArg0 ARG')
-opts.on('--outputPathArg0 ARG')
-opts.on('--localResourcesUrlArg0 ARG')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--nrtPathArg0 ARG') do |o| params[:nrtPathArg0] = o end
+opts.on('--outputFormatArg0 ARG') do |o| params[:outputFormatArg0] = o end
+opts.on('--outputPathArg0 ARG') do |o| params[:outputPathArg0] = o end
+opts.on('--localResourcesUrlArg0 ARG') do |o| params[:localResourcesUrlArg0] = o end
+end.parse!
 puts params
 
 def CreateNRTReport(utilities,pathArg,nrtPathArg,outputFormatArg,outputPathArg,localResourcesUrlArg)

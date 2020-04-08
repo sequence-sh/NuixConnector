@@ -35,9 +35,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(ref int blockNumber)
+        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber)
         {
-            return SubBlock.GetOptParseLines(ref blockNumber);
+            return SubBlock.GetOptParseLines(hashSetName, ref blockNumber);
         }
 
         /// <inheritdoc />

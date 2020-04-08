@@ -2,10 +2,10 @@
 #RunOCR
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--searchTermArg0 ARG')
-opts.on('--ocrProfileArg0 [ARG]')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--searchTermArg0 ARG') do |o| params[:searchTermArg0] = o end
+opts.on('--ocrProfileArg0 [ARG]') do |o| params[:ocrProfileArg0] = o end
+end.parse!
 puts params
 
 def RunOCR(utilities,pathArg,searchTermArg,ocrProfileArg)

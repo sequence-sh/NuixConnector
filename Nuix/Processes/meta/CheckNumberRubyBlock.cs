@@ -42,19 +42,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(ref int blockNumber)
+        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber)
         {
             var minArg = "min" + blockNumber;
             var maxArg = "max" + blockNumber;
 
             var lines = new List<string>()
             {
-                $"opts.on('--{minArg} [ARG]')",
-                $"opts.on('--{maxArg} [ARG]')"
+                $"opts.on('--{minArg} [ARG]') do |o| params[:{minArg}] = o end",
+                $"opts.on('--{maxArg} [ARG]')  do |o| params[:{maxArg}] = o end"
 
             };
             blockNumber++;
-            lines.AddRange(_numberBlock.GetOptParseLines(ref blockNumber));
+            lines.AddRange(_numberBlock.GetOptParseLines(hashSetName, ref blockNumber));
 
             return lines;
         }

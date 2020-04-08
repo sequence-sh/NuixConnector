@@ -2,9 +2,9 @@
 #CreateIrregularItemsReport
 params = {}
 OptionParser.new do |opts|
-opts.on('--casePathArg0 ARG')
-opts.on('--outputFolderPathArg0 ARG')
-end.parse!(into: params)
+opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
+opts.on('--outputFolderPathArg0 ARG') do |o| params[:outputFolderPathArg0] = o end
+end.parse!
 puts params
 
 def CreateIrregularItemsReport(utilities,casePathArg,outputFolderPathArg)

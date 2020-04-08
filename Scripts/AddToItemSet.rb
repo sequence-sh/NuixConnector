@@ -2,16 +2,16 @@
 #AddToItemSet
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--searchArg0 ARG')
-opts.on('--itemSetNameArg0 ARG')
-opts.on('--deduplicationArg0 [ARG]')
-opts.on('--descriptionArg0 [ARG]')
-opts.on('--deduplicateByArg0 ARG')
-opts.on('--custodianRankingArg0 [ARG]')
-opts.on('--orderArg0 [ARG]')
-opts.on('--limitArg0 [ARG]')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
+opts.on('--itemSetNameArg0 ARG') do |o| params[:itemSetNameArg0] = o end
+opts.on('--deduplicationArg0 [ARG]') do |o| params[:deduplicationArg0] = o end
+opts.on('--descriptionArg0 [ARG]') do |o| params[:descriptionArg0] = o end
+opts.on('--deduplicateByArg0 ARG') do |o| params[:deduplicateByArg0] = o end
+opts.on('--custodianRankingArg0 [ARG]') do |o| params[:custodianRankingArg0] = o end
+opts.on('--orderArg0 [ARG]') do |o| params[:orderArg0] = o end
+opts.on('--limitArg0 [ARG]') do |o| params[:limitArg0] = o end
+end.parse!
 puts params
 
 def AddToItemSet(utilities,pathArg,searchArg,itemSetNameArg,deduplicationArg,descriptionArg,deduplicateByArg,custodianRankingArg,orderArg,limitArg)

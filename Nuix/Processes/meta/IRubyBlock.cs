@@ -25,6 +25,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <summary>
         /// Gets the lines needed in the options parser to provide the arguments.
         /// </summary>
-        public IReadOnlyCollection<string> GetOptParseLines(ref int blockNumber);
+        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber);
     }
 }
