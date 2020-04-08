@@ -29,11 +29,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
         {
-            var args = new List<string>()
+            var args = new List<string>();
+
+            if(_min.HasValue)
             {
-                "min" + blockNumber,
-                "max" + blockNumber
-            };
+                args.Add("min" + blockNumber);
+                args.Add(_min.Value.ToString());
+            }
+
+            if (_max.HasValue)
+            {
+                args.Add("max" + blockNumber);
+                args.Add(_max.Value.ToString());
+            }
             blockNumber++;
 
             args.AddRange(_numberBlock.GetArguments(ref blockNumber));                
