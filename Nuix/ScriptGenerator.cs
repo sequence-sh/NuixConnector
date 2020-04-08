@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -43,22 +42,17 @@ namespace Reductech.EDR.Connectors.Nuix
 
             foreach (var processType in processTypes)
             {
-                RubyScriptProcess process;
-
                 try
                 {
-                    process = (RubyScriptProcess)Activator.CreateInstance(processType);
-                }
-                catch (Exception e)
-                {
-                    return e.Message;
-                }
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+                    var process = (RubyScriptProcess)Activator.CreateInstance(processType);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+                
+                    if (process == null)
+                        return $"Could not create process '{processType.Name}'";
 
-
-                foreach (var propertyInfo in processType.GetProperties()
-                    .Where(x=>x.GetCustomAttributes(typeof(YamlMemberAttribute)).Any()))
-                {
-                    try
+                    foreach (var propertyInfo in processType.GetProperties()
+                        .Where(x=>x.GetCustomAttributes(typeof(YamlMemberAttribute)).Any()))
                     {
                         var newValue = 
                             propertyInfo.PropertyType == typeof(string)?
@@ -67,33 +61,30 @@ namespace Reductech.EDR.Connectors.Nuix
 
                         propertyInfo.SetValue(process, newValue);
                     }
-                    catch (Exception e)
-                    {
-                        return e.Message;
-                    }
-                }
 
                 
-                var scriptResult = TryGenerateScript(process);
-                if (scriptResult.IsSuccess)
-                {
-                    var fileName = process.MethodName + ".rb";
-                    var newPath = Path.Combine(folderPath, fileName);
+                    var (isSuccess, _, value, error) = TryGenerateScript(process);
+                    if (isSuccess)
+                    {
+                        var fileName = process.MethodName + ".rb";
+                        var newPath = Path.Combine(folderPath, fileName);
 
-                    try
-                    {
-                        File.WriteAllText(newPath, scriptResult.Value, Encoding.UTF8);
-                    }
-                    catch (Exception e)
-                    {
-                        return e.Message;
-                    }
+                        File.WriteAllText(newPath, value, Encoding.UTF8);
                     
+                    }
+                    else
+                    {
+                        return error;
+                    }
                 }
-                else
+#pragma warning disable CA1031 // Do not catch general exception types
+                catch (Exception e)
                 {
-                    return scriptResult.Error;
+                    return e.Message;
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
+
+
             }
 
             return "Scripts generated successfully";

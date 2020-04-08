@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
@@ -11,6 +12,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// The name of the block.
         /// </summary>
         public string BlockName { get; }
+
+        /// <summary>
+        /// Required nuix version.
+        /// </summary>
+        public Version RequiredNuixVersion { get; }
+
+        /// <summary>
+        /// Required nuix features.
+        /// </summary>
+        public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures { get; }
 
         /// <summary>
         /// The functions that this block of code is dependent on.

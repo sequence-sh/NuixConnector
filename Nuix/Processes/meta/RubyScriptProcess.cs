@@ -23,9 +23,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         internal abstract string MethodName { get; }
 
         /// <summary>
-        /// The required Nuix version.
+        /// The default required version of Nuix.
+        /// 5.0 - this is required to check the nuix features.
+        /// </summary>
+        public static Version DefaultRequiredVersion { get; } = new Version(5,0);
+
+        /// <summary>
+        /// The required Nuix version for the process.
         /// </summary>
         internal abstract Version RequiredVersion { get; }
+
+        private Version TrueRequiredVersion => RequiredVersion > DefaultRequiredVersion? RequiredVersion : DefaultRequiredVersion;
 
         /// <summary>
         /// The required Nuix features.
@@ -69,8 +77,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 nuixProcessSettings = nps;
 
-                if (nuixProcessSettings.NuixVersion.CompareTo(RequiredVersion) == -1)
-                    errors.Add($"Your version of Nuix ({nuixProcessSettings.NuixVersion.ToString(2)}) is less than the required version of ({RequiredVersion.ToString(2)}) for the process: '{MethodName}'");
+                if (nuixProcessSettings.NuixVersion < TrueRequiredVersion)
+                    errors.Add($"Your version of Nuix ({nuixProcessSettings.NuixVersion}) is less than the required version ({TrueRequiredVersion}) for the process: '{MethodName}'");
 
                 var missingFeatures = RequiredFeatures.Except(nuixProcessSettings.NuixFeatures).Distinct().ToList();
                 if(missingFeatures.Any())
@@ -106,7 +114,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 case NuixReturnType.Unit:
                 {
-                    var block = new BasicRubyBlock(MethodName, methodBuilder.ToString(), arguments);
+                    var block = new BasicRubyBlock(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
 
                     var ip = new ImmutableRubyScriptProcess(new []{block}, nuixProcessSettings);
 
@@ -114,21 +122,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 }
                 case NuixReturnType.Boolean:
                 {
-                    var block = new BasicTypedRubyBlock<bool>(MethodName, methodBuilder.ToString(), arguments);
+                    var block = new BasicTypedRubyBlock<bool>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
                     var ip = new ImmutableRubyScriptProcessTyped<bool>( block, nuixProcessSettings, TryParseBool);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.Integer:
                 {
-                    var block = new BasicTypedRubyBlock<int>(MethodName, methodBuilder.ToString(), arguments);
+                    var block = new BasicTypedRubyBlock<int>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
                     var ip = new ImmutableRubyScriptProcessTyped<int>( block, nuixProcessSettings, TryParseInt);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
                 }
                 case NuixReturnType.String:
                 {
-                    var block = new BasicTypedRubyBlock<string>(MethodName, methodBuilder.ToString(), arguments);
+                    var block = new BasicTypedRubyBlock<string>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
                     var ip = new ImmutableRubyScriptProcessTyped<string>( block, nuixProcessSettings, TryParseString);
 
                     return  Result.Success<ImmutableProcess, ErrorList>(ip);
@@ -164,7 +172,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public override IEnumerable<string> GetRequirements()
         {
-            yield return $"Requires Nuix Version {RequiredVersion.ToString(2)}";
+            yield return $"Requires Nuix Version {TrueRequiredVersion}";
 
             foreach (var nuixFeature in RequiredFeatures.OrderBy(x=>x))
                 yield return $"Requires Nuix Feature '{nuixFeature}'";

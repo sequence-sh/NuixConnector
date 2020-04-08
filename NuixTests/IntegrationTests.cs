@@ -428,7 +428,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// <summary>
         /// Tests just the freezing of the processes. Suitable as a unit test.
         /// </summary>
-        /// <param name="sequence"></param>
         /// <returns></returns>
         [Test]
         [TestCaseSource(nameof(ProcessSettingsCombos))]
@@ -441,7 +440,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// <summary>
         /// Tests freezing and execution - much slower
         /// </summary>
-        /// <param name="sequence"></param>
         /// <returns></returns>
         [Test]
         [TestCaseSource(nameof(ProcessSettingsCombos))]
@@ -454,9 +452,23 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             await AssertNoErrors(value.ExecuteUntyped());
         }
 
-        
+        [Test]
+        [Category(Integration)]
+        public void TestVersionCheckingWithinScript()
+        {
+            var baseSettings = NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
 
-        
+            var process = new DoNothingRubyScriptProcess
+            {
+                MyRequiredVersion = new Version(100,0)
+            };
+
+            var (freezeSuccess, _, freezeValue, freezeError) = process.TryFreeze(new NuixProcessSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100,0), baseSettings.NuixFeatures));
+
+            Assert.IsTrue(freezeSuccess, freezeError?.ToString());
+
+            AssertError(freezeValue.ExecuteUntyped(), "Nuix Version is" );
+        }
 
 
         public static async Task<IReadOnlyCollection<string>> AssertNoErrors(IAsyncEnumerable<IProcessOutput> output)
@@ -479,6 +491,27 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             return results;
         }
 
+        public static async  void AssertError(IAsyncEnumerable<IProcessOutput> output, string expectedErrorContents)
+        {
+            // ReSharper disable once CollectionNeverQueried.Local - this is nice for debugging
+            var results = new List<string>();
+
+            await foreach (var o in output)
+            {
+                if (o.OutputType == OutputType.Error)
+                {
+                    if (o.Text.Contains(expectedErrorContents))
+                        return;
+                }
+                else
+                {
+                    results.Add(o.Text);
+                }
+            }
+            
+            Assert.Fail("Expected to fail but did not.");
+        }
+
         internal class TestSequence : Sequence
         {
             public TestSequence(string name, params  Process[] steps)
@@ -494,6 +527,40 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             }
 
             public string Name { get; }
+        }
+
+
+        internal class DoNothingRubyScriptProcess : RubyScriptProcess
+        {
+            /// <inheritdoc />
+            public override string GetName() => "Do Nothing";
+
+            /// <inheritdoc />
+            internal override string ScriptText => @"
+puts 'Doing Nothing'
+";
+
+            /// <inheritdoc />
+            internal override string MethodName => "DoNothing";
+
+            /// <inheritdoc />
+            internal override Version RequiredVersion => MyRequiredVersion?? new Version(1,0);
+
+            public Version? MyRequiredVersion { get; set; }
+
+            /// <inheritdoc />
+            internal override IReadOnlyCollection<NuixFeature> RequiredFeatures => MyRequiredFeatures?? new List<NuixFeature>();
+
+            public List<NuixFeature>? MyRequiredFeatures { get; set; }
+
+            /// <inheritdoc />
+            protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+
+            /// <inheritdoc />
+            internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+            {
+                yield break;
+            }
         }
     }
 
@@ -521,6 +588,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private static bool IsVersionCompatible(Process process, Version nuixVersion)
         {
             var requiredVersions = process.GetRequirements().Select(GetVersion).Where(x => x != null).ToList();
+
+            if(process.ToString() == "Migrate Case")            
+                requiredVersions.Add(new Version(8, 2)); //This is a special case because the file we are trying to migrate is from 7.8
+            
+
 
             var r = requiredVersions.All(v => nuixVersion.CompareTo(v) != -1);
             return r;

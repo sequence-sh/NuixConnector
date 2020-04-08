@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Reductech.EDR.Utilities.Processes;
@@ -22,6 +23,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         
         /// <inheritdoc />
         public string BlockName => ProcessNameHelper.GetCheckNumberProcessName(_numberBlock.BlockName);
+
+        /// <inheritdoc />
+        public Version RequiredNuixVersion => _numberBlock.RequiredNuixVersion;
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures => _numberBlock.RequiredNuixFeatures;
 
         /// <inheritdoc />
         public IEnumerable<string> FunctionDefinitions => new []{CheckNumberDefinition}.Concat(_numberBlock.FunctionDefinitions);

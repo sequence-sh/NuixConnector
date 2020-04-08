@@ -1,16 +1,33 @@
-﻿require 'optparse'
-#AddConcordanceToCase
+﻿#AddConcordanceToCase
+
+requiredNuixVersion = '7.6'
+if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
+	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	exit
+end
+
+requiredFeatures = Array['CASE_CREATION', 'METADATA_IMPORT']
+requiredFeatures.each do |feature|
+	if !utilities.getLicence().hasFeature(feature)
+		puts "Nuix Feature #{feature} is required but not available."
+		exit
+	end
+end
+
+require 'optparse'
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-opts.on('--folderNameArg0 ARG') do |o| params[:folderNameArg0] = o end
-opts.on('--folderDescriptionArg0 [ARG]') do |o| params[:folderDescriptionArg0] = o end
-opts.on('--folderCustodianArg0 ARG') do |o| params[:folderCustodianArg0] = o end
-opts.on('--filePathArg0 ARG') do |o| params[:filePathArg0] = o end
-opts.on('--dateFormatArg0 ARG') do |o| params[:dateFormatArg0] = o end
-opts.on('--profileNameArg0 ARG') do |o| params[:profileNameArg0] = o end
+	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+	opts.on('--folderNameArg0 ARG') do |o| params[:folderNameArg0] = o end
+	opts.on('--folderDescriptionArg0 [ARG]') do |o| params[:folderDescriptionArg0] = o end
+	opts.on('--folderCustodianArg0 ARG') do |o| params[:folderCustodianArg0] = o end
+	opts.on('--filePathArg0 ARG') do |o| params[:filePathArg0] = o end
+	opts.on('--dateFormatArg0 ARG') do |o| params[:dateFormatArg0] = o end
+	opts.on('--profileNameArg0 ARG') do |o| params[:profileNameArg0] = o end
 end.parse!
+
 puts params
+
 
 def AddConcordanceToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,dateFormatArg,profileNameArg)
 

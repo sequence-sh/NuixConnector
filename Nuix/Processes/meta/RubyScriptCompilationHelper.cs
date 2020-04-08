@@ -14,12 +14,41 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         public const string HashSetName = "params";
 
-        public static string CompileScriptSetup(string name, IEnumerable<IRubyBlock> rubyBlocks)
+        public static string CompileScriptSetup(string name, IReadOnlyCollection<IRubyBlock> rubyBlocks)
         {
             var scriptStringBuilder = new StringBuilder();
 
-            scriptStringBuilder.AppendLine("require 'optparse'");
             scriptStringBuilder.AppendLine($"#{name}");
+            scriptStringBuilder.AppendLine();
+
+            var highestVersion =
+                rubyBlocks.Select(x => x.RequiredNuixVersion).OrderByDescending(x => x).FirstOrDefault();
+
+            if (highestVersion != null)
+            {
+                scriptStringBuilder.AppendLine($"requiredNuixVersion = '{highestVersion}'");
+                scriptStringBuilder.AppendLine("if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)");
+                scriptStringBuilder.AppendLine("\tputs \"Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required\"");
+                scriptStringBuilder.AppendLine("\texit");
+                scriptStringBuilder.AppendLine("end");
+                scriptStringBuilder.AppendLine();
+            }
+
+            var requiredFeatures = rubyBlocks.SelectMany(x => x.RequiredNuixFeatures).Distinct().OrderBy(x=>x).ToList();
+            if (requiredFeatures.Any())
+            {
+                var featuresArray = string.Join(", ", requiredFeatures.Select(rf => $"'{rf}'"));
+                scriptStringBuilder.AppendLine($"requiredFeatures = Array[{featuresArray}]");
+                scriptStringBuilder.AppendLine("requiredFeatures.each do |feature|");
+                scriptStringBuilder.AppendLine("\tif !utilities.getLicence().hasFeature(feature)");
+                scriptStringBuilder.AppendLine("\t\tputs \"Nuix Feature #{feature} is required but not available.\"");
+                scriptStringBuilder.AppendLine("\t\texit");
+                scriptStringBuilder.AppendLine("\tend");
+                scriptStringBuilder.AppendLine("end");
+                scriptStringBuilder.AppendLine();
+            }
+
+            scriptStringBuilder.AppendLine("require 'optparse'");
 
             //Parse options
             scriptStringBuilder.AppendLine(HashSetName + " = {}");
@@ -29,10 +58,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             foreach (var methodCall in rubyBlocks)
             {
                 var optParseLines = methodCall.GetOptParseLines(HashSetName, ref i);
-                foreach (var optParseLine in optParseLines) scriptStringBuilder.AppendLine(optParseLine);
+                foreach (var optParseLine in optParseLines) scriptStringBuilder.AppendLine('\t' + optParseLine);
             }
 
-            scriptStringBuilder.AppendLine($"end.parse!");
+            scriptStringBuilder.AppendLine("end.parse!");
+            scriptStringBuilder.AppendLine();
 
             // ReSharper disable once JoinDeclarationAndInitializer
             bool printArguments;
@@ -40,8 +70,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             printArguments = true;
 #endif
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if(printArguments)
+            if (printArguments)
+            {
                 scriptStringBuilder.AppendLine($"puts {HashSetName}");
+                scriptStringBuilder.AppendLine();
+            }
+                
 
             return scriptStringBuilder.ToString();
         }
@@ -84,5 +118,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             return trueArguments;
         }
+
+        public static readonly ISet<string> NuixWarnings = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "ERROR StatusLogger Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console..."
+        };
     }
 }

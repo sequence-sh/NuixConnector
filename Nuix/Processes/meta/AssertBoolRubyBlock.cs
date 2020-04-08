@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Reductech.EDR.Utilities.Processes;
@@ -19,6 +20,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         /// <inheritdoc />
         public string BlockName => ProcessNameHelper.GetAssertBoolProcessName(SubBlock.BlockName, Expected);
+
+        /// <inheritdoc />
+        public Version RequiredNuixVersion => SubBlock.RequiredNuixVersion;
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures => SubBlock.RequiredNuixFeatures;
 
         /// <inheritdoc />
         public IEnumerable<string> FunctionDefinitions =>
