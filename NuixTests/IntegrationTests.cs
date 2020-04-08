@@ -456,16 +456,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Category(Integration)]
         public void TestVersionCheckingWithinScript()
         {
-            var settings = NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
+            var baseSettings = NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
 
             var process = new DoNothingRubyScriptProcess
             {
                 MyRequiredVersion = new Version(100,0)
             };
 
-            var (freezeSuccess, _, freezeValue, freezeError) = process.TryFreeze(settings);
+            var (freezeSuccess, _, freezeValue, freezeError) = process.TryFreeze(new NuixProcessSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100,0), baseSettings.NuixFeatures));
 
-            Assert.IsTrue(freezeSuccess, freezeError.ToString());
+            Assert.IsTrue(freezeSuccess, freezeError?.ToString());
 
             AssertError(freezeValue.ExecuteUntyped(), "Nuix Version is" );
         }
