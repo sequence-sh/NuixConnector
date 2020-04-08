@@ -27,5 +27,5 @@ integrationTest:
     tags:
         - nuix
     script:
-        - "dotnet nuget add source https://gitlab.com/api/v4/projects/17256122/packages/nuget/index.json -n InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
+         InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
         - "dotnet test --filter TestCategory=\"Integration\""

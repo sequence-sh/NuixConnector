@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
@@ -15,13 +16,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     public class IntegrationTests
     {
-        private static readonly INuixProcessSettings NuixSettings = 
-            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8,2), new List<NuixFeature>()
-                {
-                    NuixFeature.PRODUCTION_SET, NuixFeature.ANALYSIS, NuixFeature.EXPORT_ITEMS, NuixFeature.OCR_PROCESSING, NuixFeature.METADATA_IMPORT, NuixFeature.CASE_CREATION
-                }
-            );
-        //TODO set these from a config file
+        private static readonly List<NuixFeature> AllNuixFeatures = Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
+
+        private static readonly IReadOnlyCollection<INuixProcessSettings> NuixSettingsList = new List<INuixProcessSettings>()
+        {
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8,2), AllNuixFeatures),
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7,8), AllNuixFeatures),
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.2\nuix_console.exe", new Version(7,2), AllNuixFeatures),
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(6,2), AllNuixFeatures),
+        };
+        //TODO set paths from a config file, or something
 
         private const string Integration = "Integration";
 
@@ -64,7 +68,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
 
-        public static readonly IReadOnlyCollection<Process> TestProcesses =
+        private static readonly IReadOnlyCollection<Process> TestProcesses =
             new List<TestSequence>
             {
                 //TODO AnnotateDocumentIdList
@@ -417,17 +421,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             };
 
+
+        public static readonly IReadOnlyCollection<ProcessSettingsCombo> ProcessSettingsCombos =
+            TestProcesses.SelectMany(p => NuixSettingsList.Select(s => new ProcessSettingsCombo(p, s))).Where(x => x.IsProcessCompatible).ToList();
+
         /// <summary>
         /// Tests just the freezing of the processes. Suitable as a unit test.
         /// </summary>
         /// <param name="sequence"></param>
         /// <returns></returns>
         [Test]
-        [TestCaseSource(nameof(TestProcesses))]
-        public void TestFreeze(Sequence sequence)
+        [TestCaseSource(nameof(ProcessSettingsCombos))]
+        public void TestFreeze(ProcessSettingsCombo processSettingsCombo)
         {
-            var (isSuccess, _, _, error) = sequence.TryFreeze(NuixSettings);
-
+            var (isSuccess, _, _, error) = processSettingsCombo.Process.TryFreeze(processSettingsCombo.Setttings);
             Assert.IsTrue(isSuccess, error?.ToString());
         }
 
@@ -437,16 +444,19 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// <param name="sequence"></param>
         /// <returns></returns>
         [Test]
-        [TestCaseSource(nameof(TestProcesses))]
+        [TestCaseSource(nameof(ProcessSettingsCombos))]
         [Category(Integration)]
-        public async Task TestExecution(Sequence sequence)
+        public async Task TestExecution(ProcessSettingsCombo processSettingsCombo)
         {
-            var (isSuccess, _, value, error) = sequence.TryFreeze(NuixSettings);
-
+            var (isSuccess, _, value, error) = processSettingsCombo.Process.TryFreeze(processSettingsCombo.Setttings);
             Assert.IsTrue(isSuccess, error?.ToString());
 
             await AssertNoErrors(value.ExecuteUntyped());
         }
+
+        
+
+        
 
 
         public static async Task<IReadOnlyCollection<string>> AssertNoErrors(IAsyncEnumerable<IProcessOutput> output)
@@ -485,5 +495,43 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             public string Name { get; }
         }
+    }
+
+    public class ProcessSettingsCombo
+    {
+        public ProcessSettingsCombo(Process process, INuixProcessSettings setttings)
+        {
+            Process = process;
+            Setttings = setttings;
+        }
+
+        public readonly Process Process;
+
+        public readonly INuixProcessSettings Setttings;
+
+        public override string ToString()
+        {
+            return (Setttings.NuixVersion.ToString(2), Process.ToString()).ToString();
+        }
+
+        public bool IsProcessCompatible => IsVersionCompatible(Process, Setttings.NuixVersion);
+
+
+        private static readonly Regex VersionRegex = new Regex(@"Requires Nuix Version (?<version>\d+\.\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static bool IsVersionCompatible(Process process, Version nuixVersion)
+        {
+            var requiredVersions = process.GetRequirements().Select(GetVersion).Where(x => x != null).ToList();
+
+            var r = requiredVersions.All(v => nuixVersion.CompareTo(v) != -1);
+            return r;
+            static Version? GetVersion(string s)
+            {
+                var match = VersionRegex.Match(s);
+                if (match.Success)
+                    return Version.Parse(match.Groups["version"].Value);
+                return null;
+            }
+        }
+
     }
 }
