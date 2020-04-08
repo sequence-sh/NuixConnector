@@ -34,6 +34,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 scriptStringBuilder.AppendLine();
             }
 
+            var requiredFeatures = rubyBlocks.SelectMany(x => x.RequiredNuixFeatures).Distinct().OrderBy(x=>x).ToList();
+            if (requiredFeatures.Any())
+            {
+                var featuresArray = string.Join(", ", requiredFeatures.Select(rf => $"'{rf}'"));
+                scriptStringBuilder.AppendLine($"requiredFeatures = Array[{featuresArray}]");
+                scriptStringBuilder.AppendLine("requiredFeatures.each do |feature|");
+                scriptStringBuilder.AppendLine("\tif !utilities.getLicence().hasFeature(feature)");
+                scriptStringBuilder.AppendLine("\t\tputs \"Nuix Feature #{feature} is required but not available.\"");
+                scriptStringBuilder.AppendLine("\t\texit");
+                scriptStringBuilder.AppendLine("\tend");
+                scriptStringBuilder.AppendLine("end");
+                scriptStringBuilder.AppendLine();
+            }
+
             scriptStringBuilder.AppendLine("require 'optparse'");
 
             //Parse options
@@ -47,7 +61,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 foreach (var optParseLine in optParseLines) scriptStringBuilder.AppendLine('\t' + optParseLine);
             }
 
-            scriptStringBuilder.AppendLine($"end.parse!");
+            scriptStringBuilder.AppendLine("end.parse!");
             scriptStringBuilder.AppendLine();
 
             // ReSharper disable once JoinDeclarationAndInitializer

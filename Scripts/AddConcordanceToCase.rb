@@ -6,6 +6,14 @@ if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	exit
 end
 
+requiredFeatures = Array['CASE_CREATION', 'METADATA_IMPORT']
+requiredFeatures.each do |feature|
+	if !utilities.getLicence().hasFeature(feature)
+		puts "Nuix Feature #{feature} is required but not available."
+		exit
+	end
+end
+
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
