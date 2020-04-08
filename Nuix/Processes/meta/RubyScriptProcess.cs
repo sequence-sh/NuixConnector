@@ -78,7 +78,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 nuixProcessSettings = nps;
 
                 if (nuixProcessSettings.NuixVersion < TrueRequiredVersion)
-                    errors.Add($"Your version of Nuix ({nuixProcessSettings.NuixVersion}) is less than the required version of ({TrueRequiredVersion}) for the process: '{MethodName}'");
+                    errors.Add($"Your version of Nuix ({nuixProcessSettings.NuixVersion}) is less than the required version ({TrueRequiredVersion}) for the process: '{MethodName}'");
 
                 var missingFeatures = RequiredFeatures.Except(nuixProcessSettings.NuixFeatures).Distinct().ToList();
                 if(missingFeatures.Any())

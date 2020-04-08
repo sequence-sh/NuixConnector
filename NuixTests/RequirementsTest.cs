@@ -14,7 +14,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 (new  []
                 {
-                    "Your version of Nuix (1.0) is less than the required version of (2.16) for the process: 'SearchAndTag'"
+                    "Your version of Nuix (1.0) is less than the required version (5.0) for the process: 'SearchAndTag'"
                 },new NuixProcessSettings(true, "abcd", new Version(1,0), new List<NuixFeature>(){NuixFeature.ANALYSIS} ) ),
 
                 (new  []
@@ -24,7 +24,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 (new  []
                 {
-                    "Your version of Nuix (1.0) is less than the required version of (2.16) for the process: 'SearchAndTag'",
+                    "Your version of Nuix (1.0) is less than the required version (5.0) for the process: 'SearchAndTag'",
                     "You lack the required features: 'ANALYSIS' for the process: 'SearchAndTag'"
                 },new NuixProcessSettings(true, "abcd", new Version(1,0), new List<NuixFeature>() ) ),
 
