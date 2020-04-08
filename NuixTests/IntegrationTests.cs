@@ -68,7 +68,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
 
-        public static readonly IReadOnlyCollection<Process> TestProcesses =
+        private static readonly IReadOnlyCollection<Process> TestProcesses =
             new List<TestSequence>
             {
                 //TODO AnnotateDocumentIdList
@@ -421,27 +421,21 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             };
 
+
+        public static readonly IReadOnlyCollection<ProcessSettingsCombo> ProcessSettingsCombos =
+            TestProcesses.SelectMany(p => NuixSettingsList.Select(s => new ProcessSettingsCombo(p, s))).Where(x => x.IsProcessCompatible).ToList();
+
         /// <summary>
         /// Tests just the freezing of the processes. Suitable as a unit test.
         /// </summary>
         /// <param name="sequence"></param>
         /// <returns></returns>
         [Test]
-        [TestCaseSource(nameof(TestProcesses))]
-        public void TestFreeze(Sequence sequence)
+        [TestCaseSource(nameof(ProcessSettingsCombos))]
+        public void TestFreeze(ProcessSettingsCombo processSettingsCombo)
         {
-            var compatibleVersions = 0;
-            foreach (var nuixProcessSettings in NuixSettingsList)
-            {
-                if (IsVersionCompatible(sequence, nuixProcessSettings.NuixVersion))
-                {
-                    compatibleVersions++;
-                    var (isSuccess, _, _, error) = sequence.TryFreeze(nuixProcessSettings);
-                    Assert.IsTrue(isSuccess, error?.ToString());
-                }
-            }
-
-            Assert.IsTrue(compatibleVersions > 0, "There were no compatible versions.");
+            var (isSuccess, _, _, error) = processSettingsCombo.Process.TryFreeze(processSettingsCombo.Setttings);
+            Assert.IsTrue(isSuccess, error?.ToString());
         }
 
         /// <summary>
@@ -450,42 +444,19 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// <param name="sequence"></param>
         /// <returns></returns>
         [Test]
-        [TestCaseSource(nameof(TestProcesses))]
+        [TestCaseSource(nameof(ProcessSettingsCombos))]
         [Category(Integration)]
-        public async Task TestExecution(Sequence sequence)
+        public async Task TestExecution(ProcessSettingsCombo processSettingsCombo)
         {
-            var compatibleVersions = 0;
-            foreach (var nuixProcessSettings in NuixSettingsList)
-            {
-                if (IsVersionCompatible(sequence, nuixProcessSettings.NuixVersion))
-                {
-                    compatibleVersions++;
-                    var (isSuccess, _, value, error) = sequence.TryFreeze(nuixProcessSettings);
-                    Assert.IsTrue(isSuccess, error?.ToString());
+            var (isSuccess, _, value, error) = processSettingsCombo.Process.TryFreeze(processSettingsCombo.Setttings);
+            Assert.IsTrue(isSuccess, error?.ToString());
 
-                    await AssertNoErrors(value.ExecuteUntyped());
-                }
-            }
-
-            Assert.IsTrue(compatibleVersions > 0, "There were no compatible versions.");
+            await AssertNoErrors(value.ExecuteUntyped());
         }
 
-        private static readonly Regex VersionRegex = new Regex(@"Requires Nuix Version (?<version>\d+\.\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        
 
-        private static bool IsVersionCompatible(Process process, Version nuixVersion)
-        {
-            var requiredVersions = process.GetRequirements().Select(GetVersion).Where(x => x != null).ToList();
-
-            var r = requiredVersions.All(v => nuixVersion.CompareTo(v) != -1);
-            return r;
-            static Version? GetVersion(string s)
-            {
-                var match = VersionRegex.Match(s);
-                if (match.Success)
-                    return Version.Parse(match.Groups["version"].Value);
-                return null;
-            }
-        }
+        
 
 
         public static async Task<IReadOnlyCollection<string>> AssertNoErrors(IAsyncEnumerable<IProcessOutput> output)
@@ -524,5 +495,43 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             public string Name { get; }
         }
+    }
+
+    public class ProcessSettingsCombo
+    {
+        public ProcessSettingsCombo(Process process, INuixProcessSettings setttings)
+        {
+            Process = process;
+            Setttings = setttings;
+        }
+
+        public readonly Process Process;
+
+        public readonly INuixProcessSettings Setttings;
+
+        public override string ToString()
+        {
+            return (Setttings.NuixVersion.ToString(2), Process.ToString()).ToString();
+        }
+
+        public bool IsProcessCompatible => IsVersionCompatible(Process, Setttings.NuixVersion);
+
+
+        private static readonly Regex VersionRegex = new Regex(@"Requires Nuix Version (?<version>\d+\.\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static bool IsVersionCompatible(Process process, Version nuixVersion)
+        {
+            var requiredVersions = process.GetRequirements().Select(GetVersion).Where(x => x != null).ToList();
+
+            var r = requiredVersions.All(v => nuixVersion.CompareTo(v) != -1);
+            return r;
+            static Version? GetVersion(string s)
+            {
+                var match = VersionRegex.Match(s);
+                if (match.Success)
+                    return Version.Parse(match.Groups["version"].Value);
+                return null;
+            }
+        }
+
     }
 }
