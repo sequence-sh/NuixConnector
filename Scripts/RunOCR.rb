@@ -1,12 +1,21 @@
-﻿require 'optparse'
-#RunOCR
+﻿#RunOCR
+
+requiredNuixVersion = '7.6'
+if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
+	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	exit
+end
+
+require 'optparse'
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-opts.on('--searchTermArg0 ARG') do |o| params[:searchTermArg0] = o end
-opts.on('--ocrProfileArg0 [ARG]') do |o| params[:ocrProfileArg0] = o end
+	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+	opts.on('--searchTermArg0 ARG') do |o| params[:searchTermArg0] = o end
+	opts.on('--ocrProfileArg0 [ARG]') do |o| params[:ocrProfileArg0] = o end
 end.parse!
+
 puts params
+
 
 def RunOCR(utilities,pathArg,searchTermArg,ocrProfileArg)
 

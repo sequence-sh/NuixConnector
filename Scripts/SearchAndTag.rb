@@ -1,12 +1,21 @@
-﻿require 'optparse'
-#SearchAndTag
+﻿#SearchAndTag
+
+requiredNuixVersion = '5.0'
+if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
+	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	exit
+end
+
+require 'optparse'
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-opts.on('--tagArg0 ARG') do |o| params[:tagArg0] = o end
+	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
+	opts.on('--tagArg0 ARG') do |o| params[:tagArg0] = o end
 end.parse!
+
 puts params
+
 
 def SearchAndTag(utilities,pathArg,searchArg,tagArg)
 

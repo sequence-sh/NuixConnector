@@ -14,12 +14,27 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         public const string HashSetName = "params";
 
-        public static string CompileScriptSetup(string name, IEnumerable<IRubyBlock> rubyBlocks)
+        public static string CompileScriptSetup(string name, IReadOnlyCollection<IRubyBlock> rubyBlocks)
         {
             var scriptStringBuilder = new StringBuilder();
 
-            scriptStringBuilder.AppendLine("require 'optparse'");
             scriptStringBuilder.AppendLine($"#{name}");
+            scriptStringBuilder.AppendLine();
+
+            var highestVersion =
+                rubyBlocks.Select(x => x.RequiredNuixVersion).OrderByDescending(x => x).FirstOrDefault();
+
+            if (highestVersion != null)
+            {
+                scriptStringBuilder.AppendLine($"requiredNuixVersion = '{highestVersion}'");
+                scriptStringBuilder.AppendLine("if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)");
+                scriptStringBuilder.AppendLine("\tputs \"Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required\"");
+                scriptStringBuilder.AppendLine("\texit");
+                scriptStringBuilder.AppendLine("end");
+                scriptStringBuilder.AppendLine();
+            }
+
+            scriptStringBuilder.AppendLine("require 'optparse'");
 
             //Parse options
             scriptStringBuilder.AppendLine(HashSetName + " = {}");
@@ -29,10 +44,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             foreach (var methodCall in rubyBlocks)
             {
                 var optParseLines = methodCall.GetOptParseLines(HashSetName, ref i);
-                foreach (var optParseLine in optParseLines) scriptStringBuilder.AppendLine(optParseLine);
+                foreach (var optParseLine in optParseLines) scriptStringBuilder.AppendLine('\t' + optParseLine);
             }
 
             scriptStringBuilder.AppendLine($"end.parse!");
+            scriptStringBuilder.AppendLine();
 
             // ReSharper disable once JoinDeclarationAndInitializer
             bool printArguments;
@@ -40,8 +56,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             printArguments = true;
 #endif
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if(printArguments)
+            if (printArguments)
+            {
                 scriptStringBuilder.AppendLine($"puts {HashSetName}");
+                scriptStringBuilder.AppendLine();
+            }
+                
 
             return scriptStringBuilder.ToString();
         }

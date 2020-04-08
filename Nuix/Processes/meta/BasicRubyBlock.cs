@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
@@ -9,8 +10,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class BasicRubyBlock : AbstractBasicRubyBlock, IUnitRubyBlock
     {
         /// <inheritdoc />
-        public BasicRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters) : base(blockName, functionText, methodParameters)
+        public BasicRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters, Version requiredNuixVersion, IReadOnlyCollection<NuixFeature> requiredNuixFeatures) : 
+            base(blockName, functionText, methodParameters)
         {
+            RequiredNuixVersion = requiredNuixVersion;
+            RequiredNuixFeatures = requiredNuixFeatures;
         }
 
         /// <inheritdoc />
@@ -31,5 +35,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             blockNumber++;
             return (callStringBuilder.ToString());
         }
+
+        /// <inheritdoc />
+        public override Version RequiredNuixVersion { get; }
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredNuixFeatures { get; }
     }
 }

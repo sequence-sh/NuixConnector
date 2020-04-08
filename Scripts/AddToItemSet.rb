@@ -1,18 +1,27 @@
-﻿require 'optparse'
-#AddToItemSet
+﻿#AddToItemSet
+
+requiredNuixVersion = '5.0'
+if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
+	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	exit
+end
+
+require 'optparse'
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-opts.on('--itemSetNameArg0 ARG') do |o| params[:itemSetNameArg0] = o end
-opts.on('--deduplicationArg0 [ARG]') do |o| params[:deduplicationArg0] = o end
-opts.on('--descriptionArg0 [ARG]') do |o| params[:descriptionArg0] = o end
-opts.on('--deduplicateByArg0 ARG') do |o| params[:deduplicateByArg0] = o end
-opts.on('--custodianRankingArg0 [ARG]') do |o| params[:custodianRankingArg0] = o end
-opts.on('--orderArg0 [ARG]') do |o| params[:orderArg0] = o end
-opts.on('--limitArg0 [ARG]') do |o| params[:limitArg0] = o end
+	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
+	opts.on('--itemSetNameArg0 ARG') do |o| params[:itemSetNameArg0] = o end
+	opts.on('--deduplicationArg0 [ARG]') do |o| params[:deduplicationArg0] = o end
+	opts.on('--descriptionArg0 [ARG]') do |o| params[:descriptionArg0] = o end
+	opts.on('--deduplicateByArg0 ARG') do |o| params[:deduplicateByArg0] = o end
+	opts.on('--custodianRankingArg0 [ARG]') do |o| params[:custodianRankingArg0] = o end
+	opts.on('--orderArg0 [ARG]') do |o| params[:orderArg0] = o end
+	opts.on('--limitArg0 [ARG]') do |o| params[:limitArg0] = o end
 end.parse!
+
 puts params
+
 
 def AddToItemSet(utilities,pathArg,searchArg,itemSetNameArg,deduplicationArg,descriptionArg,deduplicateByArg,custodianRankingArg,orderArg,limitArg)
   

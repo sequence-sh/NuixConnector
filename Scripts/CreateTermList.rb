@@ -1,11 +1,20 @@
-﻿require 'optparse'
-#CreateTermList
+﻿#CreateTermList
+
+requiredNuixVersion = '5.0'
+if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
+	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	exit
+end
+
+require 'optparse'
 params = {}
 OptionParser.new do |opts|
-opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
-opts.on('--outputFilePathArg0 ARG') do |o| params[:outputFilePathArg0] = o end
+	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
+	opts.on('--outputFilePathArg0 ARG') do |o| params[:outputFilePathArg0] = o end
 end.parse!
+
 puts params
+
 
 def CreateTermList(utilities,casePathArg,outputFilePathArg)
 

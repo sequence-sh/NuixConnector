@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Reductech.EDR.Utilities.Processes;
@@ -16,6 +17,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         /// <inheritdoc />
         public string BlockName => ProcessNameHelper.GetAssertErrorName(SubProcess.Name);
+
+        /// <inheritdoc />
+        public Version RequiredNuixVersion =>
+            SubProcess.RubyBlocks.Select(x => x.RequiredNuixVersion).OrderByDescending(x => x).FirstOrDefault()?? RubyScriptProcess.DefaultRequiredVersion;
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures => SubProcess.RubyBlocks.SelectMany(x=>x.RequiredNuixFeatures).Distinct().ToList();
 
         /// <inheritdoc />
         public IEnumerable<string> FunctionDefinitions => SubProcess.RubyBlocks.SelectMany(x=>x.FunctionDefinitions).Distinct();
