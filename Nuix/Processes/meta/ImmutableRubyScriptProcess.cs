@@ -60,6 +60,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 {
                     if (output.OutputType == OutputType.Message && output.Text == SuccessToken)
                         succeeded = true;
+                    else if(output.OutputType == OutputType.Error && RubyScriptCompilationHelper.NuixWarnings.Contains(output.Text))
+                    {
+                        yield return ProcessOutput<Unit>.Warning(output.Text);
+                    }
                     else
                         yield return output;
                 }

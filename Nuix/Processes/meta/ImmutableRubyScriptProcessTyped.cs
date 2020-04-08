@@ -39,6 +39,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 if (output.OutputType == OutputType.Message && TryExtractValueFromOutput(output.Text, out var val))
                     successOutput = ProcessOutput<T>.Success(val);
+                else if (output.OutputType == OutputType.Error && RubyScriptCompilationHelper.NuixWarnings.Contains(output.Text))
+                {
+                    yield return ProcessOutput<T>.Warning(output.Text);
+                }
                 else
                     yield return output.ConvertTo<T>();
             }
