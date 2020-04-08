@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
@@ -15,13 +16,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     public class IntegrationTests
     {
-        private static readonly INuixProcessSettings NuixSettings = 
-            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8,2), new List<NuixFeature>()
-                {
-                    NuixFeature.PRODUCTION_SET, NuixFeature.ANALYSIS, NuixFeature.EXPORT_ITEMS, NuixFeature.OCR_PROCESSING, NuixFeature.METADATA_IMPORT, NuixFeature.CASE_CREATION
-                }
-            );
-        //TODO set these from a config file
+        private static readonly List<NuixFeature> AllNuixFeatures = Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
+
+        private static readonly IReadOnlyCollection<INuixProcessSettings> NuixSettingsList = new List<INuixProcessSettings>()
+        {
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8,2), AllNuixFeatures),
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7,8), AllNuixFeatures),
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.2\nuix_console.exe", new Version(7,2), AllNuixFeatures),
+            new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(6,2), AllNuixFeatures),
+        };
+        //TODO set paths from a config file, or something
 
         private const string Integration = "Integration";
 
@@ -426,9 +430,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [TestCaseSource(nameof(TestProcesses))]
         public void TestFreeze(Sequence sequence)
         {
-            var (isSuccess, _, _, error) = sequence.TryFreeze(NuixSettings);
+            var compatibleVersions = 0;
+            foreach (var nuixProcessSettings in NuixSettingsList)
+            {
+                if (IsVersionCompatible(sequence, nuixProcessSettings.NuixVersion))
+                {
+                    compatibleVersions++;
+                    var (isSuccess, _, _, error) = sequence.TryFreeze(nuixProcessSettings);
+                    Assert.IsTrue(isSuccess, error?.ToString());
+                }
+            }
 
-            Assert.IsTrue(isSuccess, error?.ToString());
+            Assert.IsTrue(compatibleVersions > 0, "There were no compatible versions.");
         }
 
         /// <summary>
@@ -441,11 +454,37 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Category(Integration)]
         public async Task TestExecution(Sequence sequence)
         {
-            var (isSuccess, _, value, error) = sequence.TryFreeze(NuixSettings);
+            var compatibleVersions = 0;
+            foreach (var nuixProcessSettings in NuixSettingsList)
+            {
+                if (IsVersionCompatible(sequence, nuixProcessSettings.NuixVersion))
+                {
+                    compatibleVersions++;
+                    var (isSuccess, _, value, error) = sequence.TryFreeze(nuixProcessSettings);
+                    Assert.IsTrue(isSuccess, error?.ToString());
 
-            Assert.IsTrue(isSuccess, error?.ToString());
+                    await AssertNoErrors(value.ExecuteUntyped());
+                }
+            }
 
-            await AssertNoErrors(value.ExecuteUntyped());
+            Assert.IsTrue(compatibleVersions > 0, "There were no compatible versions.");
+        }
+
+        private static readonly Regex VersionRegex = new Regex(@"Requires Nuix Version (?<version>\d+\.\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static bool IsVersionCompatible(Process process, Version nuixVersion)
+        {
+            var requiredVersions = process.GetRequirements().Select(GetVersion).Where(x => x != null).ToList();
+
+            var r = requiredVersions.All(v => nuixVersion.CompareTo(v) != -1);
+            return r;
+            static Version? GetVersion(string s)
+            {
+                var match = VersionRegex.Match(s);
+                if (match.Success)
+                    return Version.Parse(match.Groups["version"].Value);
+                return null;
+            }
         }
 
 
