@@ -522,6 +522,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             var requiredVersions = process.GetRequirements().Select(GetVersion).Where(x => x != null).ToList();
 
+            if(process.ToString() == "Migrate Case")            
+                requiredVersions.Add(new Version(8, 2)); //This is a special case because the file we are trying to migrate is from 7.8
+            
+
+
             var r = requiredVersions.All(v => nuixVersion.CompareTo(v) != -1);
             return r;
             static Version? GetVersion(string s)
