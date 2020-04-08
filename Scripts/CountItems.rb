@@ -2,9 +2,9 @@
 #CountItems
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--searchArg0 ARG')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
+end.parse!
 puts params
 
 def CountItems(utilities,pathArg,searchArg)

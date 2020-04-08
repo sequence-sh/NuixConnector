@@ -41,14 +41,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(ref int blockNumber)
+        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber)
         {
             var allLines = new List<string>();
 
-            allLines.AddRange(_ifBlock.GetOptParseLines(ref blockNumber));
+            allLines.AddRange(_ifBlock.GetOptParseLines(hashSetName, ref blockNumber));
 
             foreach (var block in _thenProcess.RubyBlocks.Concat(_elseProcess.RubyBlocks))
-                allLines.AddRange(block.GetOptParseLines(ref blockNumber));
+                allLines.AddRange(block.GetOptParseLines(hashSetName, ref blockNumber));
 
             return allLines;
         }

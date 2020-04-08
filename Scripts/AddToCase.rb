@@ -2,13 +2,13 @@
 #AddToCase
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--folderNameArg0 ARG')
-opts.on('--folderDescriptionArg0 [ARG]')
-opts.on('--folderCustodianArg0 ARG')
-opts.on('--filePathArg0 ARG')
-opts.on('--processingProfileNameArg0 [ARG]')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--folderNameArg0 ARG') do |o| params[:folderNameArg0] = o end
+opts.on('--folderDescriptionArg0 [ARG]') do |o| params[:folderDescriptionArg0] = o end
+opts.on('--folderCustodianArg0 ARG') do |o| params[:folderCustodianArg0] = o end
+opts.on('--filePathArg0 ARG') do |o| params[:filePathArg0] = o end
+opts.on('--processingProfileNameArg0 [ARG]') do |o| params[:processingProfileNameArg0] = o end
+end.parse!
 puts params
 
 def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg)

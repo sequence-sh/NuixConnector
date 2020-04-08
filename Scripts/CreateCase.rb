@@ -2,11 +2,11 @@
 #CreateCase
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--nameArg0 ARG')
-opts.on('--descriptionArg0 [ARG]')
-opts.on('--investigatorArg0 ARG')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--nameArg0 ARG') do |o| params[:nameArg0] = o end
+opts.on('--descriptionArg0 [ARG]') do |o| params[:descriptionArg0] = o end
+opts.on('--investigatorArg0 ARG') do |o| params[:investigatorArg0] = o end
+end.parse!
 puts params
 
 def CreateCase(utilities,pathArg,nameArg,descriptionArg,investigatorArg)

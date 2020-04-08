@@ -29,11 +29,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
         {
-            var args = new List<string>()
+            var args = new List<string>();
+
+            if(_min.HasValue)
             {
-                "min" + blockNumber,
-                "max" + blockNumber
-            };
+                args.Add("min" + blockNumber);
+                args.Add(_min.Value.ToString());
+            }
+
+            if (_max.HasValue)
+            {
+                args.Add("max" + blockNumber);
+                args.Add(_max.Value.ToString());
+            }
             blockNumber++;
 
             args.AddRange(_numberBlock.GetArguments(ref blockNumber));                
@@ -42,19 +50,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(ref int blockNumber)
+        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber)
         {
             var minArg = "min" + blockNumber;
             var maxArg = "max" + blockNumber;
 
             var lines = new List<string>()
             {
-                $"opts.on('--{minArg} [ARG]')",
-                $"opts.on('--{maxArg} [ARG]')"
+                $"opts.on('--{minArg} [ARG]') do |o| params[:{minArg}] = o end",
+                $"opts.on('--{maxArg} [ARG]')  do |o| params[:{maxArg}] = o end"
 
             };
             blockNumber++;
-            lines.AddRange(_numberBlock.GetOptParseLines(ref blockNumber));
+            lines.AddRange(_numberBlock.GetOptParseLines(hashSetName, ref blockNumber));
 
             return lines;
         }

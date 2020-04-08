@@ -2,9 +2,9 @@
 #GeneratePrintPreviews
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--productionSetNameArg0 ARG')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--productionSetNameArg0 ARG') do |o| params[:productionSetNameArg0] = o end
+end.parse!
 puts params
 
 def GeneratePrintPreviews(utilities,pathArg,productionSetNameArg)

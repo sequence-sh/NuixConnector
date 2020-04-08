@@ -2,8 +2,8 @@
 #DoesCaseExist
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+end.parse!
 puts params
 
 def DoesCaseExist(utilities,pathArg)

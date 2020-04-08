@@ -2,11 +2,11 @@
 #ExportConcordance
 params = {}
 OptionParser.new do |opts|
-opts.on('--pathArg0 ARG')
-opts.on('--exportPathArg0 ARG')
-opts.on('--productionSetNameArg0 ARG')
-opts.on('--metadataProfileArg0 [ARG]')
-end.parse!(into: params)
+opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+opts.on('--exportPathArg0 ARG') do |o| params[:exportPathArg0] = o end
+opts.on('--productionSetNameArg0 ARG') do |o| params[:productionSetNameArg0] = o end
+opts.on('--metadataProfileArg0 [ARG]') do |o| params[:metadataProfileArg0] = o end
+end.parse!
 puts params
 
 def ExportConcordance(utilities,pathArg,exportPathArg,productionSetNameArg,metadataProfileArg)
