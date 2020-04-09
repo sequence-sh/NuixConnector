@@ -32,7 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
         {
-            var args = new List<string> {GetArgName(ref blockNumber), FilePath};
+            var args = new List<string> {"--" + GetArgName(ref blockNumber), FilePath};
             args.AddRange(SubBlock.GetArguments(ref blockNumber));                
                 
             return args;
@@ -47,7 +47,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 $"opts.on('--{argName} [ARG]') do |o| params[:{argName}] = o end"
             };
-            blockNumber++;
             lines.AddRange(SubBlock.GetOptParseLines(hashSetName, ref blockNumber));
 
             return lines;
