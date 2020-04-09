@@ -354,12 +354,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new NuixCreateReport
+                    new WriteFile()
                     {
-                        CasePath = CasePath,
-                        OutputFolder = OutputFolder
-                    },
-                    AssertFileContains(OutputFolder + "/Stats.txt","Mark	type	text/plain	2"),
+                        Text = new NuixCreateReport
+                        {
+                            CasePath = CasePath,
+                        },
+                        Folder = OutputFolder,
+                        FileName = "Stats.txt"
+                    }
+                    ,
+                    AssertFileContains(Path.Combine(OutputFolder, "Stats.txt"),"Mark	type	text/plain	2"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -370,12 +375,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new NuixCreateTermList
+                    new WriteFile
                     {
-                        CasePath = CasePath,
-                        OutputFolder = OutputFolder
-                    },
-                    AssertFileContains(OutputFolder + "/Terms.txt","yellow	2"),
+                        Text = new NuixCreateTermList
+                        {
+                            CasePath = CasePath,
+                            
+                        },
+                        Folder = OutputFolder,
+                        FileName = "Terms.txt"
+                    }
+                    ,
+                    AssertFileContains(Path.Combine(OutputFolder, "Terms.txt"),"yellow	2"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -405,14 +416,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new NuixCreateIrregularItemsReport
+                    new WriteFile()
                     {
-                        CasePath = CasePath,
-                        OutputFolder = OutputFolder
+                        Text = new NuixCreateIrregularItemsReport
+                        {
+                            CasePath = CasePath
+                        },
+                        Folder = OutputFolder,
+                        FileName = "Irregular.txt"
                     },
-                    AssertFileContains(OutputFolder + "/Unrecognised.txt","New Folder/data/Theme in Yellow.txt"),
-                    AssertFileContains(OutputFolder + "/NeedManualExamination.txt","New Folder/data/Jellyfish.txt"),
-                    AssertFileContains(OutputFolder + "/Irregular.txt","Unrecognised	2"),
+                    AssertFileContains(Path.Combine(OutputFolder, "Irregular.txt"),"Unrecognised\tNew Folder/data/Theme in Yellow.txt"),
+                    AssertFileContains(Path.Combine(OutputFolder, "Irregular.txt"),"NeedManualExamination\tNew Folder/data/Jellyfish.txt"),
                     DeleteCaseFolder,
                     DeleteOutputFolder
                 ),
@@ -476,6 +490,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public void TestVersionCheckingWithinScript()
         {
             var baseSettings = NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
+
+            Assert.IsNotNull(baseSettings);
 
             var process = new DoNothingRubyScriptProcess
             {

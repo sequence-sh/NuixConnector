@@ -146,6 +146,15 @@ Unzips a file.
 |DestinationDirectory|`string`|☑️      |The path to the directory in which to place the extracted files. |       |
 |OverwriteFiles      |`bool`  |        |Should files be overwritten in the destination directory.        |False  |
 
+<a name="WriteFile"></a>
+## WriteFile
+
+Writes the output of a process to a file. Will overwrite if necessary.
+
+|Parameter|Type               |Required|Summary                                                                                 |
+|:-------:|:-----------------:|:------:|:--------------------------------------------------------------------------------------:|
+|Text     |[Process](#Process)|        |The process whose result is the text to be written. Should have a return type of string.|
+
 <a name="Enumeration"></a>
 # Enumerations
 <a name="CSV"></a>
@@ -301,12 +310,11 @@ Creates a new case.
 <a name="NuixCreateIrregularItemsReport"></a>
 ## NuixCreateIrregularItemsReport
 
-Creates a report detailing the irregular items in a case.
+Creates a list of all irregular items in a case. The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid' Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles' Use this inside a WriteFile process to write it to a file.
 
-|Parameter   |Type    |Required|Summary                                           |Example        |
-|:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
-|CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
+|Parameter|Type    |Required|Summary              |Example        |
+|:-------:|:------:|:------:|:-------------------:|:-------------:|
+|CasePath |`string`|☑️      |The path to the case.|C:/Cases/MyCase|
 
 <a name="NuixCreateNRTReport"></a>
 ## NuixCreateNRTReport
@@ -324,22 +332,20 @@ Creates a report using an NRT file.
 <a name="NuixCreateReport"></a>
 ## NuixCreateReport
 
-Creates a report for a Nuix case.
+Creates a report for a Nuix case. The report is in csv format. The headers are 'Custodian', 'Type', 'Value', and 'Count'. The different types are: 'Kind', 'Type', 'Tag', and 'Address'. Use this inside a WriteFile process to write it to a file.
 
-|Parameter   |Type    |Required|Summary                                           |Example        |
-|:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
-|CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
+|Parameter|Type    |Required|Summary              |Example        |
+|:-------:|:------:|:------:|:-------------------:|:-------------:|
+|CasePath |`string`|☑️      |The path to the case.|C:/Cases/MyCase|
 
 <a name="NuixCreateTermList"></a>
 ## NuixCreateTermList
 
-Creates a list of all terms appearing in the case and their frequencies.
+Creates a list of all terms appearing in the case and their frequencies. The report is in CSV format. The headers are 'Term' and 'Count' Use this inside a WriteFile process to write it to a file.
 
-|Parameter   |Type    |Required|Summary                                           |Example        |
-|:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
-|CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
+|Parameter|Type    |Required|Summary              |Example        |
+|:-------:|:------:|:------:|:-------------------:|:-------------:|
+|CasePath |`string`|☑️      |The path to the case.|C:/Cases/MyCase|
 
 <a name="NuixDoesCaseExists"></a>
 ## NuixDoesCaseExists
