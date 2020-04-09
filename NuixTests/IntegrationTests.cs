@@ -66,7 +66,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 ResultOf = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = searchTerm}, Maximum = expected, Minimum = expected}
             };
 
-        private static readonly Process AddData = new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
+        private static readonly Process AddData = new NuixCompatibilityAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"};
 
         private static readonly IReadOnlyCollection<Process> TestProcesses =
             new List<TestSequence>
@@ -97,6 +97,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     ),
 
                 new TestSequence("Add file to case",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"},
+                    AssertCount(2, "*.txt"),
+                    DeleteCaseFolder
+                ),
+
+                new TestSequence("Add file to case Compatibility",
                     DeleteCaseFolder,
                     AssertCaseDoesNotExist,
                     CreateCase,
@@ -205,7 +215,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixPerformOCR {CasePath= CasePath, SearchTerm = "*.png"  },
                     AssertCount(1, "sheep"),
                     DeleteCaseFolder
-                    ),                
+                    ),      
+                new TestSequence("Perform OCR Compatibility",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AssertCount(0, "sheep"),
+                    new NuixCompatibilityAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
+                    new NuixCompatibilityPerformOCR {CasePath= CasePath, SearchTerm = "*.png"  },
+                    AssertCount(1, "sheep"),
+                    DeleteCaseFolder
+                ),  
                 new TestSequence("Add To Item Set", 
                     DeleteCaseFolder,
                     CreateCase,

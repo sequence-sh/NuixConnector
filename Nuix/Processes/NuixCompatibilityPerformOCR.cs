@@ -10,8 +10,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Performs optical character recognition on files in a NUIX case.
+    /// This is a compatibility version for users of Nuix versions prior to 7.6
     /// </summary>
-    public sealed class NuixPerformOCR : RubyScriptProcess
+    public sealed class NuixCompatibilityPerformOCR : RubyScriptProcess
     {
         /// <inheritdoc />
         protected override NuixReturnType ReturnType => NuixReturnType.Unit;
@@ -58,21 +59,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     puts ""Running OCR on #{items.length} items""
     
-    processor = utilities.createOcrProcessor()
+    processor = utilities.createOcrProcessor() #since Nuix 7.0
 
     if ocrProfileArg != nil
-        ocrProfileStore = the_case.getOcrProfileStore()
-        puts ""Got profile store""
-
-        profile = ocrProfileStore.getProfile(ocrProfileArg)
-
-        if profile != nil
-            processor.process(items, profile)
-            puts ""Items Processed""
-        else
-            puts ""Could not find profile '#{ocrProfileArg}'""
-            exit
-        end
+        ocrOptions = {:ocrProfileName => ocrProfileArg}
+        processor.process(items, profile)
+        puts ""Items Processed""
     else
         processor.process(items)
         puts ""Items Processed""
@@ -80,17 +72,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "RunOCR";
-
-        //NOTE: this is technically available since 5.0 but we are using then new preferred way of doing things.
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7,6);
-
-        
-
+        internal override string MethodName => "RunOCRCompatibly";
 
         /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        internal override Version RequiredVersion { get; } = new Version(6,2);
+
+        /// <inheritdoc />
+        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>
         {
             NuixFeature.OCR_PROCESSING
         };
