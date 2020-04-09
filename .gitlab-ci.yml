@@ -27,5 +27,4 @@ integrationTest:
     tags:
         - nuix
     script:
-         InstantConsole -u $Nuget_Username -p $Nuget_Access --store-password-in-clear-text"
         - "dotnet test --filter TestCategory=\"Integration\""
