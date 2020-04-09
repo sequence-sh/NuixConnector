@@ -85,7 +85,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "AddToCase";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7,6);
+        internal override Version RequiredVersion { get; } = new Version(3,2);
 
         /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>{NuixFeature.CASE_CREATION};
