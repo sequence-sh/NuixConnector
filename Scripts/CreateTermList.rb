@@ -10,13 +10,12 @@ require 'optparse'
 params = {}
 OptionParser.new do |opts|
 	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
-	opts.on('--outputFilePathArg0 ARG') do |o| params[:outputFilePathArg0] = o end
 end.parse!
 
 puts params
 
 
-def CreateTermList(utilities,casePathArg,outputFilePathArg)
+def CreateTermList(utilities,casePathArg)
 
     the_case = utilities.case_factory.open(casePathArg)
 
@@ -26,18 +25,17 @@ def CreateTermList(utilities,casePathArg,outputFilePathArg)
     #todo terms per custodian
     puts "#{termStatistics.length} terms"
 
-    text = "Terms:Term\tCount"
+    text = "Term\tCount"
 
     termStatistics.each do |term, count|
         text << "\n#{term}\t#{count}"
     end
 
-    File.write(outputFilePathArg, text)
-   
     the_case.close
+    return text
 end
 
 
 
-CreateTermList(utilities, params[:casePathArg0], params[:outputFilePathArg0])
-puts '--Script Completed Successfully--'
+result0 = CreateTermList(utilities, params[:casePathArg0])
+puts "--Final Result: #{result0}"

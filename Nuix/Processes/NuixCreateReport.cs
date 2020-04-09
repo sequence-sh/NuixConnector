@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
@@ -11,11 +10,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Creates a report for a Nuix case.
+    /// The report is in csv format.
+    /// The headers are 'Custodian', 'Type', 'Value', and 'Count'.
+    /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
+    /// Use this inside a WriteFile process to write it to a file.
     /// </summary>
     public sealed class NuixCreateReport : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        protected override NuixReturnType ReturnType => NuixReturnType.String;
 
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -23,14 +26,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-        /// <summary>
-        /// The path to the folder to put the output files in.
-        /// </summary>
-        [Required]
-        [ExampleValue("C:/Output")]
-        [YamlMember(Order = 4)]
-        public string OutputFolder { get; set; }
 
         /// <summary>
         /// The path to the case.
@@ -106,10 +101,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             end
         end
     end
-    
-    File.write(outputFilePathArg, text)
 
-    the_case.close";
+    the_case.close
+    return text;";
 
         /// <inheritdoc />
         internal override string MethodName => "CreateReport";
@@ -123,19 +117,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             NuixFeature.ANALYSIS
         };
 
-        /// <summary>
-        /// The name of the file that will be created.
-        /// </summary>
-        public const string FileName = "Stats.txt";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
-
-            var fullFilePath = Path.Combine(OutputFolder, FileName);
-
-            yield return ("outputFilePathArg", fullFilePath, false);
         }
     }
 }

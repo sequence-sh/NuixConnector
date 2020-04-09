@@ -333,22 +333,20 @@ Creates a report using an NRT file.
 <a name="NuixCreateReport"></a>
 ## NuixCreateReport
 
-Creates a report for a Nuix case.
+Creates a report for a Nuix case. The report is in csv format. The headers are 'Custodian', 'Type', 'Value', and 'Count'. The different types are: 'Kind', 'Type', 'Tag', and 'Address'. Use this inside a WriteFile process to write it to a file.
 
-|Parameter   |Type    |Required|Summary                                           |Example        |
-|:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
-|CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
+|Parameter|Type    |Required|Summary              |Example        |
+|:-------:|:------:|:------:|:-------------------:|:-------------:|
+|CasePath |`string`|☑️      |The path to the case.|C:/Cases/MyCase|
 
 <a name="NuixCreateTermList"></a>
 ## NuixCreateTermList
 
-Creates a list of all terms appearing in the case and their frequencies.
+Creates a list of all terms appearing in the case and their frequencies. The report is in CSV format. The headers are 'Term' and 'Count' Use this inside a WriteFile process to write it to a file.
 
-|Parameter   |Type    |Required|Summary                                           |Example        |
-|:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
-|CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
+|Parameter|Type    |Required|Summary              |Example        |
+|:-------:|:------:|:------:|:-------------------:|:-------------:|
+|CasePath |`string`|☑️      |The path to the case.|C:/Cases/MyCase|
 
 <a name="NuixDoesCaseExists"></a>
 ## NuixDoesCaseExists

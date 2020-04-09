@@ -18,13 +18,12 @@ require 'optparse'
 params = {}
 OptionParser.new do |opts|
 	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
-	opts.on('--outputFilePathArg0 ARG') do |o| params[:outputFilePathArg0] = o end
 end.parse!
 
 puts params
 
 
-def CreateReport(utilities,casePathArg,outputFilePathArg)
+def CreateReport(utilities,casePathArg)
 
     the_case = utilities.case_factory.open(casePathArg)
 
@@ -87,13 +86,12 @@ def CreateReport(utilities,casePathArg,outputFilePathArg)
             end
         end
     end
-    
-    File.write(outputFilePathArg, text)
 
     the_case.close
+    return text;
 end
 
 
 
-CreateReport(utilities, params[:casePathArg0], params[:outputFilePathArg0])
-puts '--Script Completed Successfully--'
+result0 = CreateReport(utilities, params[:casePathArg0])
+puts "--Final Result: #{result0}"
