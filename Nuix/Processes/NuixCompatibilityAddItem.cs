@@ -10,8 +10,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Adds a file or directory to a Nuix Case.
+    /// This is a compatibility version for users of Nuix versions prior to 7.6
+    /// Unlike the main version, it does not support processing profiles.
     /// </summary>
-    public sealed class NuixAddItem : RubyScriptProcess
+    public sealed class NuixCompatibilityAddItem : RubyScriptProcess
     {
 
         /// <inheritdoc />
@@ -58,16 +60,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 7)]
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
-
-
-        /// <summary>
-        /// The name of the processing profile to use.
-        /// </summary>
-        
-        [YamlMember(Order = 7)]
-        [ExampleValue("MyProcessingProfile")]
-        [DefaultValueExplanation("The default processing profile will be used.")]
-        public string? ProcessingProfileName { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
@@ -75,7 +67,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
-    processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
 
     folder = processor.new_evidence_container(folderNameArg)
 
@@ -107,7 +98,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("folderDescriptionArg", Description, true);
             yield return ("folderCustodianArg", Custodian, false);
             yield return ("filePathArg", Path, false);
-            yield return ("processingProfileNameArg", ProcessingProfileName, true);
         }
     }
 }
