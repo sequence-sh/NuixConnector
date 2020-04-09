@@ -9,27 +9,20 @@ using YamlDotNet.Serialization;
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// Creates a report detailing the irregular items in a case.
+    /// Creates a list of all irregular items in a case.
+    /// The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid'
+    /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
+    /// Use this inside a WriteFile process to write it to a file.
     /// </summary>
     public sealed class NuixCreateIrregularItemsReport : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        protected override NuixReturnType ReturnType => NuixReturnType.String;
 
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => "Create Irregular Items report";
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-        /// <summary>
-        /// The path to the folder to put the output files in.
-        /// </summary>
-        [Required]
-        [ExampleValue("C:/Output")]
-        [YamlMember(Order = 4)]
-        public string OutputFolder { get; set; }
-
-
         /// <summary>
         /// The path to the case.
         /// </summary>
@@ -61,25 +54,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         CodeTextFiles: ""kind:unrecognised AND (content:(function OR def) AND IF)""
     }
     
-    irregularText = ""OutputIrregular:Reason\tCount""
+    irregularText = ""Reason\tPath\tGuid""
 
     fields.each do |key, value|
         items = the_case.search(value)
-        irregularText << ""#{key.to_s}\t#{items.length}""
         
-        if items.length > 0
-            fieldText = ""Path\tGuid""
-            items.each do |i|
-                path = i.getPathNames().join(""/"")
-                guid = i.getGuid()
-                fieldText << ""#{path}\t#{guid}""
-            end
-            File.write(File.join(outputFolderPathArg, key.to_s + '.txt'), fieldText)
+        items.each do |i|
+            path = i.getPathNames().join(""/"")
+            guid = i.getGuid()
+            irregularText << ""#{key.to_s}\t#{path}\t#{guid}""
         end
     end
 
-    File.write(File.join(outputFolderPathArg, 'Irregular.txt'), irregularText)
-    the_case.close";
+    the_case.close
+    return irregularText;";
 
         /// <inheritdoc />
         internal override string MethodName => "CreateIrregularItemsReport";
@@ -94,7 +82,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
-            yield return ("outputFolderPathArg", OutputFolder, false);
         }
     }
 }

@@ -310,12 +310,11 @@ Creates a new case.
 <a name="NuixCreateIrregularItemsReport"></a>
 ## NuixCreateIrregularItemsReport
 
-Creates a report detailing the irregular items in a case.
+Creates a list of all irregular items in a case. The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid' Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles' Use this inside a WriteFile process to write it to a file.
 
-|Parameter   |Type    |Required|Summary                                           |Example        |
-|:----------:|:------:|:------:|:------------------------------------------------:|:-------------:|
-|OutputFolder|`string`|☑️      |The path to the folder to put the output files in.|C:/Output      |
-|CasePath    |`string`|☑️      |The path to the case.                             |C:/Cases/MyCase|
+|Parameter|Type    |Required|Summary              |Example        |
+|:-------:|:------:|:------:|:-------------------:|:-------------:|
+|CasePath |`string`|☑️      |The path to the case.|C:/Cases/MyCase|
 
 <a name="NuixCreateNRTReport"></a>
 ## NuixCreateNRTReport
