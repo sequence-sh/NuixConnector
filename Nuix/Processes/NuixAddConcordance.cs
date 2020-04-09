@@ -104,7 +104,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7,6);
+        internal override Version RequiredVersion { get; } = new Version(7,6); //This is required for the Metadata Import Profile
 
         /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>{NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT };
