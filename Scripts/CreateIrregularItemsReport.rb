@@ -10,13 +10,12 @@ require 'optparse'
 params = {}
 OptionParser.new do |opts|
 	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
-	opts.on('--outputFolderPathArg0 ARG') do |o| params[:outputFolderPathArg0] = o end
 end.parse!
 
 puts params
 
 
-def CreateIrregularItemsReport(utilities,casePathArg,outputFolderPathArg)
+def CreateIrregularItemsReport(utilities,casePathArg)
 
     the_case = utilities.case_factory.open(casePathArg)
 
@@ -36,28 +35,23 @@ def CreateIrregularItemsReport(utilities,casePathArg,outputFolderPathArg)
         CodeTextFiles: "kind:unrecognised AND (content:(function OR def) AND IF)"
     }
     
-    irregularText = "OutputIrregular:Reason\tCount"
+    irregularText = "Reason\tPath\tGuid"
 
     fields.each do |key, value|
         items = the_case.search(value)
-        irregularText << "#{key.to_s}\t#{items.length}"
         
-        if items.length > 0
-            fieldText = "Path\tGuid"
-            items.each do |i|
-                path = i.getPathNames().join("/")
-                guid = i.getGuid()
-                fieldText << "#{path}\t#{guid}"
-            end
-            File.write(File.join(outputFolderPathArg, key.to_s + '.txt'), fieldText)
+        items.each do |i|
+            path = i.getPathNames().join("/")
+            guid = i.getGuid()
+            irregularText << "#{key.to_s}\t#{path}\t#{guid}"
         end
     end
 
-    File.write(File.join(outputFolderPathArg, 'Irregular.txt'), irregularText)
     the_case.close
+    return irregularText;
 end
 
 
 
-CreateIrregularItemsReport(utilities, params[:casePathArg0], params[:outputFolderPathArg0])
-puts '--Script Completed Successfully--'
+result0 = CreateIrregularItemsReport(utilities, params[:casePathArg0])
+puts "--Final Result: #{result0}"

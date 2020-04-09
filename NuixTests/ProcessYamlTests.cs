@@ -65,11 +65,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         ProcessingProfileName = "Default"
                     },
 
-                    new NuixCreateReport
+                    new WriteFile
                     {
-                        CasePath = "Case Path",
-                        OutputFolder = "Report Output Folder"
-                    },
+                        Text = new NuixCreateReport
+                        {
+                            CasePath = "Case Path",
+                            
+                        },
+                        Folder = "Report Output Folder",
+                        FileName = "Report.csv"
+                    }
+
+                    ,
 
                     new NuixPerformOCR
                     {

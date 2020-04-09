@@ -119,6 +119,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return trueArguments;
         }
 
+        /// <summary>
+        /// Gets a string which will point to the argument value in ruby;
+        /// </summary>
+        public static string GetArgumentValueString(string argumentName)
+        {
+            return $"{HashSetName}[:{argumentName}]";
+        }
+
         public static readonly ISet<string> NuixWarnings = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "ERROR StatusLogger Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console..."

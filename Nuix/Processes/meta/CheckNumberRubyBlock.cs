@@ -86,7 +86,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             resultVariableName = $"checkNumberResult{blockNumber}";
 
-            sb.AppendLine($"{resultVariableName} = isNumberInRange?({rvn}, {RubyScriptCompilationHelper.HashSetName}[:{minArg}], {RubyScriptCompilationHelper.HashSetName}[:{maxArg}]) ");
+            sb.AppendLine($"{resultVariableName} = isNumberInRange?({rvn}, {RubyScriptCompilationHelper.GetArgumentValueString(minArg)}, {RubyScriptCompilationHelper.GetArgumentValueString(maxArg)})");
 
             return sb.ToString();
         }
