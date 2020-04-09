@@ -146,6 +146,15 @@ Unzips a file.
 |DestinationDirectory|`string`|☑️      |The path to the directory in which to place the extracted files. |       |
 |OverwriteFiles      |`bool`  |        |Should files be overwritten in the destination directory.        |False  |
 
+<a name="WriteFile"></a>
+## WriteFile
+
+Writes the output of a process to a file. Will overwrite if necessary.
+
+|Parameter|Type               |Required|Summary                                                                                 |
+|:-------:|:-----------------:|:------:|:--------------------------------------------------------------------------------------:|
+|Text     |[Process](#Process)|        |The process whose result is the text to be written. Should have a return type of string.|
+
 <a name="Enumeration"></a>
 # Enumerations
 <a name="CSV"></a>

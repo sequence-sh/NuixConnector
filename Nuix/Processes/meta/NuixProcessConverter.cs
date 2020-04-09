@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
@@ -75,6 +76,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                             new List<IUnitRubyBlock> { new AssertErrorRubyBlock(nuixSubProcess) }, ns);
             }
 
+            if (process is Utilities.Processes.immutable.WriteFile writeFile)
+            {
+                var nuixSubprocess = AsImmutableRubyScriptProcessTyped(writeFile.TextProcess, ns);
+
+                if (nuixSubprocess != null)
+                {
+                    var fullPath = Path.Combine(writeFile.Folder, writeFile.FileName);
+                    var writeBlock = new WriteFileRubyBlock(fullPath, nuixSubprocess.RubyBlock);
+
+                    var p = new ImmutableRubyScriptProcess(new []{writeBlock}, ns);
+
+                    return p;
+                }
+            }
+
 
             if (process is Conditional<Unit> conditional)
             {
@@ -118,7 +134,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                         return resultProcess;
                 }
             }
-
 
             if (process is Conditional<T> conditional)
             {
