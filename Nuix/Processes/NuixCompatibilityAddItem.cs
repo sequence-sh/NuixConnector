@@ -82,7 +82,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "AddToCase";
+        internal override string MethodName => "AddToCaseCompatibly";
 
         /// <inheritdoc />
         internal override Version RequiredVersion { get; } = new Version(3,2);

@@ -1,6 +1,6 @@
-﻿#RunOCR
+﻿#RunOCRCompatibly
 
-requiredNuixVersion = '7.6'
+requiredNuixVersion = '6.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -25,7 +25,7 @@ end.parse!
 puts params
 
 
-def RunOCR(utilities,pathArg,searchTermArg,ocrProfileArg)
+def RunOCRCompatibly(utilities,pathArg,searchTermArg,ocrProfileArg)
 
     the_case = utilities.case_factory.open(pathArg)
 
@@ -34,21 +34,12 @@ def RunOCR(utilities,pathArg,searchTermArg,ocrProfileArg)
 
     puts "Running OCR on #{items.length} items"
     
-    processor = utilities.createOcrProcessor()
+    processor = utilities.createOcrProcessor() #since Nuix 7.0
 
     if ocrProfileArg != nil
-        ocrProfileStore = the_case.getOcrProfileStore()
-        puts "Got profile store"
-
-        profile = ocrProfileStore.getProfile(ocrProfileArg)
-
-        if profile != nil
-            processor.process(items, profile)
-            puts "Items Processed"
-        else
-            puts "Could not find profile '#{ocrProfileArg}'"
-            exit
-        end
+        ocrOptions = {:ocrProfileName => ocrProfileArg}
+        processor.process(items, profile)
+        puts "Items Processed"
     else
         processor.process(items)
         puts "Items Processed"
@@ -58,5 +49,5 @@ end
 
 
 
-RunOCR(utilities, params[:pathArg0], params[:searchTermArg0], params[:ocrProfileArg0])
+RunOCRCompatibly(utilities, params[:pathArg0], params[:searchTermArg0], params[:ocrProfileArg0])
 puts '--Script Completed Successfully--'
