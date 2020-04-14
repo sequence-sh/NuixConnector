@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
@@ -11,11 +10,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// A process that the searches a case for items and outputs the values of item properties.
+    /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
+    /// Use this inside a WriteFile process to write it to a file.
     /// </summary>
     public sealed class NuixGetItemProperties : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        protected override NuixReturnType ReturnType => NuixReturnType.String;
 
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -48,26 +49,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 5)]
         public string PropertyRegex { get; set; }
 
-
-        /// <summary>
-        /// The path to the folder to put the output files in.
-        /// </summary>
-        [Required]
-        [ExampleValue("C:/Output")]
-        [YamlMember(Order = 6)]
-        public string OutputFolder { get; set; }
-
-        /// <summary>
-        /// The name of the text file to write the results to.
-        /// The file will be overwritten.
-        /// Should not include the extension.
-        /// This is separate from the output folder property to allow easier injection.
-        /// </summary>
-        [Required]
-        [ExampleValue("Results")]
-        [YamlMember(Order = 7)]
-        public string OutputFileName { get; set; }
-
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
@@ -87,9 +68,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         end
     end
 
-    File.write(filePathArg, text)
-   
-    the_case.close";
+    the_case.close
+    return text";
 
         /// <inheritdoc />
         internal override string MethodName => "GetParticularProperties";
@@ -106,9 +86,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("casePathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
             yield return ("regexArg", PropertyRegex, false);
-            var filePath = Path.ChangeExtension(Path.Combine(OutputFolder, OutputFileName), ".txt");
-
-            yield return ("filePathArg", filePath, false);
         }
     }
 }

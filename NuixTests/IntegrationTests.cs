@@ -437,14 +437,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new NuixGetItemProperties
+                    new WriteFile
                     {
-                        CasePath = CasePath,
-                        OutputFolder = OutputFolder,
-                        OutputFileName = "ItemProperties",
-                        PropertyRegex = ".+",
-                        SearchTerm = "*"
-
+                        FileName = "ItemProperties",
+                        Folder = OutputFolder,
+                        Text = new NuixGetItemProperties
+                        {
+                            CasePath = CasePath,
+                            PropertyRegex = ".+",
+                            SearchTerm = "*"
+                        }
                     },
                     AssertFileContains(OutputFolder + "/ItemProperties.txt", "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
 

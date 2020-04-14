@@ -285,6 +285,30 @@ Checks the print preview state of the production set.
 |ProductionSetName|`string`                               |☑️      |The production set to reorder.                         |       |               |
 |CasePath         |`string`                               |☑️      |The path to the case.                                  |       |C:/Cases/MyCase|
 
+<a name="NuixCompatibilityAddItem"></a>
+## NuixCompatibilityAddItem
+
+Adds a file or directory to a Nuix Case. This is a compatibility version for users of Nuix versions prior to 7.6 Unlike the main version, it does not support processing profiles.
+
+|Parameter  |Type    |Required|Summary                                              |Example         |
+|:---------:|:------:|:------:|:---------------------------------------------------:|:--------------:|
+|Path       |`string`|☑️      |The path of the file or directory to add to the case.|C:/Data/File.txt|
+|Custodian  |`string`|☑️      |The custodian to assign to the new folder.           |                |
+|Description|`string`|        |The description of the new folder.                   |                |
+|FolderName |`string`|☑️      |The name of the folder to create.                    |                |
+|CasePath   |`string`|☑️      |The path to the case.                                |C:/Cases/MyCase |
+
+<a name="NuixCompatibilityPerformOCR"></a>
+## NuixCompatibilityPerformOCR
+
+Performs optical character recognition on files in a NUIX case. This is a compatibility version for users of Nuix versions prior to 7.6
+
+|Parameter     |Type    |Required|Summary                                        |Default                                                                                                                                         |Example        |
+|:------------:|:------:|:------:|:---------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
+|CasePath      |`string`|☑️      |The path to the case.                          |                                                                                                                                                |C:/Cases/MyCase|
+|OCRProfileName|`string`|        |The name of the OCR profile to use.            |*The default profile will be used.*                                                                                                             |MyOcrProfile   |
+|SearchTerm    |`string`|        |The term to use for searching for files to OCR.|NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))|               |
+
 <a name="NuixCountItems"></a>
 ## NuixCountItems
 
@@ -391,15 +415,13 @@ Generates print previews for items in a production set.
 <a name="NuixGetItemProperties"></a>
 ## NuixGetItemProperties
 
-A process that the searches a case for items and outputs the values of item properties.
+A process that the searches a case for items and outputs the values of item properties. The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid' Use this inside a WriteFile process to write it to a file.
 
-|Parameter     |Type    |Required|Summary                                                                                                                                                                                       |Example        |
-|:------------:|:------:|:------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
-|CasePath      |`string`|☑️      |The path to the case.                                                                                                                                                                         |C:/Cases/MyCase|
-|SearchTerm    |`string`|☑️      |The term to search for.                                                                                                                                                                       |*.txt          |
-|PropertyRegex |`string`|☑️      |The term to search for.                                                                                                                                                                       |Date           |
-|OutputFolder  |`string`|☑️      |The path to the folder to put the output files in.                                                                                                                                            |C:/Output      |
-|OutputFileName|`string`|☑️      |The name of the text file to write the results to. The file will be overwritten. Should not include the extension. This is separate from the output folder property to allow easier injection.|Results        |
+|Parameter    |Type    |Required|Summary                |Example        |
+|:-----------:|:------:|:------:|:---------------------:|:-------------:|
+|CasePath     |`string`|☑️      |The path to the case.  |C:/Cases/MyCase|
+|SearchTerm   |`string`|☑️      |The term to search for.|*.txt          |
+|PropertyRegex|`string`|☑️      |The term to search for.|Date           |
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds
