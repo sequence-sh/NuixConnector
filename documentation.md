@@ -385,12 +385,13 @@ Returns whether or not a case exists.
 
 Exports Concordance for a particular production set.
 
-|Parameter          |Type    |Required|Summary                                  |Default                   |Example          |
-|:-----------------:|:------:|:------:|:---------------------------------------:|:------------------------:|:---------------:|
-|MetadataProfileName|`string`|        |The name of the metadata profile to use. |*Use the Default profile.*|MyMetadataProfile|
-|ProductionSetName  |`string`|☑️      |The name of the production set to export.|                          |                 |
-|ExportPath         |`string`|☑️      |Where to export the Concordance to.      |                          |                 |
-|CasePath           |`string`|☑️      |The path to the case.                    |                          |C:/Cases/MyCase  |
+|Parameter            |Type    |Required|Summary                                   |Default                   |Example            |
+|:-------------------:|:------:|:------:|:----------------------------------------:|:------------------------:|:-----------------:|
+|MetadataProfileName  |`string`|        |The name of the metadata profile to use.  |*Use the Default profile.*|MyMetadataProfile  |
+|ProductionProfileName|`string`|        |The name of the production profile to use.|*Use the Default profile.*|MyProductionProfile|
+|ProductionSetName    |`string`|☑️      |The name of the production set to export. |                          |                   |
+|ExportPath           |`string`|☑️      |Where to export the Concordance to.       |                          |                   |
+|CasePath             |`string`|☑️      |The path to the case.                     |                          |C:/Cases/MyCase    |
 
 <a name="NuixExtractEntities"></a>
 ## NuixExtractEntities

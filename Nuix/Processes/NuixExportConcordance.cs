@@ -29,19 +29,27 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 3)]
         public string? MetadataProfileName { get; set; }
 
+        /// <summary>
+        /// The name of the production profile to use.
+        /// </summary>
+        [ExampleValue("MyProductionProfile")]
+        [DefaultValueExplanation("Use the Default profile.")]
+        [YamlMember(Order = 3)]
+        public string? ProductionProfileName { get; set; }
+
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
         /// The name of the production set to export.
         /// </summary>
         [Required]
-        [YamlMember(Order = 4)]
+        [YamlMember(Order = 5)]
         public string ProductionSetName { get; set; }
 
         /// <summary>
         /// Where to export the Concordance to.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
+        [YamlMember(Order = 6)]
         public string ExportPath { get; set; }
 
         /// <summary>
@@ -49,7 +57,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
         
         [Required]
-        [YamlMember(Order = 6)]
+        [YamlMember(Order = 7)]
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -66,6 +74,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         puts ""Could not find production set with name '#{productionSetNameArg.to_s}'""
     else
         batchExporter = utilities.createBatchExporter(exportPathArg)
+
+        if(productionProfileArg != nil)
+            batchExporter.setProductionProfile(productionProfileArg)
+        end
+
 
         batchExporter.addLoadFile(""concordance"",{
         :metadataProfile => metadataProfileArg
@@ -110,6 +123,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("exportPathArg", ExportPath, false);
             yield return ("productionSetNameArg", ProductionSetName, false);
             yield return ("metadataProfileArg", MetadataProfileName, true);
+            yield return ("productionProfileArg", ProductionProfileName, true);
         }
     }
 }

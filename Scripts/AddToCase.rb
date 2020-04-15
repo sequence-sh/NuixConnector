@@ -42,9 +42,9 @@ def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodi
     folder.add_file(filePathArg)
     folder.save
 
-    puts 'Starting processing.'
+    puts 'Adding items'
     processor.process
-    puts 'Processing complete.'
+    puts 'Items added'
     the_case.close
 end
 
