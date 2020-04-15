@@ -439,7 +439,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AddData,
                     new WriteFile
                     {
-                        FileName = "ItemProperties",
+                        FileName = "ItemProperties.txt",
                         Folder = OutputFolder,
                         Text = new NuixGetItemProperties
                         {
