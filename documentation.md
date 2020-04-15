@@ -131,9 +131,9 @@ Runs an external process.
 
 Executes each step, one after the another. Will stop if a process fails.
 
-|Parameter|Type                     |Required|Summary                                                                 |
-|:-------:|:-----------------------:|:------:|:----------------------------------------------------------------------:|
-|Steps    |List<[Process](#Process)>|☑️      |Steps that make up this process. These should all have result type void.|
+|Parameter|Type                     |Required|Summary                                                                  |
+|:-------:|:-----------------------:|:------:|:-----------------------------------------------------------------------:|
+|Steps    |List<[Process](#Process)>|☑️      |Steps that make up this sequence. These should all have result type void.|
 
 <a name="Unzip"></a>
 ## Unzip
