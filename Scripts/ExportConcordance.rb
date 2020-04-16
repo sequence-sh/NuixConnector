@@ -33,7 +33,7 @@ def ExportConcordance(utilities,pathArg,exportPathArg,productionSetNameArg,metad
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
     if productionSet == nil
-        puts "Could not find production set with name '#{:productionSetNameArg.to_s}'"
+        puts "Could not find production set with name '#{productionSetNameArg.to_s}'"
     else
         batchExporter = utilities.createBatchExporter(exportPathArg)
 
