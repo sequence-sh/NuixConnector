@@ -489,7 +489,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         [Test]
         [Category(Integration)]
-        public void TestVersionCheckingWithinScript()
+        public async Task TestVersionCheckingWithinScript()
         {
             var baseSettings = NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
 
@@ -504,7 +504,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             Assert.IsTrue(freezeSuccess, freezeError?.ToString());
 
-            AssertError(freezeValue.ExecuteUntyped(), "Nuix Version is" );
+            await AssertError(freezeValue.ExecuteUntyped(), "Nuix Version is" );
         }
 
 
@@ -528,7 +528,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             return results;
         }
 
-        public static async  void AssertError(IAsyncEnumerable<IProcessOutput> output, string expectedErrorContents)
+        public static async Task AssertError(IAsyncEnumerable<IProcessOutput> output, string expectedErrorContents)
         {
             // ReSharper disable once CollectionNeverQueried.Local - this is nice for debugging
             var results = new List<string>();
@@ -539,6 +539,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 {
                     if (o.Text.Contains(expectedErrorContents))
                         return;
+                    else
+                        Assert.Fail(o.Text);
                 }
                 else
                 {

@@ -38,22 +38,23 @@ def AddToProductionSet(utilities,pathArg,searchArg,productionSetNameArg,descript
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
 
     items = the_case.search(searchArg, searchOptions)
-    puts "#{items.length} found"
+    puts "#{items.length} items found"
+
+    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+    if(productionSet == nil)
+        options = {}
+        options[:description] = descriptionArg.to_i if descriptionArg != nil
+        productionSet = the_case.newProductionSet(productionSetNameArg, options)        
+        puts "Production Set Created"
+    else
+        puts "Production Set Found"
+    end
 
     if items.length > 0
-        productionSet = the_case.findProductionSetByName(productionSetNameArg)
-        if(productionSet == nil)
-            options = {}
-            options[:description] = descriptionArg.to_i if descriptionArg != nil
-            productionSet = the_case.newProductionSet(productionSetNameArg, options)        
-            puts "Production Set Created"
-        else
-            puts "Production Set Found"
-        end
-
         productionSet.addItems(items)
-
-        puts "items added"
+        puts "Items added to production set"
+    else
+        puts "No items to add to production Set"        
     end    
 
     the_case.close
