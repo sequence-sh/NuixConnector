@@ -66,13 +66,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         profile = ocrProfileStore.getProfile(ocrProfileArg)
 
-        if profile != nil
-            processor.process(items, profile)
-            puts ""Items Processed""
-        else
+        begin
+            profile.getName()
+        rescue
+            #I think this is a bug in Nuix. If the profile is not found, the profile should be null
+
             puts ""Could not find profile '#{ocrProfileArg}'""
             exit
         end
+
+        processor.process(items, profile)
+            puts ""Items Processed""
     else
         processor.process(items)
         puts ""Items Processed""
