@@ -58,25 +58,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     puts ""Running OCR on #{items.length} items""
     
-    processor = utilities.createOcrProcessor()
+    processor = utilities.createOcrProcessor() #since Nuix 7.0 but seems to work with earlier versions anyway
 
     if ocrProfileArg != nil
-        ocrProfileStore = the_case.getOcrProfileStore()
-        puts ""Got profile store""
-
-        profile = ocrProfileStore.getProfile(ocrProfileArg)
-
-        begin
-            profile.getName()
-        rescue
-            #I think this is a bug in Nuix. If the profile is not found, the profile should be null
-
-            puts ""Could not find profile '#{ocrProfileArg}'""
-            exit
-        end
-
-        processor.process(items, profile)
-            puts ""Items Processed""
+        ocrOptions = {:ocrProfileName => ocrProfileArg}
+#Note: this was deprecated but still works.
+        processor.process(items, ocrProfileArg)
+        puts ""Items Processed""
     else
         processor.process(items)
         puts ""Items Processed""
@@ -86,12 +74,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override string MethodName => "RunOCR";
 
-        //NOTE: this is technically available since 5.0 but we are using then new preferred way of doing things.
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7,6);
-
-        
-
+        internal override Version RequiredVersion { get; } = new Version(6,2);
 
         /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()

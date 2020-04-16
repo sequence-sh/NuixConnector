@@ -44,7 +44,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{2F05
 		Scripts\RemoveFromProductionSet.rb = Scripts\RemoveFromProductionSet.rb
 		Scripts\RenumberProductionSet.rb = Scripts\RenumberProductionSet.rb
 		Scripts\RunOCR.rb = Scripts\RunOCR.rb
-		Scripts\RunOCRCompatibly.rb = Scripts\RunOCRCompatibly.rb
 		Scripts\SearchAndTag.rb = Scripts\SearchAndTag.rb
 	EndProjectSection
 EndProject
