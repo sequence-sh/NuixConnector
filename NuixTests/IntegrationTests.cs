@@ -452,7 +452,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
-                )
+                ),
+
+                new TestSequence("Assign Custodians",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
+                    AssertCount(0, "custodian:\"Jason\"" ),
+                    new NuixAssignCustodian(){CasePath = CasePath, Custodian = "Jason", SearchTerm = "*"},
+                    AssertCount(2, "custodian:\"Jason\"" ),
+                    DeleteCaseFolder)
 
             };
 

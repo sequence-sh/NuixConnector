@@ -286,6 +286,17 @@ Checks the print preview state of the production set.
 |ProductionSetName|`string`                               |☑️      |The production set to reorder.                         |       |               |
 |CasePath         |`string`                               |☑️      |The path to the case.                                  |       |C:/Cases/MyCase|
 
+<a name="NuixAssignCustodian"></a>
+## NuixAssignCustodian
+
+Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
+
+|Parameter |Type    |Required|Summary                                  |Example        |
+|:--------:|:------:|:------:|:---------------------------------------:|:-------------:|
+|Custodian |`string`|☑️      |The custodian to assign to found results.|               |
+|SearchTerm|`string`|☑️      |The term to search for.                  |*.txt          |
+|CasePath  |`string`|☑️      |The path to the case.                    |C:/Cases/MyCase|
+
 <a name="NuixCompatibilityAddItem"></a>
 ## NuixCompatibilityAddItem
 
