@@ -9,24 +9,24 @@ using YamlDotNet.Serialization;
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
-    /// Searches a NUIX case with a particular search string and tags all files it finds.
+    /// Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
     /// </summary>
-    public sealed class NuixSearchAndTag : RubyScriptProcess
+    public sealed class NuixAssignCustodian : RubyScriptProcess
     {
         /// <inheritdoc />
         protected override NuixReturnType ReturnType => NuixReturnType.Unit;
 
         /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => $"Search and Tag with '{Tag}'";
+        public override string GetName() => $"Assign Custodian '{Custodian}'";
 
         /// <summary>
-        /// The tag to assign to found results.
+        /// The custodian to assign to found results.
         /// </summary>
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string Tag { get; set; }
+        public string Custodian { get; set; }
 
 
         /// <summary>
@@ -61,18 +61,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     j = 0
 
     items.each {|i|
-       added = i.addTag(tagArg)
-       j += 1 if added
+        if i.getCustodian != custodianArg
+            added = i.assignCustodian(custodianArg)
+            j += 1
+        end      
     }
 
-    puts ""#{j} items tagged with #{tagArg}""
+    puts ""#{j} items assigned to custodian #{custodianArg}""
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "SearchAndTag";
+        internal override string MethodName => "AssignCustodian";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(2,16);
+        internal override Version RequiredVersion { get; } = new Version(3,6);
 
         /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } 
@@ -86,7 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
-            yield return ("tagArg", Tag, false);
+            yield return ("custodianArg", Custodian, false);
         }
     }
 }

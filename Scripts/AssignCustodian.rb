@@ -1,4 +1,4 @@
-﻿#SearchAndTag
+﻿#AssignCustodian
 
 requiredNuixVersion = '5.0'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -19,13 +19,13 @@ params = {}
 OptionParser.new do |opts|
 	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
 	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-	opts.on('--tagArg0 ARG') do |o| params[:tagArg0] = o end
+	opts.on('--custodianArg0 ARG') do |o| params[:custodianArg0] = o end
 end.parse!
 
 puts params
 
 
-def SearchAndTag(utilities,pathArg,searchArg,tagArg)
+def AssignCustodian(utilities,pathArg,searchArg,custodianArg)
 
     the_case = utilities.case_factory.open(pathArg)
     puts "Searching for '#{searchArg}'"
@@ -37,15 +37,17 @@ def SearchAndTag(utilities,pathArg,searchArg,tagArg)
     j = 0
 
     items.each {|i|
-       added = i.addTag(tagArg)
-       j += 1 if added
+        if i.getCustodian != custodianArg
+            added = i.assignCustodian(custodianArg)
+            j += 1
+        end      
     }
 
-    puts "#{j} items tagged with #{tagArg}"
+    puts "#{j} items assigned to custodian #{custodianArg}"
     the_case.close
 end
 
 
 
-SearchAndTag(utilities, params[:pathArg0], params[:searchArg0], params[:tagArg0])
+AssignCustodian(utilities, params[:pathArg0], params[:searchArg0], params[:custodianArg0])
 puts '--Script Completed Successfully--'
