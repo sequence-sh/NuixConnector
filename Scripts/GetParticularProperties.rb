@@ -29,7 +29,14 @@ def GetParticularProperties(utilities,casePathArg,searchArg,regexArg)
 
     items.each do |i| 
         i.getProperties().each do |k,v|
-          text << "#{k}\t#{v}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}" if regex =~ k
+            if match = regex.match(k)
+                capture = match.captures[0]
+                text << "#{capture}\t#{v}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
+
+            end
+
+
+          
         end
     end
 

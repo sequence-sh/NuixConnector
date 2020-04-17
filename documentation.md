@@ -169,6 +169,7 @@ Enumerates through a CSV file.
 |CSVProcess               |[Process](#Process)                         |        |A process which produces a string in CSV format. Either this, CSVFilePath, or CSVText must be set (but not more than one).      |       |
 |CSVText                  |`string`                                    |        |Raw CSV. Either this, CSVFilePath, or CSVProcess must be set (but not more than one).                                           |       |
 |Delimiter                |`string`                                    |        |The delimiter used in the CSV file.                                                                                             |,      |
+|Distinct                 |`bool`                                      |        |Whether to only enumerate unique values from the CSV. Uniqueness is determined only from the columns which are being injected.  |False  |
 |HasFieldsEnclosedInQuotes|`bool`                                      |        |Determines whether fields are enclosed in quotation marks.                                                                      |False  |
 |InjectColumns            |Dictionary<`string`,[Injection](#Injection)>|☑️      |List of mappings from CSV headers to property injection.                                                                        |       |
 
@@ -407,11 +408,11 @@ Generates print previews for items in a production set.
 
 A process that the searches a case for items and outputs the values of item properties. The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid' Use this inside a WriteFile process to write it to a file.
 
-|Parameter    |Type    |Required|Summary                |Example        |
-|:-----------:|:------:|:------:|:---------------------:|:-------------:|
-|CasePath     |`string`|☑️      |The path to the case.  |C:/Cases/MyCase|
-|SearchTerm   |`string`|☑️      |The term to search for.|*.txt          |
-|PropertyRegex|`string`|☑️      |The term to search for.|Date           |
+|Parameter    |Type    |Required|Summary                                                                                        |Example        |
+|:-----------:|:------:|:------:|:---------------------------------------------------------------------------------------------:|:-------------:|
+|CasePath     |`string`|☑️      |The path to the case.                                                                          |C:/Cases/MyCase|
+|SearchTerm   |`string`|☑️      |The term to search for.                                                                        |*.txt          |
+|PropertyRegex|`string`|☑️      |The regex to search the property for. The result of the first capturing group will be returned.|Date           |
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds
