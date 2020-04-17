@@ -408,11 +408,12 @@ Generates print previews for items in a production set.
 
 A process that the searches a case for items and outputs the values of item properties. The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid' Use this inside a WriteFile process to write it to a file.
 
-|Parameter    |Type    |Required|Summary                                                                                        |Example        |
-|:-----------:|:------:|:------:|:---------------------------------------------------------------------------------------------:|:-------------:|
-|CasePath     |`string`|☑️      |The path to the case.                                                                          |C:/Cases/MyCase|
-|SearchTerm   |`string`|☑️      |The term to search for.                                                                        |*.txt          |
-|PropertyRegex|`string`|☑️      |The regex to search the property for. The result of the first capturing group will be returned.|Date           |
+|Parameter    |Type    |Required|Summary                                                                                                                                                     |Example        |
+|:-----------:|:------:|:------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
+|CasePath     |`string`|☑️      |The path to the case.                                                                                                                                       |C:/Cases/MyCase|
+|SearchTerm   |`string`|☑️      |The term to search for.                                                                                                                                     |*.txt          |
+|PropertyRegex|`string`|☑️      |The regex to search the property for.                                                                                                                       |Date           |
+|ValueRegex   |`string`|        |An optional regex to check the value. If this is set, only values which match this regex will be returned, and only the contents of the first capture group.|(199\d)        |
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds

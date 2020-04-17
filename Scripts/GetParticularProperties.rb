@@ -11,32 +11,38 @@ params = {}
 OptionParser.new do |opts|
 	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
 	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-	opts.on('--regexArg0 ARG') do |o| params[:regexArg0] = o end
+	opts.on('--propertyRegexArg0 ARG') do |o| params[:propertyRegexArg0] = o end
+	opts.on('--valueRegexArg0 [ARG]') do |o| params[:valueRegexArg0] = o end
 end.parse!
 
 puts params
 
 
-def GetParticularProperties(utilities,casePathArg,searchArg,regexArg)
+def GetParticularProperties(utilities,casePathArg,searchArg,propertyRegexArg,valueRegexArg)
 
     the_case = utilities.case_factory.open(casePathArg)
 
     puts "Finding Entities"
     items = the_case.search(searchArg, {})
     puts "#{items.length} items found"
-    regex = Regexp.new(regexArg)    
+    propertyRegex = Regexp.new(propertyRegexArg)
+    Regexp valueRegex = nil
+    valueRegex = Regexp.new(valueRegexArg) if valueRegexArg != nil
+
     text = "Key\tValue\tPath\tGuid"
 
     items.each do |i| 
         i.getProperties().each do |k,v|
-            if match = regex.match(k)
-                capture = match.captures[0]
-                text << "#{capture}\t#{v}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
-
-            end
-
-
-          
+            if propertyRegex =~ k
+                if valueRegex != nil
+                    if match = valueRegex.match(k) #Only output if the value regex actually matches
+                        valueString = match.captures[0]
+                        text << "#{k}\t#{valueString}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
+                    end
+                else #output the entire value
+                    text << "#{k}\t#{valueString}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
+                end                                           
+            end          
         end
     end
 
@@ -46,5 +52,5 @@ end
 
 
 
-result0 = GetParticularProperties(utilities, params[:casePathArg0], params[:searchArg0], params[:regexArg0])
+result0 = GetParticularProperties(utilities, params[:casePathArg0], params[:searchArg0], params[:propertyRegexArg0], params[:valueRegexArg0])
 puts "--Final Result: #{result0}"

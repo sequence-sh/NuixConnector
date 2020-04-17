@@ -43,12 +43,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <summary>
         /// The regex to search the property for.
-        /// The result of the first capturing group will be returned.
         /// </summary>
         [ExampleValue("Date")]
         [Required]
         [YamlMember(Order = 5)]
         public string PropertyRegex { get; set; }
+
+        /// <summary>
+        /// An optional regex to check the value.
+        /// If this is set, only values which match this regex will be returned, and only the contents of the first capture group.
+        /// </summary>
+        [ExampleValue(@"(199\d)")]
+        [YamlMember(Order = 5)]
+        public string? ValueRegex { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -60,19 +67,24 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     puts ""Finding Entities""
     items = the_case.search(searchArg, {})
     puts ""#{items.length} items found""
-    regex = Regexp.new(regexArg)    
+    propertyRegex = Regexp.new(propertyRegexArg)
+    Regexp valueRegex = nil
+    valueRegex = Regexp.new(valueRegexArg) if valueRegexArg != nil
+
     text = ""Key\tValue\tPath\tGuid""
 
     items.each do |i| 
         i.getProperties().each do |k,v|
-            if match = regex.match(k)
-                capture = match.captures[0]
-                text << ""#{capture}\t#{v}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
-
-            end
-
-
-          
+            if propertyRegex =~ k
+                if valueRegex != nil
+                    if match = valueRegex.match(k) #Only output if the value regex actually matches
+                        valueString = match.captures[0]
+                        text << ""#{k}\t#{valueString}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
+                    end
+                else #output the entire value
+                    text << ""#{k}\t#{valueString}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
+                end                                           
+            end          
         end
     end
 
@@ -93,7 +105,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             yield return ("casePathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
-            yield return ("regexArg", PropertyRegex, false);
+            yield return ("propertyRegexArg", PropertyRegex, false);
+            yield return ("valueRegexArg", ValueRegex, true);
         }
     }
 }
