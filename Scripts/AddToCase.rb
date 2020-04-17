@@ -32,6 +32,8 @@ def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodi
 
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
+
+#This only works in 7.6 or later
     processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
 
     folder = processor.new_evidence_container(folderNameArg)
