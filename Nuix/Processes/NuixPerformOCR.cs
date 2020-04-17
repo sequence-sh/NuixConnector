@@ -63,7 +63,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     if ocrProfileArg != nil
         ocrOptions = {:ocrProfileName => ocrProfileArg}
 #Note: this was deprecated but still works.
-        processor.process(items, ocrProfileArg)
+        processor.process(items, ocrOptions)
         puts ""Items Processed""
     else
         processor.process(items)
