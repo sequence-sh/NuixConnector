@@ -74,7 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override string MethodName => "RunOCR";
 
-        /// <inheritdoc />
+        /// <inheritdoc />`,
         internal override Version RequiredVersion { get; } = new Version(6,2);
 
         /// <inheritdoc />

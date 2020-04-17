@@ -22,7 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{2F05
 	ProjectSection(SolutionItems) = preProject
 		Scripts\AddConcordanceToCase.rb = Scripts\AddConcordanceToCase.rb
 		Scripts\AddToCase.rb = Scripts\AddToCase.rb
-		Scripts\AddToCaseCompatibly.rb = Scripts\AddToCaseCompatibly.rb
 		Scripts\AddToItemSet.rb = Scripts\AddToItemSet.rb
 		Scripts\AddToProductionSet.rb = Scripts\AddToProductionSet.rb
 		Scripts\AnnotateDocumentIds.rb = Scripts\AnnotateDocumentIds.rb

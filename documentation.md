@@ -297,30 +297,6 @@ Searches a NUIX case with a particular search string and assigns all files it fi
 |SearchTerm|`string`|☑️      |The term to search for.                  |*.txt          |
 |CasePath  |`string`|☑️      |The path to the case.                    |C:/Cases/MyCase|
 
-<a name="NuixCompatibilityAddItem"></a>
-## NuixCompatibilityAddItem
-
-Adds a file or directory to a Nuix Case. This is a compatibility version for users of Nuix versions prior to 7.6 Unlike the main version, it does not support processing profiles.
-
-|Parameter  |Type    |Required|Summary                                              |Example         |
-|:---------:|:------:|:------:|:---------------------------------------------------:|:--------------:|
-|Path       |`string`|☑️      |The path of the file or directory to add to the case.|C:/Data/File.txt|
-|Custodian  |`string`|☑️      |The custodian to assign to the new folder.           |                |
-|Description|`string`|        |The description of the new folder.                   |                |
-|FolderName |`string`|☑️      |The name of the folder to create.                    |                |
-|CasePath   |`string`|☑️      |The path to the case.                                |C:/Cases/MyCase |
-
-<a name="NuixCompatibilityPerformOCR"></a>
-## NuixCompatibilityPerformOCR
-
-Performs optical character recognition on files in a NUIX case. This is a compatibility version for users of Nuix versions prior to 7.6
-
-|Parameter     |Type    |Required|Summary                                        |Default                                                                                                                                         |Example        |
-|:------------:|:------:|:------:|:---------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
-|CasePath      |`string`|☑️      |The path to the case.                          |                                                                                                                                                |C:/Cases/MyCase|
-|OCRProfileName|`string`|        |The name of the OCR profile to use.            |*The default profile will be used.*                                                                                                             |MyOcrProfile   |
-|SearchTerm    |`string`|        |The term to use for searching for files to OCR.|NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))|               |
-
 <a name="NuixCountItems"></a>
 ## NuixCountItems
 

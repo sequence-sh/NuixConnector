@@ -1,6 +1,6 @@
 ﻿#RunOCR
 
-requiredNuixVersion = '7.6'
+requiredNuixVersion = '6.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -34,25 +34,13 @@ def RunOCR(utilities,pathArg,searchTermArg,ocrProfileArg)
 
     puts "Running OCR on #{items.length} items"
     
-    processor = utilities.createOcrProcessor()
+    processor = utilities.createOcrProcessor() #since Nuix 7.0 but seems to work with earlier versions anyway
 
     if ocrProfileArg != nil
-        ocrProfileStore = the_case.getOcrProfileStore()
-        puts "Got profile store"
-
-        profile = ocrProfileStore.getProfile(ocrProfileArg)
-
-        begin
-            profile.getName()
-        rescue
-            #I think this is a bug in Nuix. If the profile is not found, the profile should be null
-
-            puts "Could not find profile '#{ocrProfileArg}'"
-            exit
-        end
-
-        processor.process(items, profile)
-            puts "Items Processed"
+        ocrOptions = {:ocrProfileName => ocrProfileArg}
+#Note: this was deprecated but still works.
+        processor.process(items, ocrProfileArg)
+        puts "Items Processed"
     else
         processor.process(items)
         puts "Items Processed"

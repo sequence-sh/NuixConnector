@@ -64,6 +64,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The name of the processing profile to use.
         /// </summary>
         
+        [RequiredVersion("Nuix", "7.6")]
         [YamlMember(Order = 7)]
         [ExampleValue("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
@@ -75,6 +76,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
+
+#This only works in 7.6 or later
     processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
 
     folder = processor.new_evidence_container(folderNameArg)
@@ -94,7 +97,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "AddToCase";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7,6);
+        internal override Version RequiredVersion
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(ProcessingProfileName))
+                    return new Version(3, 2);
+                return new Version(7,6);
+            }
+        }
 
         /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>{NuixFeature.CASE_CREATION};
