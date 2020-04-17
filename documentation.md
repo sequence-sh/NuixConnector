@@ -224,14 +224,15 @@ Adds data from a Concordance file to a NUIX case.
 
 Adds a file or directory to a Nuix Case.
 
-|Parameter            |Type    |Required|Summary                                              |Default                                       |Example            |
-|:-------------------:|:------:|:------:|:---------------------------------------------------:|:--------------------------------------------:|:-----------------:|
-|Path                 |`string`|☑️      |The path of the file or directory to add to the case.|                                              |C:/Data/File.txt   |
-|Custodian            |`string`|☑️      |The custodian to assign to the new folder.           |                                              |                   |
-|Description          |`string`|        |The description of the new folder.                   |                                              |                   |
-|FolderName           |`string`|☑️      |The name of the folder to create.                    |                                              |                   |
-|CasePath             |`string`|☑️      |The path to the case.                                |                                              |C:/Cases/MyCase    |
-|ProcessingProfileName|`string`|        |The name of the processing profile to use.           |*The default processing profile will be used.*|MyProcessingProfile|
+|Parameter            |Type    |Required|Summary                                                       |Default                                       |Example              |
+|:-------------------:|:------:|:------:|:------------------------------------------------------------:|:--------------------------------------------:|:-------------------:|
+|Path                 |`string`|☑️      |The path of the file or directory to add to the case.         |                                              |C:/Data/File.txt     |
+|Custodian            |`string`|☑️      |The custodian to assign to the new folder.                    |                                              |                     |
+|Description          |`string`|        |The description of the new folder.                            |                                              |                     |
+|FolderName           |`string`|☑️      |The name of the folder to create.                             |                                              |                     |
+|CasePath             |`string`|☑️      |The path to the case.                                         |                                              |C:/Cases/MyCase      |
+|ProcessingProfileName|`string`|        |The name of the processing profile to use.                    |*The default processing profile will be used.*|MyProcessingProfile  |
+|PasswordFilePath     |`string`|☑️      |The path of a file containing passwords to use for decryption.|                                              |C:/Data/Passwords.txt|
 
 <a name="NuixAddToItemSet"></a>
 ## NuixAddToItemSet
