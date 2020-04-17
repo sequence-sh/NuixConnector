@@ -20,7 +20,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             _min = min;
             _max = max;
         }
-        
+
         /// <inheritdoc />
         public string BlockName => ProcessNameHelper.GetCheckNumberProcessName(_numberBlock.BlockName);
 
@@ -31,28 +31,28 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures => _numberBlock.RequiredNuixFeatures;
 
         /// <inheritdoc />
-        public IEnumerable<string> FunctionDefinitions => new []{CheckNumberDefinition}.Concat(_numberBlock.FunctionDefinitions);
+        public IEnumerable<string> FunctionDefinitions => new[] { CheckNumberDefinition }.Concat(_numberBlock.FunctionDefinitions);
 
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
         {
             var args = new List<string>();
 
-            if(_min.HasValue)
+            if (_min.HasValue)
             {
-                args.Add("min" + blockNumber);
+                args.Add("--min" + blockNumber);
                 args.Add(_min.Value.ToString());
             }
 
             if (_max.HasValue)
             {
-                args.Add("max" + blockNumber);
+                args.Add("--max" + blockNumber);
                 args.Add(_max.Value.ToString());
             }
             blockNumber++;
 
-            args.AddRange(_numberBlock.GetArguments(ref blockNumber));                
-                
+            args.AddRange(_numberBlock.GetArguments(ref blockNumber));
+
             return args;
         }
 
@@ -93,10 +93,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         private const string CheckNumberDefinition =
             @"def isNumberInRange?(n, min, max)
-if(min != nil && min > n)
+if(min == nil && max == nil)
+   puts ""Error: both min and max are nil""
+end
+
+if(min != nil && min.to_i > n)
     return false
 end
-if(max != nil && max < n)
+if(max != nil && max.to_i < n)
     return false
 end
 return true
