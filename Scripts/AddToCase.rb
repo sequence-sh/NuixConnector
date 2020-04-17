@@ -23,18 +23,29 @@ OptionParser.new do |opts|
 	opts.on('--folderCustodianArg0 ARG') do |o| params[:folderCustodianArg0] = o end
 	opts.on('--filePathArg0 ARG') do |o| params[:filePathArg0] = o end
 	opts.on('--processingProfileNameArg0 [ARG]') do |o| params[:processingProfileNameArg0] = o end
+	opts.on('--passwordFilePathArg0 [ARG]') do |o| params[:passwordFilePathArg0] = o end
 end.parse!
 
 puts params
 
 
-def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg)
+def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg,passwordFilePathArg)
 
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
 
 #This only works in 7.6 or later
     processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
+
+
+#This only works in 7.2 or later
+    if passwordFilePathArg != nil
+        var passwords = File.readlines(passwordFilePathArg)
+        puts "Adding #{passwords.count()} passwords"
+        processor.addPasswordList('MyPasswordList', passwords)
+        processor.setPasswordDiscoverySettings({:mode => 'word-list', :word-list => 'MyPasswordList' })
+    end
+
 
     folder = processor.new_evidence_container(folderNameArg)
 
@@ -52,5 +63,5 @@ end
 
 
 
-AddToCase(utilities, params[:pathArg0], params[:folderNameArg0], params[:folderDescriptionArg0], params[:folderCustodianArg0], params[:filePathArg0], params[:processingProfileNameArg0])
+AddToCase(utilities, params[:pathArg0], params[:folderNameArg0], params[:folderDescriptionArg0], params[:folderCustodianArg0], params[:filePathArg0], params[:processingProfileNameArg0], params[:passwordFilePathArg0])
 puts '--Script Completed Successfully--'

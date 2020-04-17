@@ -58,6 +58,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 7)]
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
+        
+        /// <summary>
+        /// The path of a file containing passwords to use for decryption.
+        /// </summary>
+        [RequiredVersion("Nuix", "7.2")]
+        [Required]
+        [YamlMember(Order = 8)]
+        [ExampleValue("C:/Data/Passwords.txt")]
+        public string? PasswordFilePath { get; set; }
 
 
         /// <summary>
@@ -79,6 +88,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 #This only works in 7.6 or later
     processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
+
+
+#This only works in 7.2 or later
+    if passwordFilePathArg != nil
+        var passwords = File.readlines(passwordFilePathArg)
+        puts ""Adding #{passwords.count()} passwords""
+        processor.addPasswordList('MyPasswordList', passwords)
+        processor.setPasswordDiscoverySettings({:mode => 'word-list', :word-list => 'MyPasswordList' })
+    end
+
 
     folder = processor.new_evidence_container(folderNameArg)
 
@@ -119,6 +138,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("folderCustodianArg", Custodian, false);
             yield return ("filePathArg", Path, false);
             yield return ("processingProfileNameArg", ProcessingProfileName, true);
+            yield return ("passwordFilePathArg", PasswordFilePath, true);
         }
     }
 }
