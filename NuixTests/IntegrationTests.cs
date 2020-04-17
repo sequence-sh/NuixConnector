@@ -39,7 +39,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data");
 
-        private static readonly string EncryptedDataPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "encryptedData");
+        private static readonly string EncryptedDataPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData");
+
+        private static readonly string PasswordFilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt");
 
         private static readonly string PoemTextImagePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png");
         private static readonly string ConcordancePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat");
@@ -113,9 +115,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = EncryptedDataPath, FolderName = "New Folder" },
-                    AssertCount(1, "flag:encrypted"),
-                    AssertCount(2,"princess"),
+                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = EncryptedDataPath, FolderName = "New Folder", PasswordFilePath = PasswordFilePath },                    
+                    AssertCount(1,"princess"),
                     DeleteCaseFolder
                 ),
 
@@ -546,7 +547,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 }
             }
 
-            CollectionAssert.IsEmpty(errors);
+            CollectionAssert.IsEmpty(errors, string.Join("; ", results));
 
             return results;
         }

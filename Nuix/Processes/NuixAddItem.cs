@@ -92,10 +92,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 #This only works in 7.2 or later
     if passwordFilePathArg != nil
-        var passwords = File.readlines(passwordFilePathArg)
-        puts ""Adding #{passwords.count()} passwords""
-        processor.addPasswordList('MyPasswordList', passwords)
-        processor.setPasswordDiscoverySettings({:mode => 'word-list', :word-list => 'MyPasswordList' })
+        lines = File.read(passwordFilePathArg, mode: 'r:bom|utf-8').split
+
+        passwords = lines.map {|p| p.chars.to_java(:char)}
+        listName = 'MyPasswordList'
+
+        processor.addPasswordList(listName, passwords)
+        processor.setPasswordDiscoverySettings({'mode' => ""word-list"", 'word-list' => listName })
     end
 
 
