@@ -68,23 +68,26 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     items = the_case.search(searchArg, {})
     puts ""#{items.length} items found""
     propertyRegex = Regexp.new(propertyRegexArg)
-    Regexp valueRegex = nil
+    valueRegex = nil
     valueRegex = Regexp.new(valueRegexArg) if valueRegexArg != nil
 
     text = ""Key\tValue\tPath\tGuid""
 
     items.each do |i| 
         i.getProperties().each do |k,v|
-            if propertyRegex =~ k
-                if valueRegex != nil
-                    if match = valueRegex.match(k) #Only output if the value regex actually matches
-                        valueString = match.captures[0]
-                        text << ""#{k}\t#{valueString}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
-                    end
-                else #output the entire value
-                    text << ""#{k}\t#{valueString}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
-                end                                           
-            end          
+            begin
+                if propertyRegex =~ k
+                    if valueRegex != nil
+                        if match = valueRegex.match(k) #Only output if the value regex actually matches
+                            valueString = match.captures[0]
+                            text << ""\n#{k}\t#{valueString}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
+                        end
+                    else #output the entire value
+                        text << ""\n#{k}\t#{v}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
+                    end                                           
+                end
+            rescue
+            end
         end
     end
 
