@@ -62,7 +62,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         items.each do |i|
             path = i.getPathNames().join(""/"")
             guid = i.getGuid()
-            irregularText << ""#{key.to_s}\t#{path}\t#{guid}""
+            irregularText << ""\n#{key.to_s}\t#{path}\t#{guid}""
         end
     end
 

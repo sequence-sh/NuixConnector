@@ -26,7 +26,7 @@ def GetParticularProperties(utilities,casePathArg,searchArg,propertyRegexArg,val
     items = the_case.search(searchArg, {})
     puts "#{items.length} items found"
     propertyRegex = Regexp.new(propertyRegexArg)
-    Regexp valueRegex = nil
+    valueRegex = nil
     valueRegex = Regexp.new(valueRegexArg) if valueRegexArg != nil
 
     text = "Key\tValue\tPath\tGuid"
