@@ -125,25 +125,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                             CSVText = @"SearchTerm,Tag
 Raptor,Dinosaur
 Red,Color",
-                            InjectColumns = new Dictionary<string, Injection>
+                            ColumnInjections = new List<ColumnInjection>()
                             {
-                                {
-                                    "SearchTerm",
-                                    new Injection
-                                    {
-                                        Property = nameof(NuixSearchAndTag.SearchTerm)
-                                    }
-                                },
-                                {
-                                    "Tag",
-                                    new Injection
-                                    {
-                                        Property = nameof(NuixSearchAndTag.Tag)
-                                    }
-                                }
-                            }
+                                new ColumnInjection{Column = "SearchTerm", Property = nameof(NuixSearchAndTag.SearchTerm) },
+                                new ColumnInjection{Column = "Tag", Property = nameof(NuixSearchAndTag.Tag) },
+                            },
                         },
-
                         Do = new NuixSearchAndTag
                         {
                             CasePath = "Case Path"
