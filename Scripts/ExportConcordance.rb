@@ -48,12 +48,12 @@ def ExportConcordance(utilities,pathArg,exportPathArg,productionSetNameArg,metad
 		})
 
         batchExporter.addProduct("native", {
-        :naming=> "full",
+        :naming=> "document_id",
         :path => "Native"
         })
 
         batchExporter.addProduct("text", {
-        :naming=> "full",
+        :naming=> "document_id",
         :path => "Text"
         })
 

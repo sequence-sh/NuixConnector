@@ -85,12 +85,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 		})
 
         batchExporter.addProduct(""native"", {
-        :naming=> ""full"",
+        :naming=> ""document_id"",
         :path => ""Native""
         })
 
         batchExporter.addProduct(""text"", {
-        :naming=> ""full"",
+        :naming=> ""document_id"",
         :path => ""Text""
         })
 
