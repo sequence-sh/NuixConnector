@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ocr-profile xmlns="http://schemas.nuix.com/2017/ocr-profile" version="1" created-by="8.2.0.123">
+  <id>9439a130-1aa6-4f25-ab87-8e053ce13d63</id>
+  <update-duplicates>true</update-duplicates>
+  <clear-ocr-cache>false</clear-ocr-cache>
+  <use-output-directory>false</use-output-directory>
+  <ocr-templates>
+    <ocr-template version="1.1">
+      <id>1eec3145-f3a6-4cce-8e32-c07cb2141438</id>
+      <name>Default</name>
+      <description />
+      <append-text>true</append-text>
+      <languages>
+        <language>English</language>
+      </languages>
+      <deskew>true</deskew>
+      <auto-text-rotation>true</auto-text-rotation>
+      <no-text-rotation>false</no-text-rotation>
+      <clockwise-text-rotation>false</clockwise-text-rotation>
+      <counter-clockwise-text-rotation>false</counter-clockwise-text-rotation>
+      <one-eighty-text-rotation>false</one-eighty-text-rotation>
+      <processing-profile>DOCUMENT_ARCHIVING_ACCURACY</processing-profile>
+      <timeout>90</timeout>
+      <update-pdf>true</update-pdf>
+      <printed-image-rotation>AUTO</printed-image-rotation>
+      <page-flushing-policy>AUTO</page-flushing-policy>
+      <multi-processing-mode>SEQUENTIAL</multi-processing-mode>
+      <create-image-documents-in-memory>false</create-image-documents-in-memory>
+    </ocr-template>
+  </ocr-templates>
+  <profile-rules>
+    <profile-rule>
+      <item-condition>
+        <kind>document</kind>
+        <kind>image</kind>
+        <conjunction>ANY</conjunction>
+      </item-condition>
+      <ocr-template-id>1eec3145-f3a6-4cce-8e32-c07cb2141438</ocr-template-id>
+      <perform-ocr>true</perform-ocr>
+    </profile-rule>
+    <profile-rule>
+      <item-condition>
+        <conjunction>ANY</conjunction>
+      </item-condition>
+      <ocr-template-id>1eec3145-f3a6-4cce-8e32-c07cb2141438</ocr-template-id>
+      <perform-ocr>false</perform-ocr>
+    </profile-rule>
+  </profile-rules>
+</ocr-profile>

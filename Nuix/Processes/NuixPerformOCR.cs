@@ -25,7 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
         [Required]
         
-        [YamlMember(Order = 3)]
+        [YamlMember(Order = 1)]
         [ExampleValue("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
@@ -35,18 +35,28 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
         [Required]
         
-        [YamlMember(Order = 3)]
+        [YamlMember(Order = 2)]
         public string SearchTerm { get; set; } =
             "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
 
         /// <summary>
         /// The name of the OCR profile to use.
+        /// This cannot be set at the same time as OCRProfilePath.
         /// </summary>
-        
         [YamlMember(Order = 3)]
         [DefaultValueExplanation("The default profile will be used.")]
         [ExampleValue("MyOcrProfile")]
         public string? OCRProfileName { get; set; }
+
+        /// <summary>
+        /// Path to the OCR profile to use.
+        /// This cannot be set at the same times as OCRProfileName.
+        /// </summary>
+        [YamlMember(Order = 4)]
+        [RequiredVersion("Nuix", "7.6")]
+        [DefaultValueExplanation("The default profile will be used.")]
+        [ExampleValue("C:\\Profiles\\MyProfile.xml")]
+        public string? OCRProfilePath { get; set; }
         
 
         /// <inheritdoc />
@@ -65,6 +75,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #Note: this was deprecated but still works.
         processor.process(items, ocrOptions)
         puts ""Items Processed""
+    else if ocrProfilePathArg != nil
+        profile = utilities.getOcrProfileBuilder().load(ocrProfilePathArg)
+        processor.setOcrProfileObject(profile)
     else
         processor.process(items)
         puts ""Items Processed""
@@ -75,7 +88,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "RunOCR";
 
         /// <inheritdoc />`,
-        internal override Version RequiredVersion { get; } = new Version(6,2);
+        internal override Version RequiredVersion => OCRProfilePath == null ? new Version(6, 2) : new Version(7, 6);
+
+        /// <inheritdoc />
+        internal override IEnumerable<string> GetAdditionalArgumentErrors()
+        {
+            if(OCRProfileName != null && OCRProfilePath != null)
+                yield return $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.";
+        }
+
 
         /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -89,6 +110,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("pathArg", CasePath, false);
             yield return ("searchTermArg", SearchTerm, false);
             yield return ("ocrProfileArg", OCRProfileName, true);
+            yield return ("ocrProfilePathArg", OCRProfilePath, true);
         }
     }
 }

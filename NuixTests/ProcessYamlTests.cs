@@ -74,14 +74,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         },
                         Folder = "Report Output Folder",
                         FileName = "Report.csv"
-                    }
-
-                    ,
+                    },
 
                     new NuixPerformOCR
                     {
                         CasePath = "Case Path",
-                        OCRProfileName = "OCR Profile"
+                        OCRProfileName = "OCR Profile",
                     },
                     new Loop
                     {

@@ -23,19 +23,25 @@ OptionParser.new do |opts|
 	opts.on('--folderCustodianArg0 ARG') do |o| params[:folderCustodianArg0] = o end
 	opts.on('--filePathArg0 ARG') do |o| params[:filePathArg0] = o end
 	opts.on('--processingProfileNameArg0 [ARG]') do |o| params[:processingProfileNameArg0] = o end
+	opts.on('--processingProfilePathArg0 [ARG]') do |o| params[:processingProfilePathArg0] = o end
 	opts.on('--passwordFilePathArg0 [ARG]') do |o| params[:passwordFilePathArg0] = o end
 end.parse!
 
 puts params
 
 
-def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg,passwordFilePathArg)
+def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg,processingProfilePathArg,passwordFilePathArg)
 
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
 
 #This only works in 7.6 or later
-    processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
+    if processingProfileNameArg != nil
+        processor.setProcessingProfile(processingProfileNameArg) 
+    else if processingProfilePathArg != nil
+        profile = utilities.getProcessingProfileBuilder().load(processingProfilePathArg)
+        processor.setProcessingProfileObject(profile)
+    end
 
 
 #This only works in 7.2 or later
@@ -66,5 +72,5 @@ end
 
 
 
-AddToCase(utilities, params[:pathArg0], params[:folderNameArg0], params[:folderDescriptionArg0], params[:folderCustodianArg0], params[:filePathArg0], params[:processingProfileNameArg0], params[:passwordFilePathArg0])
+AddToCase(utilities, params[:pathArg0], params[:folderNameArg0], params[:folderDescriptionArg0], params[:folderCustodianArg0], params[:filePathArg0], params[:processingProfileNameArg0], params[:processingProfilePathArg0], params[:passwordFilePathArg0])
 puts '--Script Completed Successfully--'

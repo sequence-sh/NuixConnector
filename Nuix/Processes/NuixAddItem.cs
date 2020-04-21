@@ -58,6 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 7)]
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         
         /// <summary>
         /// The path of a file containing passwords to use for decryption.
@@ -70,15 +71,24 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <summary>
-        /// The name of the processing profile to use.
+        /// The name of the Processing profile to use.
         /// </summary>
         
         [RequiredVersion("Nuix", "7.6")]
-        [YamlMember(Order = 7)]
+        [YamlMember(Order = 9)]
         [ExampleValue("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         public string? ProcessingProfileName { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+        /// <summary>
+        /// The path to the Processing profile to use
+        /// </summary>
+        [RequiredVersion("Nuix", "7.6")]
+        [YamlMember(Order = 10)]
+        [ExampleValue("C:/Profiles/MyProcessingProfile.xml")]
+        [DefaultValueExplanation("The default processing profile will be used.")]
+        public string? ProcessingProfilePath { get; set; }
+
 
 
         /// <inheritdoc />
@@ -87,7 +97,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     processor = the_case.create_processor
 
 #This only works in 7.6 or later
-    processor.setProcessingProfile(processingProfileNameArg) if processingProfileNameArg != nil
+    if processingProfileNameArg != nil
+        processor.setProcessingProfile(processingProfileNameArg) 
+    else if processingProfilePathArg != nil
+        profile = utilities.getProcessingProfileBuilder().load(processingProfilePathArg)
+        processor.setProcessingProfileObject(profile)
+    end
 
 
 #This only works in 7.2 or later
@@ -133,6 +148,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>{NuixFeature.CASE_CREATION};
 
         /// <inheritdoc />
+        internal override IEnumerable<string> GetAdditionalArgumentErrors()
+        {
+            if(ProcessingProfileName != null && ProcessingProfilePath != null)
+                yield return $"Only one of {nameof(ProcessingProfileName)} and {nameof(ProcessingProfilePath)} may be set.";
+        }
+
+        /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
@@ -141,6 +163,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("folderCustodianArg", Custodian, false);
             yield return ("filePathArg", Path, false);
             yield return ("processingProfileNameArg", ProcessingProfileName, true);
+            yield return ("processingProfilePathArg", ProcessingProfilePath, true);
             yield return ("passwordFilePathArg", PasswordFilePath, true);
         }
     }
