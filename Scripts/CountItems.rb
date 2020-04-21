@@ -28,6 +28,12 @@ def CountItems(utilities,pathArg,searchArg)
 end
 
 
+def binToHex(s)
+  suffix = s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
+  '0x' + suffix
+end
+
+
 
 result0 = CountItems(utilities, params[:pathArg0], params[:searchArg0])
-puts "--Final Result: #{result0}"
+puts "--Final Result: #{binToHex(result0)}"

@@ -167,7 +167,7 @@ Injects values from a CSV column into a property of a loop's process.
 |Column   |`string`|☑️      |The column in the CSV to get the values from.                                                                                                                          |                                        |SearchTerm|
 |Property |`string`|☑️      |The property of the subProcess to inject.                                                                                                                              |                                        |SearchTerm|
 |Regex    |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used.                                                                 |*The entire value will be injected.*    |\w+       |
-|Template |`string`|        |The template to apply to the element before injection. The string '$s' in the template will be replaced with the element. The template will be applied after the Regex.|*The value will be injected on its own.*|$s.txt    |
+|Template |`string`|        |The template to apply to the element before injection. The string '$1' in the template will be replaced with the element. The template will be applied after the Regex.|*The value will be injected on its own.*|$1.txt    |
 
 <a name="CSV"></a>
 ## CSV
@@ -204,7 +204,7 @@ Injects a value from the enumerator into a property of a loop's process.
 |:-------:|:------:|:------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------:|:--------:|
 |Property |`string`|☑️      |The property of the subProcess to inject.                                                                                                                              |                                        |SearchTerm|
 |Regex    |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used.                                                                 |*The entire value will be injected.*    |\w+       |
-|Template |`string`|        |The template to apply to the element before injection. The string '$s' in the template will be replaced with the element. The template will be applied after the Regex.|*The value will be injected on its own.*|$s.txt    |
+|Template |`string`|        |The template to apply to the element before injection. The string '$1' in the template will be replaced with the element. The template will be applied after the Regex.|*The value will be injected on its own.*|$1.txt    |
 
 <a name="List"></a>
 ## List

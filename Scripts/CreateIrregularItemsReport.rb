@@ -52,6 +52,12 @@ def CreateIrregularItemsReport(utilities,casePathArg)
 end
 
 
+def binToHex(s)
+  suffix = s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
+  '0x' + suffix
+end
+
+
 
 result0 = CreateIrregularItemsReport(utilities, params[:casePathArg0])
-puts "--Final Result: #{result0}"
+puts "--Final Result: #{binToHex(result0)}"

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
@@ -57,14 +58,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
             var scriptBuilder = new StringBuilder();
 
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, new []{RubyBlock}));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new []{RubyBlock}));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, new IRubyBlock []{RubyBlock, BinToHexBlock.Instance}));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new IRubyBlock[]{RubyBlock, BinToHexBlock.Instance}));
 
             var i = 0;
             var fullMethodLine = RubyBlock.GetBlockText(ref i, out var resultVariableName);
 
             scriptBuilder.AppendLine(fullMethodLine);
-            scriptBuilder.AppendLine($"puts \"--Final Result: #{{{resultVariableName}}}\"");
+
+
+            scriptBuilder.AppendLine($"puts \"--Final Result: #{{binToHex({resultVariableName})}}\"");
 
             return (scriptBuilder.ToString());
         }
@@ -75,15 +78,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         private bool TryExtractValueFromOutput(string message, out T value)
         {
             if (FinalResultRegex.TryMatch(message, out var m))
-            {
-                var resultString = m.Groups["result"].Value;
+            {             
+                var resultHex = m.Groups["result"].Value;
 
-                var (isSuccess, _, value1) = TryParseFunc(resultString);
-                if (isSuccess)
+                var resultString = TryMakeStringFromHex(resultHex);
+                if(resultString != null)
                 {
-                    value = value1;
-                    return true;
-                }
+                    var (isSuccess, _, value1) = TryParseFunc(resultString);
+                    if (isSuccess)
+                    {
+                        value = value1;
+                        return true;
+                    }
+                }               
+
             }
 
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -93,7 +101,74 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
 
+        private static string? TryMakeStringFromHex(string hexString)
+        {
+            if(hexString.StartsWith("0x"))
+            {
+                hexString = hexString.Substring(2);//ignore the 0x
+
+                var bytes = new byte[hexString.Length  / 2];
+                try
+                {                  
+
+                    for (var i = 0; i < bytes.Length; i++)
+                    {
+                        bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+                    }
+                }
+                catch (FormatException)
+                {
+                    return null;//Failed
+                }
+
+                return Encoding.UTF8.GetString(bytes);
+            }
+            return null;
+        }
+
+
+
         /// <inheritdoc />
         public override IProcessConverter? ProcessConverter => NuixProcessConverter.Instance;
+
+        private class BinToHexBlock : IUnitRubyBlock
+        {
+            public static BinToHexBlock Instance = new BinToHexBlock();
+
+            private BinToHexBlock()
+            {
+
+            }
+
+            public string BlockName => "BinToHex";
+
+            public Version RequiredNuixVersion { get; } = new Version(5,0);
+
+            public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures { get; } = new List<NuixFeature>();
+
+            public IEnumerable<string> FunctionDefinitions { get; } = new List<string>()
+            {
+                @"def binToHex(s)
+  suffix = s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
+  '0x' + suffix
+end
+"
+            };
+
+            public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
+            {
+                return new List<string>();
+            }
+
+            public string GetBlockText(ref int blockNumber)
+            {
+                return string.Empty;
+            }
+
+            public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber)
+            {
+                return new List<string>();
+            }
+        }
     }
 }

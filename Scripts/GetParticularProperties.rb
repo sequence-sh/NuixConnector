@@ -33,16 +33,19 @@ def GetParticularProperties(utilities,casePathArg,searchArg,propertyRegexArg,val
 
     items.each do |i| 
         i.getProperties().each do |k,v|
-            if propertyRegex =~ k
-                if valueRegex != nil
-                    if match = valueRegex.match(k) #Only output if the value regex actually matches
-                        valueString = match.captures[0]
-                        text << "#{k}\t#{valueString}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
-                    end
-                else #output the entire value
-                    text << "#{k}\t#{valueString}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
-                end                                           
-            end          
+            begin
+                if propertyRegex =~ k
+                    if valueRegex != nil
+                        if match = valueRegex.match(k) #Only output if the value regex actually matches
+                            valueString = match.captures[0]
+                            text << "\n#{k}\t#{valueString}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
+                        end
+                    else #output the entire value
+                        text << "\n#{k}\t#{v}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
+                    end                                           
+                end
+            rescue
+            end
         end
     end
 
@@ -51,6 +54,12 @@ def GetParticularProperties(utilities,casePathArg,searchArg,propertyRegexArg,val
 end
 
 
+def binToHex(s)
+  suffix = s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
+  '0x' + suffix
+end
+
+
 
 result0 = GetParticularProperties(utilities, params[:casePathArg0], params[:searchArg0], params[:propertyRegexArg0], params[:valueRegexArg0])
-puts "--Final Result: #{result0}"
+puts "--Final Result: #{binToHex(result0)}"
