@@ -37,6 +37,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [YamlMember(Order = 3)]
         public string? ProductionProfileName { get; set; }
 
+        //TODO Figure out profiles for this
+
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
         /// The name of the production set to export.

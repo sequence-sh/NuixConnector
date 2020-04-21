@@ -91,6 +91,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override Version RequiredVersion => OCRProfilePath == null ? new Version(6, 2) : new Version(7, 6);
 
         /// <inheritdoc />
+        internal override IEnumerable<string> GetAdditionalArgumentErrors()
+        {
+            if (OCRProfileName == null && OCRProfilePath == null)
+                yield return $"Either {nameof(OCRProfileName)} or {nameof(OCRProfilePath)} must be set.";
+
+            else if(OCRProfileName != null && OCRProfilePath != null)
+                yield return $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.";
+        }
+
+
+        /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
         {
             NuixFeature.OCR_PROCESSING

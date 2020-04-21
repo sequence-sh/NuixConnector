@@ -148,6 +148,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>{NuixFeature.CASE_CREATION};
 
         /// <inheritdoc />
+        internal override IEnumerable<string> GetAdditionalArgumentErrors()
+        {
+            if (ProcessingProfileName == null && ProcessingProfilePath == null)
+                yield return $"Either {nameof(ProcessingProfileName)} or {nameof(ProcessingProfilePath)} must be set.";
+
+            else if(ProcessingProfileName != null && ProcessingProfilePath != null)
+                yield return $"Only one of {nameof(ProcessingProfileName)} and {nameof(ProcessingProfilePath)} may be set.";
+        }
+
+        /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);

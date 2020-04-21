@@ -32,6 +32,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [ExampleValue("MyProfile")]
         public string ConcordanceProfileName { get; set; }
 
+        //TODO add a profile from a file - there is no Nuix function to do this right now.
+
         /// <summary>
         /// The concordance date format to use.
         /// </summary>
