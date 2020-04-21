@@ -43,6 +43,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly string PasswordFilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt");
 
+        private static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "DefaultOCRProfile.xml");
+        private static readonly string DefaultProcessingProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "DefaultProcessingProfile.xml");
+
         private static readonly string PoemTextImagePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png");
         private static readonly string ConcordancePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat");
         private static readonly string MigrationPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip");
@@ -130,15 +133,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder
                 ),
 
-                new TestSequence("Add file to case Compatibility",
+                new TestSequence("Add file to case with profile path",
                     DeleteCaseFolder,
                     AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*.txt"),
-                    AddData,
+                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder", ProcessingProfilePath = DefaultProcessingProfilePath},
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
-                    ),
+                ),
 
                 new TestSequence("Conditionally Add file to case",
                     DeleteCaseFolder,
@@ -240,6 +243,24 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCount(1, "sheep"),
                     DeleteCaseFolder
                     ),
+                new TestSequence("Perform OCR with named profile",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AssertCount(0, "sheep"),
+                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
+                    new NuixPerformOCR {CasePath= CasePath, SearchTerm = "*.png", OCRProfileName  = "Default"},
+                    AssertCount(1, "sheep"),
+                    DeleteCaseFolder
+                ),
+                new TestSequence("Perform OCR with path to profile",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AssertCount(0, "sheep"),
+                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
+                    new NuixPerformOCR {CasePath= CasePath, SearchTerm = "*.png", OCRProfilePath = DefaultOCRProfilePath},
+                    AssertCount(1, "sheep"),
+                    DeleteCaseFolder
+                ),
                 new TestSequence("Add To Item Set",
                     DeleteCaseFolder,
                     CreateCase,

@@ -237,15 +237,16 @@ Adds data from a Concordance file to a NUIX case.
 
 Adds a file or directory to a Nuix Case.
 
-|Parameter            |Type    |Required|Summary                                                       |Default                                       |Example              |
-|:-------------------:|:------:|:------:|:------------------------------------------------------------:|:--------------------------------------------:|:-------------------:|
-|Path                 |`string`|☑️      |The path of the file or directory to add to the case.         |                                              |C:/Data/File.txt     |
-|Custodian            |`string`|☑️      |The custodian to assign to the new folder.                    |                                              |                     |
-|Description          |`string`|        |The description of the new folder.                            |                                              |                     |
-|FolderName           |`string`|☑️      |The name of the folder to create.                             |                                              |                     |
-|CasePath             |`string`|☑️      |The path to the case.                                         |                                              |C:/Cases/MyCase      |
-|ProcessingProfileName|`string`|        |The name of the processing profile to use.                    |*The default processing profile will be used.*|MyProcessingProfile  |
-|PasswordFilePath     |`string`|☑️      |The path of a file containing passwords to use for decryption.|                                              |C:/Data/Passwords.txt|
+|Parameter            |Type    |Required|Summary                                                       |Default                                       |Example                            |
+|:-------------------:|:------:|:------:|:------------------------------------------------------------:|:--------------------------------------------:|:---------------------------------:|
+|Path                 |`string`|☑️      |The path of the file or directory to add to the case.         |                                              |C:/Data/File.txt                   |
+|Custodian            |`string`|☑️      |The custodian to assign to the new folder.                    |                                              |                                   |
+|Description          |`string`|        |The description of the new folder.                            |                                              |                                   |
+|FolderName           |`string`|☑️      |The name of the folder to create.                             |                                              |                                   |
+|CasePath             |`string`|☑️      |The path to the case.                                         |                                              |C:/Cases/MyCase                    |
+|PasswordFilePath     |`string`|☑️      |The path of a file containing passwords to use for decryption.|                                              |C:/Data/Passwords.txt              |
+|ProcessingProfileName|`string`|        |The name of the Processing profile to use.                    |*The default processing profile will be used.*|MyProcessingProfile                |
+|ProcessingProfilePath|`string`|        |The path to the Processing profile to use                     |*The default processing profile will be used.*|C:/Profiles/MyProcessingProfile.xml|
 
 <a name="NuixAddToItemSet"></a>
 ## NuixAddToItemSet
@@ -453,11 +454,12 @@ Migrates a case to the latest version if necessary.
 
 Performs optical character recognition on files in a NUIX case.
 
-|Parameter     |Type    |Required|Summary                                        |Default                                                                                                                                         |Example        |
-|:------------:|:------:|:------:|:---------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
-|CasePath      |`string`|☑️      |The path to the case.                          |                                                                                                                                                |C:/Cases/MyCase|
-|OCRProfileName|`string`|        |The name of the OCR profile to use.            |*The default profile will be used.*                                                                                                             |MyOcrProfile   |
-|SearchTerm    |`string`|        |The term to use for searching for files to OCR.|NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))|               |
+|Parameter     |Type    |Required|Summary                                                                                   |Default                                                                                                                                         |Example                  |
+|:------------:|:------:|:------:|:----------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------:|
+|CasePath      |`string`|☑️      |The path to the case.                                                                     |                                                                                                                                                |C:/Cases/MyCase          |
+|SearchTerm    |`string`|        |The term to use for searching for files to OCR.                                           |NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))|                         |
+|OCRProfileName|`string`|        |The name of the OCR profile to use. This cannot be set at the same time as OCRProfilePath.|*The default profile will be used.*                                                                                                             |MyOcrProfile             |
+|OCRProfilePath|`string`|        |Path to the OCR profile to use. This cannot be set at the same times as OCRProfileName.   |*The default profile will be used.*                                                                                                             |C:\Profiles\MyProfile.xml|
 
 <a name="NuixRemoveFromProductionSet"></a>
 ## NuixRemoveFromProductionSet
