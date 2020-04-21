@@ -97,7 +97,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         hash1.each do |type, hash2|
             puts ""#{custodian} has #{hash2.length} #{type}s"" if custodian != ""*""
             hash2.sort_by{|value, count| -count}.each do |value, count|
-                text <<  ""#{custodian}\t#{type}\t#{value}\t#{count}""
+                text <<  ""\n#{custodian}\t#{type}\t#{value}\t#{count}""
             end
         end
     end

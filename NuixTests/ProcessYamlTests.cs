@@ -89,21 +89,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         {
                             Delimiter = ",",
                             CSVFilePath = "CSV Path",
-                            InjectColumns = new Dictionary<string, Injection>
+
+                            ColumnInjections = new List<ColumnInjection>()
                             {
+                                new ColumnInjection
                                 {
-                                    "SearchTerm",
-                                    new Injection
-                                    {
-                                        Property = nameof(NuixSearchAndTag.SearchTerm)
-                                    }
+                                    Column = "SearchTerm",
+                                    Property = nameof(NuixSearchAndTag.SearchTerm)
                                 },
+                                new ColumnInjection()
                                 {
-                                    "Tag",
-                                    new Injection
-                                    {
-                                        Property = nameof(NuixSearchAndTag.Tag)
-                                    }
+                                    Column = "Tag",
+                                    Property = nameof(NuixSearchAndTag.Tag)
                                 }
                             }
                         },

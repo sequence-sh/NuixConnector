@@ -82,7 +82,7 @@ def CreateReport(utilities,casePathArg)
         hash1.each do |type, hash2|
             puts "#{custodian} has #{hash2.length} #{type}s" if custodian != "*"
             hash2.sort_by{|value, count| -count}.each do |value, count|
-                text <<  "#{custodian}\t#{type}\t#{value}\t#{count}"
+                text <<  "\n#{custodian}\t#{type}\t#{value}\t#{count}"
             end
         end
     end
@@ -92,6 +92,12 @@ def CreateReport(utilities,casePathArg)
 end
 
 
+def binToHex(s)
+  suffix = s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
+  '0x' + suffix
+end
+
+
 
 result0 = CreateReport(utilities, params[:casePathArg0])
-puts "--Final Result: #{result0}"
+puts "--Final Result: #{binToHex(result0)}"

@@ -157,20 +157,33 @@ Writes the output of a process to a file. Will overwrite if necessary.
 
 <a name="Enumeration"></a>
 # Enumerations
+<a name="ColumnInjection"></a>
+## ColumnInjection
+
+Injects values from a CSV column into a property of a loop's process.
+
+|Parameter|Type    |Required|Summary                                                                                                                                                                |Default                                 |Example   |
+|:-------:|:------:|:------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------:|:--------:|
+|Column   |`string`|☑️      |The column in the CSV to get the values from.                                                                                                                          |                                        |SearchTerm|
+|Property |`string`|☑️      |The property of the subProcess to inject.                                                                                                                              |                                        |SearchTerm|
+|Regex    |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used.                                                                 |*The entire value will be injected.*    |\w+       |
+|Template |`string`|        |The template to apply to the element before injection. The string '$1' in the template will be replaced with the element. The template will be applied after the Regex.|*The value will be injected on its own.*|$1.txt    |
+
 <a name="CSV"></a>
 ## CSV
 
 Enumerates through a CSV file.
 
-|Parameter                |Type                                        |Required|Summary                                                                                                                         |Default|
-|:-----------------------:|:------------------------------------------:|:------:|:------------------------------------------------------------------------------------------------------------------------------:|:-----:|
-|CommentToken             |`string`                                    |        |A string that, when placed at the beginning of a line, indicates that the line is a comment and should be ignored by the parser.|       |
-|CSVFilePath              |`string`                                    |        |The path to the CSV file. Either this, CSVText, or CSVProcess must be set (but not more than one).                              |       |
-|CSVProcess               |[Process](#Process)                         |        |A process which produces a string in CSV format. Either this, CSVFilePath, or CSVText must be set (but not more than one).      |       |
-|CSVText                  |`string`                                    |        |Raw CSV. Either this, CSVFilePath, or CSVProcess must be set (but not more than one).                                           |       |
-|Delimiter                |`string`                                    |        |The delimiter used in the CSV file.                                                                                             |,      |
-|HasFieldsEnclosedInQuotes|`bool`                                      |        |Determines whether fields are enclosed in quotation marks.                                                                      |False  |
-|InjectColumns            |Dictionary<`string`,[Injection](#Injection)>|☑️      |List of mappings from CSV headers to property injection.                                                                        |       |
+|Parameter                |Type                                     |Required|Summary                                                                                                                         |Default|
+|:-----------------------:|:---------------------------------------:|:------:|:------------------------------------------------------------------------------------------------------------------------------:|:-----:|
+|ColumnInjections         |List<[ColumnInjection](#ColumnInjection)>|☑️      |List of columns and properties to inject.                                                                                       |       |
+|CommentToken             |`string`                                 |        |A string that, when placed at the beginning of a line, indicates that the line is a comment and should be ignored by the parser.|       |
+|CSVFilePath              |`string`                                 |        |The path to the CSV file. Either this, CSVText, or CSVProcess must be set (but not more than one).                              |       |
+|CSVProcess               |[Process](#Process)                      |        |A process which produces a string in CSV format. Either this, CSVFilePath, or CSVText must be set (but not more than one).      |       |
+|CSVText                  |`string`                                 |        |Raw CSV. Either this, CSVFilePath, or CSVProcess must be set (but not more than one).                                           |       |
+|Delimiter                |`string`                                 |        |The delimiter used in the CSV file.                                                                                             |,      |
+|Distinct                 |`bool`                                   |        |Whether to only enumerate unique values from the CSV. Uniqueness is determined only from the columns which are being injected.  |False  |
+|HasFieldsEnclosedInQuotes|`bool`                                   |        |Determines whether fields are enclosed in quotation marks.                                                                      |False  |
 
 <a name="Directory"></a>
 ## Directory
@@ -191,7 +204,7 @@ Injects a value from the enumerator into a property of a loop's process.
 |:-------:|:------:|:------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------:|:--------:|
 |Property |`string`|☑️      |The property of the subProcess to inject.                                                                                                                              |                                        |SearchTerm|
 |Regex    |`string`|        |The regex to use to extract the useful part of the element. The first match of the regex will be used.                                                                 |*The entire value will be injected.*    |\w+       |
-|Template |`string`|        |The template to apply to the element before injection. The string '$s' in the template will be replaced with the element. The template will be applied after the Regex.|*The value will be injected on its own.*|$s.txt    |
+|Template |`string`|        |The template to apply to the element before injection. The string '$1' in the template will be replaced with the element. The template will be applied after the Regex.|*The value will be injected on its own.*|$1.txt    |
 
 <a name="List"></a>
 ## List
@@ -407,11 +420,12 @@ Generates print previews for items in a production set.
 
 A process that the searches a case for items and outputs the values of item properties. The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid' Use this inside a WriteFile process to write it to a file.
 
-|Parameter    |Type    |Required|Summary                |Example        |
-|:-----------:|:------:|:------:|:---------------------:|:-------------:|
-|CasePath     |`string`|☑️      |The path to the case.  |C:/Cases/MyCase|
-|SearchTerm   |`string`|☑️      |The term to search for.|*.txt          |
-|PropertyRegex|`string`|☑️      |The term to search for.|Date           |
+|Parameter    |Type    |Required|Summary                                                                                                                                                     |Example        |
+|:-----------:|:------:|:------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
+|CasePath     |`string`|☑️      |The path to the case.                                                                                                                                       |C:/Cases/MyCase|
+|SearchTerm   |`string`|☑️      |The term to search for.                                                                                                                                     |*.txt          |
+|PropertyRegex|`string`|☑️      |The regex to search the property for.                                                                                                                       |Date           |
+|ValueRegex   |`string`|        |An optional regex to check the value. If this is set, only values which match this regex will be returned, and only the contents of the first capture group.|(199\d)        |
 
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds

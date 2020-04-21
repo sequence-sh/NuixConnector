@@ -459,7 +459,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         Text = new NuixGetItemProperties
                         {
                             CasePath = CasePath,
-                            PropertyRegex = ".+",
+                            PropertyRegex = "(.+)",
                             SearchTerm = "*"
                         }
                     },
