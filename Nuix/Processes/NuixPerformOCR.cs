@@ -93,10 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override IEnumerable<string> GetAdditionalArgumentErrors()
         {
-            if (OCRProfileName == null && OCRProfilePath == null)
-                yield return $"Either {nameof(OCRProfileName)} or {nameof(OCRProfilePath)} must be set.";
-
-            else if(OCRProfileName != null && OCRProfilePath != null)
+            if(OCRProfileName != null && OCRProfilePath != null)
                 yield return $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.";
         }
 

@@ -150,10 +150,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override IEnumerable<string> GetAdditionalArgumentErrors()
         {
-            if (ProcessingProfileName == null && ProcessingProfilePath == null)
-                yield return $"Either {nameof(ProcessingProfileName)} or {nameof(ProcessingProfilePath)} must be set.";
-
-            else if(ProcessingProfileName != null && ProcessingProfilePath != null)
+            if(ProcessingProfileName != null && ProcessingProfilePath != null)
                 yield return $"Only one of {nameof(ProcessingProfileName)} and {nameof(ProcessingProfilePath)} may be set.";
         }
 
