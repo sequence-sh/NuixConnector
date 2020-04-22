@@ -2,7 +2,7 @@
   "profiles": {
     "NuixClientConsole": {
       "commandName": "Project",
-      "commandLineArgs": "RunProcessFromYaml -yamlpath D:\\Salient\\Workflow\\SalientScript2.yml"
+      "commandLineArgs": "documentation"
     }
   }
 }

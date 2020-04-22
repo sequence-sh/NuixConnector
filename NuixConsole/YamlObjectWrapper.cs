@@ -30,6 +30,11 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             var instance = Activator.CreateInstance(processType);
             Parameters = RelevantProperties.Select(propertyInfo => 
                 new PropertyWrapper(propertyInfo, propertyInfo.GetValue(instance)?.ToString()  )).ToList();
+
+            Requirements = instance is Process process ? process.GetRequirements() : Enumerable.Empty<string>();
+
+            TypeDetails = instance is Process process1 ? process1.GetReturnTypeInfo() : null;
+
         }
         
         /// <inheritdoc />
@@ -41,14 +46,19 @@ namespace Reductech.EDR.Connectors.Nuix.Console
         /// <inheritdoc />
         public string Summary => _processType.GetXmlDocsSummary();
 
+        /// <inheritdoc />
+        public string? TypeDetails { get; }
+    
+        /// <inheritdoc />
+        public IEnumerable<string> Requirements { get; }
+
 
         protected IEnumerable<PropertyInfo> RelevantProperties { get; }
 
         /// <inheritdoc />
         public IEnumerable<IParameter> Parameters { get; }
 
-        /// <inheritdoc />
-        public string? ReturnType => Activator.CreateInstance(_processType) is Process p ? p.GetReturnTypeInfo() : null;
+        //public string? ReturnType => Activator.CreateInstance(_processType) is Process p ? p.GetReturnTypeInfo() : null;
 
 
         protected class PropertyWrapper : IParameter
@@ -64,6 +74,10 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                 DefaultValueString = explanation == null ? defaultValueString : $"*{explanation}*";
 
                 Example = propertyInfo.GetCustomAttribute<ExampleValueAttribute>()?.ExampleValue.ToString();
+
+                Requirements = string.Join("\r\n", propertyInfo
+                    .GetCustomAttributes<RequiredVersionAttribute>()
+                    .Select(x => x.Text));
             }
 
             public string Name => _propertyInfo.Name;
@@ -74,6 +88,10 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             /// <inheritdoc />
             public string? Example { get; }
             public string? DefaultValueString { get; }
+
+            /// <inheritdoc />
+            public string? Requirements { get; }
+        
         }
     }
 }
