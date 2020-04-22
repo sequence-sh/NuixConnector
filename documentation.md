@@ -32,6 +32,8 @@ Generates ruby scripts for all RubyScriptProcesses in the AppDomain.
 <a name="AssertError"></a>
 ## AssertError
 
+**Unit**
+
 Asserts that a particular process will produce an error.
 
 |Parameter|Type               |Required|Summary                              |
@@ -40,6 +42,8 @@ Asserts that a particular process will produce an error.
 
 <a name="AssertFalse"></a>
 ## AssertFalse
+
+**Unit**
 
 Asserts that the Check will return false.
 
@@ -50,6 +54,8 @@ Asserts that the Check will return false.
 <a name="AssertTrue"></a>
 ## AssertTrue
 
+**Unit**
+
 Asserts that the Check will return true.
 
 |Parameter|Type               |Required|Summary                                                                       |
@@ -58,6 +64,8 @@ Asserts that the Check will return true.
 
 <a name="CheckNumber"></a>
 ## CheckNumber
+
+**Boolean**
 
 Checks that the count of the Check is within a particular range.
 
@@ -70,6 +78,8 @@ Checks that the count of the Check is within a particular range.
 <a name="Conditional"></a>
 ## Conditional
 
+**Returns the same type as the 'Then' and 'Else' processes. Returns void if there is no Else process.**
+
 Runs the 'If' process. If it completed successfully then run the 'Then' process, otherwise run the 'Else' process.
 
 |Parameter|Type               |Required|Summary                                                                                                                                             |
@@ -81,6 +91,8 @@ Runs the 'If' process. If it completed successfully then run the 'Then' process,
 <a name="CreateDirectory"></a>
 ## CreateDirectory
 
+**Unit**
+
 Creates a new directory in the file system.
 
 |Parameter|Type    |Required|Summary                             |
@@ -90,6 +102,8 @@ Creates a new directory in the file system.
 <a name="DeleteItem"></a>
 ## DeleteItem
 
+**Unit**
+
 Deletes a file or a directory.
 
 |Parameter|Type    |Required|Summary                                     |
@@ -98,6 +112,8 @@ Deletes a file or a directory.
 
 <a name="DoesFileContain"></a>
 ## DoesFileContain
+
+**Boolean**
 
 Checks whether a particular file contains a particular string.
 
@@ -109,6 +125,8 @@ Checks whether a particular file contains a particular string.
 <a name="Loop"></a>
 ## Loop
 
+**Unit**
+
 Performs a nested process once for each element in an enumeration.
 
 |Parameter|Type                       |Required|Summary                                  |
@@ -118,6 +136,8 @@ Performs a nested process once for each element in an enumeration.
 
 <a name="RunExternalProcess"></a>
 ## RunExternalProcess
+
+**Unit**
 
 Runs an external process.
 
@@ -129,6 +149,8 @@ Runs an external process.
 <a name="Sequence"></a>
 ## Sequence
 
+**Unit**
+
 Executes each step, one after the another. Will stop if a process fails.
 
 |Parameter|Type                     |Required|Summary                                                                  |
@@ -137,6 +159,8 @@ Executes each step, one after the another. Will stop if a process fails.
 
 <a name="Unzip"></a>
 ## Unzip
+
+**Unit**
 
 Unzips a file.
 
@@ -148,6 +172,8 @@ Unzips a file.
 
 <a name="WriteFile"></a>
 ## WriteFile
+
+**Unit**
 
 Writes the output of a process to a file. Will overwrite if necessary.
 
@@ -220,6 +246,14 @@ Enumerates through elements of a list.
 <a name="NuixAddConcordance"></a>
 ## NuixAddConcordance
 
+**Unit**
+
+*Requires Nuix Version 7.6*
+
+*Requires Nuix Feature 'CASE_CREATION'*
+
+*Requires Nuix Feature 'METADATA_IMPORT'*
+
 Adds data from a Concordance file to a NUIX case.
 
 |Parameter             |Type    |Required|Summary                                           |Example                   |
@@ -235,21 +269,33 @@ Adds data from a Concordance file to a NUIX case.
 <a name="NuixAddItem"></a>
 ## NuixAddItem
 
+**Unit**
+
+*Requires Nuix Version 5.0*
+
+*Requires Nuix Feature 'CASE_CREATION'*
+
 Adds a file or directory to a Nuix Case.
 
-|Parameter            |Type    |Required|Summary                                                       |Default                                       |Example                            |
-|:-------------------:|:------:|:------:|:------------------------------------------------------------:|:--------------------------------------------:|:---------------------------------:|
-|Path                 |`string`|☑️      |The path of the file or directory to add to the case.         |                                              |C:/Data/File.txt                   |
-|Custodian            |`string`|☑️      |The custodian to assign to the new folder.                    |                                              |                                   |
-|Description          |`string`|        |The description of the new folder.                            |                                              |                                   |
-|FolderName           |`string`|☑️      |The name of the folder to create.                             |                                              |                                   |
-|CasePath             |`string`|☑️      |The path to the case.                                         |                                              |C:/Cases/MyCase                    |
-|PasswordFilePath     |`string`|☑️      |The path of a file containing passwords to use for decryption.|                                              |C:/Data/Passwords.txt              |
-|ProcessingProfileName|`string`|        |The name of the Processing profile to use.                    |*The default processing profile will be used.*|MyProcessingProfile                |
-|ProcessingProfilePath|`string`|        |The path to the Processing profile to use                     |*The default processing profile will be used.*|C:/Profiles/MyProcessingProfile.xml|
+|Parameter            |Type    |Required|Summary                                                       |Default                                       |Example                            |Requirements|
+|:-------------------:|:------:|:------:|:------------------------------------------------------------:|:--------------------------------------------:|:---------------------------------:|:----------:|
+|Path                 |`string`|☑️      |The path of the file or directory to add to the case.         |                                              |C:/Data/File.txt                   |            |
+|Custodian            |`string`|☑️      |The custodian to assign to the new folder.                    |                                              |                                   |            |
+|Description          |`string`|        |The description of the new folder.                            |                                              |                                   |            |
+|FolderName           |`string`|☑️      |The name of the folder to create.                             |                                              |                                   |            |
+|CasePath             |`string`|☑️      |The path to the case.                                         |                                              |C:/Cases/MyCase                    |            |
+|PasswordFilePath     |`string`|☑️      |The path of a file containing passwords to use for decryption.|                                              |C:/Data/Passwords.txt              |Nuix 7.2    |
+|ProcessingProfileName|`string`|        |The name of the Processing profile to use.                    |*The default processing profile will be used.*|MyProcessingProfile                |Nuix 7.6    |
+|ProcessingProfilePath|`string`|        |The path to the Processing profile to use                     |*The default processing profile will be used.*|C:/Profiles/MyProcessingProfile.xml|Nuix 7.6    |
 
 <a name="NuixAddToItemSet"></a>
 ## NuixAddToItemSet
+
+**Unit**
+
+*Requires Nuix Version 5.0*
+
+*Requires Nuix Feature 'ANALYSIS'*
 
 Searches a case with a particular search string and adds all items it finds to a particular item set. Will create a new item set if one doesn't already exist.
 
@@ -268,6 +314,12 @@ Searches a case with a particular search string and adds all items it finds to a
 <a name="NuixAddToProductionSet"></a>
 ## NuixAddToProductionSet
 
+**Unit**
+
+*Requires Nuix Version 5.0*
+
+*Requires Nuix Feature 'PRODUCTION_SET'*
+
 Searches a case with a particular search string and adds all items it finds to a production set. Will create a new production set if one with the given name does not already exist.
 
 |Parameter        |Type    |Required|Summary                                                                          |Example                 |
@@ -282,6 +334,12 @@ Searches a case with a particular search string and adds all items it finds to a
 <a name="NuixAnnotateDocumentIdList"></a>
 ## NuixAnnotateDocumentIdList
 
+**Unit**
+
+*Requires Nuix Version 7.4*
+
+*Requires Nuix Feature 'PRODUCTION_SET'*
+
 Annotates a document ID list to add production set names to it.
 
 |Parameter        |Type    |Required|Summary                                         |Example        |
@@ -292,6 +350,14 @@ Annotates a document ID list to add production set names to it.
 
 <a name="NuixAssertPrintPreviewState"></a>
 ## NuixAssertPrintPreviewState
+
+**Unit**
+
+*Requires Nuix Version 5.2*
+
+*Requires Nuix Feature 'ANALYSIS'*
+
+*Requires Nuix Feature 'PRODUCTION_SET'*
 
 Checks the print preview state of the production set.
 
@@ -304,6 +370,12 @@ Checks the print preview state of the production set.
 <a name="NuixAssignCustodian"></a>
 ## NuixAssignCustodian
 
+**Unit**
+
+*Requires Nuix Version 5.0*
+
+*Requires Nuix Feature 'ANALYSIS'*
+
 Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
 
 |Parameter |Type    |Required|Summary                                  |Example        |
@@ -315,6 +387,10 @@ Searches a NUIX case with a particular search string and assigns all files it fi
 <a name="NuixCountItems"></a>
 ## NuixCountItems
 
+**Unit**
+
+*Requires Nuix Version 5.0*
+
 Returns the number of items matching a particular search term
 
 |Parameter |Type    |Required|Summary                  |Example        |
@@ -324,6 +400,12 @@ Returns the number of items matching a particular search term
 
 <a name="NuixCreateCase"></a>
 ## NuixCreateCase
+
+**Unit**
+
+*Requires Nuix Version 5.0*
+
+*Requires Nuix Feature 'CASE_CREATION'*
 
 Creates a new case.
 
@@ -337,6 +419,10 @@ Creates a new case.
 <a name="NuixCreateIrregularItemsReport"></a>
 ## NuixCreateIrregularItemsReport
 
+**Unit**
+
+*Requires Nuix Version 5.0*
+
 Creates a list of all irregular items in a case. The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid' Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles' Use this inside a WriteFile process to write it to a file.
 
 |Parameter|Type    |Required|Summary              |Example        |
@@ -345,6 +431,12 @@ Creates a list of all irregular items in a case. The report is in CSV format. Th
 
 <a name="NuixCreateNRTReport"></a>
 ## NuixCreateNRTReport
+
+**Unit**
+
+*Requires Nuix Version 7.4*
+
+*Requires Nuix Feature 'ANALYSIS'*
 
 Creates a report using an NRT file.
 
@@ -359,6 +451,12 @@ Creates a report using an NRT file.
 <a name="NuixCreateReport"></a>
 ## NuixCreateReport
 
+**Unit**
+
+*Requires Nuix Version 6.2*
+
+*Requires Nuix Feature 'ANALYSIS'*
+
 Creates a report for a Nuix case. The report is in csv format. The headers are 'Custodian', 'Type', 'Value', and 'Count'. The different types are: 'Kind', 'Type', 'Tag', and 'Address'. Use this inside a WriteFile process to write it to a file.
 
 |Parameter|Type    |Required|Summary              |Example        |
@@ -367,6 +465,10 @@ Creates a report for a Nuix case. The report is in csv format. The headers are '
 
 <a name="NuixCreateTermList"></a>
 ## NuixCreateTermList
+
+**Unit**
+
+*Requires Nuix Version 5.0*
 
 Creates a list of all terms appearing in the case and their frequencies. The report is in CSV format. The headers are 'Term' and 'Count' Use this inside a WriteFile process to write it to a file.
 
@@ -377,6 +479,10 @@ Creates a list of all terms appearing in the case and their frequencies. The rep
 <a name="NuixDoesCaseExists"></a>
 ## NuixDoesCaseExists
 
+**Unit**
+
+*Requires Nuix Version 5.0*
+
 Returns whether or not a case exists.
 
 |Parameter|Type    |Required|Summary              |Example        |
@@ -385,6 +491,14 @@ Returns whether or not a case exists.
 
 <a name="NuixExportConcordance"></a>
 ## NuixExportConcordance
+
+**Unit**
+
+*Requires Nuix Version 5.0*
+
+*Requires Nuix Feature 'EXPORT_ITEMS'*
+
+*Requires Nuix Feature 'PRODUCTION_SET'*
 
 Exports Concordance for a particular production set.
 
@@ -399,6 +513,10 @@ Exports Concordance for a particular production set.
 <a name="NuixExtractEntities"></a>
 ## NuixExtractEntities
 
+**Unit**
+
+*Requires Nuix Version 5.0*
+
 Extract Entities from a Nuix Case.
 
 |Parameter   |Type    |Required|Summary                                           |Example        |
@@ -409,6 +527,12 @@ Extract Entities from a Nuix Case.
 <a name="NuixGeneratePrintPreviews"></a>
 ## NuixGeneratePrintPreviews
 
+**Unit**
+
+*Requires Nuix Version 5.2*
+
+*Requires Nuix Feature 'PRODUCTION_SET'*
+
 Generates print previews for items in a production set.
 
 |Parameter        |Type    |Required|Summary                                           |Example        |
@@ -418,6 +542,10 @@ Generates print previews for items in a production set.
 
 <a name="NuixGetItemProperties"></a>
 ## NuixGetItemProperties
+
+**Unit**
+
+*Requires Nuix Version 6.2*
 
 A process that the searches a case for items and outputs the values of item properties. The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid' Use this inside a WriteFile process to write it to a file.
 
@@ -431,6 +559,12 @@ A process that the searches a case for items and outputs the values of item prop
 <a name="NuixImportDocumentIds"></a>
 ## NuixImportDocumentIds
 
+**Unit**
+
+*Requires Nuix Version 7.4*
+
+*Requires Nuix Feature 'PRODUCTION_SET'*
+
 Imports the given document IDs into this production set. Only works if this production set has imported numbering.
 
 |Parameter                    |Type    |Required|Summary                                                                                |Default|Example        |
@@ -443,6 +577,10 @@ Imports the given document IDs into this production set. Only works if this prod
 <a name="NuixMigrateCase"></a>
 ## NuixMigrateCase
 
+**Unit**
+
+*Requires Nuix Version 5.0*
+
 Migrates a case to the latest version if necessary.
 
 |Parameter|Type    |Required|Summary              |Example        |
@@ -452,17 +590,29 @@ Migrates a case to the latest version if necessary.
 <a name="NuixPerformOCR"></a>
 ## NuixPerformOCR
 
+**Unit**
+
+*Requires Nuix Version 6.2*
+
+*Requires Nuix Feature 'OCR_PROCESSING'*
+
 Performs optical character recognition on files in a NUIX case.
 
-|Parameter     |Type    |Required|Summary                                                                                   |Default                                                                                                                                         |Example                  |
-|:------------:|:------:|:------:|:----------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------:|
-|CasePath      |`string`|☑️      |The path to the case.                                                                     |                                                                                                                                                |C:/Cases/MyCase          |
-|SearchTerm    |`string`|        |The term to use for searching for files to OCR.                                           |NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))|                         |
-|OCRProfileName|`string`|        |The name of the OCR profile to use. This cannot be set at the same time as OCRProfilePath.|*The default profile will be used.*                                                                                                             |MyOcrProfile             |
-|OCRProfilePath|`string`|        |Path to the OCR profile to use. This cannot be set at the same times as OCRProfileName.   |*The default profile will be used.*                                                                                                             |C:\Profiles\MyProfile.xml|
+|Parameter     |Type    |Required|Summary                                                                                   |Default                                                                                                                                         |Example                  |Requirements|
+|:------------:|:------:|:------:|:----------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------:|:----------:|
+|CasePath      |`string`|☑️      |The path to the case.                                                                     |                                                                                                                                                |C:/Cases/MyCase          |            |
+|SearchTerm    |`string`|        |The term to use for searching for files to OCR.                                           |NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))|                         |            |
+|OCRProfileName|`string`|        |The name of the OCR profile to use. This cannot be set at the same time as OCRProfilePath.|*The default profile will be used.*                                                                                                             |MyOcrProfile             |            |
+|OCRProfilePath|`string`|        |Path to the OCR profile to use. This cannot be set at the same times as OCRProfileName.   |*The default profile will be used.*                                                                                                             |C:\Profiles\MyProfile.xml|Nuix 7.6    |
 
 <a name="NuixRemoveFromProductionSet"></a>
 ## NuixRemoveFromProductionSet
+
+**Unit**
+
+*Requires Nuix Version 5.0*
+
+*Requires Nuix Feature 'PRODUCTION_SET'*
 
 Removes particular items from a Nuix production set.
 
@@ -475,6 +625,12 @@ Removes particular items from a Nuix production set.
 <a name="NuixReorderProductionSet"></a>
 ## NuixReorderProductionSet
 
+**Unit**
+
+*Requires Nuix Version 5.2*
+
+*Requires Nuix Feature 'PRODUCTION_SET'*
+
 Reorders and renumbers the items in a production set.
 
 |Parameter        |Type                                             |Required|Summary                                            |Default |Example        |
@@ -485,6 +641,12 @@ Reorders and renumbers the items in a production set.
 
 <a name="NuixSearchAndTag"></a>
 ## NuixSearchAndTag
+
+**Unit**
+
+*Requires Nuix Version 5.0*
+
+*Requires Nuix Feature 'ANALYSIS'*
 
 Searches a NUIX case with a particular search string and tags all files it finds.
 
