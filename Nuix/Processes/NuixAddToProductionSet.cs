@@ -54,6 +54,27 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public string? Description { get; set; }
 
         /// <summary>
+        /// The name of the Production profile to use.
+        /// Either this or the ProductionProfilePath must be set
+        /// </summary>
+        
+        [RequiredVersion("Nuix", "7.2")]
+        [YamlMember(Order = 9)]
+        [ExampleValue("MyProcessingProfile")]
+        [DefaultValueExplanation("The default processing profile will be used.")]
+        public string? ProductionProfileName { get; set; }
+
+        /// <summary>
+        /// The path to the Production profile to use.
+        /// Either this or the ProductionProfileName must be set.
+        /// </summary>
+        [RequiredVersion("Nuix", "7.6")]
+        [YamlMember(Order = 10)]
+        [ExampleValue("C:/Profiles/MyProcessingProfile.xml")]
+        [DefaultValueExplanation("The default processing profile will be used.")]
+        public string? ProductionProfilePath { get; set; }
+
+        /// <summary>
         /// How to order the items to be added to the production set.
         /// </summary>
         [YamlMember(Order = 7)]
@@ -77,6 +98,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("searchArg", SearchTerm, false);
             yield return ("productionSetNameArg", ProductionSetName, false);
             yield return ("descriptionArg", Description, true);
+            yield return ("productionProfileNameArg", ProductionProfileName, true);
+            yield return ("productionProfilePathArg", ProductionProfilePath, true);
             yield return ("orderArg", Order, true);
             yield return ("limitArg", Limit?.ToString(), true);
         }
@@ -99,6 +122,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         options = {}
         options[:description] = descriptionArg.to_i if descriptionArg != nil
         productionSet = the_case.newProductionSet(productionSetNameArg, options)        
+
+        if productionProfileNameArg != nil
+            productionSet.setProductionProfile(productionProfileNameArg) 
+        else if productionProfilePathArg != nil
+            profile = utilities.getProductionProfileBuilder().load(productionProfilePathArg)
+            productionSet.setProductionProfileObject(profile)
+        else
+            puts 'No production profile set'
+            exit
+        end
+
         puts ""Production Set Created""
     else
         puts ""Production Set Found""
@@ -117,7 +151,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "AddToProductionSet";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(3, 6);
+        internal override Version RequiredVersion { get; } = new Version(7, 2);
+
+        /// <inheritdoc />
+        internal override IEnumerable<string> GetAdditionalArgumentErrors()
+        {
+            if(ProductionProfileName != null && ProductionProfilePath != null)
+                yield return $"Only one of {nameof(ProductionProfileName)} and {nameof(ProductionProfilePath)} may be set.";
+
+            if(ProductionProfileName == null && ProductionProfilePath == null)
+                yield return $"Either {nameof(ProductionProfileName)} or {nameof(ProductionProfilePath)} must be set.";
+        }
 
         /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()

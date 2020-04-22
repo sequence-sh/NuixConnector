@@ -120,13 +120,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         SearchTerm = "ItemSet:TaggedItems",
                         ProductionSetName = "Production Set Name",
                         CasePath = "Case Path",
+                        ProductionProfileName = "Default",
                         Description = "Production Set Description`"
                     },
                     new NuixExportConcordance
                     {
                         CasePath = "Case Path",
                         ExportPath = "Export Path",
-                        MetadataProfileName = "Default",
                         ProductionSetName = "Production Set Name"
                     }
                 }
@@ -185,7 +185,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 CasePath = "C:/Cases/MyCase",
                 ExportPath = "C:/Exports",
-                MetadataProfileName = "My Profile",
                 ProductionSetName = "Stuff"
             }),
 
@@ -200,7 +199,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 CasePath = "C:/Cases/MyCase",
                 SearchTerm = "Raptor",
-                ProductionSetName = "Dinosaurs"
+                ProductionSetName = "Dinosaurs",
+                ProductionProfileName = "Default"
             }),
 
             new YamlProcessTest(new Sequence
@@ -243,13 +243,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = "C:/Cases/MyCase",
                         SearchTerm = "Raptor",
-                        ProductionSetName = "Dinosaurs"
+                        ProductionSetName = "Dinosaurs",
+                        ProductionProfileName = "Default"
                     },
                     new NuixExportConcordance
                     {
                         CasePath = "C:/Cases/MyCase",
                         ExportPath = "C:/Exports",
-                        MetadataProfileName = "Default",
                         ProductionSetName = "Dinosaurs"
                     }
                 }
