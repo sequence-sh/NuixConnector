@@ -20,25 +20,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override string GetName() => $"Export {ProductionSetName}";
 
-
-        /// <summary>
-        /// The name of the metadata profile to use.
-        /// </summary>
-        [ExampleValue("MyMetadataProfile")]
-        [DefaultValueExplanation("Use the Default profile.")]
-        [YamlMember(Order = 3)]
-        public string? MetadataProfileName { get; set; }
-
-        /// <summary>
-        /// The name of the production profile to use.
-        /// </summary>
-        [ExampleValue("MyProductionProfile")]
-        [DefaultValueExplanation("Use the Default profile.")]
-        [YamlMember(Order = 3)]
-        public string? ProductionProfileName { get; set; }
-
-        //TODO Figure out profiles for this
-
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
         /// The name of the production set to export.
@@ -74,27 +55,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     if productionSet == nil
         puts ""Could not find production set with name '#{productionSetNameArg.to_s}'""
+    else if productionSet.getProductionProfile == nil
+        puts ""Production set '#{productionSetNameArg.to_s}' did not have a production profile set.""
     else
         batchExporter = utilities.createBatchExporter(exportPathArg)
-
-        if(productionProfileArg != nil)
-            batchExporter.setProductionProfile(productionProfileArg)
-        end
-
-
-        batchExporter.addLoadFile(""concordance"",{
-        :metadataProfile => metadataProfileArg
-		})
-
-        batchExporter.addProduct(""native"", {
-        :naming=> ""document_id"",
-        :path => ""Native""
-        })
-
-        batchExporter.addProduct(""text"", {
-        :naming=> ""document_id"",
-        :path => ""Text""
-        })
 
 
         puts 'Starting export.'
@@ -109,7 +73,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "ExportConcordance";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(3,6);
+        internal override Version RequiredVersion { get; } = new Version(7,2); //I'm checking the production profile here
 
         /// <inheritdoc />
         internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -124,8 +88,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("pathArg", CasePath, false);
             yield return ("exportPathArg", ExportPath, false);
             yield return ("productionSetNameArg", ProductionSetName, false);
-            yield return ("metadataProfileArg", MetadataProfileName, true);
-            yield return ("productionProfileArg", ProductionProfileName, true);
         }
     }
 }

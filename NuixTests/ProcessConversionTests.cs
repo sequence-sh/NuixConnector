@@ -148,13 +148,13 @@ Red,Color",
                         SearchTerm = "ItemSet:TaggedItems",
                         ProductionSetName = "Production Set Name",
                         CasePath = "Case Path",
-                        Description = "Production Set Description`"
+                        Description = "Production Set Description`",
+                        ProductionProfileName = "Default"
                     },
                     new NuixExportConcordance
                     {
                         CasePath = "Case Path",
                         ExportPath = "Export Path",
-                        MetadataProfileName = "Default",
                         ProductionSetName = "Production Set Name"
                     }
                 }

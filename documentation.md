@@ -316,20 +316,22 @@ Searches a case with a particular search string and adds all items it finds to a
 
 **Unit**
 
-*Requires Nuix Version 5.0*
+*Requires Nuix Version 7.2*
 
 *Requires Nuix Feature 'PRODUCTION_SET'*
 
 Searches a case with a particular search string and adds all items it finds to a production set. Will create a new production set if one with the given name does not already exist.
 
-|Parameter        |Type    |Required|Summary                                                                          |Example                 |
-|:---------------:|:------:|:------:|:-------------------------------------------------------------------------------:|:----------------------:|
-|ProductionSetName|`string`|☑️      |The production set to add results to. Will be created if it doesn't already exist|                        |
-|SearchTerm       |`string`|☑️      |The term to search for                                                           |                        |
-|CasePath         |`string`|☑️      |The path of the case to search                                                   |C:/Cases/MyCase         |
-|Description      |`string`|        |Description of the production set.                                               |                        |
-|Order            |`string`|        |How to order the items to be added to the production set.                        |name ASC, item-date DESC|
-|Limit            |`int`?  |        |The maximum number of items to add to the production set.                        |                        |
+|Parameter            |Type    |Required|Summary                                                                                         |Default                                       |Example                            |Requirements|
+|:-------------------:|:------:|:------:|:----------------------------------------------------------------------------------------------:|:--------------------------------------------:|:---------------------------------:|:----------:|
+|ProductionSetName    |`string`|☑️      |The production set to add results to. Will be created if it doesn't already exist               |                                              |                                   |            |
+|SearchTerm           |`string`|☑️      |The term to search for                                                                          |                                              |                                   |            |
+|CasePath             |`string`|☑️      |The path of the case to search                                                                  |                                              |C:/Cases/MyCase                    |            |
+|Description          |`string`|        |Description of the production set.                                                              |                                              |                                   |            |
+|Order                |`string`|        |How to order the items to be added to the production set.                                       |                                              |name ASC, item-date DESC           |            |
+|Limit                |`int`?  |        |The maximum number of items to add to the production set.                                       |                                              |                                   |            |
+|ProductionProfileName|`string`|        |The name of the Production profile to use. Either this or the ProductionProfilePath must be set |*The default processing profile will be used.*|MyProcessingProfile                |Nuix 7.2    |
+|ProductionProfilePath|`string`|        |The path to the Production profile to use. Either this or the ProductionProfileName must be set.|*The default processing profile will be used.*|C:/Profiles/MyProcessingProfile.xml|Nuix 7.6    |
 
 <a name="NuixAnnotateDocumentIdList"></a>
 ## NuixAnnotateDocumentIdList
@@ -494,7 +496,7 @@ Returns whether or not a case exists.
 
 **Unit**
 
-*Requires Nuix Version 5.0*
+*Requires Nuix Version 7.2*
 
 *Requires Nuix Feature 'EXPORT_ITEMS'*
 
@@ -502,13 +504,11 @@ Returns whether or not a case exists.
 
 Exports Concordance for a particular production set.
 
-|Parameter            |Type    |Required|Summary                                   |Default                   |Example            |
-|:-------------------:|:------:|:------:|:----------------------------------------:|:------------------------:|:-----------------:|
-|MetadataProfileName  |`string`|        |The name of the metadata profile to use.  |*Use the Default profile.*|MyMetadataProfile  |
-|ProductionProfileName|`string`|        |The name of the production profile to use.|*Use the Default profile.*|MyProductionProfile|
-|ProductionSetName    |`string`|☑️      |The name of the production set to export. |                          |                   |
-|ExportPath           |`string`|☑️      |Where to export the Concordance to.       |                          |                   |
-|CasePath             |`string`|☑️      |The path to the case.                     |                          |C:/Cases/MyCase    |
+|Parameter        |Type    |Required|Summary                                  |Example        |
+|:---------------:|:------:|:------:|:---------------------------------------:|:-------------:|
+|ProductionSetName|`string`|☑️      |The name of the production set to export.|               |
+|ExportPath       |`string`|☑️      |Where to export the Concordance to.      |               |
+|CasePath         |`string`|☑️      |The path to the case.                    |C:/Cases/MyCase|
 
 <a name="NuixExtractEntities"></a>
 ## NuixExtractEntities

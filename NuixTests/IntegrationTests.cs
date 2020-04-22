@@ -281,7 +281,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = CasePath,
                         SearchTerm = "charm",
-                        ProductionSetName = "charmset"
+                        ProductionSetName = "charmset",
+                        ProductionProfileName = "Default"
                     },
                     AssertCount(1, "production-set:charmset"),
                     DeleteCaseFolder),
@@ -295,7 +296,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = CasePath,
                         SearchTerm = "*.txt",
-                        ProductionSetName = "prodSet"
+                        ProductionSetName = "prodSet",
+                        ProductionProfileName = "Default"
                     },
                     AssertCount(2, "production-set:prodSet"),
                     new NuixAssertPrintPreviewState
@@ -327,7 +329,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = CasePath,
                         SearchTerm = "*.txt",
-                        ProductionSetName = "prodset"
+                        ProductionSetName = "prodset",
+                        ProductionProfileName = "Default"
                     },
                     new NuixCreateNRTReport
                     {
@@ -352,7 +355,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = CasePath,
                         SearchTerm = "charm",
-                        ProductionSetName = "charmset"
+                        ProductionSetName = "charmset",
+                        ProductionProfileName = "Default"
                     },
                     new NuixExportConcordance
                     {
@@ -374,7 +378,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         CasePath = CasePath,
                         SearchTerm = "*.txt",
-                        ProductionSetName = "fullset"
+                        ProductionSetName = "fullset",
+                        ProductionProfileName = "Default"
                     },
                     new NuixRemoveFromProductionSet
                     {
@@ -510,6 +515,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// </summary>
         /// <returns></returns>
         [Test]
+        [TestCaseSource(nameof(ProcessSettingsCombos))]
         [TestCaseSource(nameof(ProcessSettingsCombos))]
         public void TestFreeze(ProcessSettingsCombo processSettingsCombo)
         {
