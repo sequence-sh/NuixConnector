@@ -99,7 +99,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #This only works in 7.6 or later
     if processingProfileNameArg != nil
         processor.setProcessingProfile(processingProfileNameArg) 
-    else if processingProfilePathArg != nil
+    elsif processingProfilePathArg != nil
         profile = utilities.getProcessingProfileBuilder().load(processingProfilePathArg)
         processor.setProcessingProfileObject(profile)
     end

@@ -588,7 +588,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 if (o.OutputType == OutputType.Error)
                 {
-                    if (o.Text.Contains(expectedErrorContents))
+                    if ( o.Text.Contains(expectedErrorContents) || results.Any(x => x.Contains(expectedErrorContents)))
                         return;
                     else
                         Assert.Fail(o.Text);
