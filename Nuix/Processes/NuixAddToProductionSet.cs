@@ -125,8 +125,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         if productionProfileNameArg != nil
             productionSet.setProductionProfile(productionProfileNameArg) 
-        else if productionProfilePathArg != nil
-            profile = utilities.getProductionProfileBuilder().load(productionProfilePathArg)
+        elsif productionProfilePathArg != nil
+            profileBuilder = utilities.getProductionProfileBuilder()
+            profileBuilder.load(productionProfilePathArg)
+            profile = profileBuilder.build()
+
+            if profile == nil
+                puts ""Could not find processing profile at #{productionProfilePathArg}""
+                exit
+            end
+
             productionSet.setProductionProfileObject(profile)
         else
             puts 'No production profile set'
@@ -151,7 +159,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "AddToProductionSet";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7, 2);
+        internal override Version RequiredVersion => ProductionProfilePath == null? new Version(7, 2) : new Version(7,6);
 
         /// <inheritdoc />
         internal override IEnumerable<string> GetAdditionalArgumentErrors()

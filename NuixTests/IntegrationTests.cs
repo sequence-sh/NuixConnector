@@ -43,8 +43,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly string PasswordFilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt");
 
-        private static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "DefaultOCRProfile.xml");
-        private static readonly string DefaultProcessingProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "DefaultProcessingProfile.xml");
+        private static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultOCRProfile.xml");
+        private static readonly string DefaultProcessingProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml");
+        private static readonly string TestProductionProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml");
 
         private static readonly string PoemTextImagePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png");
         private static readonly string ConcordancePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat");
@@ -158,50 +159,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
                         Then = new AssertError(){Process= AddData },
-                        Else = AssertCount(0, "*.txt")
+                        Else = AssertCount(2, "*.txt")
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                 ),
-
-                new TestSequence("Conditionally Add file to case with nested if",
-                    DeleteCaseFolder,
-                    AssertCaseDoesNotExist,
-                    CreateCase,
-                    AssertCount(0, "*.txt"),
-                    new Conditional
-                    {
-                        If = new CheckNumber
-                        {
-                            Check = new Conditional
-                            {
-                                If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
-                                Then = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"},
-                                Else = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}
-                            }, Maximum = 0
-                        },
-
-                        Then = AddData
-                    },
-                    AssertCount(2, "*.txt"),
-                    new Conditional
-                    {
-                        If = new CheckNumber
-                        {
-                            Check = new Conditional
-                            {
-                                If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
-                                Then = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"},
-                                Else = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}
-                            }, Maximum = 0
-                        },
-                        Then = new AssertError(){Process= AddData },
-                        Else = AssertCount(0, "*.txt")
-                    },
-                    AssertCount(2, "*.txt"),
-                    DeleteCaseFolder
-                ),
-
 
                 new TestSequence("Add concordance to case",
                     DeleteCaseFolder,
@@ -282,7 +244,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         SearchTerm = "charm",
                         ProductionSetName = "charmset",
-                        ProductionProfileName = "Default"
+                        ProductionProfilePath = TestProductionProfilePath
                     },
                     AssertCount(1, "production-set:charmset"),
                     DeleteCaseFolder),
@@ -297,7 +259,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         SearchTerm = "*.txt",
                         ProductionSetName = "prodSet",
-                        ProductionProfileName = "Default"
+                        ProductionProfilePath = TestProductionProfilePath
                     },
                     AssertCount(2, "production-set:prodSet"),
                     new NuixAssertPrintPreviewState
@@ -330,7 +292,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         SearchTerm = "*.txt",
                         ProductionSetName = "prodset",
-                        ProductionProfileName = "Default"
+                        ProductionProfilePath = TestProductionProfilePath
                     },
                     new NuixCreateNRTReport
                     {
@@ -356,7 +318,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         SearchTerm = "charm",
                         ProductionSetName = "charmset",
-                        ProductionProfileName = "Default"
+                        ProductionProfilePath = TestProductionProfilePath
                     },
                     new NuixExportConcordance
                     {
@@ -364,8 +326,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         ProductionSetName = "charmset",
                         ExportPath = ConcordanceFolder
                     },
-                    AssertFileContains(ConcordanceFolder + "/loadfile.dat", "þDOCIDþþPARENT_DOCIDþþATTACH_DOCIDþþBEGINBATESþþENDBATESþþBEGINGROUPþþENDGROUPþþPAGECOUNTþþITEMPATHþþTEXTPATHþ"),
-
+                    AssertFileContains(ConcordanceFolder + "/loadfile.dat", "DOCID"),
+                    AssertFileContains(ConcordanceFolder + "/TEXT/000/000/DOC-000000001.txt", "Visible, invisible"),
                     new  DeleteItem {Path = ConcordanceFolder },
                     DeleteCaseFolder
                     ),
@@ -379,7 +341,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         SearchTerm = "*.txt",
                         ProductionSetName = "fullset",
-                        ProductionProfileName = "Default"
+                        ProductionProfilePath = TestProductionProfilePath
                     },
                     new NuixRemoveFromProductionSet
                     {
@@ -501,7 +463,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AddData,
                     AssertCount(0, "custodian:\"Jason\"" ),
                     new NuixAssignCustodian(){CasePath = CasePath, Custodian = "Jason", SearchTerm = "*"},
-                    AssertCount(2, "custodian:\"Jason\"" ),
+                    AssertCount(4, "custodian:\"Jason\"" ),
                     DeleteCaseFolder)
 
             };

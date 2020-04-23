@@ -63,7 +63,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The path of a file containing passwords to use for decryption.
         /// </summary>
-        [RequiredVersion("Nuix", "7.2")]
+        [RequiredVersion("Nuix", "7.6")]
         [Required]
         [YamlMember(Order = 8)]
         [ExampleValue("C:/Data/Passwords.txt")]
@@ -100,7 +100,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     if processingProfileNameArg != nil
         processor.setProcessingProfile(processingProfileNameArg) 
     elsif processingProfilePathArg != nil
-        profile = utilities.getProcessingProfileBuilder().load(processingProfilePathArg)
+        profileBuilder = utilities.getProcessingProfileBuilder()
+        profileBuilder.load(processingProfilePathArg)
+        profile = profileBuilder.build()
+
+        if profile == nil
+            puts ""Could not find processing profile at #{processingProfilePathArg}""
+            exit
+        end
+
         processor.setProcessingProfileObject(profile)
     end
 
@@ -138,9 +146,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(ProcessingProfileName))
-                    return new Version(3, 2);
-                return new Version(7,6);
+                if (!string.IsNullOrWhiteSpace(ProcessingProfilePath) || !string.IsNullOrWhiteSpace(ProcessingProfileName))
+                    return new Version(7, 6);
+                if (!string.IsNullOrWhiteSpace(PasswordFilePath))
+                    return new Version(7, 6);
+
+                return new Version(3,2);
             }
         }
 

@@ -75,8 +75,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 #Note: this was deprecated but still works.
         processor.process(items, ocrOptions)
         puts ""Items Processed""
-    else if ocrProfilePathArg != nil
-        profile = utilities.getOcrProfileBuilder().load(ocrProfilePathArg)
+    elsif ocrProfilePathArg != nil
+        profileBuilder = utilities.getOcrProfileBuilder()
+        profileBuilder.load(ocrProfilePathArg)
+        profile = profileBuilder.build()
+
+        if profile == nil
+            puts ""Could not find processing profile at #{ocrProfilePathArg}""
+            exit
+        end
+
         processor.setOcrProfileObject(profile)
     else
         processor.process(items)
@@ -88,7 +96,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "RunOCR";
 
         /// <inheritdoc />`,
-        internal override Version RequiredVersion => OCRProfilePath == null ? new Version(6, 2) : new Version(7, 6);
+        internal override Version RequiredVersion
+        {
+            get
+            {
+                if(!string.IsNullOrWhiteSpace(OCRProfilePath) || !string.IsNullOrWhiteSpace(OCRProfileName))
+                {
+                    return new Version(7, 6);
+                }
+                return new Version(7, 6);
+            }
+        }
 
         /// <inheritdoc />
         internal override IEnumerable<string> GetAdditionalArgumentErrors()

@@ -55,7 +55,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     if productionSet == nil
         puts ""Could not find production set with name '#{productionSetNameArg.to_s}'""
-    else if productionSet.getProductionProfile == nil
+    elsif productionSet.getProductionProfile == nil
         puts ""Production set '#{productionSetNameArg.to_s}' did not have a production profile set.""
     else
         batchExporter = utilities.createBatchExporter(exportPathArg)

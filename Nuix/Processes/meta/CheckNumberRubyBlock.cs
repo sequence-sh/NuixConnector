@@ -93,17 +93,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         private const string CheckNumberDefinition =
             @"def isNumberInRange?(n, min, max)
-if(min == nil && max == nil)
-   puts ""Error: both min and max are nil""
-end
+    if(min == nil && max == nil)
+       puts ""Error: both min and max are nil""
+    end
 
-if(min != nil && min.to_i > n)
-    return false
-end
-if(max != nil && max.to_i < n)
-    return false
-end
-return true
+    if(min != nil && min.to_i > n)
+        return false
+    end
+    if(max != nil && max.to_i < n)
+        return false
+    end
+    return true
 end
 ";
     }
