@@ -67,7 +67,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             // ReSharper disable once JoinDeclarationAndInitializer
             bool printArguments;
 #if DEBUG 
-            printArguments = true;
+            printArguments = false;
 #endif
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (printArguments)

@@ -127,8 +127,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             productionSet.setProductionProfile(productionProfileNameArg) 
         elsif productionProfilePathArg != nil
             profileBuilder = utilities.getProductionProfileBuilder()
-            profileBuilder.load(productionProfilePathArg)
-            profile = profileBuilder.build()
+            profile = profileBuilder.load(productionProfilePathArg)
 
             if profile == nil
                 puts ""Could not find processing profile at #{productionProfilePathArg}""

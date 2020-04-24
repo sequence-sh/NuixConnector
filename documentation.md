@@ -284,7 +284,7 @@ Adds a file or directory to a Nuix Case.
 |Description          |`string`|        |The description of the new folder.                            |                                              |                                   |            |
 |FolderName           |`string`|☑️      |The name of the folder to create.                             |                                              |                                   |            |
 |CasePath             |`string`|☑️      |The path to the case.                                         |                                              |C:/Cases/MyCase                    |            |
-|PasswordFilePath     |`string`|☑️      |The path of a file containing passwords to use for decryption.|                                              |C:/Data/Passwords.txt              |Nuix 7.2    |
+|PasswordFilePath     |`string`|☑️      |The path of a file containing passwords to use for decryption.|                                              |C:/Data/Passwords.txt              |Nuix 7.6    |
 |ProcessingProfileName|`string`|        |The name of the Processing profile to use.                    |*The default processing profile will be used.*|MyProcessingProfile                |Nuix 7.6    |
 |ProcessingProfilePath|`string`|        |The path to the Processing profile to use                     |*The default processing profile will be used.*|C:/Profiles/MyProcessingProfile.xml|Nuix 7.6    |
 
@@ -592,7 +592,7 @@ Migrates a case to the latest version if necessary.
 
 **Unit**
 
-*Requires Nuix Version 6.2*
+*Requires Nuix Version 7.6*
 
 *Requires Nuix Feature 'OCR_PROCESSING'*
 

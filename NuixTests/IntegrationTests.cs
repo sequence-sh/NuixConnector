@@ -536,7 +536,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 }
             }
 
-            CollectionAssert.IsEmpty(errors, string.Join("; ", results));
+            CollectionAssert.IsEmpty(errors, string.Join("\r\n", results));
 
             return results;
         }
