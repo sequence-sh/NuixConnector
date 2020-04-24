@@ -214,15 +214,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCount(1, "sheep"),
                     DeleteCaseFolder
                 ),
-                new TestSequence("Perform OCR with path to profile",
-                    DeleteCaseFolder,
-                    CreateCase,
-                    AssertCount(0, "sheep"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
-                    new NuixPerformOCR {CasePath= CasePath, SearchTerm = "*.png", OCRProfilePath = DefaultOCRProfilePath},
-                    AssertCount(1, "sheep"),
-                    DeleteCaseFolder
-                ),
+                //new TestSequence("Perform OCR with path to profile",
+                //    DeleteCaseFolder,
+                //    CreateCase,
+                //    AssertCount(0, "sheep"),
+                //    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
+                //    new NuixPerformOCR {CasePath= CasePath, SearchTerm = "*.png", OCRProfilePath = DefaultOCRProfilePath},
+                //    AssertCount(1, "sheep"),
+                //    DeleteCaseFolder
+                //),
                 new TestSequence("Add To Item Set",
                     DeleteCaseFolder,
                     CreateCase,
@@ -492,6 +492,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Test]
         [TestCaseSource(nameof(ProcessSettingsCombos))]
         [Category(Integration)]
+
         public async Task TestExecution(ProcessSettingsCombo processSettingsCombo)
         {
             var (isSuccess, _, value, error) = processSettingsCombo.Process.TryFreeze(processSettingsCombo.Setttings);

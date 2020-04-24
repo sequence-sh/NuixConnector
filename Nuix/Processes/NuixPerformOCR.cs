@@ -72,18 +72,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     if ocrProfileArg != nil
         ocrOptions = {:ocrProfileName => ocrProfileArg}
-#Note: this was deprecated but still works.
         processor.process(items, ocrOptions)
         puts ""Items Processed""
     elsif ocrProfilePathArg != nil
         profileBuilder = utilities.getOcrProfileBuilder()
-        profileBuilder.load(ocrProfilePathArg)
-        profile = profileBuilder.build()
+        profile = profileBuilder.load(ocrProfilePathArg)
 
         if profile == nil
             puts ""Could not find processing profile at #{ocrProfilePathArg}""
             exit
-        end
+        end        
 
         processor.setOcrProfileObject(profile)
     else
