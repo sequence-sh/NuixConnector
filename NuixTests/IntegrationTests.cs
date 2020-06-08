@@ -43,7 +43,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly string PasswordFilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt");
 
-        private static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultOCRProfile.xml");
+        //private static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultOCRProfile.xml");
         private static readonly string DefaultProcessingProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml");
         private static readonly string TestProductionProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml");
 
