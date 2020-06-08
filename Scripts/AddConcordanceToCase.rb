@@ -26,8 +26,6 @@ OptionParser.new do |opts|
 	opts.on('--profileNameArg0 ARG') do |o| params[:profileNameArg0] = o end
 end.parse!
 
-puts params
-
 
 def AddConcordanceToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,dateFormatArg,profileNameArg)
 
