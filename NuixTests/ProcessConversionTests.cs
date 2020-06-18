@@ -5,6 +5,7 @@ using CSharpFunctionalExtensions;
 using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.mutable;
 using Reductech.EDR.Utilities.Processes.mutable.enumerations;
 using Reductech.EDR.Utilities.Processes.mutable.injection;
@@ -21,10 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     SearchTerm = "s",
                     Tag = "t",
                     CasePath = "cp"
-                }
-
-
-            ),
+                }),
 
             new YamlProcessTest(new Sequence
             {
@@ -170,11 +168,9 @@ Red,Color",
         [TestCaseSource(nameof(Tests))]
         public void TestProcessConversion(YamlProcessTest yamlProcessTest)
         {
-            var (isSuccess, _, freezeValue, freezeError) = yamlProcessTest.Process.TryFreeze(NuixProcessSettings);
+            var (isSuccess, _, freezeValue, freezeError) = yamlProcessTest.Process.TryFreeze<Unit>(NuixProcessSettings);
 
-            Assert.IsTrue(isSuccess, freezeError?.ToString());
-
-
+            Assert.IsTrue(isSuccess, freezeError);
             Assert.IsInstanceOf<IImmutableRubyScriptProcess>(freezeValue);
         }
     }

@@ -9,7 +9,9 @@ using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.mutable;
+using Reductech.EDR.Utilities.Processes.mutable.chain;
 using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -82,7 +84,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 //TODO AnnotateDocumentIdList
                 //TODO ImportDocumentIds
-                
+
                 new TestSequence("Create Case",
                     DeleteCaseFolder,
                     AssertCaseDoesNotExist,
@@ -119,7 +121,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = EncryptedDataPath, FolderName = "New Folder", PasswordFilePath = PasswordFilePath },                    
+                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = EncryptedDataPath, FolderName = "New Folder", PasswordFilePath = PasswordFilePath },
                     AssertCount(1,"princess"),
                     DeleteCaseFolder
                 ),
@@ -481,8 +483,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [TestCaseSource(nameof(ProcessSettingsCombos))]
         public void TestFreeze(ProcessSettingsCombo processSettingsCombo)
         {
-            var (isSuccess, _, _, error) = processSettingsCombo.Process.TryFreeze(processSettingsCombo.Setttings);
-            Assert.IsTrue(isSuccess, error?.ToString());
+            var (isSuccess, _, _, error) = processSettingsCombo.Process.TryFreeze<Unit>(processSettingsCombo.Setttings);
+            Assert.IsTrue(isSuccess, error);
         }
 
         /// <summary>
@@ -495,10 +497,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         public async Task TestExecution(ProcessSettingsCombo processSettingsCombo)
         {
-            var (isSuccess, _, value, error) = processSettingsCombo.Process.TryFreeze(processSettingsCombo.Setttings);
-            Assert.IsTrue(isSuccess, error?.ToString());
+            var (isSuccess, _, value, error) = processSettingsCombo.Process.TryFreeze<Unit>(processSettingsCombo.Setttings);
+            Assert.IsTrue(isSuccess, error);
 
-            await AssertNoErrors(value.ExecuteUntyped());
+            await AssertNoErrors(value.Execute());
         }
 
         [Test]
@@ -514,11 +516,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 MyRequiredVersion = new Version(100, 0)
             };
 
-            var (freezeSuccess, _, freezeValue, freezeError) = process.TryFreeze(new NuixProcessSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100, 0), baseSettings.NuixFeatures));
+            var (freezeSuccess, _, freezeValue, freezeError) =
+                process.TryFreeze<Unit>(new NuixProcessSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100, 0), baseSettings.NuixFeatures));
 
-            Assert.IsTrue(freezeSuccess, freezeError?.ToString());
+            Assert.IsTrue(freezeSuccess, freezeError);
 
-            await AssertError(freezeValue.ExecuteUntyped(), "Nuix Version is");
+            await AssertError(freezeValue.Execute(), "Nuix Version is");
         }
 
 
