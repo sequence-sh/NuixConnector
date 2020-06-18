@@ -88,7 +88,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             if (np == null || !(processSettings is INuixProcessSettings iNuixProcessSettings))
                 return Result.Failure<ImmutableProcess<Unit>>("Could not combine");
 
-            
             var newProcess = new ImmutableRubyScriptProcess(RubyBlocks.Concat(np.RubyBlocks).ToList(), iNuixProcessSettings);
 
             return Result.Success<ImmutableProcess<Unit>>(newProcess);

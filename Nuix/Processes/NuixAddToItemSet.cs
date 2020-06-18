@@ -26,7 +26,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The item set to add results to. Will be created if it doesn't already exist.
         /// </summary>
-        
+
         [Required]
         [YamlMember(Order = 3)]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -57,14 +57,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The description of the item set.
         /// </summary>
-        
+
         [YamlMember(Order = 7)]
         public string? ItemSetDescription { get; set; }
 
         /// <summary>
         /// Whether to deduplicate as a family or individual.
         /// </summary>
-        
+
         [YamlMember(Order = 8)]
         public DeduplicateBy DeduplicateBy { get; set; }
 
@@ -72,11 +72,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// A list of custodian names ordered from highest ranked to lowest ranked.
         /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
         /// </summary>
-        
+
         [YamlMember(Order = 9)]
         public List<string>? CustodianRanking { get; set; }
 
-        
+
         /// <summary>
         /// How to order the items to be added to the item set.
         /// </summary>
@@ -105,11 +105,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         itemSetOptions[:deduplicateBy] = deduplicateByArg if deduplicateByArg != nil
         itemSetOptions[:custodianRanking] = custodianRankingArg.split("","") if custodianRankingArg != nil
         itemSet = the_case.createItemSet(itemSetNameArg, itemSetOptions)
-        
+
         puts ""Item Set Created""
     else
         puts ""Item Set Found""
-    end    
+    end
 
     puts ""Searching""
     searchOptions = {}
