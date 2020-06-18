@@ -6,6 +6,7 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Utilities.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix
@@ -47,14 +48,14 @@ namespace Reductech.EDR.Connectors.Nuix
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                     var process = (RubyScriptProcess)Activator.CreateInstance(processType);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                
+
                     if (process == null)
                         return $"Could not create process '{processType.Name}'";
 
                     foreach (var propertyInfo in processType.GetProperties()
                         .Where(x=>x.GetCustomAttributes(typeof(YamlMemberAttribute)).Any()))
                     {
-                        var newValue = 
+                        var newValue =
                             propertyInfo.PropertyType == typeof(string)?
                                 "value" :
                                 Activator.CreateInstance(propertyInfo.PropertyType);
@@ -62,7 +63,7 @@ namespace Reductech.EDR.Connectors.Nuix
                         propertyInfo.SetValue(process, newValue);
                     }
 
-                
+
                     var (isSuccess, _, value, error) = TryGenerateScript(process);
                     if (isSuccess)
                     {
@@ -70,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix
                         var newPath = Path.Combine(folderPath, fileName);
 
                         File.WriteAllText(newPath, value, Encoding.UTF8);
-                    
+
                     }
                     else
                     {
@@ -92,7 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix
 
         private Result<string> TryGenerateScript(RubyScriptProcess process)
         {
-            var freezeResult =process.TryFreeze(_nuixProcessSettings);
+            var freezeResult =process.TryFreeze<Unit>(_nuixProcessSettings);
 
             if (freezeResult.IsFailure)
                 return freezeResult.ConvertFailure<string>();

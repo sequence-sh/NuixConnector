@@ -6,6 +6,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.immutable;
 using Reductech.EDR.Utilities.Processes.mutable;
+using Reductech.EDR.Utilities.Processes.mutable.chain;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
@@ -42,7 +43,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         /// <inheritdoc />
         public override string GetReturnTypeInfo() => nameof(Unit);
-        
+
         /// <summary>
         /// The type that this method returns within Nuix.
         /// </summary>
@@ -61,7 +62,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public override Result<ImmutableProcess, ErrorList> TryFreeze(IProcessSettings processSettings)
+        public override Result<ImmutableProcess<TOutput>> TryFreeze<TOutput>(IProcessSettings processSettings)
         {
             var errors = new List<string>();
 
@@ -92,16 +93,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             foreach (var (parameterName, argumentValue, valueCanBeNull) in arguments)
             {
-                if (string.IsNullOrWhiteSpace(argumentValue) && !valueCanBeNull) 
+                if (string.IsNullOrWhiteSpace(argumentValue) && !valueCanBeNull)
                     errors.Add($"Argument '{parameterName}' must not be null"); //todo - this isn't the real argument names -> fix that
-                
                 parameterNames.Add(parameterName);
             }
 
             errors.AddRange(GetAdditionalArgumentErrors());
 
             if (errors.Any())
-                return Result.Failure<ImmutableProcess, ErrorList>(new ErrorList(errors));
+                return Result.Failure<ImmutableProcess<TOutput>>(string.Join("\r\n", errors));
 
             var methodBuilder = new StringBuilder();
             var methodHeader = $@"def {MethodName}({string.Join(",", parameterNames)})";
@@ -118,33 +118,49 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
                     var ip = new ImmutableRubyScriptProcess(new []{block}, nuixProcessSettings);
 
-                    return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                    return TryConvertFreezeResult<TOutput, Unit>(ip);
                 }
                 case NuixReturnType.Boolean:
                 {
                     var block = new BasicTypedRubyBlock<bool>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
                     var ip = new ImmutableRubyScriptProcessTyped<bool>( block, nuixProcessSettings, TryParseBool);
 
-                    return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                    return TryConvertFreezeResult<TOutput, bool>(ip);
                 }
                 case NuixReturnType.Integer:
                 {
                     var block = new BasicTypedRubyBlock<int>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
                     var ip = new ImmutableRubyScriptProcessTyped<int>( block, nuixProcessSettings, TryParseInt);
 
-                    return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                    return TryConvertFreezeResult<TOutput, int>(ip);
                 }
                 case NuixReturnType.String:
                 {
                     var block = new BasicTypedRubyBlock<string>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
                     var ip = new ImmutableRubyScriptProcessTyped<string>( block, nuixProcessSettings, TryParseString);
 
-                    return  Result.Success<ImmutableProcess, ErrorList>(ip);
+                    return TryConvertFreezeResult<TOutput, string>(ip);
                 }
                 default:
-                    return Result.Failure<ImmutableProcess, ErrorList>(
-                        new ErrorList($"Cannot freeze a process with type {ReturnType}"));
+                    return Result.Failure<ImmutableProcess<TOutput>>($"Cannot freeze a process with type {ReturnType}");
             }
+        }
+
+        /// <inheritdoc />
+        public override Result<ChainLinkBuilder<TInput, TFinal>> TryCreateChainLinkBuilder<TInput, TFinal>()
+        {
+            return ReturnType switch
+            {
+                NuixReturnType.Unit =>
+                new ChainLinkBuilder<TInput, Unit, TFinal, ImmutableRubyScriptProcess, RubyScriptProcess>(this),
+                NuixReturnType.Boolean =>
+                new ChainLinkBuilder<TInput, bool, TFinal, ImmutableRubyScriptProcessTyped<bool>, RubyScriptProcess>(this),
+                NuixReturnType.Integer =>
+                new ChainLinkBuilder<TInput, int, TFinal, ImmutableRubyScriptProcessTyped<int>, RubyScriptProcess>(this),
+                NuixReturnType.String =>
+                new ChainLinkBuilder<TInput, string, TFinal, ImmutableRubyScriptProcessTyped<string>, RubyScriptProcess>(this),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
 

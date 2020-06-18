@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         Text = new NuixCreateReport
                         {
                             CasePath = "Case Path",
-                            
+
                         },
                         Folder = "Report Output Folder",
                         FileName = "Report.csv"
@@ -88,14 +88,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                             Delimiter = ",",
                             CSVFilePath = "CSV Path",
 
-                            ColumnInjections = new List<ColumnInjection>()
+                            ColumnInjections = new List<ColumnInjection>
                             {
                                 new ColumnInjection
                                 {
                                     Column = "SearchTerm",
                                     Property = nameof(NuixSearchAndTag.SearchTerm)
                                 },
-                                new ColumnInjection()
+                                new ColumnInjection
                                 {
                                     Column = "Tag",
                                     Property = nameof(NuixSearchAndTag.Tag)
@@ -341,5 +341,10 @@ Steps:
         }
     }
 
-    
+
+
+
+
 }
+
+
