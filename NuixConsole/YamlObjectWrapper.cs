@@ -28,7 +28,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
 
             var instance = Activator.CreateInstance(processType);
-            Parameters = RelevantProperties.Select(propertyInfo => 
+            Parameters = RelevantProperties.Select(propertyInfo =>
                 new PropertyWrapper(propertyInfo, propertyInfo.GetValue(instance)?.ToString()  )).ToList();
 
             Requirements = instance is Process process ? process.GetRequirements() : Enumerable.Empty<string>();
@@ -36,7 +36,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             TypeDetails = instance is Process process1 ? process1.GetReturnTypeInfo() : null;
 
         }
-        
+
         /// <inheritdoc />
         public DocumentationCategory DocumentationCategory { get; }
 
@@ -48,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
         /// <inheritdoc />
         public string? TypeDetails { get; }
-    
+
         /// <inheritdoc />
         public IEnumerable<string> Requirements { get; }
 
@@ -57,9 +57,6 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
         /// <inheritdoc />
         public IEnumerable<IParameter> Parameters { get; }
-
-        //public string? ReturnType => Activator.CreateInstance(_processType) is Process p ? p.GetReturnTypeInfo() : null;
-
 
         protected class PropertyWrapper : IParameter
         {
@@ -71,13 +68,21 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                 Required = _propertyInfo.CustomAttributes.Any(att => att.AttributeType == typeof(RequiredAttribute)) && defaultValueString == null;
 
                 var explanation = propertyInfo.GetCustomAttribute<DefaultValueExplanationAttribute>()?.Explanation;
-                DefaultValueString = explanation == null ? defaultValueString : $"*{explanation}*";
 
-                Example = propertyInfo.GetCustomAttribute<ExampleValueAttribute>()?.ExampleValue.ToString();
+                var extraFields = new Dictionary<string, string>();
 
-                Requirements = string.Join("\r\n", propertyInfo
+                var defaultValueString2 = explanation == null ? defaultValueString : $"*{explanation}*";
+                if(!string.IsNullOrWhiteSpace(defaultValueString2)) extraFields.Add("Default", defaultValueString2);
+
+                var example = propertyInfo.GetCustomAttribute<ExampleValueAttribute>()?.ExampleValue.ToString();
+                if(!string.IsNullOrWhiteSpace(example)) extraFields.Add("Example", example);
+
+                var requirements = string.Join("\r\n", propertyInfo
                     .GetCustomAttributes<RequiredVersionAttribute>()
                     .Select(x => x.Text));
+                if(!string.IsNullOrWhiteSpace(requirements)) extraFields.Add("Requirements", requirements);
+
+                ExtraFields = extraFields;
             }
 
             public string Name => _propertyInfo.Name;
@@ -86,11 +91,12 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             public bool Required { get; }
 
             /// <inheritdoc />
-            public string? Example { get; }
-            public string? DefaultValueString { get; }
+            public IReadOnlyDictionary<string, string> ExtraFields { get; }
 
-            /// <inheritdoc />
-            public string? Requirements { get; }
+            //public string? Example { get; }
+            //public string? DefaultValueString { get; }
+
+            //public string? Requirements { get; }
         
         }
     }

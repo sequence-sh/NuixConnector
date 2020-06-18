@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
@@ -17,8 +16,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         public readonly Func<string, Result<T>> TryParseFunc;
 
         /// <inheritdoc />
-        public ImmutableRubyScriptProcessTyped( ITypedRubyBlock<T> rubyBlock, INuixProcessSettings nuixProcessSettings, Func<string, Result<T>> tryParseFunc) 
-            
+        public ImmutableRubyScriptProcessTyped( ITypedRubyBlock<T> rubyBlock, INuixProcessSettings nuixProcessSettings, Func<string, Result<T>> tryParseFunc)
+
         {
             RubyBlock = rubyBlock;
             _nuixProcessSettings = nuixProcessSettings;
@@ -78,7 +77,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         private bool TryExtractValueFromOutput(string message, out T value)
         {
             if (FinalResultRegex.TryMatch(message, out var m))
-            {             
+            {
                 var resultHex = m.Groups["result"].Value;
 
                 var resultString = TryMakeStringFromHex(resultHex);
@@ -90,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                         value = value1;
                         return true;
                     }
-                }               
+                }
 
             }
 
@@ -109,17 +108,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
                 var bytes = new byte[hexString.Length  / 2];
                 try
-                {                  
-
-                    for (var i = 0; i < bytes.Length; i++)
-                    {
-                        bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-                    }
+                {
+                    for (var i = 0; i < bytes.Length; i++) bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (FormatException)
                 {
                     return null;//Failed
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
 
                 return Encoding.UTF8.GetString(bytes);
             }
