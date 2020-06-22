@@ -65,8 +65,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             scriptStringBuilder.AppendLine();
 
             // ReSharper disable once JoinDeclarationAndInitializer
-            bool printArguments;
-#if DEBUG 
+            var printArguments = false;
+#if DEBUG
             printArguments = false;
 #endif
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
@@ -75,7 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 scriptStringBuilder.AppendLine($"puts {HashSetName}");
                 scriptStringBuilder.AppendLine();
             }
-                
+
 
             return scriptStringBuilder.ToString();
         }
@@ -96,9 +96,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         public static async Task<List<string>> GetTrueArgumentsAsync(string scriptText, INuixProcessSettings nuixProcessSettings, IEnumerable<IRubyBlock> rubyBlocks)
         {
-            
+
             var scriptFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), "NuixScript" + Guid.NewGuid()), "rb");
-            
+
             await File.WriteAllTextAsync(scriptFilePath, scriptText);
 
             var trueArguments = new List<string>(); //note that the arguments will be escaped in the next step
@@ -106,7 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 // ReSharper disable once StringLiteralTypo
                 trueArguments.Add("-licencesourcetype");
-                trueArguments.Add("dongle");  
+                trueArguments.Add("dongle");
             }
             trueArguments.Add(scriptFilePath);
             var i = 0;

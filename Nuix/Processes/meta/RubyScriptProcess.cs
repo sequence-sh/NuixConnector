@@ -62,7 +62,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public override Result<ImmutableProcess<TOutput>> TryFreeze<TOutput>(IProcessSettings processSettings)
+        public override Result<IImmutableProcess<TOutput>> TryFreeze<TOutput>(IProcessSettings processSettings)
         {
             var errors = new List<string>();
 
@@ -101,7 +101,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             errors.AddRange(GetAdditionalArgumentErrors());
 
             if (errors.Any())
-                return Result.Failure<ImmutableProcess<TOutput>>(string.Join("\r\n", errors));
+                return Result.Failure<IImmutableProcess<TOutput>>(string.Join("\r\n", errors));
 
             var methodBuilder = new StringBuilder();
             var methodHeader = $@"def {MethodName}({string.Join(",", parameterNames)})";
@@ -142,7 +142,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                     return TryConvertFreezeResult<TOutput, string>(ip);
                 }
                 default:
-                    return Result.Failure<ImmutableProcess<TOutput>>($"Cannot freeze a process with type {ReturnType}");
+                    return Result.Failure<IImmutableProcess<TOutput>>($"Cannot freeze a process with type {ReturnType}");
             }
         }
 

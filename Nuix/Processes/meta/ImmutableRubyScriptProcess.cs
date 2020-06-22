@@ -74,7 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public override Result<ImmutableProcess<Unit>> TryCombine(ImmutableProcess<Unit> nextProcess, IProcessSettings processSettings)
+        public override Result<IImmutableProcess<Unit>> TryCombine(IImmutableProcess<Unit> nextProcess, IProcessSettings processSettings)
         {
             var np = nextProcess as ImmutableRubyScriptProcess;
             if (np == null)
@@ -86,11 +86,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             }
 
             if (np == null || !(processSettings is INuixProcessSettings iNuixProcessSettings))
-                return Result.Failure<ImmutableProcess<Unit>>("Could not combine");
+                return Result.Failure<IImmutableProcess<Unit>>("Could not combine");
 
             var newProcess = new ImmutableRubyScriptProcess(RubyBlocks.Concat(np.RubyBlocks).ToList(), iNuixProcessSettings);
 
-            return Result.Success<ImmutableProcess<Unit>>(newProcess);
+            return newProcess;
         }
 
 

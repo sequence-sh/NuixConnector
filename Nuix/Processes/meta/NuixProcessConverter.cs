@@ -9,46 +9,44 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
     internal sealed class NuixProcessConverter : IProcessConverter
     {
-        public static NuixProcessConverter Instance = new NuixProcessConverter();
+        public static IProcessConverter Instance = new NuixProcessConverter();
 
         private NuixProcessConverter()
         {
         }
 
         /// <inheritdoc />
-        public Result<ImmutableProcess<T>> TryConvert<T>(ImmutableProcess<T> immutableProcess, IProcessSettings processSettings)
+        Result<IImmutableProcess<T>> IProcessConverter.TryConvert<T>(IImmutableProcess<T> immutableProcess, IProcessSettings processSettings)
         {
             if (!(processSettings is INuixProcessSettings ns))
             {
-                return Result.Failure<ImmutableProcess<T>>("Process settings are not Nuix Process Settings");
+                return Result.Failure<IImmutableProcess<T>>("Process settings are not Nuix Process Settings");
             }
 
-            if (immutableProcess is ImmutableProcess<Unit> ipu)
+            if (immutableProcess is IImmutableProcess<Unit> ipu)
             {
                 var r = AsImmutableRubyScriptProcess(ipu, ns);
                 if (r != null)
                 {
-                    var result = Result.Success<ImmutableProcess<Unit>>(r);
+                    var result = Result.Success<IImmutableProcess<Unit>>(r);
                     // ReSharper disable once ConditionIsAlwaysTrueOrFalse //ReSharper basically gets this wrong
                     // ReSharper disable once SuspiciousTypeConversion.Global
-                    if(result is Result<ImmutableProcess<T>> castResult)
+                    if(result is Result<IImmutableProcess<T>> castResult)
                         // ReSharper disable once HeuristicUnreachableCode
                         return castResult;
                 }
-                     
             }
             else
             {
                 var r = AsImmutableRubyScriptProcessTyped(immutableProcess, ns);
                 if(r != null)
-                    return Result.Success<ImmutableProcess<T>>(r);
+                    return Result.Success<IImmutableProcess<T>>(r);
             }
-            
 
-            return Result.Failure<ImmutableProcess<T>>("Could not convert");
+            return Result.Failure<IImmutableProcess<T>>("Could not convert");
         }
 
-        private static ImmutableRubyScriptProcess? AsImmutableRubyScriptProcess(ImmutableProcess<Unit> process,
+        private static ImmutableRubyScriptProcess? AsImmutableRubyScriptProcess(IImmutableProcess<Unit> process,
             INuixProcessSettings ns)
         {
             if (process is ImmutableRubyScriptProcess immutableRubyScriptProcess) return immutableRubyScriptProcess;
@@ -104,7 +102,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                         if(nuixElse != null)
                         {
                             var r = new ConditionalRubyBlock(nuixIf.RubyBlock, nuixThen, nuixElse);
-
                             return new ImmutableRubyScriptProcess(new List<IUnitRubyBlock> {r}, ns);
                         }
                     }
@@ -115,7 +112,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
 
-        private static ImmutableRubyScriptProcessTyped<T>? AsImmutableRubyScriptProcessTyped<T>(ImmutableProcess<T> process,
+        private static ImmutableRubyScriptProcessTyped<T>? AsImmutableRubyScriptProcessTyped<T>(IImmutableProcess<T> process,
             INuixProcessSettings ns)
         {
             if (process is ImmutableRubyScriptProcessTyped<T> immutableRubyScriptProcessTyped) return immutableRubyScriptProcessTyped;

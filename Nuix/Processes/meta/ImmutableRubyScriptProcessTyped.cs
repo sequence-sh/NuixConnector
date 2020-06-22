@@ -9,13 +9,12 @@ using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
-    internal sealed class ImmutableRubyScriptProcessTyped<T> : ImmutableProcess<T>, IImmutableRubyScriptProcess
+    internal sealed class ImmutableRubyScriptProcessTyped<T> : IImmutableProcess<T>, IImmutableRubyScriptProcess
     {
         public readonly ITypedRubyBlock<T> RubyBlock;
         private readonly INuixProcessSettings _nuixProcessSettings;
         public readonly Func<string, Result<T>> TryParseFunc;
 
-        /// <inheritdoc />
         public ImmutableRubyScriptProcessTyped( ITypedRubyBlock<T> rubyBlock, INuixProcessSettings nuixProcessSettings, Func<string, Result<T>> tryParseFunc)
 
         {
@@ -25,10 +24,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public override string Name => RubyBlock.BlockName;
+        public string Name => RubyBlock.BlockName;
 
         /// <inheritdoc />
-        public override async IAsyncEnumerable<IProcessOutput<T>> Execute()
+        public async IAsyncEnumerable<IProcessOutput<T>> Execute()
         {
             var scriptText = CompileScript();
             var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, _nuixProcessSettings, new []{RubyBlock});
@@ -124,13 +123,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
 
-
         /// <inheritdoc />
-        public override IProcessConverter? ProcessConverter => NuixProcessConverter.Instance;
+        public IProcessConverter? ProcessConverter => NuixProcessConverter.Instance;
 
         private class BinToHexBlock : IUnitRubyBlock
         {
-            public static BinToHexBlock Instance = new BinToHexBlock();
+            public static readonly BinToHexBlock Instance = new BinToHexBlock();
 
             private BinToHexBlock()
             {

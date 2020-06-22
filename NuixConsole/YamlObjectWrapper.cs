@@ -92,12 +92,6 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
             /// <inheritdoc />
             public IReadOnlyDictionary<string, string> ExtraFields { get; }
-
-            //public string? Example { get; }
-            //public string? DefaultValueString { get; }
-
-            //public string? Requirements { get; }
-        
         }
     }
 }

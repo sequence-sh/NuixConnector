@@ -123,6 +123,5 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                 return true;
             }
         }
-        
     }
 }
