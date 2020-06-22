@@ -9,13 +9,24 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// All nuix processes.
     /// </summary>
-    public static class AllProcesses
+    public static class NuixProcesses
     {
+
+        /// <summary>
+        /// Gets all the nuix processes
+        /// </summary>
+        /// <param name="nuixProcessSettings"></param>
+        /// <returns></returns>
+        public static IReadOnlyCollection<YamlObjectWrapper> GetProcesses(INuixProcessSettings nuixProcessSettings)
+        {
+            return AllProcesses.Select(x => new ProcessWrapper<INuixProcessSettings>(x.GetType(), nuixProcessSettings,
+                new DocumentationCategory("Nuix Processes"))).ToList();
+        }
 
         /// <summary>
         /// All nuix processes.
         /// </summary>
-        public static readonly IReadOnlyCollection<IDocumented> Processes = new List<Process>
+        private static readonly IReadOnlyCollection<IDocumented> AllProcesses = new List<Process>
         {
             new NuixAddConcordance(),
             new NuixAddItem(),

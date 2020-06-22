@@ -11,6 +11,7 @@ using Reductech.Utilities.InstantConsole;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
 {
+    /*
     public sealed class ProcessWrapper<T> : YamlObjectWrapper, IRunnable where T : IProcessSettings
     {
         private readonly Type _processType;
@@ -66,4 +67,5 @@ namespace Reductech.EDR.Connectors.Nuix.Console
         }
 
     }
+    */
 }

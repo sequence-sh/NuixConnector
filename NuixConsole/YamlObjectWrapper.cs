@@ -11,6 +11,7 @@ using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
 {
+    /*
     public class YamlObjectWrapper : IDocumented
     {
         private readonly Type _processType;
@@ -94,4 +95,5 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             public IReadOnlyDictionary<string, string> ExtraFields { get; }
         }
     }
+    */
 }
