@@ -20,7 +20,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     {
         private static readonly List<NuixFeature> AllNuixFeatures = Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
 
-        private static readonly IReadOnlyCollection<INuixProcessSettings> NuixSettingsList = new List<INuixProcessSettings>()
+        private static readonly IReadOnlyCollection<INuixProcessSettings> NuixSettingsList = new List<INuixProcessSettings>
         {
             new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8,2), AllNuixFeatures),
             new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7,8), AllNuixFeatures),
