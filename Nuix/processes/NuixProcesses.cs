@@ -19,14 +19,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <returns></returns>
         public static IReadOnlyCollection<YamlObjectWrapper> GetProcesses(INuixProcessSettings nuixProcessSettings)
         {
-            return AllProcesses.Select(x => new ProcessWrapper<INuixProcessSettings>(x.GetType(), nuixProcessSettings,
+            var r = AllProcesses.Select(x => new ProcessWrapper<INuixProcessSettings>(x.GetType(), nuixProcessSettings,
                 new DocumentationCategory("Nuix Processes"))).ToList();
+
+            return r;
         }
 
         /// <summary>
         /// All nuix processes.
         /// </summary>
-        private static readonly IReadOnlyCollection<IDocumented> AllProcesses = new List<Process>
+        private static readonly IReadOnlyCollection<Process> AllProcesses = new List<Process>
         {
             new NuixAddConcordance(),
             new NuixAddItem(),
@@ -52,6 +54,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             new NuixRemoveFromProductionSet(),
             new NuixReorderProductionSet(),
             new NuixSearchAndTag()
-        }.Select(x=> new  YamlObjectWrapper(x.GetType(),new DocumentationCategory("Nuix Processes"))).ToList();
+        }.ToList();
     }
 }

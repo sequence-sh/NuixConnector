@@ -11,7 +11,6 @@ using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
 using Reductech.EDR.Utilities.Processes.mutable;
-using Reductech.EDR.Utilities.Processes.mutable.chain;
 using Reductech.EDR.Utilities.Processes.output;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -523,6 +522,21 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             await AssertError(freezeValue.Execute(), "Nuix Version is");
         }
+
+        /// <summary>
+        /// Test conversion to and from yaml
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        [TestCaseSource(nameof(ProcessSettingsCombos))]
+        public void TestYamlConversion(ProcessSettingsCombo processSettingsCombo)
+        {
+            var yaml = YamlHelper.ConvertToYaml(processSettingsCombo.Process);
+
+            var (isSuccess, _, _, error) = YamlHelper.TryMakeFromYaml(yaml);
+            Assert.IsTrue(isSuccess, error);
+        }
+
 
 
         public static async Task<IReadOnlyCollection<string>> AssertNoErrors(IAsyncEnumerable<IProcessOutput> output)
