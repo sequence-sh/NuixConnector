@@ -543,7 +543,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             var yaml = YamlHelper.ConvertToYaml(sequence);
 
 
-            var (isSuccess, _, value, error) = YamlHelper.TryMakeFromYaml(yaml);
+            var (isSuccess, _, _, error) = YamlHelper.TryMakeFromYaml(yaml);
             Assert.IsTrue(isSuccess, error);
         }
 
