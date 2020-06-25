@@ -524,20 +524,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         }
 
         /// <summary>
-        /// Test conversion to and from yaml
-        /// </summary>
-        /// <returns></returns>
-        [Test]
-        [TestCaseSource(nameof(ProcessSettingsCombos))]
-        public void TestYamlConversion(ProcessSettingsCombo processSettingsCombo)
-        {
-            var yaml = YamlHelper.ConvertToYaml(processSettingsCombo.Process);
-
-            var (isSuccess, _, _, error) = YamlHelper.TryMakeFromYaml(yaml);
-            Assert.IsTrue(isSuccess, error);
-        }
-
-        /// <summary>
         /// Tests freezing and execution - much slower
         /// </summary>
         /// <returns></returns>
@@ -545,18 +531,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [TestCaseSource(nameof(ProcessSettingsCombos))]
         public void TestSerialization(ProcessSettingsCombo processSettingsCombo)
         {
-
             if(!(processSettingsCombo.Process is TestSequence realProcess))
-            {
                 throw new Exception("Process is not a TestSequence");
-            }
 
             var sequence = new Sequence{Steps = realProcess.Steps.ToList()};
-
-
             var yaml = YamlHelper.ConvertToYaml(sequence);
-
-
             var (isSuccess, _, _, error) = YamlHelper.TryMakeFromYaml(yaml);
             Assert.IsTrue(isSuccess, error);
         }
