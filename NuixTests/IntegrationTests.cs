@@ -19,7 +19,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     {
         private static readonly List<NuixFeature> AllNuixFeatures = Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
 
-        private static readonly IReadOnlyCollection<INuixProcessSettings> NuixSettingsList = new List<INuixProcessSettings>()
+        private static readonly IReadOnlyCollection<INuixProcessSettings> NuixSettingsList = new List<INuixProcessSettings>
         {
             new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8,2), AllNuixFeatures),
             new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7,8), AllNuixFeatures),
@@ -482,7 +482,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [TestCaseSource(nameof(ProcessSettingsCombos))]
         public void TestFreeze(ProcessSettingsCombo processSettingsCombo)
         {
-            var (isSuccess, _, _, error) = processSettingsCombo.Process.TryFreeze<Unit>(processSettingsCombo.Setttings);
+            var (isSuccess, _, _, error) = processSettingsCombo.Process.TryFreeze<Unit>(processSettingsCombo.Settings);
             Assert.IsTrue(isSuccess, error);
         }
 
@@ -496,7 +496,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         public async Task TestExecution(ProcessSettingsCombo processSettingsCombo)
         {
-            var (isSuccess, _, value, error) = processSettingsCombo.Process.TryFreeze<Unit>(processSettingsCombo.Setttings);
+            var (isSuccess, _, value, error) = processSettingsCombo.Process.TryFreeze<Unit>(processSettingsCombo.Settings);
             Assert.IsTrue(isSuccess, error);
 
             await AssertNoErrors(value.Execute());
@@ -537,6 +537,29 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             Assert.IsTrue(isSuccess, error);
         }
 
+        /// <summary>
+        /// Tests freezing and execution - much slower
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        [TestCaseSource(nameof(ProcessSettingsCombos))]
+        public void TestSerialization(ProcessSettingsCombo processSettingsCombo)
+        {
+
+            if(!(processSettingsCombo.Process is TestSequence realProcess))
+            {
+                throw new Exception("Process is not a TestSequence");
+            }
+
+            var sequence = new Sequence{Steps = realProcess.Steps.ToList()};
+
+
+            var yaml = YamlHelper.ConvertToYaml(sequence);
+
+
+            var (isSuccess, _, _, error) = YamlHelper.TryMakeFromYaml(yaml);
+            Assert.IsTrue(isSuccess, error);
+        }
 
 
         public static async Task<IReadOnlyCollection<string>> AssertNoErrors(IAsyncEnumerable<IProcessOutput> output)
@@ -636,22 +659,22 @@ puts 'Doing Nothing'
 
     public class ProcessSettingsCombo
     {
-        public ProcessSettingsCombo(Process process, INuixProcessSettings setttings)
+        public ProcessSettingsCombo(Process process, INuixProcessSettings settings)
         {
             Process = process;
-            Setttings = setttings;
+            Settings = settings;
         }
 
         public readonly Process Process;
 
-        public readonly INuixProcessSettings Setttings;
+        public readonly INuixProcessSettings Settings;
 
         public override string ToString()
         {
-            return (Setttings.NuixVersion.ToString(2), Process.ToString()).ToString();
+            return (Settings.NuixVersion.ToString(2), Process.ToString()).ToString();
         }
 
-        public bool IsProcessCompatible => IsVersionCompatible(Process, Setttings.NuixVersion);
+        public bool IsProcessCompatible => IsVersionCompatible(Process, Settings.NuixVersion);
 
 
         private static readonly Regex VersionRegex = new Regex(@"Requires Nuix Version (?<version>\d+\.\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);

@@ -88,7 +88,9 @@ namespace Reductech.EDR.Connectors.Nuix
             if (!string.IsNullOrWhiteSpace(errorString))
                 return Result.Failure<NuixProcessSettings>(errorString);
 
+#pragma warning disable CS8604 // Possible null reference argument. - this is checked above
             return new NuixProcessSettings(useDongle, nuixExeConsolePath, nuixVersion, nuixFeatures);
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         private static bool TryParseNuixFeatures(string? s, out IReadOnlyCollection<NuixFeature> nuixFeatures)
