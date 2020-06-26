@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.processes;
+using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Utilities.Processes.mutable;
 using Reductech.Utilities.InstantConsole;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
@@ -19,11 +20,13 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
             if (isSuccess)
             {
-                var processes =
-                    AllProcesses.GetProcesses(settings)
-                        .Concat(AllProcesses.EnumerationWrappers)
-                        .Concat(AllProcesses.InjectionWrappers)
-                        .Concat(NuixProcesses.GetProcesses(settings)).ToList();
+                var nuixProcesses = DynamicProcessFinder.GetAllDocumented(settings,
+                    new DocumentationCategory("Nuix Processes", typeof(RubyScriptProcess)), typeof(RubyScriptProcess));
+
+                var generalProcesses = DynamicProcessFinder.GetAllDocumented(settings,
+                    new DocumentationCategory("General Processes", typeof(Process)), typeof(Process));
+
+                var processes = nuixProcesses.Concat(generalProcesses);
 
                 ConsoleView.Run(args, processes);
             }

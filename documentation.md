@@ -1,195 +1,4 @@
-<a name="Process"></a>
-# General Processes
-<a name="ChainLink"></a>
-## ChainLink
-
-**The same as the type of the final process in the chain.**
-
-|Parameter|Type                   |Required|Summary|
-|:-------:|:---------------------:|:------:|:-----:|
-|Process  |[Process](#Process)    |☑️      |       |
-|Into     |[ChainLink](#ChainLink)|        |       |
-|Inject   |[Injection](#Injection)|☑️      |       |
-
-<a name="Chain"></a>
-## Chain
-
-**The same as the type of the final process in the chain.**
-
-|Parameter|Type                   |Required|Summary|
-|:-------:|:---------------------:|:------:|:-----:|
-|Process  |[Process](#Process)    |☑️      |       |
-|Into     |[ChainLink](#ChainLink)|        |       |
-
-<a name="AssertError"></a>
-## AssertError
-
-**Unit**
-
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|Process  |[Process](#Process)|☑️      |       |
-
-<a name="AssertFalse"></a>
-## AssertFalse
-
-**Unit**
-
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|ResultOf |[Process](#Process)|        |       |
-
-<a name="AssertTrue"></a>
-## AssertTrue
-
-**Unit**
-
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|ResultOf |[Process](#Process)|        |       |
-
-<a name="CheckNumber"></a>
-## CheckNumber
-
-**Boolean**
-
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|Minimum  |`int`?             |        |       |
-|Maximum  |`int`?             |        |       |
-|Check    |[Process](#Process)|        |       |
-
-<a name="Conditional"></a>
-## Conditional
-
-**Returns the same type as the 'Then' and 'Else' processes. Returns void if there is no Else process.**
-
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|If       |[Process](#Process)|☑️      |       |
-|Then     |[Process](#Process)|☑️      |       |
-|Else     |[Process](#Process)|        |       |
-
-<a name="CreateDirectory"></a>
-## CreateDirectory
-
-**Unit**
-
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
-
-<a name="DeleteItem"></a>
-## DeleteItem
-
-**Unit**
-
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
-
-<a name="DoesFileContain"></a>
-## DoesFileContain
-
-**Boolean**
-
-|Parameter       |Type    |Required|Summary|
-|:--------------:|:------:|:------:|:-----:|
-|ExpectedContents|`string`|☑️      |       |
-|FilePath        |`string`|☑️      |       |
-
-<a name="Loop"></a>
-## Loop
-
-**Unit**
-
-|Parameter|Type                       |Required|Summary|
-|:-------:|:-------------------------:|:------:|:-----:|
-|For      |[Enumeration](#Enumeration)|☑️      |       |
-|Do       |[Process](#Process)        |☑️      |       |
-
-<a name="RunExternalProcess"></a>
-## RunExternalProcess
-
-**Unit**
-
-|Parameter  |Type          |Required|Summary|Default Value                                   |
-|:---------:|:------------:|:------:|:-----:|:----------------------------------------------:|
-|ProcessPath|`string`      |☑️      |       |                                                |
-|Arguments  |List<`string`>|        |       |System.Collections.Generic.List`1[System.String]|
-
-<a name="Sequence"></a>
-## Sequence
-
-**Unit**
-
-|Parameter|Type                     |Required|Summary|
-|:-------:|:-----------------------:|:------:|:-----:|
-|Steps    |List<[Process](#Process)>|☑️      |       |
-
-<a name="Unzip"></a>
-## Unzip
-
-**Unit**
-
-|Parameter           |Type    |Required|Summary|Default Value|
-|:------------------:|:------:|:------:|:-----:|:-----------:|
-|ArchiveFilePath     |`string`|☑️      |       |             |
-|DestinationDirectory|`string`|☑️      |       |             |
-|OverwriteFiles      |`bool`  |        |       |False        |
-
-<a name="WriteFile"></a>
-## WriteFile
-
-**Unit**
-
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|Text     |[Process](#Process)|        |       |
-
-<a name="Enumeration"></a>
-# Enumerations
-<a name="List"></a>
-## List
-
-|Parameter|Type                         |Required|Summary|
-|:-------:|:---------------------------:|:------:|:-----:|
-|Members  |List<`string`>               |☑️      |       |
-|Inject   |List<[Injection](#Injection)>|☑️      |       |
-
-<a name="CSV"></a>
-## CSV
-
-|Parameter                |Type                                     |Required|Summary|Default Value|
-|:-----------------------:|:---------------------------------------:|:------:|:-----:|:-----------:|
-|ColumnInjections         |List<[ColumnInjection](#ColumnInjection)>|☑️      |       |             |
-|CommentToken             |`string`                                 |        |       |             |
-|CSVFilePath              |`string`                                 |        |       |             |
-|CSVProcess               |[Process](#Process)                      |        |       |             |
-|CSVText                  |`string`                                 |        |       |             |
-|Delimiter                |`string`                                 |        |       |,            |
-|Distinct                 |`bool`                                   |        |       |False        |
-|HasFieldsEnclosedInQuotes|`bool`                                   |        |       |False        |
-
-<a name="Directory"></a>
-## Directory
-
-|Parameter|Type                         |Required|Summary|
-|:-------:|:---------------------------:|:------:|:-----:|
-|Path     |`string`                     |☑️      |       |
-|Injection|List<[Injection](#Injection)>|☑️      |       |
-
-<a name="Injection"></a>
-# Injections
-<a name="Injection"></a>
-## Injection
-
-|Parameter|Type    |Required|Summary|Default Value                         |
-|:-------:|:------:|:------:|:-----:|:------------------------------------:|
-|Property |`string`|☑️      |       |                                      |
-|Regex    |`string`|        |       |The entire value will be injected.    |
-|Template |`string`|        |       |The value will be injected on its own.|
-
+<a name="RubyScriptProcess"></a>
 # Nuix Processes
 <a name="NuixAddConcordance"></a>
 ## NuixAddConcordance
@@ -603,6 +412,217 @@ Searches a NUIX case with a particular search string and tags all files it finds
 |Tag       |`string`|☑️      |The tag to assign to found results.|
 |SearchTerm|`string`|☑️      |The term to search for.            |
 |CasePath  |`string`|☑️      |The path to the case.              |
+
+<a name="Process"></a>
+# General Processes
+<a name="AssertTrue"></a>
+## AssertTrue
+
+**Unit**
+
+|Parameter|Type               |Required|Summary|
+|:-------:|:-----------------:|:------:|:-----:|
+|ResultOf |[Process](#Process)|        |       |
+
+<a name="AssertFalse"></a>
+## AssertFalse
+
+**Unit**
+
+|Parameter|Type               |Required|Summary|
+|:-------:|:-----------------:|:------:|:-----:|
+|ResultOf |[Process](#Process)|        |       |
+
+<a name="AssertError"></a>
+## AssertError
+
+**Unit**
+
+|Parameter|Type               |Required|Summary|
+|:-------:|:-----------------:|:------:|:-----:|
+|Process  |[Process](#Process)|☑️      |       |
+
+<a name="CheckNumber"></a>
+## CheckNumber
+
+**Boolean**
+
+|Parameter|Type               |Required|Summary|
+|:-------:|:-----------------:|:------:|:-----:|
+|Minimum  |`int`?             |        |       |
+|Maximum  |`int`?             |        |       |
+|Check    |[Process](#Process)|        |       |
+
+<a name="Conditional"></a>
+## Conditional
+
+**Returns the same type as the 'Then' and 'Else' processes. Returns void if there is no Else process.**
+
+|Parameter|Type               |Required|Summary|
+|:-------:|:-----------------:|:------:|:-----:|
+|If       |[Process](#Process)|☑️      |       |
+|Then     |[Process](#Process)|☑️      |       |
+|Else     |[Process](#Process)|        |       |
+
+<a name="CreateDirectory"></a>
+## CreateDirectory
+
+**Unit**
+
+|Parameter|Type    |Required|Summary|
+|:-------:|:------:|:------:|:-----:|
+|Path     |`string`|☑️      |       |
+
+<a name="DeleteItem"></a>
+## DeleteItem
+
+**Unit**
+
+|Parameter|Type    |Required|Summary|
+|:-------:|:------:|:------:|:-----:|
+|Path     |`string`|☑️      |       |
+
+<a name="DoesFileContain"></a>
+## DoesFileContain
+
+**Boolean**
+
+|Parameter       |Type    |Required|Summary|
+|:--------------:|:------:|:------:|:-----:|
+|ExpectedContents|`string`|☑️      |       |
+|FilePath        |`string`|☑️      |       |
+
+<a name="Loop"></a>
+## Loop
+
+**Unit**
+
+|Parameter|Type                       |Required|Summary|
+|:-------:|:-------------------------:|:------:|:-----:|
+|For      |[Enumeration](#Enumeration)|☑️      |       |
+|Do       |[Process](#Process)        |☑️      |       |
+
+<a name="ReadFile"></a>
+## ReadFile
+
+**String**
+
+|Parameter|Type    |Required|Summary|
+|:-------:|:------:|:------:|:-----:|
+|FilePath |`string`|☑️      |       |
+
+<a name="RunExternalProcess"></a>
+## RunExternalProcess
+
+**Unit**
+
+|Parameter  |Type          |Required|Summary|Default Value                                   |
+|:---------:|:------------:|:------:|:-----:|:----------------------------------------------:|
+|ProcessPath|`string`      |☑️      |       |                                                |
+|Arguments  |List<`string`>|        |       |System.Collections.Generic.List`1[System.String]|
+
+<a name="Sequence"></a>
+## Sequence
+
+**Unit**
+
+|Parameter|Type                     |Required|Summary|
+|:-------:|:-----------------------:|:------:|:-----:|
+|Steps    |List<[Process](#Process)>|☑️      |       |
+
+<a name="Unzip"></a>
+## Unzip
+
+**Unit**
+
+|Parameter           |Type    |Required|Summary|Default Value|
+|:------------------:|:------:|:------:|:-----:|:-----------:|
+|ArchiveFilePath     |`string`|☑️      |       |             |
+|DestinationDirectory|`string`|☑️      |       |             |
+|OverwriteFiles      |`bool`  |        |       |False        |
+
+<a name="WriteFile"></a>
+## WriteFile
+
+**Unit**
+
+|Parameter|Type               |Required|Summary|
+|:-------:|:-----------------:|:------:|:-----:|
+|Text     |[Process](#Process)|        |       |
+
+<a name="Chain"></a>
+## Chain
+
+**The same as the type of the final process in the chain.**
+
+|Parameter|Type                   |Required|Summary|
+|:-------:|:---------------------:|:------:|:-----:|
+|Process  |[Process](#Process)    |☑️      |       |
+|Into     |[ChainLink](#ChainLink)|        |       |
+
+<a name="ChainLink"></a>
+## ChainLink
+
+**The same as the type of the final process in the chain.**
+
+|Parameter|Type                   |Required|Summary|
+|:-------:|:---------------------:|:------:|:-----:|
+|Process  |[Process](#Process)    |☑️      |       |
+|Into     |[ChainLink](#ChainLink)|        |       |
+|Inject   |[Injection](#Injection)|☑️      |       |
+
+<a name="Enumeration"></a>
+# Enumerations
+<a name="CSV"></a>
+## CSV
+
+|Parameter                |Type                                     |Required|Summary|Default Value|
+|:-----------------------:|:---------------------------------------:|:------:|:-----:|:-----------:|
+|ColumnInjections         |List<[ColumnInjection](#ColumnInjection)>|☑️      |       |             |
+|CommentToken             |`string`                                 |        |       |             |
+|CSVFilePath              |`string`                                 |        |       |             |
+|CSVProcess               |[Process](#Process)                      |        |       |             |
+|CSVText                  |`string`                                 |        |       |             |
+|Delimiter                |`string`                                 |        |       |,            |
+|Distinct                 |`bool`                                   |        |       |False        |
+|HasFieldsEnclosedInQuotes|`bool`                                   |        |       |False        |
+
+<a name="Directory"></a>
+## Directory
+
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Path     |`string`                     |☑️      |       |
+|Injection|List<[Injection](#Injection)>|☑️      |       |
+
+<a name="List"></a>
+## List
+
+|Parameter|Type                         |Required|Summary|
+|:-------:|:---------------------------:|:------:|:-----:|
+|Members  |List<`string`>               |☑️      |       |
+|Inject   |List<[Injection](#Injection)>|☑️      |       |
+
+<a name="Injection"></a>
+# injections
+<a name="ColumnInjection"></a>
+## ColumnInjection
+
+|Parameter|Type    |Required|Summary|Default Value                         |
+|:-------:|:------:|:------:|:-----:|:------------------------------------:|
+|Column   |`string`|☑️      |       |                                      |
+|Property |`string`|☑️      |       |                                      |
+|Regex    |`string`|        |       |The entire value will be injected.    |
+|Template |`string`|        |       |The value will be injected on its own.|
+
+<a name="Injection"></a>
+## Injection
+
+|Parameter|Type    |Required|Summary|Default Value                         |
+|:-------:|:------:|:------:|:-----:|:------------------------------------:|
+|Property |`string`|☑️      |       |                                      |
+|Regex    |`string`|        |       |The entire value will be injected.    |
+|Template |`string`|        |       |The value will be injected on its own.|
 
 # Enums
 <a name="DeduplicateBy"></a>
