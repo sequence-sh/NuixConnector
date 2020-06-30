@@ -5,10 +5,10 @@ using CSharpFunctionalExtensions;
 using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.mutable;
-using Reductech.EDR.Utilities.Processes.mutable.enumerations;
-using Reductech.EDR.Utilities.Processes.mutable.injection;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Mutable;
+using Reductech.EDR.Processes.Mutable.Enumerations;
+using Reductech.EDR.Processes.Mutable.Injections;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {

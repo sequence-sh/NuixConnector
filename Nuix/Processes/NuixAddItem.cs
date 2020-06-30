@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Attributes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
@@ -59,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [ExampleValue("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        
+
         /// <summary>
         /// The path of a file containing passwords to use for decryption.
         /// </summary>
@@ -73,7 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The name of the Processing profile to use.
         /// </summary>
-        
+
         [RequiredVersion("Nuix", "7.6")]
         [YamlMember(Order = 9)]
         [ExampleValue("MyProcessingProfile")]

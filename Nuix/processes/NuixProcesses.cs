@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.mutable;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Mutable;
 using Reductech.Utilities.InstantConsole;
 
 namespace Reductech.EDR.Connectors.Nuix.processes

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.immutable;
-using Reductech.EDR.Utilities.Processes.mutable;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Immutable;
+using Reductech.EDR.Processes.Mutable;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
@@ -56,7 +56,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 return new ImmutableRubyScriptProcess(new List<IUnitRubyBlock>(), ns);
             }
 
-            if (process is Utilities.Processes.immutable.AssertBool assertBool)
+            if (process is Processes.Immutable.AssertBool assertBool)
             {
                 var nuixSubprocess = AsImmutableRubyScriptProcessTyped(assertBool.SubProcess, ns);
 
@@ -65,7 +65,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                         new List<IUnitRubyBlock> { new AssertBoolRubyBlock(nuixSubprocess.RubyBlock, assertBool.ExpectedResult) }, ns);
             }
 
-            if (process is Utilities.Processes.immutable.AssertError assertError)
+            if (process is Processes.Immutable.AssertError assertError)
             {
                 var nuixSubProcess = AsImmutableRubyScriptProcess(assertError.SubProcess, ns);
 
@@ -74,7 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                             new List<IUnitRubyBlock> { new AssertErrorRubyBlock(nuixSubProcess) }, ns);
             }
 
-            if (process is Utilities.Processes.immutable.WriteFile writeFile)
+            if (process is Processes.Immutable.WriteFile writeFile)
             {
                 var nuixSubprocess = AsImmutableRubyScriptProcessTyped(writeFile.TextProcess, ns);
 
@@ -117,7 +117,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
             if (process is ImmutableRubyScriptProcessTyped<T> immutableRubyScriptProcessTyped) return immutableRubyScriptProcessTyped;
 
-            if (process is Utilities.Processes.immutable.CheckNumber checkNumber)
+            if (process is Processes.Immutable.CheckNumber checkNumber)
             {
                 var nuixSubprocess = AsImmutableRubyScriptProcessTyped(checkNumber.CountProcess, ns);
 

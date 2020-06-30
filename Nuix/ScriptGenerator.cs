@@ -6,7 +6,7 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.immutable;
-using Reductech.EDR.Utilities.Processes.mutable;
-using Reductech.EDR.Utilities.Processes.mutable.chain;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Immutable;
+using Reductech.EDR.Processes.Mutable;
+using Reductech.EDR.Processes.Mutable.Chain;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
