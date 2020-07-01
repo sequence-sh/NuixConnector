@@ -420,209 +420,251 @@ Searches a NUIX case with a particular search string and tags all files it finds
 
 **Unit**
 
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|ResultOf |[Process](#Process)|        |       |
+Asserts that the Check will return true.
+
+|Parameter|Type               |Required|Summary                                                                       |
+|:-------:|:-----------------:|:------:|:----------------------------------------------------------------------------:|
+|ResultOf |[Process](#Process)|        |The process whose result should be checked. Should have a return type of bool.|
 
 <a name="AssertFalse"></a>
 ## AssertFalse
 
 **Unit**
 
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|ResultOf |[Process](#Process)|        |       |
+Asserts that the Check will return false.
+
+|Parameter|Type               |Required|Summary                                                                       |
+|:-------:|:-----------------:|:------:|:----------------------------------------------------------------------------:|
+|ResultOf |[Process](#Process)|        |The process whose result should be checked. Should have a return type of bool.|
 
 <a name="AssertError"></a>
 ## AssertError
 
 **Unit**
 
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|Process  |[Process](#Process)|☑️      |       |
+Asserts that a particular process will produce an error.
+
+|Parameter|Type               |Required|Summary                              |
+|:-------:|:-----------------:|:------:|:-----------------------------------:|
+|Process  |[Process](#Process)|☑️      |The process that is expected to fail.|
 
 <a name="CheckNumber"></a>
 ## CheckNumber
 
 **Boolean**
 
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|Minimum  |`int`?             |        |       |
-|Maximum  |`int`?             |        |       |
-|Check    |[Process](#Process)|        |       |
+Checks that the count of the Check is within a particular range.
+
+|Parameter|Type               |Required|Summary                                                                            |
+|:-------:|:-----------------:|:------:|:---------------------------------------------------------------------------------:|
+|Minimum  |`int`?             |        |Inclusive minimum of the expected range. Either this, Maximum, or both must be set.|
+|Maximum  |`int`?             |        |Inclusive maximum of the expected range. Either this, Minimum, or both must be set.|
+|Check    |[Process](#Process)|        |The process whose count should be checked. Should have a return type of int.       |
 
 <a name="Conditional"></a>
 ## Conditional
 
 **Returns the same type as the 'Then' and 'Else' processes. Returns void if there is no Else process.**
 
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|If       |[Process](#Process)|☑️      |       |
-|Then     |[Process](#Process)|☑️      |       |
-|Else     |[Process](#Process)|        |       |
+Runs the 'If' process. If it completed successfully then run the 'Then' process, otherwise run the 'Else' process.
+
+|Parameter|Type               |Required|Summary                                                                                                                                             |
+|:-------:|:-----------------:|:------:|:--------------------------------------------------------------------------------------------------------------------------------------------------:|
+|If       |[Process](#Process)|☑️      |The process to use as the assertion. Must have the boolean result type.                                                                             |
+|Then     |[Process](#Process)|☑️      |If the 'If' process was successful then run this. Must have the same result type as the 'Else' process, if there is one and the void type otherwise.|
+|Else     |[Process](#Process)|        |If the 'If' process was unsuccessful then run this. Must have the same result type as the 'Then' process.                                           |
 
 <a name="CreateDirectory"></a>
 ## CreateDirectory
 
 **Unit**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
+Creates a new directory in the file system.
+
+|Parameter|Type    |Required|Summary                             |
+|:-------:|:------:|:------:|:----------------------------------:|
+|Path     |`string`|☑️      |The path to the directory to create.|
 
 <a name="DeleteItem"></a>
 ## DeleteItem
 
 **Unit**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|Path     |`string`|☑️      |       |
+Deletes a file or a directory.
+
+|Parameter|Type    |Required|Summary                                     |
+|:-------:|:------:|:------:|:------------------------------------------:|
+|Path     |`string`|☑️      |The path to the file or directory to delete.|
 
 <a name="DoesFileContain"></a>
 ## DoesFileContain
 
 **Boolean**
 
-|Parameter       |Type    |Required|Summary|
-|:--------------:|:------:|:------:|:-----:|
-|ExpectedContents|`string`|☑️      |       |
-|FilePath        |`string`|☑️      |       |
+Checks whether a particular file contains a particular string.
+
+|Parameter       |Type    |Required|Summary                           |
+|:--------------:|:------:|:------:|:--------------------------------:|
+|ExpectedContents|`string`|☑️      |The file must contain this string.|
+|FilePath        |`string`|☑️      |The path to the file to check.    |
 
 <a name="Loop"></a>
 ## Loop
 
 **Unit**
 
-|Parameter|Type                       |Required|Summary|
-|:-------:|:-------------------------:|:------:|:-----:|
-|For      |[Enumeration](#Enumeration)|☑️      |       |
-|Do       |[Process](#Process)        |☑️      |       |
+Performs a nested process once for each element in an enumeration.
+
+|Parameter|Type                       |Required|Summary                                  |
+|:-------:|:-------------------------:|:------:|:---------------------------------------:|
+|For      |[Enumeration](#Enumeration)|☑️      |The enumeration to iterate through.      |
+|Do       |[Process](#Process)        |☑️      |The process to run once for each element.|
 
 <a name="ReadFile"></a>
 ## ReadFile
 
 **String**
 
-|Parameter|Type    |Required|Summary|
-|:-------:|:------:|:------:|:-----:|
-|FilePath |`string`|☑️      |       |
+Reads a file and returns the contents.
+
+|Parameter|Type    |Required|Summary              |
+|:-------:|:------:|:------:|:-------------------:|
+|FilePath |`string`|☑️      |The path to the file.|
 
 <a name="RunExternalProcess"></a>
 ## RunExternalProcess
 
 **Unit**
 
-|Parameter  |Type          |Required|Summary|Default Value                                   |
-|:---------:|:------------:|:------:|:-----:|:----------------------------------------------:|
-|ProcessPath|`string`      |☑️      |       |                                                |
-|Arguments  |List<`string`>|        |       |System.Collections.Generic.List`1[System.String]|
+Runs an external process.
+
+|Parameter  |Type          |Required|Summary                          |Default Value                                   |
+|:---------:|:------------:|:------:|:-------------------------------:|:----------------------------------------------:|
+|ProcessPath|`string`      |☑️      |The path to the process to run.  |                                                |
+|Arguments  |List<`string`>|        |Arguments to give to the process.|System.Collections.Generic.List`1[System.String]|
 
 <a name="Sequence"></a>
 ## Sequence
 
 **Unit**
 
-|Parameter|Type                     |Required|Summary|
-|:-------:|:-----------------------:|:------:|:-----:|
-|Steps    |List<[Process](#Process)>|☑️      |       |
+Executes each step, one after the another. Will stop if a process fails.
+
+|Parameter|Type                     |Required|Summary                                                                  |
+|:-------:|:-----------------------:|:------:|:-----------------------------------------------------------------------:|
+|Steps    |List<[Process](#Process)>|☑️      |Steps that make up this sequence. These should all have result type void.|
 
 <a name="Unzip"></a>
 ## Unzip
 
 **Unit**
 
-|Parameter           |Type    |Required|Summary|Default Value|
-|:------------------:|:------:|:------:|:-----:|:-----------:|
-|ArchiveFilePath     |`string`|☑️      |       |             |
-|DestinationDirectory|`string`|☑️      |       |             |
-|OverwriteFiles      |`bool`  |        |       |False        |
+Unzips a file.
+
+|Parameter           |Type    |Required|Summary                                                         |Default Value|
+|:------------------:|:------:|:------:|:--------------------------------------------------------------:|:-----------:|
+|ArchiveFilePath     |`string`|☑️      |The path to the archive to unzip.                               |             |
+|DestinationDirectory|`string`|☑️      |The path to the directory in which to place the extracted files.|             |
+|OverwriteFiles      |`bool`  |        |Should files be overwritten in the destination directory.       |False        |
 
 <a name="WriteFile"></a>
 ## WriteFile
 
 **Unit**
 
-|Parameter|Type               |Required|Summary|
-|:-------:|:-----------------:|:------:|:-----:|
-|Text     |[Process](#Process)|        |       |
+Writes the output of a process to a file. Will overwrite if necessary.
+
+|Parameter|Type               |Required|Summary                                                                                 |
+|:-------:|:-----------------:|:------:|:--------------------------------------------------------------------------------------:|
+|Text     |[Process](#Process)|        |The process whose result is the text to be written. Should have a return type of string.|
 
 <a name="Chain"></a>
 ## Chain
 
 **The same as the type of the final process in the chain.**
 
-|Parameter|Type                   |Required|Summary|
-|:-------:|:---------------------:|:------:|:-----:|
-|Process  |[Process](#Process)    |☑️      |       |
-|Into     |[ChainLink](#ChainLink)|        |       |
+A series of processes where the result of each process is fed into the following process.
+
+|Parameter|Type                   |Required|Summary                                         |
+|:-------:|:---------------------:|:------:|:----------------------------------------------:|
+|Process  |[Process](#Process)    |☑️      |The process for this step in the immutableChain.|
+|Into     |[ChainLink](#ChainLink)|        |The next step in the immutableChain.            |
 
 <a name="ChainLink"></a>
 ## ChainLink
 
 **The same as the type of the final process in the chain.**
 
-|Parameter|Type                   |Required|Summary|
-|:-------:|:---------------------:|:------:|:-----:|
-|Process  |[Process](#Process)    |☑️      |       |
-|Into     |[ChainLink](#ChainLink)|        |       |
-|Inject   |[Injection](#Injection)|☑️      |       |
+A step in the immutableChain other than the first.
+
+|Parameter|Type                   |Required|Summary                                                   |
+|:-------:|:---------------------:|:------:|:--------------------------------------------------------:|
+|Process  |[Process](#Process)    |☑️      |The process for this step in the immutableChain.          |
+|Into     |[ChainLink](#ChainLink)|        |The next step in the immutableChain.                      |
+|Inject   |[Injection](#Injection)|☑️      |The injection to inject the result of the previous method.|
 
 <a name="Enumeration"></a>
 # Enumerations
 <a name="CSV"></a>
 ## CSV
 
-|Parameter                |Type                                     |Required|Summary|Default Value|
-|:-----------------------:|:---------------------------------------:|:------:|:-----:|:-----------:|
-|ColumnInjections         |List<[ColumnInjection](#ColumnInjection)>|☑️      |       |             |
-|CommentToken             |`string`                                 |        |       |             |
-|CSVFilePath              |`string`                                 |        |       |             |
-|CSVProcess               |[Process](#Process)                      |        |       |             |
-|CSVText                  |`string`                                 |        |       |             |
-|Delimiter                |`string`                                 |        |       |,            |
-|Distinct                 |`bool`                                   |        |       |False        |
-|HasFieldsEnclosedInQuotes|`bool`                                   |        |       |False        |
+Enumerates through a CSV file.
+
+|Parameter                |Type                                     |Required|Summary                                                                                                                         |Default Value|
+|:-----------------------:|:---------------------------------------:|:------:|:------------------------------------------------------------------------------------------------------------------------------:|:-----------:|
+|ColumnInjections         |List<[ColumnInjection](#ColumnInjection)>|☑️      |List of columns and properties to inject.                                                                                       |             |
+|CommentToken             |`string`                                 |        |A string that, when placed at the beginning of a line, indicates that the line is a comment and should be ignored by the parser.|             |
+|CSVFilePath              |`string`                                 |        |The path to the CSV file. Either this, CSVText, or CSVProcess must be set (but not more than one).                              |             |
+|CSVProcess               |[Process](#Process)                      |        |A process which produces a string in CSV format. Either this, CSVFilePath, or CSVText must be set (but not more than one).      |             |
+|CSVText                  |`string`                                 |        |Raw CSV. Either this, CSVFilePath, or CSVProcess must be set (but not more than one).                                           |             |
+|Delimiter                |`string`                                 |        |The delimiter used in the CSV file.                                                                                             |,            |
+|Distinct                 |`bool`                                   |        |Whether to only enumerate unique values from the CSV. Uniqueness is determined only from the columns which are being injected.  |False        |
+|HasFieldsEnclosedInQuotes|`bool`                                   |        |Determines whether fields are enclosed in quotation marks.                                                                      |False        |
 
 <a name="Directory"></a>
 ## Directory
 
-|Parameter|Type                         |Required|Summary|
-|:-------:|:---------------------------:|:------:|:-----:|
-|Path     |`string`                     |☑️      |       |
-|Injection|List<[Injection](#Injection)>|☑️      |       |
+Enumerates through files in a directory.
+
+|Parameter|Type                         |Required|Summary                    |
+|:-------:|:---------------------------:|:------:|:-------------------------:|
+|Path     |`string`                     |☑️      |The path to the directory. |
+|Injection|List<[Injection](#Injection)>|☑️      |Property injections to use.|
 
 <a name="List"></a>
 ## List
 
-|Parameter|Type                         |Required|Summary|
-|:-------:|:---------------------------:|:------:|:-----:|
-|Members  |List<`string`>               |☑️      |       |
-|Inject   |List<[Injection](#Injection)>|☑️      |       |
+Enumerates through elements of a list.
+
+|Parameter|Type                         |Required|Summary                      |
+|:-------:|:---------------------------:|:------:|:---------------------------:|
+|Members  |List<`string`>               |☑️      |The elements to iterate over.|
+|Inject   |List<[Injection](#Injection)>|☑️      |Property injections to use.  |
 
 <a name="Injection"></a>
 # injections
 <a name="ColumnInjection"></a>
 ## ColumnInjection
 
-|Parameter|Type    |Required|Summary|Default Value                         |
-|:-------:|:------:|:------:|:-----:|:------------------------------------:|
-|Column   |`string`|☑️      |       |                                      |
-|Property |`string`|☑️      |       |                                      |
-|Regex    |`string`|        |       |The entire value will be injected.    |
-|Template |`string`|        |       |The value will be injected on its own.|
+Injects values from a CSV column into a property of a loop'obj process.
+
+|Parameter|Type    |Required|Summary                                                                                                                                                                                                  |Default Value                         |
+|:-------:|:------:|:------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------:|
+|Column   |`string`|☑️      |The column in the CSV to get the values from.                                                                                                                                                            |                                      |
+|Property |`string`|☑️      |The property of the subProcess to inject.                                                                                                                                                                |                                      |
+|Regex    |`string`|        |The regex to use to extract the useful part of the element. Only works for string properties. The first match of the regex will be used.                                                                 |The entire value will be injected.    |
+|Template |`string`|        |The template to apply to the element before injection. Only works for string properties. The string '$1' in the template will be replaced with the element. The template will be applied after the Regex.|The value will be injected on its own.|
 
 <a name="Injection"></a>
 ## Injection
 
-|Parameter|Type    |Required|Summary|Default Value                         |
-|:-------:|:------:|:------:|:-----:|:------------------------------------:|
-|Property |`string`|☑️      |       |                                      |
-|Regex    |`string`|        |       |The entire value will be injected.    |
-|Template |`string`|        |       |The value will be injected on its own.|
+Injects a value from the enumerator into a property of a loop'obj process.
+
+|Parameter|Type    |Required|Summary                                                                                                                                                                                                  |Default Value                         |
+|:-------:|:------:|:------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------:|
+|Property |`string`|☑️      |The property of the subProcess to inject.                                                                                                                                                                |                                      |
+|Regex    |`string`|        |The regex to use to extract the useful part of the element. Only works for string properties. The first match of the regex will be used.                                                                 |The entire value will be injected.    |
+|Template |`string`|        |The template to apply to the element before injection. Only works for string properties. The string '$1' in the template will be replaced with the element. The template will be applied after the Regex.|The value will be injected on its own.|
 
 # Enums
 <a name="DeduplicateBy"></a>
