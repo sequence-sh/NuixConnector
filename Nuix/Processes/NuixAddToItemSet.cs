@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.processes

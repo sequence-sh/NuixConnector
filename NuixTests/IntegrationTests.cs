@@ -9,9 +9,9 @@ using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.mutable;
-using Reductech.EDR.Utilities.Processes.output;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Mutable;
+using Reductech.EDR.Processes.Output;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {

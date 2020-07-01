@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Utilities.Processes;
-using Reductech.EDR.Utilities.Processes.immutable;
-using Reductech.EDR.Utilities.Processes.output;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Immutable;
+using Reductech.EDR.Processes.Output;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Reductech.EDR.Utilities.Processes;
+using Reductech.EDR.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
