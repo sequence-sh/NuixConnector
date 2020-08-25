@@ -6,7 +6,6 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix
@@ -93,20 +92,8 @@ namespace Reductech.EDR.Connectors.Nuix
 
         private Result<string> TryGenerateScript(RubyScriptProcess process)
         {
-            var freezeResult =process.TryFreeze<Unit>(_nuixProcessSettings);
-
-            if (freezeResult.IsFailure)
-                return freezeResult.ConvertFailure<string>();
-
-            if (freezeResult.Value is IImmutableRubyScriptProcess immutableRubyScriptProcess)
-            {
-                var script = immutableRubyScriptProcess.CompileScript();
-                return Result.Success(script);
-            }
-            else
-            {
-                return Result.Failure<string>("Could not cast process to IImmutableRubyScriptProcess");
-            }
+            var script = process.CompileScript();
+            return Result.Success(script);
 
         }
 

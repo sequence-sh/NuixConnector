@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.General;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
     internal sealed class ConditionalRubyBlock : IUnitRubyBlock
     {
-        public ConditionalRubyBlock(ITypedRubyBlock<bool> ifBlock, ImmutableRubyScriptProcess thenProcess, ImmutableRubyScriptProcess elseProcess)
+        public ConditionalRubyBlock(ITypedRubyBlock<bool> ifBlock, RubyScriptProcess thenProcess, RubyScriptProcess elseProcess)
         {
             _ifBlock = ifBlock;
             _thenProcess = thenProcess;
@@ -16,18 +16,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         private readonly ITypedRubyBlock<bool> _ifBlock;
-        private readonly ImmutableRubyScriptProcess _thenProcess;
-        private readonly ImmutableRubyScriptProcess _elseProcess;
+        private readonly RubyScriptProcess _thenProcess;
+        private readonly RubyScriptProcess _elseProcess;
 
         /// <inheritdoc />
-        public string BlockName => ProcessNameHelper.GetConditionalName(_ifBlock.BlockName, _thenProcess.Name, _elseProcess.Name);
+        public string BlockName => "Conditional"; //TODO fix
+            //ConditionalProcessFactory.Instance.ProcessNameBuilder. ProcessNameHelper.GetConditionalName(_ifBlock.BlockName, _thenProcess.Name, _elseProcess.Name);
 
         /// <inheritdoc />
-        public Version RequiredNuixVersion => 
+        public Version RequiredNuixVersion =>
             new []{_ifBlock.RequiredNuixVersion}
                 .Concat(_thenProcess.RubyBlocks.Select(x=>x.RequiredNuixVersion))
                 .Concat(_elseProcess.RubyBlocks.Select(x=>x.RequiredNuixVersion))
-                .OrderByDescending(x => x).FirstOrDefault()?? RubyScriptProcess.DefaultRequiredVersion;
+                .OrderByDescending(x => x).FirstOrDefault()?? NuixVersionHelper.DefaultRequiredVersion;
 
 
         /// <inheritdoc />

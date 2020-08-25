@@ -1,24 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Extract Entities from a Nuix Case.
     /// </summary>
+    public sealed class NuixExtractEntitiesProcessFactory : RubyScriptProcessFactory<NuixExtractEntities, Unit>
+    {
+        private NuixExtractEntitiesProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixExtractEntities, Unit> Instance { get; } = new NuixExtractEntitiesProcessFactory();
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(4, 2);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    }
+
+    /// <summary>
+    /// Extract Entities from a Nuix Case.
+    /// </summary>
     public sealed class NuixExtractEntities : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixExtractEntitiesProcessFactory.Instance;
 
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "Extract Entities";
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "Extract Entities";
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -26,19 +45,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The path to the folder to put the output files in.
         /// </summary>
         [Required]
-        [ExampleValue("C:/Output")]
-        [YamlMember(Order = 4)]
+        [Example("C:/Output")]
+        [RunnableProcessProperty]
         public string OutputFolder { get; set; }
 
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        
+
         /// <inheritdoc />
         internal override string ScriptText => @"
     the_case = utilities.case_factory.open(casePathArg)
@@ -52,9 +71,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     entitiesText = ""TypeDescription\tValue\tCount"" #The headers for the entities file
 
     if entityTypes.length > 0
-        allItems = the_case.searchUnsorted(""named-entities:*"")    
+        allItems = the_case.searchUnsorted(""named-entities:*"")
 
-        allItems.each do |i|            
+        allItems.each do |i|
             entityTypes.each do |et|
                 entities = i.getEntities(et)
                 entities.each do |e|
@@ -63,7 +82,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             end
         end
 
-        puts ""Found entities for #{allItems.length} items""        
+        puts ""Found entities for #{allItems.length} items""
 
         results.each do |et, values|
             totalCount = values.map{|x,y| y.length}.reduce(:+)
@@ -71,9 +90,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             currentText = ""Value\tGuid"" #The header for this types' file
             values.each do |value, guids|
                 entitiesText << ""#{et}\t#{value}\t#{guids.length}"" #The row in the entities file
-                guids.each do |guid|                
+                guids.each do |guid|
                     currentText << ""#{value}\t#{guid}"" #The row in this entity type file
-                end				                
+                end
             end
             File.write(File.join(outputFolderPathArg, et + '.txt'), currentText)
         end
@@ -87,12 +106,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string MethodName => "ExtractEntities";
-
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(4,2);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()

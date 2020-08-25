@@ -4,35 +4,60 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Checks the print preview state of the production set.
     /// </summary>
+    public sealed class NuixAssertPrintPreviewStateProcessFactory : RubyScriptProcessFactory<NuixAssertPrintPreviewState, Unit>
+    {
+        private NuixAssertPrintPreviewStateProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixAssertPrintPreviewState, Unit> Instance { get; } = new NuixAssertPrintPreviewStateProcessFactory();
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(5, 2);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.PRODUCTION_SET, NuixFeature.ANALYSIS
+        };
+
+    }
+
+
+    /// <summary>
+    /// Checks the print preview state of the production set.
+    /// </summary>
     public sealed class NuixAssertPrintPreviewState : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAssertPrintPreviewStateProcessFactory.Instance;
 
-        /// <inheritdoc />
-        public override string GetName()
-        {
-            return $"Assert preview state is {ExpectedState}";
-        }
+
+        ///// <inheritdoc />
+        //public override string GetName()
+        //{
+        //    return $"Assert preview state is {ExpectedState}";
+        //}
 
         /// <summary>
         /// The expected print preview state of the production set;
         /// </summary>
-        [YamlMember(Order = 2)] 
+        [RunnableProcessProperty]
         public PrintPreviewState ExpectedState { get; set; } = PrintPreviewState.All;
 
         /// <summary>
         /// The production set to reorder.
         /// </summary>
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string ProductionSetName { get; set; }
 
@@ -41,23 +66,23 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        
+
         /// <inheritdoc />
         internal override string ScriptText =>
         @"
     the_case = utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts 'Production Set Not Found'
         the_case.close
         exit
-    else 
+    else
         r = productionSet.getPrintPreviewState()
         the_case.close
 
@@ -72,14 +97,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override string MethodName => "GetPrintPreviewState";
 
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(5,2);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET, NuixFeature.ANALYSIS
-        };
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()

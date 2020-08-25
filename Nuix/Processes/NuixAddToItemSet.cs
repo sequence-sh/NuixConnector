@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -13,14 +12,40 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// Searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
+    public sealed class NuixAddToItemSetProcessFactory : RubyScriptProcessFactory<NuixAddToItemSet, Unit>
+    {
+        private NuixAddToItemSetProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixAddToItemSet, Unit> Instance { get; } = new NuixAddToItemSetProcessFactory();
+
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(4, 0);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.ANALYSIS
+        };
+    }
+
+
+    /// <summary>
+    /// Searches a case with a particular search string and adds all items it finds to a particular item set.
+    /// Will create a new item set if one doesn't already exist.
+    /// </summary>
     public sealed class NuixAddToItemSet : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAddToItemSetProcessFactory.Instance;
 
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "Search and add to item set";
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "Search and add to item set";
 
 
         /// <summary>
@@ -28,7 +53,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
 
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string ItemSetName { get; set; }
 
@@ -37,35 +62,35 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The term to search for.
         /// </summary>
         [Required]
-        [YamlMember(Order = 4)]
+        [RunnableProcessProperty]
         public string SearchTerm { get; set; }
 
         /// <summary>
         /// The path of the case to search.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
         /// <summary>
         /// The means of deduplicating items by key and prioritizing originals in a tie-break.
         /// </summary>
-        [YamlMember(Order = 6)]
+        [RunnableProcessProperty]
         public ItemSetDeduplication ItemSetDeduplication { get; set; }
 
         /// <summary>
         /// The description of the item set.
         /// </summary>
 
-        [YamlMember(Order = 7)]
+        [RunnableProcessProperty]
         public string? ItemSetDescription { get; set; }
 
         /// <summary>
         /// Whether to deduplicate as a family or individual.
         /// </summary>
 
-        [YamlMember(Order = 8)]
+        [RunnableProcessProperty]
         public DeduplicateBy DeduplicateBy { get; set; }
 
         /// <summary>
@@ -73,21 +98,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
         /// </summary>
 
-        [YamlMember(Order = 9)]
+        [RunnableProcessProperty]
         public List<string>? CustodianRanking { get; set; }
 
 
         /// <summary>
         /// How to order the items to be added to the item set.
         /// </summary>
-        [YamlMember(Order = 7)]
-        [ExampleValue("name ASC, item-date DESC")]
+        [RunnableProcessProperty]
+        [Example("name ASC, item-date DESC")]
         public string? Order { get; set; }
 
         /// <summary>
         /// The maximum number of items to add to the item set.
         /// </summary>
-        [YamlMember(Order = 8)]
+        [RunnableProcessProperty]
         public int? Limit { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable
@@ -95,7 +120,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string ScriptText =>
-            @"  
+            @"
     the_case = utilities.case_factory.open(pathArg)
     itemSet = the_case.findItemSetByName(itemSetNameArg)
     if(itemSet == nil)
@@ -124,14 +149,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         internal override string MethodName => "AddToItemSet";
 
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(4,0);
 
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.ANALYSIS
-        };
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()

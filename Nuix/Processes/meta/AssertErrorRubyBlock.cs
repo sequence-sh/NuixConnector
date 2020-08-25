@@ -2,25 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Reductech.EDR.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
     internal sealed class AssertErrorRubyBlock : IUnitRubyBlock
     {
-        public readonly ImmutableRubyScriptProcess SubProcess;
+        public readonly RubyScriptProcess SubProcess;
 
-        public AssertErrorRubyBlock(ImmutableRubyScriptProcess subProcess)
+        public AssertErrorRubyBlock(RubyScriptProcess subProcess)
         {
             SubProcess = subProcess;
         }
 
         /// <inheritdoc />
-        public string BlockName => ProcessNameHelper.GetAssertErrorName(SubProcess.Name);
+        public string BlockName => $"Assert Error({SubProcess.Name})";
 
         /// <inheritdoc />
         public Version RequiredNuixVersion =>
-            SubProcess.RubyBlocks.Select(x => x.RequiredNuixVersion).OrderByDescending(x => x).FirstOrDefault()?? RubyScriptProcess.DefaultRequiredVersion;
+            SubProcess.RubyBlocks.Select(x =>
+                x.RequiredNuixVersion).OrderByDescending(x => x).FirstOrDefault()?? NuixVersionHelper.DefaultRequiredVersion;
 
         /// <inheritdoc />
         public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures => SubProcess.RubyBlocks.SelectMany(x=>x.RequiredNuixFeatures).Distinct().ToList();
@@ -44,7 +44,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber)
         {
             var allLines = new List<string>();
-            
+
             foreach (var block in SubProcess.RubyBlocks)
                 allLines.AddRange(block.GetOptParseLines(hashSetName, ref blockNumber));
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes.Mutable;
+using Reductech.EDR.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix
 {

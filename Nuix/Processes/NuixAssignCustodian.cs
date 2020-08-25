@@ -1,30 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
     /// </summary>
+    public sealed class NuixAssignCustodianFactory : RubyScriptProcessFactory<NuixAssignCustodian, Unit>
+    {
+        private NuixAssignCustodianFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixAssignCustodian, Unit> Instance { get; } = new NuixAssignCustodianFactory();
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(3, 6);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
+            = new List<NuixFeature>
+            {
+                NuixFeature.ANALYSIS
+            };
+    }
+
+
+    /// <summary>
+    /// Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
+    /// </summary>
     public sealed class NuixAssignCustodian : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAssignCustodianFactory.Instance;
 
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => $"Assign Custodian '{Custodian}'";
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => $"Assign Custodian '{Custodian}'";
 
         /// <summary>
         /// The custodian to assign to found results.
         /// </summary>
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string Custodian { get; set; }
 
@@ -32,23 +56,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The term to search for.
         /// </summary>
-        
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("*.txt")]
+        [RunnableProcessProperty]
+        [Example("*.txt")]
         public string SearchTerm { get; set; }
 
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        
         /// <inheritdoc />
         internal override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
@@ -64,7 +86,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         if i.getCustodian != custodianArg
             added = i.assignCustodian(custodianArg)
             j += 1
-        end      
+        end
     }
 
     puts ""#{j} items assigned to custodian #{custodianArg}""
@@ -72,16 +94,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string MethodName => "AssignCustodian";
-
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(3,6);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } 
-            = new List<NuixFeature>
-            {
-                NuixFeature.ANALYSIS
-            };
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()

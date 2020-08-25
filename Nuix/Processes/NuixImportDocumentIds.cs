@@ -1,30 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
     /// </summary>
+    public sealed class NuixImportDocumentIdsProcessFactory : RubyScriptProcessFactory<NuixImportDocumentIds, Unit>
+    {
+        private NuixImportDocumentIdsProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixImportDocumentIds, Unit> Instance { get; } = new NuixImportDocumentIdsProcessFactory();
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(7, 4);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.PRODUCTION_SET
+        };
+    }
+
+
+    /// <summary>
+    /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
+    /// </summary>
     public sealed class NuixImportDocumentIds : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixImportDocumentIdsProcessFactory.Instance;
 
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => $"Add document ids to production set.";
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => $"Add document ids to production set.";
 
         /// <summary>
         /// The production set to add results to.
         /// </summary>
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string ProductionSetName { get; set; }
 
@@ -32,8 +55,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
         /// <summary>
@@ -41,15 +64,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
 
         [Required]
-        [YamlMember(Order = 5)]
+        [RunnableProcessProperty]
         public bool AreSourceProductionSetsInData { get; set; } = false;
 
         /// <summary>
         /// Specifies the file path of the document ID list.
         /// </summary>
-        
+
         [Required]
-        [YamlMember(Order = 6)]
+        [RunnableProcessProperty]
         public string DataPath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -62,12 +85,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts ""Production Set Not Found""
-    else            
+    else
         puts ""Production Set Found""
 
-        options = 
+        options =
         {
             sourceProductionSetsInData: pathArg == ""true"",
             dataPath: dataPathArg
@@ -80,21 +103,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         else
             puts ""#{failedItemsCount} items failed to import""
 
-    end 
+    end
 
     the_case.close";
 
         /// <inheritdoc />
         internal override string MethodName => "ImportDocumentIds";
-
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7,4);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET
-        };
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using Reductech.EDR.Processes.Mutable;
-using Reductech.EDR.Processes.Mutable.Enumerations;
-using Reductech.EDR.Processes.Mutable.Injections;
+using Reductech.EDR.Processes.General;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -171,7 +170,7 @@ Red,Color",
             var (isSuccess, _, freezeValue, freezeError) = yamlProcessTest.Process.TryFreeze<Unit>(NuixProcessSettings);
 
             Assert.IsTrue(isSuccess, freezeError);
-            Assert.IsInstanceOf<IImmutableRubyScriptProcess>(freezeValue);
+            Assert.IsInstanceOf<IRubyScriptProcess>(freezeValue);
         }
     }
 }

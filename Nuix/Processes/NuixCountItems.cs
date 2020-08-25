@@ -2,25 +2,43 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Returns the number of items matching a particular search term
     /// </summary>
-    public sealed class NuixCountItems : RubyScriptProcess
+    public sealed class NuixCountItemsProcessFactory : RubyScriptProcessFactory<NuixCountItems, int>
+    {
+        private NuixCountItemsProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixCountItems, int> Instance { get; } = new NuixCountItemsProcessFactory();
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(3, 4);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    }
+
+    /// <summary>
+    /// Returns the number of items matching a particular search term
+    /// </summary>
+    public sealed class NuixCountItems : RubyScriptProcessTyped<int>
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Integer;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCountItemsProcessFactory.Instance;
 
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string CasePath { get; set; }
 
@@ -28,8 +46,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The search term to count.
         /// </summary>
         [Required]
-        [ExampleValue("*.txt")]
-        [YamlMember(Order = 5)]
+        [Example("*.txt")]
+        [RunnableProcessProperty]
         public string SearchTerm { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -39,7 +57,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case = utilities.case_factory.open(pathArg)
     searchOptions = {}
     count = the_case.count(searchArg, searchOptions)
-    the_case.close  
+    the_case.close
     puts ""#{count} found matching '#{searchArg}'""
     return count
     ";
@@ -48,20 +66,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "CountItems";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(3,4);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
-
-        /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
         }
 
+        ///// <inheritdoc />
+        //public override string GetName() => "Count Items";
 
         /// <inheritdoc />
-        public override string GetName() => "Count Items";
+        public override bool TryParse(string s, out int result) => int.TryParse(s, out result);
     }
 }

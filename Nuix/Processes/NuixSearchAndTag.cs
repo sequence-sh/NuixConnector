@@ -1,30 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Searches a NUIX case with a particular search string and tags all files it finds.
     /// </summary>
+    public sealed class NuixSearchAndTagProcessFactory : RubyScriptProcessFactory<NuixSearchAndTag, Unit>
+    {
+        private NuixSearchAndTagProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixSearchAndTag, Unit> Instance { get; } = new NuixSearchAndTagProcessFactory();
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(2, 16);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
+            = new List<NuixFeature>
+            {
+                NuixFeature.ANALYSIS
+            };
+    }
+
+
+
+    /// <summary>
+    /// Searches a NUIX case with a particular search string and tags all files it finds.
+    /// </summary>
     public sealed class NuixSearchAndTag : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixSearchAndTagProcessFactory.Instance;
 
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => $"Search and Tag with '{Tag}'";
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => $"Search and Tag with '{Tag}'";
 
         /// <summary>
         /// The tag to assign to found results.
         /// </summary>
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string Tag { get; set; }
 
@@ -32,23 +57,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <summary>
         /// The term to search for.
         /// </summary>
-        
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("*.txt")]
+        [RunnableProcessProperty]
+        [Example("*.txt")]
         public string SearchTerm { get; set; }
 
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
-        
         /// <inheritdoc />
         internal override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
@@ -70,16 +93,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string MethodName => "SearchAndTag";
-
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(2,16);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } 
-            = new List<NuixFeature>
-            {
-                NuixFeature.ANALYSIS
-            };
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -13,22 +11,45 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// The report is in CSV format. The headers are 'Term' and 'Count'
     /// Use this inside a WriteFile process to write it to a file.
     /// </summary>
-    public sealed class NuixCreateTermList : RubyScriptProcess
+    public sealed class NuixCreateTermListProcessFactory : RubyScriptProcessFactory<NuixCreateTermList, string>
     {
-        /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.String;
+        private NuixCreateTermListProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixCreateTermList, string> Instance { get; } = new NuixCreateTermListProcessFactory();
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "Create Termlist";
+        public override Version RequiredVersion { get; } = new Version(4, 2);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    }
+
+
+    /// <summary>
+    /// Creates a list of all terms appearing in the case and their frequencies.
+    /// The report is in CSV format. The headers are 'Term' and 'Count'
+    /// Use this inside a WriteFile process to write it to a file.
+    /// </summary>
+    public sealed class NuixCreateTermList : RubyScriptProcessTyped<string>
+    {
+        /// <inheritdoc />
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateTermListProcessFactory.Instance;
+
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "Create Termlist";
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -39,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string ScriptText => @"
     the_case = utilities.case_factory.open(casePathArg)
 
-    puts ""Generating Report:""   
+    puts ""Generating Report:""
     caseStatistics = the_case.getStatistics()
     termStatistics = caseStatistics.getTermStatistics("""", {""sort"" => ""on"", ""deduplicate"" => ""md5""}) #for some reason this takes strings rather than symbols
     #todo terms per custodian
@@ -58,15 +79,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "CreateTermList";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(4,2);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
-        
-        /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
+        }
+
+        /// <inheritdoc />
+        public override bool TryParse(string s, out string result)
+        {
+            result = s;
+            return true;
         }
     }
 }

@@ -1,54 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Generates print previews for items in a production set.
     /// </summary>
+    public sealed class NuixGeneratePrintPreviewsProcessFactory : RubyScriptProcessFactory<NuixGeneratePrintPreviews, Unit>
+    {
+        private NuixGeneratePrintPreviewsProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixGeneratePrintPreviews, Unit> Instance { get; } = new NuixGeneratePrintPreviewsProcessFactory();
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(5, 2);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.PRODUCTION_SET
+        };
+    }
+
+    /// <summary>
+    /// Generates print previews for items in a production set.
+    /// </summary>
     public sealed class NuixGeneratePrintPreviews : RubyScriptProcess
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixGeneratePrintPreviewsProcessFactory.Instance;
 
-        /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "Generate print previews";
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "Generate print previews";
+
         /// <summary>
         /// The production set to generate print previews for.
         /// </summary>
-        
+
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public string ProductionSetName { get; set; }
 
         /// <summary>
         /// The path to the case.
         /// </summary>
-        
+
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
         public string CasePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"    
+        internal override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts ""Production Set Not Found""
-    else            
+    else
         puts ""Production Set Found""
 
         options = {}
@@ -56,21 +79,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         resultMap = productionSet.generatePrintPreviews(options)
 
         puts ""Print previews generated""
-    end 
+    end
 
     the_case.close";
 
         /// <inheritdoc />
         internal override string MethodName => "GeneratePrintPreviews";
-
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(5,2);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET
-        };
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()

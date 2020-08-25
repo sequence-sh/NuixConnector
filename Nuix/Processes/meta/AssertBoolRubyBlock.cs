@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Reductech.EDR.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
@@ -19,7 +18,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
 
         /// <inheritdoc />
-        public string BlockName => ProcessNameHelper.GetAssertBoolProcessName(SubBlock.BlockName, Expected);
+        public string BlockName => "Assert " + Expected;
+            //ProcessNameHelper.GetAssertBoolProcessName(SubBlock.BlockName, Expected);
 
         /// <inheritdoc />
         public Version RequiredNuixVersion => SubBlock.RequiredNuixVersion;
@@ -32,8 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             new[] {
                 Expected? AssertTrueFunctionText : AssertFalseFunctionText
                 }
-            
-            .Concat(SubBlock.FunctionDefinitions);
+                .Concat(SubBlock.FunctionDefinitions);
 
         /// <inheritdoc />
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
