@@ -32,13 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             var process = new processes.NuixSearchAndTag{SearchTerm = "a", CasePath = "b", Tag = "c"};
 
-            var freezeResult = process.TryFreeze<Unit>(args.settings);
-
-            if (args.expectedError != null)
-            {
-                Assert.IsTrue(freezeResult.IsFailure, "Expected freeze to fail");
-                freezeResult.Error.Should().Be(args.expectedError);
-            }
+            process.Verify(args.settings).ShouldBeSuccessful(x=>x.AsString);
         }
     }
 }

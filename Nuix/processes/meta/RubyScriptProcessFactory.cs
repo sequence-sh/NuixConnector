@@ -18,14 +18,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 yield return new Requirement
                 {
-                    Name = "Nuix",
+                    Name = RubyScriptProcess.NuixProcessName,
                     MinVersion = NuixVersionHelper.DefaultRequiredVersion > RequiredVersion ? NuixVersionHelper.DefaultRequiredVersion : RequiredVersion
                 };
 
                 foreach (var feature in RequiredFeatures)
                     yield return new Requirement
                     {
-                        Name = "Nuix" + feature
+                        Name = RubyScriptProcess.NuixProcessName + feature
                     };
             }
         }

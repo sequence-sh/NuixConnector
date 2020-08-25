@@ -14,10 +14,32 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     /// </summary>
     public abstract class RubyScriptProcess : RubyScriptProcessBase<Unit>
     {
+        /// <summary>
+        /// The string to use for the Nuix requirement
+        /// </summary>
+        public const string NuixProcessName = "Nuix";
+
+        /// <summary>
+        /// The ruby blocks that make up this process.
+        /// </summary>
         public IReadOnlyCollection<IUnitRubyBlock> RubyBlocks => new IUnitRubyBlock[]{
             new BasicRubyBlock(MethodName, ScriptText, MethodParameters, RunTimeNuixVersion?? RubyScriptProcessFactory.RequiredVersion, RubyScriptProcessFactory.RequiredFeatures), };
 
-
+        /// <inheritdoc />
+        public override IEnumerable<Requirement> RuntimeRequirements
+        {
+            get
+            {
+                if (RunTimeNuixVersion != null)
+                {
+                    yield return new Requirement
+                    {
+                        MinVersion = RunTimeNuixVersion,
+                        Name = NuixProcessName
+                    };
+                }
+            }
+        }
 
 
         /// <inheritdoc />
@@ -91,7 +113,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         //    return newProcess;
         //}
 
-        
+
 
 
     }
