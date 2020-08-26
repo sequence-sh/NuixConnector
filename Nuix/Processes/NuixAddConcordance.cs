@@ -1,36 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Adds data from a Concordance file to a NUIX case.
     /// </summary>
-    public sealed class NuixAddConcordance : RubyScriptProcess
+    public sealed class NuixAddConcordanceFactory : RubyScriptProcessFactory<NuixAddConcordance,Unit>
     {
-        /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        private NuixAddConcordanceFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixAddConcordance, Unit> Instance { get; } = new NuixAddConcordanceFactory();
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName()
-        {
-            return "Add Concordance";
-        }
+        public override Version RequiredVersion { get; } = new Version(7, 6); //This is required for the Metadata Import Profile
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature> { NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT };
+
+    }
+
+
+
+    /// <summary>
+    /// Adds data from a Concordance file to a NUIX case.
+    /// </summary>
+    public sealed class NuixAddConcordance : RubyScriptProcessUnit
+    {
+        /// <inheritdoc />
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAddConcordanceFactory.Instance;
+
+
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName()
+        //{
+        //    return "Add Concordance";
+        //}
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
         /// The name of the concordance profile to use.
         /// </summary>
         [Required]
-        [YamlMember(Order = 3)]
-        [ExampleValue("MyProfile")]
-        public string ConcordanceProfileName { get; set; }
+        [RunnableProcessProperty]
+        [Example("MyProfile")]
+        public IRunnableProcess<string> ConcordanceProfileName { get; set; }
 
         //TODO add a profile from a file - there is no Nuix function to do this right now.
 
@@ -38,45 +62,45 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The concordance date format to use.
         /// </summary>
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
-        public string ConcordanceDateFormat { get; set; }
+        [RunnableProcessProperty]
+        [Example("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
+        public IRunnableProcess<string> ConcordanceDateFormat { get; set; }
 
         /// <summary>
         /// The path of the concordance file to import.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/MyConcordance.dat")]
-        public string FilePath { get; set; }
+        [RunnableProcessProperty]
+        [Example("C:/MyConcordance.dat")]
+        public IRunnableProcess<string> FilePath { get; set; }
 
         /// <summary>
         /// The name of the custodian to assign the folder to.
         /// </summary>
         [Required]
-        [YamlMember(Order = 6)]
-        public string Custodian { get; set; }
+        [RunnableProcessProperty]
+        public IRunnableProcess<string> Custodian { get; set; }
 
         /// <summary>
         /// A description to add to the folder.
         /// </summary>
-        [YamlMember(Order = 7)]
-        public string? Description { get; set; }
+        [RunnableProcessProperty]
+        public IRunnableProcess<string>? Description { get; set; }
 
         /// <summary>
         /// The name of the folder to create.
         /// </summary>
         [Required]
-        [YamlMember(Order = 8)]
-        public string FolderName { get; set; }
+        [RunnableProcessProperty]
+        public IRunnableProcess<string> FolderName { get; set; }
 
         /// <summary>
         /// The path to the case to import into.
         /// </summary>
         [Required]
-        [YamlMember(Order = 9)]
-        [ExampleValue("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        public IRunnableProcess<string> CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
@@ -105,18 +129,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     puts 'Processing complete.'
     the_case.close";
 
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7,6); //This is required for the Metadata Import Profile
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>{NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT };
 
 
         /// <inheritdoc />
-        internal override string MethodName => "AddConcordanceToCase";
+        public override string MethodName => "AddConcordanceToCase";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("folderNameArg", FolderName, false);

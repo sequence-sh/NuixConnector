@@ -23,32 +23,36 @@ OptionParser.new do |opts|
 	opts.on('--ocrProfilePathArg0 [ARG]') do |o| params[:ocrProfilePathArg0] = o end
 end.parse!
 
-puts params
-
 
 def RunOCR(utilities,pathArg,searchTermArg,ocrProfileArg,ocrProfilePathArg)
 
     the_case = utilities.case_factory.open(pathArg)
 
-    searchTerm = searchTermArg    
+    searchTerm = searchTermArg
     items = the_case.searchUnsorted(searchTerm).to_a
 
     puts "Running OCR on #{items.length} items"
-    
+
     processor = utilities.createOcrProcessor() #since Nuix 7.0 but seems to work with earlier versions anyway
 
     if ocrProfileArg != nil
         ocrOptions = {:ocrProfileName => ocrProfileArg}
-#Note: this was deprecated but still works.
         processor.process(items, ocrOptions)
         puts "Items Processed"
-    else if ocrProfilePathArg != nil
-        profile = utilities.getOcrProfileBuilder().load(ocrProfilePathArg)
+    elsif ocrProfilePathArg != nil
+        profileBuilder = utilities.getOcrProfileBuilder()
+        profile = profileBuilder.load(ocrProfilePathArg)
+
+        if profile == nil
+            puts "Could not find processing profile at #{ocrProfilePathArg}"
+            exit
+        end
+
         processor.setOcrProfileObject(profile)
     else
         processor.process(items)
         puts "Items Processed"
-    end    
+    end
     the_case.close
 end
 

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -15,14 +14,42 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
     /// Use this inside a WriteFile process to write it to a file.
     /// </summary>
-    public sealed class NuixCreateReport : RubyScriptProcess
+    public sealed class NuixCreateReportProcessFactory : RubyScriptProcessFactory<NuixCreateReport, string>
     {
-        /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.String;
+        private NuixCreateReportProcessFactory(){ }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixCreateReport, string> Instance { get; } = new NuixCreateReportProcessFactory();
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "Create Report";
+        public override Version RequiredVersion { get; } = new Version(6, 2);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.ANALYSIS
+        };
+    }
+
+
+    /// <summary>
+    /// Creates a report for a Nuix case.
+    /// The report is in csv format.
+    /// The headers are 'Custodian', 'Type', 'Value', and 'Count'.
+    /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
+    /// Use this inside a WriteFile process to write it to a file.
+    /// </summary>
+    public sealed class NuixCreateReport : RubyScriptProcessTyped<string>
+    {
+        /// <inheritdoc />
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateReportProcessFactory.Instance;
+
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "Create Report";
 
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -31,9 +58,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        public IRunnableProcess<string> CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
@@ -51,13 +78,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         custodians << i.getCustodian() if i.getCustodian() != nil
 
         custodians.each do |c|
-            hash = results[c]            
+            hash = results[c]
 
             kindsHash = hash[:kind]
             kindsHash[""*""] += 1
             kindsHash[i.getKind().getName()]  += 1
 
-            typesHash = hash[:type]            
+            typesHash = hash[:type]
             typesHash[i.getType().getName()] += 1
 
             tagsHash = hash[:tag]
@@ -73,7 +100,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
             communication = i.getCommunication()
             if communication != nil
-                
+
                 from = communication.getFrom()
                 to = communication.getTo()
                 cc = communication.getCc()
@@ -84,7 +111,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                 to.each { |a|  addressesHash[a] += 1} if to != nil
                 cc.each { |a|  addressesHash[a] += 1} if cc != nil
                 bcc.each { |a|  addressesHash[a] += 1} if bcc != nil
-            end            
+            end
         end
     end
 
@@ -106,22 +133,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     return text;";
 
         /// <inheritdoc />
-        internal override string MethodName => "CreateReport";
-
-        /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(6,2);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.ANALYSIS
-        };
+        public override string MethodName => "CreateReport";
 
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
+        }
+
+        /// <inheritdoc />
+        public override bool TryParse(string s, out string result)
+        {
+            result = s;
+            return true;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using YamlDotNet.Serialization;
@@ -36,17 +37,18 @@ namespace Reductech.EDR.Connectors.Nuix
         {
             var processTypes = AppDomain.CurrentDomain
                 .GetAssemblies().SelectMany(x=>x.GetTypes())
-                .Where(t => typeof(RubyScriptProcess).IsAssignableFrom(t))
+                .Where(t => typeof(IRubyScriptProcess).IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract).ToList();
-
-            //var folderPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
 
             foreach (var processType in processTypes)
             {
                 try
                 {
+
+                    var instance = Activator.CreateInstance(processType);
+
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                    var process = (RubyScriptProcess)Activator.CreateInstance(processType);
+                    var process = (IRubyScriptProcess) instance;
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
                     if (process == null)
@@ -91,22 +93,12 @@ namespace Reductech.EDR.Connectors.Nuix
             return "Scripts generated successfully";
         }
 
-        private Result<string> TryGenerateScript(RubyScriptProcess process)
+        private Result<string> TryGenerateScript(IRubyScriptProcess process)
         {
-            var freezeResult =process.TryFreeze<Unit>(_nuixProcessSettings);
+            var state = new ProcessState(NullLogger.Instance, _nuixProcessSettings);
 
-            if (freezeResult.IsFailure)
-                return freezeResult.ConvertFailure<string>();
-
-            if (freezeResult.Value is IImmutableRubyScriptProcess immutableRubyScriptProcess)
-            {
-                var script = immutableRubyScriptProcess.CompileScript();
-                return Result.Success(script);
-            }
-            else
-            {
-                return Result.Failure<string>("Could not cast process to IImmutableRubyScriptProcess");
-            }
+            var result = process.TryCompileScript(state).MapFailure(x=>x.AsString);
+            return result;
 
         }
 

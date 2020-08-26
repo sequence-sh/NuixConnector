@@ -24,8 +24,6 @@ OptionParser.new do |opts|
 	opts.on('--localResourcesUrlArg0 ARG') do |o| params[:localResourcesUrlArg0] = o end
 end.parse!
 
-puts params
-
 
 def CreateNRTReport(utilities,pathArg,nrtPathArg,outputFormatArg,outputPathArg,localResourcesUrlArg)
 

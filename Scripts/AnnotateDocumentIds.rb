@@ -22,26 +22,24 @@ OptionParser.new do |opts|
 	opts.on('--dataPathArg0 ARG') do |o| params[:dataPathArg0] = o end
 end.parse!
 
-puts params
-
 
 def AnnotateDocumentIds(utilities,pathArg,productionSetNameArg,dataPathArg)
 
     the_case = utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts "Production Set Not Found"
-    else            
+    else
         puts "Production Set Found"
 
-        options = 
+        options =
         {
             dataPath: dataPathArg
         }
         resultMap = productionSet.annotateDocumentIdList(options)
         puts resultMap
-    end 
+    end
 
     the_case.close
 end

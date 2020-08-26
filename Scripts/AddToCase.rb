@@ -1,6 +1,6 @@
 ﻿#AddToCase
 
-requiredNuixVersion = '7.6'
+requiredNuixVersion = '3.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -27,8 +27,6 @@ OptionParser.new do |opts|
 	opts.on('--passwordFilePathArg0 [ARG]') do |o| params[:passwordFilePathArg0] = o end
 end.parse!
 
-puts params
-
 
 def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg,processingProfilePathArg,passwordFilePathArg)
 
@@ -38,8 +36,16 @@ def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodi
 #This only works in 7.6 or later
     if processingProfileNameArg != nil
         processor.setProcessingProfile(processingProfileNameArg) 
-    else if processingProfilePathArg != nil
-        profile = utilities.getProcessingProfileBuilder().load(processingProfilePathArg)
+    elsif processingProfilePathArg != nil
+        profileBuilder = utilities.getProcessingProfileBuilder()
+        profileBuilder.load(processingProfilePathArg)
+        profile = profileBuilder.build()
+
+        if profile == nil
+            puts "Could not find processing profile at #{processingProfilePathArg}"
+            exit
+        end
+
         processor.setProcessingProfileObject(profile)
     end
 

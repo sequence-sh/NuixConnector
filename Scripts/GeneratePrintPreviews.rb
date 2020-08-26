@@ -21,18 +21,16 @@ OptionParser.new do |opts|
 	opts.on('--productionSetNameArg0 ARG') do |o| params[:productionSetNameArg0] = o end
 end.parse!
 
-puts params
-
 
 def GeneratePrintPreviews(utilities,pathArg,productionSetNameArg)
-    
+
     the_case = utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts "Production Set Not Found"
-    else            
+    else
         puts "Production Set Found"
 
         options = {}
@@ -40,7 +38,7 @@ def GeneratePrintPreviews(utilities,pathArg,productionSetNameArg)
         resultMap = productionSet.generatePrintPreviews(options)
 
         puts "Print previews generated"
-    end 
+    end
 
     the_case.close
 end

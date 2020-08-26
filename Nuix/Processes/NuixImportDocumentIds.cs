@@ -1,56 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
     /// </summary>
-    public sealed class NuixImportDocumentIds : RubyScriptProcess
+    public sealed class NuixImportDocumentIdsProcessFactory : RubyScriptProcessFactory<NuixImportDocumentIds, Unit>
     {
-        /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        private NuixImportDocumentIdsProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixImportDocumentIds, Unit> Instance { get; } = new NuixImportDocumentIdsProcessFactory();
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => $"Add document ids to production set.";
+        public override Version RequiredVersion { get; } = new Version(7, 4);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.PRODUCTION_SET
+        };
+    }
+
+
+    /// <summary>
+    /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
+    /// </summary>
+    public sealed class NuixImportDocumentIds : RubyScriptProcessUnit
+    {
+        /// <inheritdoc />
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixImportDocumentIdsProcessFactory.Instance;
+
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => $"Add document ids to production set.";
 
         /// <summary>
         /// The production set to add results to.
         /// </summary>
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string ProductionSetName { get; set; }
+        public IRunnableProcess<string> ProductionSetName { get; set; }
 
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// Specifies that the source production set name(s) are contained in the document ID list.
         /// </summary>
 
         [Required]
-        [YamlMember(Order = 5)]
-        public bool AreSourceProductionSetsInData { get; set; } = false;
+        [RunnableProcessProperty]
+        [DefaultValueExplanation("false")]
+        public IRunnableProcess<bool> AreSourceProductionSetsInData { get; set; } = new Constant<bool>(false);
 
         /// <summary>
         /// Specifies the file path of the document ID list.
         /// </summary>
-        
+
         [Required]
-        [YamlMember(Order = 6)]
-        public string DataPath { get; set; }
+        [RunnableProcessProperty]
+        public IRunnableProcess<string> DataPath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -62,12 +87,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts ""Production Set Not Found""
-    else            
+    else
         puts ""Production Set Found""
 
-        options = 
+        options =
         {
             sourceProductionSetsInData: pathArg == ""true"",
             dataPath: dataPathArg
@@ -80,27 +105,18 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         else
             puts ""#{failedItemsCount} items failed to import""
 
-    end 
+    end
 
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "ImportDocumentIds";
+        public override string MethodName => "ImportDocumentIds";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(7,4);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET
-        };
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
-            yield return ("sourceProductionSetsInDataArg", AreSourceProductionSetsInData.ToString().ToLower(), false);
+            yield return ("sourceProductionSetsInDataArg", AreSourceProductionSetsInData, false);
             yield return ("productionSetNameArg", ProductionSetName, false);
             yield return ("dataPathArg", DataPath, false);
         }

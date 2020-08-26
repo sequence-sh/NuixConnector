@@ -17,8 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="InstantConsole" Version="1.0.7" />
-    <PackageReference Include="Namotion.Reflection" Version="1.0.8" />
+    <PackageReference Include="InstantConsole" Version="1.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.7" />
+    <PackageReference Include="Namotion.Reflection" Version="1.0.12" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿#MigrateCase
 
-requiredNuixVersion = '5.0'
+requiredNuixVersion = '3.0'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -12,13 +12,11 @@ OptionParser.new do |opts|
 	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
 end.parse!
 
-puts params
-
 
 def MigrateCase(utilities,pathArg)
 
     puts "Opening Case, migrating if necessary"
-    
+
     options = {migrate: true}
 
     the_case = utilities.case_factory.open(pathArg, options)

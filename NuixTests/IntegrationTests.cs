@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
+using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using Reductech.EDR.Processes.Mutable;
-using Reductech.EDR.Processes.Output;
+using Reductech.EDR.Processes.General;
+using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Processes.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -32,53 +32,80 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly string GeneralDataFolder = Path.Combine(Directory.GetCurrentDirectory(), "IntegrationTest");
 
-        private static readonly string CasePath = Path.Combine(GeneralDataFolder, "TestCase");
+        private static readonly IRunnableProcess<string> CasePath = Constant(Path.Combine(GeneralDataFolder, "TestCase")) ;
         private static readonly string OutputFolder = Path.Combine(GeneralDataFolder, "OutputFolder");
         private static readonly string ConcordanceFolder = Path.Combine(GeneralDataFolder, "ConcordanceFolder");
-        private static readonly string NRTFolder = Path.Combine(GeneralDataFolder, "NRT");
-        private static readonly string MigrationTestCaseFolder = Path.Combine(GeneralDataFolder, "MigrationTest");
+        private static readonly IRunnableProcess<string> NRTFolder = Constant(Path.Combine(GeneralDataFolder, "NRT"));
+        private static readonly IRunnableProcess<string> MigrationTestCaseFolder =Constant( Path.Combine(GeneralDataFolder, "MigrationTest"));
 
-        private static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data");
+        private static readonly IRunnableProcess<string> DataPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data"));
 
-        private static readonly string EncryptedDataPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData");
+        private static readonly IRunnableProcess<string> EncryptedDataPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData"));
 
-        private static readonly string PasswordFilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt");
+        private static readonly IRunnableProcess<string> PasswordFilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt"));
 
         //private static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultOCRProfile.xml");
-        private static readonly string DefaultProcessingProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml");
-        private static readonly string TestProductionProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml");
+        private static readonly IRunnableProcess<string> DefaultProcessingProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml"));
+        private static readonly IRunnableProcess<string> TestProductionProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml"));
 
-        private static readonly string PoemTextImagePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png");
-        private static readonly string ConcordancePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat");
-        private static readonly string MigrationPath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip");
+        private static readonly IRunnableProcess<string> PoemTextImagePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png"));
+        private static readonly IRunnableProcess<string> ConcordancePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat"));
+        private static readonly IRunnableProcess<string> MigrationPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip"));
 
-        private static readonly Process DeleteCaseFolder = new DeleteItem { Path = CasePath };
-        private static readonly Process DeleteOutputFolder = new DeleteItem { Path = OutputFolder };
-        private static readonly Process CreateOutputFolder = new CreateDirectory { Path = OutputFolder };
-        private static readonly Process AssertCaseDoesNotExist = new AssertFalse { ResultOf = new NuixDoesCaseExists { CasePath = CasePath } };
-        private static readonly Process CreateCase = new NuixCreateCase { CaseName = "Integration Test Case", CasePath = CasePath, Investigator = "Mark" };
-
-        private static Process AssertFileContains(string filePath, string expectedContents)
+        private static readonly IRunnableProcess<Unit> DeleteCaseFolder = new DeleteItem()
         {
+            Path =  CasePath
+        };
+        private static readonly IRunnableProcess<Unit> DeleteOutputFolder = new DeleteItem { Path = Constant(OutputFolder)   };
+        private static readonly IRunnableProcess<Unit> CreateOutputFolder = new CreateDirectory { Path = Constant(OutputFolder)  };
+        private static readonly IRunnableProcess<Unit> AssertCaseDoesNotExist = new AssertTrue { Test = new Not{Boolean = new NuixDoesCaseExists { CasePath = CasePath } } };
+        private static readonly IRunnableProcess<Unit> CreateCase = new NuixCreateCase {
+            CaseName = Constant("Integration Test Case") ,
+            CasePath = CasePath,
+            Investigator = Constant("Mark")  };
+
+        private static IRunnableProcess<Unit> AssertFileContains(string folderName, string fileName, string expectedContents)
+        {
+
             return new AssertTrue
             {
-                ResultOf = new DoesFileContain
+                Test = new DoesFileContain
                 {
-                    ExpectedContents = expectedContents,
-                    FilePath = filePath
+                    Text = new Constant<string>(expectedContents),
+                    Path = Constant(Path.Combine(folderName, fileName))
                 }
             };
         }
 
-        private static Process AssertCount(int expected, string searchTerm) =>
+        private static IRunnableProcess<T> Constant<T>(T c)=> new Constant<T>(c);
+
+        private static IRunnableProcess<Unit> AssertCount(int expected, string searchTerm, IRunnableProcess<string>? casePath = null) =>
             new AssertTrue
             {
-                ResultOf = new CheckNumber { Check = new NuixCountItems { CasePath = CasePath, SearchTerm = searchTerm }, Maximum = expected, Minimum = expected }
+                Test = CompareItemsCount(expected, CompareOperator.Equals, searchTerm, casePath)
             };
 
-        private static readonly Process AddData = new NuixAddItem { CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder" };
+        private static IRunnableProcess<bool> CompareItemsCount(int right, CompareOperator op, string searchTerm, IRunnableProcess<string>? casePath)
+        {
+            return new Compare<int>
+            {
+                Left = new Constant<int>(right),
+                Operator = new Constant<CompareOperator>(op),
+                Right = new NuixCountItems
+                {
+                    CasePath = casePath ?? CasePath,
+                    SearchTerm = Constant(searchTerm)
+                }
+            };
+        }
 
-        private static readonly IReadOnlyCollection<Process> TestProcesses =
+        private static readonly IRunnableProcess<Unit> AddData = new NuixAddItem {
+            CasePath = CasePath ,
+            Custodian = Constant("Mark") ,
+            Path = DataPath,
+            FolderName = Constant("New Folder") };
+
+        private static readonly IReadOnlyCollection<TestSequence> TestProcesses =
             new List<TestSequence>
             {
                 //TODO AnnotateDocumentIdList
@@ -90,7 +117,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateCase,
                     new AssertTrue
                     {
-                        ResultOf = new NuixDoesCaseExists
+                        Test = new NuixDoesCaseExists
                         {
                             CasePath = CasePath
                         }
@@ -98,12 +125,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder),
 
                 new TestSequence("Migrate Case",
-                    new DeleteItem {Path = MigrationTestCaseFolder},
-                    new Unzip {ArchiveFilePath = MigrationPath, DestinationDirectory = GeneralDataFolder},
-                    new AssertError {Process = new NuixSearchAndTag { CasePath = MigrationTestCaseFolder, SearchTerm = "*", Tag = "item"} }, //This should fail because we can't open the case
-                    new NuixMigrateCase { CasePath = MigrationTestCaseFolder},
-                    new AssertTrue{ResultOf = new CheckNumber{Maximum = 0, Minimum = 0, Check = new NuixCountItems { CasePath = MigrationTestCaseFolder, SearchTerm = "*"}}},
-                    new DeleteItem {Path = MigrationTestCaseFolder}
+                    new DeleteItem {Path = MigrationTestCaseFolder },
+                    new Unzip {ArchiveFilePath = MigrationPath , DestinationDirectory =Constant( GeneralDataFolder) },
+                    new AssertError {Test = new NuixSearchAndTag { CasePath = MigrationTestCaseFolder , SearchTerm = Constant("*") , Tag = Constant("item") } }, //This should fail because we can't open the case
+                    new NuixMigrateCase { CasePath = MigrationTestCaseFolder },
+                    AssertCount(0, "*", MigrationTestCaseFolder),
+                    new DeleteItem {Path = MigrationTestCaseFolder }
                     ),
 
                 new TestSequence("Add file to case",
@@ -111,7 +138,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*.txt"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder"},
+                    new NuixAddItem {CasePath = (CasePath) , Custodian = Constant("Mark") , Path = (DataPath) , FolderName = Constant("New Folder") },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                 ),
@@ -120,7 +147,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = EncryptedDataPath, FolderName = "New Folder", PasswordFilePath = PasswordFilePath },
+                    new NuixAddItem {CasePath = (CasePath) , Custodian = Constant("Mark") , Path = (EncryptedDataPath) , FolderName = Constant("New Folder") , PasswordFilePath = (PasswordFilePath)  },
                     AssertCount(1,"princess"),
                     DeleteCaseFolder
                 ),
@@ -130,7 +157,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*.txt"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder", ProcessingProfileName = "Default"},
+                    new NuixAddItem {CasePath = CasePath, Custodian = Constant("Mark"), Path = DataPath, FolderName =Constant( "New Folder"), ProcessingProfileName = Constant("Default")},
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                 ),
@@ -140,7 +167,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*.txt"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder", ProcessingProfilePath = DefaultProcessingProfilePath},
+                    new NuixAddItem {CasePath = CasePath, Custodian = Constant("Mark"), Path = DataPath, FolderName = Constant("New Folder"), ProcessingProfilePath = DefaultProcessingProfilePath},
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                 ),
@@ -152,15 +179,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AssertCount(0, "*.txt"),
                     new Conditional()
                     {
-                        If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
-                        Then = AddData
+                        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath ),
+                        ThenProcess = AddData
                     },
                     AssertCount(2, "*.txt"),
                     new Conditional
                     {
-                        If = new CheckNumber{Check = new NuixCountItems {CasePath = CasePath,  SearchTerm = "*.txt"}, Maximum = 0},
-                        Then = new AssertError(){Process= AddData },
-                        Else = AssertCount(2, "*.txt")
+                        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath ),
+                        ThenProcess = new AssertError(){Test= AddData },
+                        ElseProcess = AssertCount(2, "*.txt")
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
@@ -172,11 +199,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateCase,
                     AssertCount(0, "*.txt"),
                     new NuixAddConcordance{
-                        ConcordanceProfileName = "IntegrationTestProfile",
-                        ConcordanceDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                        ConcordanceProfileName = Constant("IntegrationTestProfile"),
+                        ConcordanceDateFormat = Constant("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
                         FilePath = ConcordancePath,
-                        Custodian = "Mark",
-                        FolderName = "New Folder",
+                        Custodian = Constant("Mark"),
+                        FolderName = Constant("New Folder"),
                         CasePath = CasePath
                     },
                     AssertCount(1, "*.txt"),
@@ -190,8 +217,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AddData,
                     new NuixSearchAndTag
                     {
-                        CasePath = CasePath,SearchTerm = "charm",
-                        Tag = "charm"
+                        CasePath = CasePath,SearchTerm = Constant("charm"),
+                        Tag = Constant("charm")
                     },
                     AssertCount(1, "tag:charm"),
                     DeleteCaseFolder
@@ -201,8 +228,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder,
                     CreateCase,
                     AssertCount(0, "sheep"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
-                    new NuixPerformOCR {CasePath= CasePath, SearchTerm = "*.png"  },
+                    new NuixAddItem {CasePath = CasePath, Custodian = Constant("Mark"), Path = PoemTextImagePath, FolderName = Constant("New Folder")},
+                    new NuixPerformOCR {CasePath= CasePath, SearchTerm = Constant("*.png")  },
                     AssertCount(1, "sheep"),
                     DeleteCaseFolder
                     ),
@@ -210,8 +237,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder,
                     CreateCase,
                     AssertCount(0, "sheep"),
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = PoemTextImagePath, FolderName = "New Folder"},
-                    new NuixPerformOCR {CasePath= CasePath, SearchTerm = "*.png", OCRProfileName  = "Default"},
+                    new NuixAddItem {CasePath = CasePath, Custodian = Constant("Mark"), Path = PoemTextImagePath, FolderName = Constant("New Folder")},
+                    new NuixPerformOCR {CasePath= CasePath, SearchTerm = Constant("*.png"), OCRProfileName  =Constant( "Default")},
                     AssertCount(1, "sheep"),
                     DeleteCaseFolder
                 ),
@@ -230,8 +257,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AddData,
                     new NuixAddToItemSet
                     {
-                        CasePath = CasePath,SearchTerm = "charm",
-                        ItemSetName = "charmset"
+                        CasePath = CasePath,SearchTerm = Constant("charm"),
+                        ItemSetName = Constant("charmset")
                     },
                     AssertCount(1, "item-set:charmset"),
                     DeleteCaseFolder),
@@ -243,8 +270,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixAddToProductionSet
                     {
                         CasePath = CasePath,
-                        SearchTerm = "charm",
-                        ProductionSetName = "charmset",
+                        SearchTerm =Constant( "charm"),
+                        ProductionSetName = Constant("charmset"),
                         ProductionProfilePath = TestProductionProfilePath
                     },
                     AssertCount(1, "production-set:charmset"),
@@ -258,78 +285,78 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixAddToProductionSet
                     {
                         CasePath = CasePath,
-                        SearchTerm = "*.txt",
-                        ProductionSetName = "prodSet",
+                        SearchTerm = Constant("*.txt"),
+                        ProductionSetName = Constant("prodSet"),
                         ProductionProfilePath = TestProductionProfilePath
                     },
                     AssertCount(2, "production-set:prodSet"),
                     new NuixAssertPrintPreviewState
                     {
                         CasePath = CasePath,
-                        ProductionSetName = "prodSet",
-                        ExpectedState = PrintPreviewState.None
+                        ProductionSetName = Constant("prodSet"),
+                        ExpectedState = Constant(PrintPreviewState.None)
                     },
                     new NuixGeneratePrintPreviews
                     {
                         CasePath = CasePath,
-                        ProductionSetName = "prodSet"
+                        ProductionSetName = Constant("prodSet")
                     },
                     new NuixAssertPrintPreviewState
                     {
                         CasePath = CasePath,
-                        ProductionSetName = "prodSet",
-                        ExpectedState = PrintPreviewState.All
+                        ProductionSetName = Constant("prodSet"),
+                        ExpectedState = Constant(PrintPreviewState.All)
                     },
 
                     DeleteCaseFolder),
 
                 new TestSequence("Export NRT Report",
                     DeleteCaseFolder,
-                    new DeleteItem {Path = NRTFolder },
+                    new DeleteItem {Path =NRTFolder },
                     CreateCase,
                     AddData,
                     new NuixAddToProductionSet
                     {
                         CasePath = CasePath,
-                        SearchTerm = "*.txt",
-                        ProductionSetName = "prodset",
+                        SearchTerm = Constant("*.txt"),
+                        ProductionSetName = Constant("prodset"),
                         ProductionProfilePath = TestProductionProfilePath
                     },
                     new NuixCreateNRTReport
                     {
                         CasePath = CasePath,
-                        NRTPath = @"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary.nrt",
-                        OutputFormat = "PDF",
-                        LocalResourcesURL = @"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary\Resources\",
+                        NRTPath = Constant(@"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary.nrt"),
+                        OutputFormat = Constant("PDF"),
+                        LocalResourcesURL = Constant(@"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary\Resources\"),
                         OutputPath = NRTFolder
                     },
-                    AssertFileContains(NRTFolder, "PDF-1.4"),
-                    new DeleteItem {Path = NRTFolder },
+                    AssertFileContains(GeneralDataFolder, "NRT", "PDF-1.4"),
+                    new DeleteItem {Path = NRTFolder  },
                     DeleteCaseFolder
 
                     ),
 
                 new TestSequence("Export Concordance",
                     DeleteCaseFolder,
-                    new  DeleteItem {Path = ConcordanceFolder },
+                    new  DeleteItem {Path = Constant(ConcordanceFolder)  },
                     CreateCase,
                     AddData,
                     new NuixAddToProductionSet
                     {
                         CasePath = CasePath,
-                        SearchTerm = "charm",
-                        ProductionSetName = "charmset",
+                        SearchTerm = Constant("charm"),
+                        ProductionSetName = Constant("charmset"),
                         ProductionProfilePath = TestProductionProfilePath
                     },
                     new NuixExportConcordance
                     {
                         CasePath = CasePath,
-                        ProductionSetName = "charmset",
-                        ExportPath = ConcordanceFolder
+                        ProductionSetName = Constant("charmset"),
+                        ExportPath =Constant( ConcordanceFolder)
                     },
-                    AssertFileContains(ConcordanceFolder + "/loadfile.dat", "DOCID"),
-                    AssertFileContains(ConcordanceFolder + "/TEXT/000/000/DOC-000000001.txt", "Visible, invisible"),
-                    new  DeleteItem {Path = ConcordanceFolder },
+                    AssertFileContains(ConcordanceFolder, "/loadfile.dat", "DOCID"),
+                    AssertFileContains(ConcordanceFolder, "/TEXT/000/000/DOC-000000001.txt", "Visible, invisible"),
+                    new  DeleteItem {Path = new Constant<string>(ConcordanceFolder) },
                     DeleteCaseFolder
                     ),
 
@@ -340,15 +367,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixAddToProductionSet
                     {
                         CasePath = CasePath,
-                        SearchTerm = "*.txt",
-                        ProductionSetName = "fullset",
+                        SearchTerm = Constant("*.txt"),
+                        ProductionSetName = Constant("fullset"),
                         ProductionProfilePath = TestProductionProfilePath
                     },
                     new NuixRemoveFromProductionSet
                     {
                         CasePath = CasePath,
-                        SearchTerm = "Charm",
-                        ProductionSetName = "fullset"
+                        SearchTerm =Constant( "Charm"),
+                        ProductionSetName = Constant("fullset")
                     },
                     AssertCount(1, "production-set:fullset"),
                     DeleteCaseFolder),
@@ -358,17 +385,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new WriteFile()
+                    new WriteFile
                     {
                         Text = new NuixCreateReport
                         {
                             CasePath = CasePath,
                         },
-                        Folder = OutputFolder,
-                        FileName = "Stats.txt"
+                        Folder = Constant(OutputFolder),
+                        FileName = new Constant<string>("Stats.txt")
                     }
                     ,
-                    AssertFileContains(Path.Combine(OutputFolder, "Stats.txt"),"Mark	type	text/plain	2"),
+                    AssertFileContains(OutputFolder, "Stats.txt","Mark	type	text/plain	2"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -386,11 +413,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                             CasePath = CasePath,
 
                         },
-                        Folder = OutputFolder,
-                        FileName = "Terms.txt"
+                        Folder = Constant(OutputFolder),
+                        FileName = new Constant<string>("Terms.txt")
                     }
                     ,
-                    AssertFileContains(Path.Combine(OutputFolder, "Terms.txt"),"yellow	2"),
+                    AssertFileContains(OutputFolder, "Terms.txt","yellow	2"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -402,13 +429,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     //Note - we have to add items with a special profile in order to extract entities
-                    new NuixAddItem {CasePath = CasePath, Custodian = "Mark", Path = DataPath, FolderName = "New Folder", ProcessingProfileName = "ExtractEntities"},
+                    new NuixAddItem {CasePath = CasePath, Custodian = Constant("Mark"), Path = DataPath, FolderName = Constant("New Folder"), ProcessingProfileName = Constant("ExtractEntities")},
                     new NuixExtractEntities
                     {
                         CasePath = CasePath,
-                        OutputFolder = OutputFolder
+                        OutputFolder = Constant(OutputFolder)
                     },
-                    AssertFileContains(OutputFolder + "/email.txt","Marianne.Moore@yahoo.com"),
+                    AssertFileContains(OutputFolder, "/email.txt","Marianne.Moore@yahoo.com"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -426,11 +453,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         {
                             CasePath = CasePath
                         },
-                        Folder = OutputFolder,
-                        FileName = "Irregular.txt"
+                        Folder = Constant(OutputFolder) ,
+                        FileName = new Constant<string>("Irregular.txt")
                     },
-                    AssertFileContains(Path.Combine(OutputFolder, "Irregular.txt"),"Unrecognised\tNew Folder/data/Theme in Yellow.txt"),
-                    AssertFileContains(Path.Combine(OutputFolder, "Irregular.txt"),"NeedManualExamination\tNew Folder/data/Jellyfish.txt"),
+                    AssertFileContains(OutputFolder, "Irregular.txt","Unrecognised\tNew Folder/data/Theme in Yellow.txt"),
+                    AssertFileContains(OutputFolder, "Irregular.txt","NeedManualExamination\tNew Folder/data/Jellyfish.txt"),
                     DeleteCaseFolder,
                     DeleteOutputFolder
                 ),
@@ -443,16 +470,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     AddData,
                     new WriteFile
                     {
-                        FileName = "ItemProperties.txt",
-                        Folder = OutputFolder,
+                        FileName = new Constant<string>( "ItemProperties.txt"),
+                        Folder = Constant(OutputFolder)  ,
                         Text = new NuixGetItemProperties
                         {
                             CasePath = CasePath,
-                            PropertyRegex = "(.+)",
-                            SearchTerm = "*"
+                            PropertyRegex = Constant("(.+)"),
+                            SearchTerm = Constant("*")
                         }
                     },
-                    AssertFileContains(OutputFolder + "/ItemProperties.txt", "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
+                    AssertFileContains(OutputFolder, "/ItemProperties.txt", "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -463,7 +490,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateCase,
                     AddData,
                     AssertCount(0, "custodian:\"Jason\"" ),
-                    new NuixAssignCustodian(){CasePath = CasePath, Custodian = "Jason", SearchTerm = "*"},
+                    new NuixAssignCustodian(){CasePath = CasePath, Custodian = Constant("Jason"), SearchTerm = Constant("*")},
                     AssertCount(4, "custodian:\"Jason\"" ),
                     DeleteCaseFolder)
 
@@ -471,19 +498,27 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
 
         public static readonly IReadOnlyCollection<ProcessSettingsCombo> ProcessSettingsCombos =
-            TestProcesses.SelectMany(p => NuixSettingsList.Select(s => new ProcessSettingsCombo(p, s))).Where(x => x.IsProcessCompatible).ToList();
+            TestProcesses.SelectMany(p => NuixSettingsList.Select(s => new ProcessSettingsCombo(p.Sequence, s)))
+                .Where(x => x.IsProcessCompatible).ToList();
 
         /// <summary>
-        /// Tests just the freezing of the processes. Suitable as a unit test.
+        /// Tests just the freezing and unfreezing of the processes. Suitable as a unit test.
         /// </summary>
         /// <returns></returns>
         [Test]
         [TestCaseSource(nameof(ProcessSettingsCombos))]
-        [TestCaseSource(nameof(ProcessSettingsCombos))]
         public void TestFreeze(ProcessSettingsCombo processSettingsCombo)
         {
-            var (isSuccess, _, _, error) = processSettingsCombo.Process.TryFreeze<Unit>(processSettingsCombo.Settings);
-            Assert.IsTrue(isSuccess, error);
+            processSettingsCombo.IsProcessCompatible.Should().BeTrue("Process should be compatible");
+
+
+            var unfrozen = processSettingsCombo.Process.Unfreeze();
+            var freezeResult = unfrozen.TryFreeze();
+            freezeResult.ShouldBeSuccessful();
+            var verifyResult = freezeResult.Value.Verify(processSettingsCombo.Settings);
+
+
+            verifyResult.ShouldBeSuccessful(x=>x.AsString);
         }
 
         /// <summary>
@@ -493,34 +528,33 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Test]
         [TestCaseSource(nameof(ProcessSettingsCombos))]
         [Category(Integration)]
-
-        public async Task TestExecution(ProcessSettingsCombo processSettingsCombo)
+        public void TestExecution(ProcessSettingsCombo processSettingsCombo)
         {
-            var (isSuccess, _, value, error) = processSettingsCombo.Process.TryFreeze<Unit>(processSettingsCombo.Settings);
-            Assert.IsTrue(isSuccess, error);
+            processSettingsCombo.IsProcessCompatible.Should().BeTrue("Process should be compatible");
 
-            await AssertNoErrors(value.Execute());
+            processSettingsCombo.Process.Verify(processSettingsCombo.Settings).ShouldBeSuccessful(x=>x.AsString);
+
+            var processState = new ProcessState(NullLogger.Instance, processSettingsCombo.Settings);
+
+            var result = processSettingsCombo.Process.Run(processState);
+            result.ShouldBeSuccessful(x=>x.AsString);
         }
 
         [Test]
         [Category(Integration)]
-        public async Task TestVersionCheckingWithinScript()
+        public void TestVersionCheckingWithinScript()
         {
             var baseSettings = NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
 
+            var superSettings = new NuixProcessSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100, 0), baseSettings.NuixFeatures);
+
             Assert.IsNotNull(baseSettings);
 
-            var process = new DoNothingRubyScriptProcess
-            {
-                MyRequiredVersion = new Version(100, 0)
-            };
+            var process = new DoNothing  {MyRequiredVersion = new Version(100, 0)};
 
-            var (freezeSuccess, _, freezeValue, freezeError) =
-                process.TryFreeze<Unit>(new NuixProcessSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100, 0), baseSettings.NuixFeatures));
+            var result = process.Run(new ProcessState(NullLogger.Instance, superSettings));
 
-            Assert.IsTrue(freezeSuccess, freezeError);
-
-            await AssertError(freezeValue.Execute(), "Nuix Version is");
+            result.ShouldBeFailure(x=>x.AsString,"Nuix Version is");
         }
 
         /// <summary>
@@ -531,65 +565,29 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [TestCaseSource(nameof(ProcessSettingsCombos))]
         public void TestSerialization(ProcessSettingsCombo processSettingsCombo)
         {
-            if(!(processSettingsCombo.Process is TestSequence realProcess))
-                throw new Exception("Process is not a TestSequence");
+            var unfrozen = processSettingsCombo.Process.Unfreeze();
 
-            var sequence = new Sequence{Steps = realProcess.Steps.ToList()};
-            var yaml = YamlHelper.ConvertToYaml(sequence);
-            var (isSuccess, _, _, error) = YamlHelper.TryMakeFromYaml(yaml);
-            Assert.IsTrue(isSuccess, error);
+            var yaml = unfrozen.SerializeToYaml();
+
+            Console.WriteLine(yaml);
+
+            var pfs = ProcessFactoryStore.CreateUsingReflection(typeof(RubyScriptProcessUnit),
+                typeof(CompoundFreezableProcess));
+
+            var r = YamlMethods.DeserializeFromYaml(yaml, pfs);
+
+            r.ShouldBeSuccessful();
         }
 
-
-        public static async Task<IReadOnlyCollection<string>> AssertNoErrors(IAsyncEnumerable<IProcessOutput> output)
+        internal class TestSequence
         {
-            var errors = new List<string>();
-            var results = new List<string>();
-
-            await foreach (var o in output)
-            {
-                if (o.OutputType == OutputType.Error)
-                    errors.Add(o.Text);
-                else
-                {
-                    results.Add(o.Text);
-                }
-            }
-
-            CollectionAssert.IsEmpty(errors, string.Join("\r\n", results));
-
-            return results;
-        }
-
-        public static async Task AssertError(IAsyncEnumerable<IProcessOutput> output, string expectedErrorContents)
-        {
-            // ReSharper disable once CollectionNeverQueried.Local - this is nice for debugging
-            var results = new List<string>();
-
-            await foreach (var o in output)
-            {
-                if (o.OutputType == OutputType.Error)
-                {
-                    if ( o.Text.Contains(expectedErrorContents) || results.Any(x => x.Contains(expectedErrorContents)))
-                        return;
-                    else
-                        Assert.Fail(o.Text);
-                }
-                else
-                {
-                    results.Add(o.Text);
-                }
-            }
-
-            Assert.Fail("Expected to fail but did not.");
-        }
-
-        internal class TestSequence : Sequence
-        {
-            public TestSequence(string name, params Process[] steps)
+            public TestSequence(string name, params IRunnableProcess<Unit>[] steps)
             {
                 Name = name;
-                Steps = steps.ToList();
+                Sequence = new Sequence()
+                {
+                    Steps = steps
+                };
             }
 
             /// <inheritdoc />
@@ -599,13 +597,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             }
 
             public string Name { get; }
+
+            public Sequence Sequence { get; }
         }
 
 
-        internal class DoNothingRubyScriptProcess : RubyScriptProcess
+
+
+        internal class DoNothing : RubyScriptProcessUnit
         {
             /// <inheritdoc />
-            public override string GetName() => "Do Nothing";
+            public override IRubyScriptProcessFactory RubyScriptProcessFactory  => new DoNothingProcessFactory(MyRequiredVersion, MyRequiredFeatures);
 
             /// <inheritdoc />
             internal override string ScriptText => @"
@@ -613,38 +615,50 @@ puts 'Doing Nothing'
 ";
 
             /// <inheritdoc />
-            internal override string MethodName => "DoNothing";
-
-            /// <inheritdoc />
-            internal override Version RequiredVersion => MyRequiredVersion ?? new Version(1, 0);
+            public override string MethodName => "DoNothing";
 
             public Version? MyRequiredVersion { get; set; }
-
-            /// <inheritdoc />
-            internal override IReadOnlyCollection<NuixFeature> RequiredFeatures => MyRequiredFeatures ?? new List<NuixFeature>();
 
             public List<NuixFeature>? MyRequiredFeatures { get; set; }
 
             /// <inheritdoc />
-            protected override NuixReturnType ReturnType => NuixReturnType.Unit;
-
-            /// <inheritdoc />
-            internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+            internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
             {
                 yield break;
+            }
+
+            internal class DoNothingProcessFactory : RubyScriptProcessFactory<DoNothing, Unit>
+            {
+                public DoNothingProcessFactory(Version? myRequiredVersion, List<NuixFeature>? myRequiredFeatures)
+                {
+                    MyRequiredVersion = myRequiredVersion;
+                    MyRequiredFeatures = myRequiredFeatures;
+                }
+
+
+
+                /// <inheritdoc />
+                public override Version RequiredVersion => MyRequiredVersion ?? new Version(1, 0);
+
+                public Version? MyRequiredVersion { get; }
+
+                /// <inheritdoc />
+                public override IReadOnlyCollection<NuixFeature> RequiredFeatures => MyRequiredFeatures ?? new List<NuixFeature>();
+
+                public List<NuixFeature>? MyRequiredFeatures { get; }
             }
         }
     }
 
     public class ProcessSettingsCombo
     {
-        public ProcessSettingsCombo(Process process, INuixProcessSettings settings)
+        public ProcessSettingsCombo(CompoundRunnableProcess<Unit> process, INuixProcessSettings settings)
         {
             Process = process;
             Settings = settings;
         }
 
-        public readonly Process Process;
+        public readonly CompoundRunnableProcess<Unit> Process;
 
         public readonly INuixProcessSettings Settings;
 
@@ -656,25 +670,34 @@ puts 'Doing Nothing'
         public bool IsProcessCompatible => IsVersionCompatible(Process, Settings.NuixVersion);
 
 
-        private static readonly Regex VersionRegex = new Regex(@"Requires Nuix Version (?<version>\d+\.\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static bool IsVersionCompatible(Process process, Version nuixVersion)
+        //private static readonly Regex VersionRegex = new Regex(@"Requires Nuix Version (?<version>\d+\.\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static bool IsVersionCompatible(CompoundRunnableProcess<Unit> process, Version nuixVersion)
         {
-            var requiredVersions = process.GetRequirements().Select(GetVersion).Where(x => x != null).ToList();
+            var features = Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToHashSet();
 
-            if (process.ToString() == "Migrate Case")
-                requiredVersions.Add(new Version(8, 2)); //This is a special case because the file we are trying to migrate is from 7.8
+            var settings = new NuixProcessSettings(false, "", nuixVersion, features);
+
+            var r = process.Verify(settings);
+
+            return r.IsSuccess;
+
+            //var requiredVersions = process.RuntimeRequirements.Concat(process.RunnableProcessFactory.Requirements)
+            //    .Where(x=>x.Name == RubyScriptProcessUnit.NuixProcessName)
+            //    .Select(x=>x.MinVersion).Where(x => x != null).ToList();
+
+            //if (process.ToString() == "Migrate Case")
+            //    requiredVersions.Add(new Version(8, 2)); //This is a special case because the file we are trying to migrate is from 7.8
 
 
-
-            var r = requiredVersions.All(v => nuixVersion.CompareTo(v) != -1);
-            return r;
-            static Version? GetVersion(string s)
-            {
-                var match = VersionRegex.Match(s);
-                if (match.Success)
-                    return Version.Parse(match.Groups["version"].Value);
-                return null;
-            }
+            //var r = requiredVersions.All(v => nuixVersion.CompareTo(v) != -1);
+            //return r;
+            ////static Version? GetVersion(string s)
+            ////{
+            ////    var match = VersionRegex.Match(s);
+            ////    if (match.Success)
+            ////        return Version.Parse(match.Groups["version"].Value);
+            ////    return null;
+            ////}
         }
 
     }

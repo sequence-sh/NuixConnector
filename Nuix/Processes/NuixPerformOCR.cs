@@ -1,74 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Attributes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Performs optical character recognition on files in a NUIX case.
     /// </summary>
-    public sealed class NuixPerformOCR : RubyScriptProcess
+    public sealed class NuixPerformOCRProcessFactory : RubyScriptProcessFactory<NuixPerformOCR, Unit>
     {
-        /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        private NuixPerformOCRProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixPerformOCR, Unit> Instance { get; } = new NuixPerformOCRProcessFactory();
+
+        /// <inheritdoc />`,
+        public override Version RequiredVersion => new Version(7, 6);
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "RunOCR";
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.OCR_PROCESSING
+        };
+    }
+
+
+    /// <summary>
+    /// Performs optical character recognition on files in a NUIX case.
+    /// </summary>
+    public sealed class NuixPerformOCR : RubyScriptProcessUnit
+    {
+        /// <inheritdoc />
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixPerformOCRProcessFactory.Instance;
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "RunOCR";
 
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        
-        [YamlMember(Order = 1)]
-        [ExampleValue("C:/Cases/MyCase")]
+
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// The term to use for searching for files to OCR.
         /// </summary>
         [Required]
-        
-        [YamlMember(Order = 2)]
-        public string SearchTerm { get; set; } =
-            "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
+        [RunnableProcessProperty]
+        [DefaultValueExplanation("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))")]
+        public IRunnableProcess<string> SearchTerm { get; set; } =
+            new Constant<string>("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))");
 
         /// <summary>
         /// The name of the OCR profile to use.
         /// This cannot be set at the same time as OCRProfilePath.
         /// </summary>
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
         [DefaultValueExplanation("The default profile will be used.")]
-        [ExampleValue("MyOcrProfile")]
-        public string? OCRProfileName { get; set; }
+        [Example("MyOcrProfile")]
+        public IRunnableProcess<string>? OCRProfileName { get; set; }
 
         /// <summary>
         /// Path to the OCR profile to use.
         /// This cannot be set at the same times as OCRProfileName.
         /// </summary>
-        [YamlMember(Order = 4)]
+        [RunnableProcessProperty]
         [RequiredVersion("Nuix", "7.6")]
         [DefaultValueExplanation("The default profile will be used.")]
-        [ExampleValue("C:\\Profiles\\MyProfile.xml")]
-        public string? OCRProfilePath { get; set; }
-        
+        [Example("C:\\Profiles\\MyProfile.xml")]
+        public IRunnableProcess<string>? OCRProfilePath { get; set; }
 
         /// <inheritdoc />
         internal override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
 
-    searchTerm = searchTermArg    
+    searchTerm = searchTermArg
     items = the_case.searchUnsorted(searchTerm).to_a
 
     puts ""Running OCR on #{items.length} items""
-    
+
     processor = utilities.createOcrProcessor() #since Nuix 7.0 but seems to work with earlier versions anyway
 
     if ocrProfileArg != nil
@@ -82,47 +104,36 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         if profile == nil
             puts ""Could not find processing profile at #{ocrProfilePathArg}""
             exit
-        end        
+        end
 
         processor.setOcrProfileObject(profile)
     else
         processor.process(items)
         puts ""Items Processed""
-    end    
+    end
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "RunOCR";
+        public override string MethodName => "RunOCR";
 
-        /// <inheritdoc />`,
-        internal override Version RequiredVersion
+        /// <inheritdoc />
+        public override Result<Unit, IRunErrors> VerifyThis
         {
             get
             {
-                if(!string.IsNullOrWhiteSpace(OCRProfilePath) || !string.IsNullOrWhiteSpace(OCRProfileName))
-                {
-                    return new Version(7, 6);
-                }
-                return new Version(7, 6);
+                if (OCRProfileName != null && OCRProfilePath != null)
+                    return new RunError(
+                        $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.",
+                        Name,
+                        null,
+                        ErrorCode.ConflictingParameters);
+
+                return Unit.Default;
             }
         }
 
         /// <inheritdoc />
-        internal override IEnumerable<string> GetAdditionalArgumentErrors()
-        {
-            if(OCRProfileName != null && OCRProfilePath != null)
-                yield return $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.";
-        }
-
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.OCR_PROCESSING
-        };
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchTermArg", SearchTerm, false);

@@ -1,53 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Removes particular items from a Nuix production set.
     /// </summary>
-    public sealed class NuixRemoveFromProductionSet : RubyScriptProcess
+    public sealed class NuixRemoveFromProductionSetProcessFactory : RubyScriptProcessFactory<NuixRemoveFromProductionSet, Unit>
     {
-        /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        private NuixRemoveFromProductionSetProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixRemoveFromProductionSet, Unit> Instance { get; } = new NuixRemoveFromProductionSetProcessFactory();
+
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "Remove items from Production Set";
+        public override Version RequiredVersion { get; } = new Version(4, 2);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
+        {
+            NuixFeature.PRODUCTION_SET
+        };
+    }
+
+
+    /// <summary>
+    /// Removes particular items from a Nuix production set.
+    /// </summary>
+    public sealed class NuixRemoveFromProductionSet : RubyScriptProcessUnit
+    {
+        /// <inheritdoc />
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory =>
+            NuixRemoveFromProductionSetProcessFactory.Instance;
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "Remove items from Production Set";
 
         /// <summary>
         /// The production set to remove results from.
         /// </summary>
-        
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string ProductionSetName { get; set; }
+        public IRunnableProcess<string> ProductionSetName { get; set; }
 
 
         /// <summary>
         /// The search term to use for choosing which items to remove.
         /// </summary>
-        
-        [YamlMember(Order = 4)]
+        [RunnableProcessProperty]
         [DefaultValueExplanation("All items will be removed.")]
-        [ExampleValue("Tag:sushi")]
-        public string? SearchTerm { get; set; }
+        [Example("Tag:sushi")]
+        public IRunnableProcess<string>? SearchTerm { get; set; }
 
         /// <summary>
         /// The path to the case.
         /// </summary>
-        
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
-        
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <inheritdoc />
         internal override string ScriptText => @"
@@ -79,22 +100,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "RemoveFromProductionSet";
+        public override string MethodName => "RemoveFromProductionSet";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(4,2);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET
-        };
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
-            yield return ("searchArg", SearchTerm, true); 
+            yield return ("searchArg", SearchTerm, true);
             yield return ("productionSetNameArg", ProductionSetName, false);
         }
     }

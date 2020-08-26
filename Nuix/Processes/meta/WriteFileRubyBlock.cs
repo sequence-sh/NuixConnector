@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Reductech.EDR.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
@@ -18,7 +17,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
 
         /// <inheritdoc />
-        public string BlockName => ProcessNameHelper.GetWriteFileProcessName(SubBlock.BlockName);
+        public string BlockName => $"Write File '{SubBlock.BlockName}'";
 
         /// <inheritdoc />
         public Version RequiredNuixVersion => SubBlock.RequiredNuixVersion;
@@ -33,8 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
         {
             var args = new List<string> {"--" + GetArgName(ref blockNumber), FilePath};
-            args.AddRange(SubBlock.GetArguments(ref blockNumber));                
-                
+            args.AddRange(SubBlock.GetArguments(ref blockNumber));
             return args;
         }
 

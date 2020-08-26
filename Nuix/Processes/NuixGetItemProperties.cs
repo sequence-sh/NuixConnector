@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -13,49 +12,72 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
     /// Use this inside a WriteFile process to write it to a file.
     /// </summary>
-    public sealed class NuixGetItemProperties : RubyScriptProcess
+    public sealed class NuixGetItemPropertiesProcessFactory : RubyScriptProcessFactory<NuixGetItemProperties, string>
     {
-        /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.String;
+        private NuixGetItemPropertiesProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixGetItemProperties, string> Instance { get; } = new NuixGetItemPropertiesProcessFactory();
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "Get particular properties";
+        public override Version RequiredVersion { get; } = new Version(6, 2);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+
+    }
+
+
+    /// <summary>
+    /// A process that the searches a case for items and outputs the values of item properties.
+    /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
+    /// Use this inside a WriteFile process to write it to a file.
+    /// </summary>
+    public sealed class NuixGetItemProperties : RubyScriptProcessTyped<string>
+    {
+        /// <inheritdoc />
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixGetItemPropertiesProcessFactory.Instance;
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "Get particular properties";
 
 
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 2)]
-        [ExampleValue("C:/Cases/MyCase")]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// The term to search for.
         /// </summary>
         [Required]
-        [ExampleValue("*.txt")]
-        [YamlMember(Order = 3)]
-        public string SearchTerm { get; set; }
+        [Example("*.txt")]
+        [RunnableProcessProperty]
+        public IRunnableProcess<string> SearchTerm { get; set; }
 
 
         /// <summary>
         /// The regex to search the property for.
         /// </summary>
-        [ExampleValue("Date")]
+        [Example("Date")]
         [Required]
-        [YamlMember(Order = 5)]
-        public string PropertyRegex { get; set; }
+        [RunnableProcessProperty]
+        public IRunnableProcess<string> PropertyRegex { get; set; }
 
         /// <summary>
         /// An optional regex to check the value.
         /// If this is set, only values which match this regex will be returned, and only the contents of the first capture group.
         /// </summary>
-        [ExampleValue(@"(199\d)")]
-        [YamlMember(Order = 5)]
-        public string? ValueRegex { get; set; }
+        [Example(@"(199\d)")]
+        [RunnableProcessProperty]
+        public IRunnableProcess<string>? ValueRegex { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -73,7 +95,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     text = ""Key\tValue\tPath\tGuid""
 
-    items.each do |i| 
+    items.each do |i|
         i.getProperties().each do |k,v|
             begin
                 if propertyRegex =~ k
@@ -84,7 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
                         end
                     else #output the entire value
                         text << ""\n#{k}\t#{v}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
-                    end                                           
+                    end
                 end
             rescue
             end
@@ -95,21 +117,22 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     return text";
 
         /// <inheritdoc />
-        internal override string MethodName => "GetParticularProperties";
+        public override string MethodName => "GetParticularProperties";
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(6,2);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
             yield return ("propertyRegexArg", PropertyRegex, false);
             yield return ("valueRegexArg", ValueRegex, true);
+        }
+
+        /// <inheritdoc />
+        public override bool TryParse(string s, out string result)
+        {
+            result = s;
+            return true;
         }
     }
 }

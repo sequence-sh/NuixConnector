@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -14,32 +13,55 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
     /// Use this inside a WriteFile process to write it to a file.
     /// </summary>
-    public sealed class NuixCreateIrregularItemsReport : RubyScriptProcess
+    public sealed class NuixCreateIrregularItemsReportProcessFactory : RubyScriptProcessFactory<NuixCreateIrregularItemsReport, string>
     {
-        /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.String;
+        private NuixCreateIrregularItemsReportProcessFactory() { }
+
+        /// <summary>
+        /// The instance
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixCreateIrregularItemsReport, string> Instance { get; } = new NuixCreateIrregularItemsReportProcessFactory();
 
         /// <inheritdoc />
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string GetName() => "Create Irregular Items report";
+        public override Version RequiredVersion { get; } = new Version(2, 16);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    }
+
+
+    /// <summary>
+    /// Creates a list of all irregular items in a case.
+    /// The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid'
+    /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
+    /// Use this inside a WriteFile process to write it to a file.
+    /// </summary>
+    public sealed class NuixCreateIrregularItemsReport : RubyScriptProcessTyped<string>
+    {
+        /// <inheritdoc />
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateIrregularItemsReportProcessFactory.Instance;
+
+        ///// <inheritdoc />
+        //[EditorBrowsable(EditorBrowsableState.Never)]
+        //public override string GetName() => "Create Irregular Items report";
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
         /// The path to the case.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        [ExampleValue("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        public IRunnableProcess<string> CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
-        //TODO change how this works - at the moment it creates multiple files 
+        //TODO change how this works - at the moment it creates multiple files
         /// <inheritdoc />
         internal override string ScriptText => @"
     the_case = utilities.case_factory.open(casePathArg)
 
-    puts ""Generating Report:""   
-    fields = {    
+    puts ""Generating Report:""
+    fields = {
         encrypted: ""flag:encrypted"",
         NonSearchablePDF: ""mime-type:application/pdf AND NOT content:*"",
         BadExtension: ""flag:irregular_file_extension"",
@@ -53,12 +75,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         NeedManualExamination: ""kind:unrecognised AND NOT ( flag:deleted OR mime-type:( filesystem/x-ntfs-mft OR filesystem/x-ntfs-logfile OR filesystem/x-ntfs-file-record OR filesystem/x-ntfs-index-record OR filesystem/x-ntfs-logfile-record OR filesystem/x-ntfs-usnjrnl OR filesystem/x-ntfs-usnjrnl-record OR filesystem/x-ntfs-vss-catalog OR filesystem/x-ntfs-vss-store ) OR ( path-mime-type:filesystem/drive AND ( ( path-name:\""[File System Root]\"" AND name:( \""$AttrDef\"" OR \""$Bitmap\"" OR \""$BadClus\"" OR \""$BadClus:$Bad\"" OR \""$Boot\"" OR \""$Extend\"" OR \""$Secure\"" OR \""$Secure:$SDS\"" OR \""$UpCase\"" OR \""$UpCase:$Info\"" OR \""$Volume\"" ) ) OR path-name:\""[File System Root]/$Extend\"" ) ) )"",
         CodeTextFiles: ""kind:unrecognised AND (content:(function OR def) AND IF)""
     }
-    
+
     irregularText = ""Reason\tPath\tGuid""
 
     fields.each do |key, value|
         items = the_case.search(value)
-        
+
         items.each do |i|
             path = i.getPathNames().join(""/"")
             guid = i.getGuid()
@@ -70,18 +92,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     return irregularText;";
 
         /// <inheritdoc />
-        internal override string MethodName => "CreateIrregularItemsReport";
+        public override string MethodName => "CreateIrregularItemsReport";
+
+
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(2,16);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
+        }
+
+        /// <inheritdoc />
+        public override bool TryParse(string s, out string result)
+        {
+            result = s;
+            return true;
         }
     }
 }

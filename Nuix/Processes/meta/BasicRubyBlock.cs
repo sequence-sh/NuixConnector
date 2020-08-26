@@ -10,8 +10,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class BasicRubyBlock : AbstractBasicRubyBlock, IUnitRubyBlock
     {
         /// <inheritdoc />
-        public BasicRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters, Version requiredNuixVersion, IReadOnlyCollection<NuixFeature> requiredNuixFeatures) : 
-            base(blockName, functionText, methodParameters)
+        public BasicRubyBlock(string blockName,
+            string functionText,
+            IReadOnlyCollection<RubyMethodParameter> methodParameters,
+            Version requiredNuixVersion,
+            IReadOnlyCollection<NuixFeature> requiredNuixFeatures) :
+            base(blockName, functionText, methodParameters, true)
         {
             RequiredNuixVersion = requiredNuixVersion;
             RequiredNuixFeatures = requiredNuixFeatures;
@@ -21,7 +25,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         public string GetBlockText(ref int blockNumber)
         {
             //BlockName is also the name of the method
-            var callStringBuilder = new StringBuilder(BlockName + "(utilities"); //utilities is always first argument
+            var callStringBuilder = new StringBuilder(BlockName + "(");
+            callStringBuilder.Append(UtilitiesParameterName);//utilities is always first argument
 
             foreach (var (argumentName, _, _) in MethodParameters)
             {

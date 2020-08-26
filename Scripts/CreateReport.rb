@@ -20,8 +20,6 @@ OptionParser.new do |opts|
 	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
 end.parse!
 
-puts params
-
 
 def CreateReport(utilities,casePathArg)
 
@@ -36,13 +34,13 @@ def CreateReport(utilities,casePathArg)
         custodians << i.getCustodian() if i.getCustodian() != nil
 
         custodians.each do |c|
-            hash = results[c]            
+            hash = results[c]
 
             kindsHash = hash[:kind]
             kindsHash["*"] += 1
             kindsHash[i.getKind().getName()]  += 1
 
-            typesHash = hash[:type]            
+            typesHash = hash[:type]
             typesHash[i.getType().getName()] += 1
 
             tagsHash = hash[:tag]
@@ -58,7 +56,7 @@ def CreateReport(utilities,casePathArg)
 
             communication = i.getCommunication()
             if communication != nil
-                
+
                 from = communication.getFrom()
                 to = communication.getTo()
                 cc = communication.getCc()
@@ -69,7 +67,7 @@ def CreateReport(utilities,casePathArg)
                 to.each { |a|  addressesHash[a] += 1} if to != nil
                 cc.each { |a|  addressesHash[a] += 1} if cc != nil
                 bcc.each { |a|  addressesHash[a] += 1} if bcc != nil
-            end            
+            end
         end
     end
 

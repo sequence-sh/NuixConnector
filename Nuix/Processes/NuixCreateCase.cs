@@ -3,49 +3,68 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
-using YamlDotNet.Serialization;
+using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
     /// <summary>
     /// Creates a new case.
     /// </summary>
-    internal class NuixCreateCase : RubyScriptProcess
+    public sealed class NuixCreateCaseProcessFactory : RubyScriptProcessFactory<NuixCreateCase, Unit>
+    {
+        private NuixCreateCaseProcessFactory() { }
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static RubyScriptProcessFactory<NuixCreateCase, Unit> Instance { get; } = new NuixCreateCaseProcessFactory();
+
+        /// <inheritdoc />
+        public override Version RequiredVersion { get; } = new Version(2, 16);
+
+        /// <inheritdoc />
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>() { NuixFeature.CASE_CREATION };
+    }
+
+    /// <summary>
+    /// Creates a new case.
+    /// </summary>
+    public sealed class NuixCreateCase : RubyScriptProcessUnit
     {
         /// <inheritdoc />
-        protected override NuixReturnType ReturnType => NuixReturnType.Unit;
+        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateCaseProcessFactory.Instance;
 
-        public override string GetName() => "Create Case";
+        //public override string GetName() => "Create Case";
 
         /// <summary>
         /// The name of the case to create.
         /// </summary>
         [Required]
-        [YamlMember(Order = 3)]
+        [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string CaseName { get; set; }
+        public IRunnableProcess<string> CaseName { get; set; }
 
         /// <summary>
         /// The path to the folder to create the case in.
         /// </summary>
         [Required]
-        [YamlMember(Order = 4)]
-        [ExampleValue("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// Name of the investigator.
         /// </summary>
         [Required]
-        [YamlMember(Order = 5)]
-        public string Investigator { get; set; }
+        [RunnableProcessProperty]
+        public IRunnableProcess<string> Investigator { get; set; }
 
         /// <summary>
         /// Description of the case.
         /// </summary>
-        
-        [YamlMember(Order = 6)]
-        public string? Description { get; set; }
+        [RunnableProcessProperty]
+        public IRunnableProcess<string>? Description { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
@@ -53,7 +72,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         internal override string ScriptText => @"
-    puts 'Creating Case'    
+    puts 'Creating Case'
     the_case = utilities.case_factory.create(pathArg,
     :name => nameArg,
     :description => descriptionArg,
@@ -62,16 +81,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "CreateCase";
+        public override string MethodName => "CreateCase";
+
+
 
         /// <inheritdoc />
-        internal override Version RequiredVersion { get; } = new Version(2,16);
-
-        /// <inheritdoc />
-        internal override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>(){NuixFeature.CASE_CREATION};
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("nameArg", CaseName, false);

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
     internal abstract class AbstractBasicRubyBlock : IRubyBlock
     {
-        protected AbstractBasicRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters)
+        protected AbstractBasicRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters, bool utilitiesParameter)
         {
             BlockName = blockName;
             MethodParameters = methodParameters;
-            FunctionDefinitions = new List<string>{functionText} ;
+            FunctionDefinitions = new List<string>{MakeRubyFunction(blockName, functionText, methodParameters, utilitiesParameter)} ;
         }
 
         /// <inheritdoc />
@@ -62,6 +64,28 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return optParseLines;
         }
 
-        
+        public const string UtilitiesParameterName = "utilities";
+
+
+        private static string MakeRubyFunction(string methodName,
+            string functionText,
+            IEnumerable<RubyMethodParameter> methodParameters,
+            bool utilitiesParameter)
+        {
+            var methodBuilder = new StringBuilder();
+            var parameters = methodParameters.Select(x => x.ParameterName);
+            if (utilitiesParameter)
+                parameters = parameters.Prepend(UtilitiesParameterName);
+
+
+            var methodHeader = $@"def {methodName}({string.Join(",", parameters )})";
+
+            methodBuilder.AppendLine(methodHeader);
+            methodBuilder.AppendLine(functionText);
+            methodBuilder.AppendLine("end");
+
+            return methodBuilder.ToString();
+        }
+
     }
 }

@@ -15,8 +15,6 @@ OptionParser.new do |opts|
 	opts.on('--valueRegexArg0 [ARG]') do |o| params[:valueRegexArg0] = o end
 end.parse!
 
-puts params
-
 
 def GetParticularProperties(utilities,casePathArg,searchArg,propertyRegexArg,valueRegexArg)
 
@@ -31,7 +29,7 @@ def GetParticularProperties(utilities,casePathArg,searchArg,propertyRegexArg,val
 
     text = "Key\tValue\tPath\tGuid"
 
-    items.each do |i| 
+    items.each do |i|
         i.getProperties().each do |k,v|
             begin
                 if propertyRegex =~ k
@@ -42,7 +40,7 @@ def GetParticularProperties(utilities,casePathArg,searchArg,propertyRegexArg,val
                         end
                     else #output the entire value
                         text << "\n#{k}\t#{v}\t#{i.getPathNames().join("/")}\t#{i.getGuid()}"
-                    end                                           
+                    end
                 end
             rescue
             end

@@ -22,19 +22,17 @@ OptionParser.new do |opts|
 	opts.on('--expectedStateArg0 ARG') do |o| params[:expectedStateArg0] = o end
 end.parse!
 
-puts params
-
 
 def GetPrintPreviewState(utilities,pathArg,productionSetNameArg,expectedStateArg)
 
     the_case = utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts 'Production Set Not Found'
         the_case.close
         exit
-    else 
+    else
         r = productionSet.getPrintPreviewState()
         the_case.close
 

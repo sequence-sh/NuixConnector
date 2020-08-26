@@ -16,13 +16,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         EXPORT_ITEMS,
 
         METADATA_IMPORT,
-        
-        OCR_PROCESSING,
 
+        OCR_PROCESSING,
 
         PRODUCTION_SET
 #pragma warning restore 1591
-        
-        
     }
 }

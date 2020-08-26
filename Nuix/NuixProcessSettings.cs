@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes.Mutable;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix
 {
@@ -132,6 +135,36 @@ namespace Reductech.EDR.Connectors.Nuix
 
         /// <inheritdoc />
         public IReadOnlyCollection<NuixFeature> NuixFeatures { get; }
+
+
+        private static readonly Regex NuixFeatureRegex =
+            new Regex(@$"\A{RubyScriptProcessUnit.NuixProcessName}(?<feature>.+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        /// <inheritdoc />
+        public Result<Unit, IRunErrors> CheckRequirement(string processName, Requirement requirement)
+        {
+            if (requirement.Name == RubyScriptProcessUnit.NuixProcessName)
+            {
+                if(requirement.MinVersion != null && requirement.MinVersion > NuixVersion)
+                    return new RunError($"Required Nuix Version >= {requirement.MinVersion} but had {NuixVersion}", processName, null, ErrorCode.RequirementsNotMet);
+
+                if(requirement.MaxVersion != null && requirement.MaxVersion < NuixVersion)
+                    return new RunError($"Required Nuix Version <= {requirement.MaxVersion} but had {NuixVersion}", processName, null, ErrorCode.RequirementsNotMet);
+
+                return Unit.Default;
+            }
+
+            if (!NuixFeatureRegex.TryMatch(requirement.Name, out var match))
+                return EmptySettings.Instance.CheckRequirement(processName, requirement);
+
+            var feature = match.Groups["feature"].Value;
+
+            if (Enum.TryParse<NuixFeature>(feature, true, out var nuixFeature) && NuixFeatures.Contains(nuixFeature))
+                return Unit.Default;
+
+            return new RunError($"{feature} missing.", processName, null, ErrorCode.RequirementsNotMet);
+
+        }
     }
 
 

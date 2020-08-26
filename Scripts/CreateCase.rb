@@ -1,6 +1,6 @@
 ﻿#CreateCase
 
-requiredNuixVersion = '5.0'
+requiredNuixVersion = '2.16'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -23,12 +23,10 @@ OptionParser.new do |opts|
 	opts.on('--investigatorArg0 ARG') do |o| params[:investigatorArg0] = o end
 end.parse!
 
-puts params
-
 
 def CreateCase(utilities,pathArg,nameArg,descriptionArg,investigatorArg)
 
-    puts 'Creating Case'    
+    puts 'Creating Case'
     the_case = utilities.case_factory.create(pathArg,
     :name => nameArg,
     :description => descriptionArg,

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Reductech.EDR.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
@@ -22,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public string BlockName => ProcessNameHelper.GetCheckNumberProcessName(_numberBlock.BlockName);
+        public string BlockName => $"CheckNumber({_numberBlock.BlockName})"; // ProcessNameHelper.GetCheckNumberProcessName(_numberBlock.BlockName);
 
         /// <inheritdoc />
         public Version RequiredNuixVersion => _numberBlock.RequiredNuixVersion;
