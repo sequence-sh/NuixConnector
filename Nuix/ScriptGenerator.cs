@@ -97,7 +97,6 @@ namespace Reductech.EDR.Connectors.Nuix
         {
             var state = new ProcessState(NullLogger.Instance, _nuixProcessSettings);
 
-
             var result = process.TryCompileScript(state).MapFailure(x=>x.AsString);
             return result;
 

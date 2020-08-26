@@ -72,7 +72,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
             var scriptBuilder = new StringBuilder();
 
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, new IRubyBlock[] { block, BinToHexBlock.Instance }));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(MethodName, new IRubyBlock[] { block, BinToHexBlock.Instance }));
             scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new IRubyBlock[] { block, BinToHexBlock.Instance }));
 
             var i = 0;
