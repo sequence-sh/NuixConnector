@@ -63,9 +63,25 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
                     if (r.IsFailure)
                         yield return r.ConvertFailure<RubyMethodParameter>();
-                    yield return new RubyMethodParameter(a.argumentName, r.Value.ToString(), a.valueCanBeNull);
+
+                    var s = ConvertToString(r.Value);
+
+                    yield return new RubyMethodParameter(a.argumentName, s, a.valueCanBeNull);
                 }
             }
+        }
+
+        private static string ConvertToString(object o)
+        {
+            if (o is int i)
+                return i.ToString();
+            if (o is bool b)
+                return b.ToString().ToLower();
+            if (o is Enum e)
+                e.GetDescription();
+
+            return o.ToString()!;
+
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿#AddToItemSet
+﻿#NuixAddToItemSet()
 
-requiredNuixVersion = '5.0'
+requiredNuixVersion = '4.0'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -28,11 +28,9 @@ OptionParser.new do |opts|
 	opts.on('--limitArg0 [ARG]') do |o| params[:limitArg0] = o end
 end.parse!
 
-puts params
 
+def AddToItemSet(pathArg,searchArg,itemSetNameArg,deduplicationArg,descriptionArg,deduplicateByArg,custodianRankingArg,orderArg,limitArg)
 
-def AddToItemSet(utilities,pathArg,searchArg,itemSetNameArg,deduplicationArg,descriptionArg,deduplicateByArg,custodianRankingArg,orderArg,limitArg)
-  
     the_case = utilities.case_factory.open(pathArg)
     itemSet = the_case.findItemSetByName(itemSetNameArg)
     if(itemSet == nil)
@@ -42,11 +40,11 @@ def AddToItemSet(utilities,pathArg,searchArg,itemSetNameArg,deduplicationArg,des
         itemSetOptions[:deduplicateBy] = deduplicateByArg if deduplicateByArg != nil
         itemSetOptions[:custodianRanking] = custodianRankingArg.split(",") if custodianRankingArg != nil
         itemSet = the_case.createItemSet(itemSetNameArg, itemSetOptions)
-        
+
         puts "Item Set Created"
     else
         puts "Item Set Found"
-    end    
+    end
 
     puts "Searching"
     searchOptions = {}

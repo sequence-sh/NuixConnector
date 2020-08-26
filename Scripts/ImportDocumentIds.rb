@@ -1,4 +1,4 @@
-﻿#ImportDocumentIds
+﻿#NuixImportDocumentIds(AreSourceProductionSetsInData: False)
 
 requiredNuixVersion = '7.4'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -23,22 +23,20 @@ OptionParser.new do |opts|
 	opts.on('--dataPathArg0 ARG') do |o| params[:dataPathArg0] = o end
 end.parse!
 
-puts params
 
-
-def ImportDocumentIds(utilities,pathArg,sourceProductionSetsInDataArg,productionSetNameArg,dataPathArg)
+def ImportDocumentIds(pathArg,sourceProductionSetsInDataArg,productionSetNameArg,dataPathArg)
 
 
     the_case = utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts "Production Set Not Found"
-    else            
+    else
         puts "Production Set Found"
 
-        options = 
+        options =
         {
             sourceProductionSetsInData: pathArg == "true",
             dataPath: dataPathArg
@@ -51,7 +49,7 @@ def ImportDocumentIds(utilities,pathArg,sourceProductionSetsInDataArg,production
         else
             puts "#{failedItemsCount} items failed to import"
 
-    end 
+    end
 
     the_case.close
 end

@@ -1,6 +1,6 @@
-﻿#AssignCustodian
+﻿#NuixAssignCustodian()
 
-requiredNuixVersion = '5.0'
+requiredNuixVersion = '3.6'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -22,10 +22,8 @@ OptionParser.new do |opts|
 	opts.on('--custodianArg0 ARG') do |o| params[:custodianArg0] = o end
 end.parse!
 
-puts params
 
-
-def AssignCustodian(utilities,pathArg,searchArg,custodianArg)
+def AssignCustodian(pathArg,searchArg,custodianArg)
 
     the_case = utilities.case_factory.open(pathArg)
     puts "Searching for '#{searchArg}'"
@@ -40,7 +38,7 @@ def AssignCustodian(utilities,pathArg,searchArg,custodianArg)
         if i.getCustodian != custodianArg
             added = i.assignCustodian(custodianArg)
             j += 1
-        end      
+        end
     }
 
     puts "#{j} items assigned to custodian #{custodianArg}"

@@ -18,8 +18,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         public const string NuixProcessName = "Nuix";
 
-
-
         /// <summary>
         /// Gets the ruby block to run.
         /// </summary>

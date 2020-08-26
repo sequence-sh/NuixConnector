@@ -1,4 +1,4 @@
-﻿#AddConcordanceToCase
+﻿#NuixAddConcordance()
 
 requiredNuixVersion = '7.6'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -27,7 +27,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def AddConcordanceToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,dateFormatArg,profileNameArg)
+def AddConcordanceToCase(pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,dateFormatArg,profileNameArg)
 
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor

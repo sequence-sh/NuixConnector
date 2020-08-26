@@ -10,7 +10,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     internal sealed class BasicTypedRubyBlock<T> : AbstractBasicRubyBlock, ITypedRubyBlock<T>
     {
         /// <inheritdoc />
-        public BasicTypedRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters, Version requiredNuixVersion, IReadOnlyCollection<NuixFeature> requiredNuixFeatures) 
+        public BasicTypedRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters, Version requiredNuixVersion, IReadOnlyCollection<NuixFeature> requiredNuixFeatures)
             : base(blockName, functionText, methodParameters)
         {
             RequiredNuixVersion = requiredNuixVersion;

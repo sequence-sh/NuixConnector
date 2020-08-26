@@ -1,6 +1,6 @@
-﻿#ExtractEntities
+﻿#NuixExtractEntities()
 
-requiredNuixVersion = '5.0'
+requiredNuixVersion = '4.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -13,10 +13,8 @@ OptionParser.new do |opts|
 	opts.on('--outputFolderPathArg0 ARG') do |o| params[:outputFolderPathArg0] = o end
 end.parse!
 
-puts params
 
-
-def ExtractEntities(utilities,casePathArg,outputFolderPathArg)
+def ExtractEntities(casePathArg,outputFolderPathArg)
 
     the_case = utilities.case_factory.open(casePathArg)
 
@@ -29,9 +27,9 @@ def ExtractEntities(utilities,casePathArg,outputFolderPathArg)
     entitiesText = "TypeDescription\tValue\tCount" #The headers for the entities file
 
     if entityTypes.length > 0
-        allItems = the_case.searchUnsorted("named-entities:*")    
+        allItems = the_case.searchUnsorted("named-entities:*")
 
-        allItems.each do |i|            
+        allItems.each do |i|
             entityTypes.each do |et|
                 entities = i.getEntities(et)
                 entities.each do |e|
@@ -40,7 +38,7 @@ def ExtractEntities(utilities,casePathArg,outputFolderPathArg)
             end
         end
 
-        puts "Found entities for #{allItems.length} items"        
+        puts "Found entities for #{allItems.length} items"
 
         results.each do |et, values|
             totalCount = values.map{|x,y| y.length}.reduce(:+)
@@ -48,9 +46,9 @@ def ExtractEntities(utilities,casePathArg,outputFolderPathArg)
             currentText = "Value\tGuid" #The header for this types' file
             values.each do |value, guids|
                 entitiesText << "#{et}\t#{value}\t#{guids.length}" #The row in the entities file
-                guids.each do |guid|                
+                guids.each do |guid|
                     currentText << "#{value}\t#{guid}" #The row in this entity type file
-                end				                
+                end
             end
             File.write(File.join(outputFolderPathArg, et + '.txt'), currentText)
         end

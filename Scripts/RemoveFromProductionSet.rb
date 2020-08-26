@@ -1,6 +1,6 @@
-﻿#RemoveFromProductionSet
+﻿#NuixRemoveFromProductionSet()
 
-requiredNuixVersion = '5.0'
+requiredNuixVersion = '4.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -22,10 +22,8 @@ OptionParser.new do |opts|
 	opts.on('--productionSetNameArg0 ARG') do |o| params[:productionSetNameArg0] = o end
 end.parse!
 
-puts params
 
-
-def RemoveFromProductionSet(utilities,pathArg,searchArg,productionSetNameArg)
+def RemoveFromProductionSet(pathArg,searchArg,productionSetNameArg)
 
     the_case = utilities.case_factory.open(pathArg)
 

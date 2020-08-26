@@ -34,7 +34,14 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                 var generalProcesses = DynamicProcessFinder.GetAllDocumented(settings,
                     new DocumentationCategory("General Processes", typeof(Process)), typeof(Process), logger);
 
-                var processes = nuixProcesses.Concat(generalProcesses);
+
+                var scriptGenerator = new ScriptGenerator(settings);
+
+                var generateScriptsMethod = typeof(ScriptGenerator).GetMethod(nameof(scriptGenerator.GenerateScripts))!;
+
+                var generateScriptsMethodWrapper = new MethodWrapper(generateScriptsMethod, scriptGenerator, new DocumentationCategory("Nuix Meta"));
+
+                var processes = nuixProcesses.Concat(generalProcesses).Prepend(generateScriptsMethodWrapper);
 
                 ConsoleView.Run(args, processes);
             }
@@ -42,6 +49,8 @@ namespace Reductech.EDR.Connectors.Nuix.Console
                 foreach (var l in error.Split("\r\n"))
                     System.Console.WriteLine(l);
         }
+
+
 
 
     }

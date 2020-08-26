@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="InstantConsole" Version="1.0.8" />
+    <PackageReference Include="InstantConsole" Version="1.0.9" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.7" />
     <PackageReference Include="Namotion.Reflection" Version="1.0.12" />
   </ItemGroup>
@@ -48,7 +48,7 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe documentation &gt; $(SolutionDir)documentation.md" IgnoreExitCode="true" />
-    <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe GenerateScripts -folderPath $(SolutionDir)Scripts" IgnoreExitCode="true" />
+    <Exec Command="IF EXIST &quot;$(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe&quot; $(SolutionDir)NuixConsole\bin\Debug\netcoreapp3.1\NuixConsole.exe GenerateScripts -folderPath $(SolutionDir)Scripts" IgnoreExitCode="false" />
   </Target>
 
 </Project>

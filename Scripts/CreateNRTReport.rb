@@ -1,4 +1,4 @@
-﻿#CreateNRTReport
+﻿#NuixCreateNRTReport()
 
 requiredNuixVersion = '7.4'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -24,10 +24,8 @@ OptionParser.new do |opts|
 	opts.on('--localResourcesUrlArg0 ARG') do |o| params[:localResourcesUrlArg0] = o end
 end.parse!
 
-puts params
 
-
-def CreateNRTReport(utilities,pathArg,nrtPathArg,outputFormatArg,outputPathArg,localResourcesUrlArg)
+def CreateNRTReport(pathArg,nrtPathArg,outputFormatArg,outputPathArg,localResourcesUrlArg)
 
     the_case = utilities.case_factory.open(pathArg)
     puts 'Generating NRT Report:'

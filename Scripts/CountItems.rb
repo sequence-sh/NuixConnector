@@ -21,10 +21,10 @@ def CountItems(utilities,pathArg,searchArg)
     the_case = utilities.case_factory.open(pathArg)
     searchOptions = {}
     count = the_case.count(searchArg, searchOptions)
-    the_case.close  
+    the_case.close
     puts "#{count} found matching '#{searchArg}'"
     return count
-    
+
 end
 
 

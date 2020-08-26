@@ -1,6 +1,6 @@
-﻿#SearchAndTag
+﻿#NuixSearchAndTag()
 
-requiredNuixVersion = '5.0'
+requiredNuixVersion = '2.16'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
 	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
@@ -22,10 +22,8 @@ OptionParser.new do |opts|
 	opts.on('--tagArg0 ARG') do |o| params[:tagArg0] = o end
 end.parse!
 
-puts params
 
-
-def SearchAndTag(utilities,pathArg,searchArg,tagArg)
+def SearchAndTag(pathArg,searchArg,tagArg)
 
     the_case = utilities.case_factory.open(pathArg)
     puts "Searching for '#{searchArg}'"

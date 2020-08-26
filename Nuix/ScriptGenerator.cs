@@ -40,14 +40,15 @@ namespace Reductech.EDR.Connectors.Nuix
                 .Where(t => typeof(RubyScriptProcess).IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract).ToList();
 
-            //var folderPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
-
             foreach (var processType in processTypes)
             {
                 try
                 {
+
+                    var instance = Activator.CreateInstance(processType);
+
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                    var process = (RubyScriptProcess)Activator.CreateInstance(processType);
+                    var process = (RubyScriptProcess) instance;
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
                     if (process == null)

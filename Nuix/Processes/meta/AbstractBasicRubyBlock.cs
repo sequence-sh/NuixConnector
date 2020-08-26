@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
@@ -9,7 +11,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
             BlockName = blockName;
             MethodParameters = methodParameters;
-            FunctionDefinitions = new List<string>{functionText} ;
+            FunctionDefinitions = new List<string>{MakeRubyFunction(blockName, functionText, methodParameters)} ;
         }
 
         /// <inheritdoc />
@@ -62,6 +64,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return optParseLines;
         }
 
-        
+
+
+        private static string MakeRubyFunction(string methodName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters)
+        {
+            var methodBuilder = new StringBuilder();
+            var methodHeader = $@"def {methodName}({string.Join(",", methodParameters.Select(x=>x.ParameterName))})";
+
+            methodBuilder.AppendLine(methodHeader);
+            methodBuilder.AppendLine(functionText);
+            methodBuilder.AppendLine("end");
+
+            return methodBuilder.ToString();
+        }
+
     }
 }

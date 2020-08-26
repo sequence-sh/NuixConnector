@@ -1,4 +1,4 @@
-﻿#RenumberProductionSet
+﻿#NuixReorderProductionSet(SortOrder: Position)
 
 requiredNuixVersion = '5.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -22,21 +22,19 @@ OptionParser.new do |opts|
 	opts.on('--sortOrderArg0 ARG') do |o| params[:sortOrderArg0] = o end
 end.parse!
 
-puts params
 
-
-def RenumberProductionSet(utilities,pathArg,productionSetNameArg,sortOrderArg)
+def RenumberProductionSet(pathArg,productionSetNameArg,sortOrderArg)
 
     the_case = utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts "Production Set Not Found"
-    else            
+    else
         puts "Production Set Found"
 
-        options = 
+        options =
         {
             sortOrder: sortOrderArg
         }

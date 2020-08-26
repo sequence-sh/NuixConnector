@@ -1,4 +1,4 @@
-﻿#GetPrintPreviewState
+﻿#NuixAssertPrintPreviewState(ExpectedState: All)
 
 requiredNuixVersion = '5.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -22,19 +22,17 @@ OptionParser.new do |opts|
 	opts.on('--expectedStateArg0 ARG') do |o| params[:expectedStateArg0] = o end
 end.parse!
 
-puts params
 
-
-def GetPrintPreviewState(utilities,pathArg,productionSetNameArg,expectedStateArg)
+def GetPrintPreviewState(pathArg,productionSetNameArg,expectedStateArg)
 
     the_case = utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
-    if(productionSet == nil)        
+    if(productionSet == nil)
         puts 'Production Set Not Found'
         the_case.close
         exit
-    else 
+    else
         r = productionSet.getPrintPreviewState()
         the_case.close
 

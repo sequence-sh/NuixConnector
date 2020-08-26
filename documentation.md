@@ -1,3 +1,13 @@
+# Nuix Meta
+<a name="GenerateScripts"></a>
+## GenerateScripts
+
+Generates ruby scripts for all RubyScriptProcesses in the AppDomain.
+
+|Parameter |Type    |Required|Summary                                     |
+|:--------:|:------:|:------:|:------------------------------------------:|
+|folderPath|`string`|☑️      |Path to the folder to create the scripts in.|
+
 <a name="RubyScriptProcess"></a>
 # Nuix Processes
 <a name="NuixAddConcordance"></a>
