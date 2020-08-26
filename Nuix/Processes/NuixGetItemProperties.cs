@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -51,7 +52,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// The term to search for.
@@ -59,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [Example("*.txt")]
         [RunnableProcessProperty]
-        public string SearchTerm { get; set; }
+        public IRunnableProcess<string> SearchTerm { get; set; }
 
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Example("Date")]
         [Required]
         [RunnableProcessProperty]
-        public string PropertyRegex { get; set; }
+        public IRunnableProcess<string> PropertyRegex { get; set; }
 
         /// <summary>
         /// An optional regex to check the value.
@@ -76,7 +77,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
         [Example(@"(199\d)")]
         [RunnableProcessProperty]
-        public string? ValueRegex { get; set; }
+        public IRunnableProcess<string>? ValueRegex { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -119,7 +120,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "GetParticularProperties";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);

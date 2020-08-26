@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Processes;
@@ -14,7 +13,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     public abstract class RubyScriptProcessBase<T> : CompoundRunnableProcess<T>, IRubyScriptProcess<T>
     {
         /// <inheritdoc />
-        public abstract string CompileScript();
+        public abstract Result<string, IRunErrors> TryCompileScript(ProcessState processState);
 
         /// <inheritdoc />
         public override Result<T, IRunErrors> Run(ProcessState processState) => RunAsync(processState).Result;
@@ -47,13 +46,26 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         public virtual Version? RunTimeNuixVersion => null;
 
 
-        internal abstract IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues();
+        internal abstract IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues();
 
         /// <summary>
         /// The method parameters.
         /// </summary>
-        protected IReadOnlyCollection<RubyMethodParameter> MethodParameters =>
-            GetArgumentValues()
-                .Select(x => new RubyMethodParameter(x.argumentName, x.argumentValue, x.valueCanBeNull)).ToList();
+        protected IEnumerable<Result<RubyMethodParameter, IRunErrors>> TryGetMethodParameters(ProcessState processState)
+        {
+            foreach (var a in GetArgumentValues())
+            {
+                if(a.argumentValue == null)
+                    yield return new RubyMethodParameter(a.argumentName, null, a.valueCanBeNull);
+                else
+                {
+                    var r = a.argumentValue.Run<object>(processState);
+
+                    if (r.IsFailure)
+                        yield return r.ConvertFailure<RubyMethodParameter>();
+                    yield return new RubyMethodParameter(a.argumentName, r.Value.ToString(), a.valueCanBeNull);
+                }
+            }
+        }
     }
 }

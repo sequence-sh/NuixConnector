@@ -5,7 +5,9 @@ using System.Reflection;
 using System.Text;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Processes;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix
@@ -90,10 +92,13 @@ namespace Reductech.EDR.Connectors.Nuix
             return "Scripts generated successfully";
         }
 
-        private Result<string> TryGenerateScript(RubyScriptProcess process)
+        private Result<string> TryGenerateScript(IRubyScriptProcess process)
         {
-            var script = process.CompileScript();
-            return Result.Success(script);
+            var state = new ProcessState(NullLogger.Instance, _nuixProcessSettings);
+
+
+            var result = process.TryCompileScript(state).MapFailure(x=>x.AsString);
+            return result;
 
         }
 

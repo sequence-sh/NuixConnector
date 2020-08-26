@@ -49,27 +49,27 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Data/File.txt")]
-        public string Path { get; set; }
+        public IRunnableProcess<string> Path { get; set; }
 
         /// <summary>
         /// The custodian to assign to the new folder.
         /// </summary>
         [Required]
         [RunnableProcessProperty]
-        public string Custodian { get; set; }
+        public IRunnableProcess<string> Custodian { get; set; }
 
         /// <summary>
         /// The description of the new folder.
         /// </summary>
         [RunnableProcessProperty]
-        public string? Description { get; set; }
+        public IRunnableProcess<string>? Description { get; set; }
 
         /// <summary>
         /// The name of the folder to create.
         /// </summary>
         [Required]
         [RunnableProcessProperty]
-        public string FolderName { get; set; }
+        public IRunnableProcess<string> FolderName { get; set; }
 
         /// <summary>
         /// The path to the case.
@@ -77,17 +77,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
         /// The path of a file containing passwords to use for decryption.
         /// </summary>
         [RequiredVersion("Nuix", "7.6")]
-        [Required]
         [RunnableProcessProperty]
         [Example("C:/Data/Passwords.txt")]
-        public string? PasswordFilePath { get; set; }
+        public IRunnableProcess<string>? PasswordFilePath { get; set; }
 
 
         /// <summary>
@@ -98,7 +97,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RunnableProcessProperty]
         [Example("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
-        public string? ProcessingProfileName { get; set; }
+        public IRunnableProcess<string>? ProcessingProfileName { get; set; }
 
         /// <summary>
         /// The path to the Processing profile to use
@@ -107,7 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RunnableProcessProperty]
         [Example("C:/Profiles/MyProcessingProfile.xml")]
         [DefaultValueExplanation("The default processing profile will be used.")]
-        public string? ProcessingProfilePath { get; set; }
+        public IRunnableProcess<string>? ProcessingProfilePath { get; set; }
 
 
 
@@ -168,9 +167,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(ProcessingProfilePath) || !string.IsNullOrWhiteSpace(ProcessingProfileName))
+                if (ProcessingProfilePath != null || ProcessingProfileName != null)
                     return new Version(7, 6);
-                if (!string.IsNullOrWhiteSpace(PasswordFilePath))
+                if (PasswordFilePath != null)
                     return new Version(7, 6);
                 return null;
             }
@@ -195,7 +194,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         }
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("folderNameArg", FolderName, false);

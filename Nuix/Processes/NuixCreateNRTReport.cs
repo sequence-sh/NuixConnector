@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -47,14 +48,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// The NRT file path.
         /// </summary>
         [Required]
         [RunnableProcessProperty]
-        public string NRTPath { get; set; }
+        public IRunnableProcess<string> NRTPath { get; set; }
 
         /// <summary>
         /// The format of the report file that will be created.
@@ -62,7 +63,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [Example("PDF")]
         [RunnableProcessProperty]
-        public string OutputFormat { get; set; }
+        public IRunnableProcess<string> OutputFormat { get; set; }
 
         /// <summary>
         /// The path to the local resources folder.
@@ -71,7 +72,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
         [RunnableProcessProperty]
-        public string LocalResourcesURL { get; set; }
+        public IRunnableProcess<string> LocalResourcesURL { get; set; }
 
         /// <summary>
         /// The path to output the file at.
@@ -79,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [Example("C:/Temp/report.pdf")]
         [RunnableProcessProperty]
-        public string OutputPath { get; set; }
+        public IRunnableProcess<string> OutputPath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -114,7 +115,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "CreateNRTReport";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("nrtPathArg", NRTPath, false);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -16,14 +17,25 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     public abstract class RubyScriptProcessTyped<T> : RubyScriptProcessBase<T>
     {
         /// <summary>
-        /// The ruby block to run
+        /// Gets the ruby block to run.
         /// </summary>
-        public ITypedRubyBlock<T> RubyBlock =>
-            new BasicTypedRubyBlock<T>(MethodName,
-                ScriptText,
-                MethodParameters,
-                RunTimeNuixVersion ?? RubyScriptProcessFactory.RequiredVersion,
-                RubyScriptProcessFactory.RequiredFeatures);
+        private Result<ITypedRubyBlock<T>, IRunErrors> TryGetRubyBlock(ProcessState processState)
+        {
+            var parametersResult = TryGetMethodParameters(processState)
+                .Combine(RunErrorList.Combine)
+                .Map(x=>x.ToList())
+                .Map(x=>
+                    new BasicTypedRubyBlock<T>(
+                        MethodName,
+                        ScriptText, x,
+                        RunTimeNuixVersion ?? RubyScriptProcessFactory.RequiredVersion,
+                RubyScriptProcessFactory.RequiredFeatures) as ITypedRubyBlock<T>);
+
+            return parametersResult;
+
+        }
+
+
 
         /// <summary>
         /// Convert a string into a result of the desired type.
@@ -39,8 +51,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             var settingsResult = processState.GetProcessSettings<INuixProcessSettings>(Name);
             if (settingsResult.IsFailure) return settingsResult.ConvertFailure<T>();
 
-            var scriptText = CompileScript();
-            var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, settingsResult.Value, new[]{RubyBlock});
+
+            var blockResult = TryGetRubyBlock(processState);
+
+            if (blockResult.IsFailure)
+                return blockResult.ConvertFailure<T>();
+
+
+            var script = CompileScript(blockResult.Value);
+
+            var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(script, settingsResult.Value, new[]{blockResult.Value});
 
             var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath, processState.Logger,
                 Name, trueArguments, TryExtractValueFromOutput);
@@ -48,16 +68,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return result;
         }
 
-        /// <inheritdoc />
-        public override string CompileScript()
+        private string CompileScript(ITypedRubyBlock<T> block)
         {
             var scriptBuilder = new StringBuilder();
 
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, new IRubyBlock []{RubyBlock, BinToHexBlock.Instance}));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new IRubyBlock[]{RubyBlock, BinToHexBlock.Instance}));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, new IRubyBlock[] { block, BinToHexBlock.Instance }));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new IRubyBlock[] { block, BinToHexBlock.Instance }));
 
             var i = 0;
-            var fullMethodLine = RubyBlock.GetBlockText(ref i, out var resultVariableName);
+            var fullMethodLine = block.GetBlockText(ref i, out var resultVariableName);
 
             scriptBuilder.AppendLine(fullMethodLine);
 
@@ -66,6 +85,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             return (scriptBuilder.ToString());
         }
+
+        /// <inheritdoc />
+        public override Result<string, IRunErrors> TryCompileScript(ProcessState processState) => TryGetRubyBlock(processState).Map(CompileScript);
 
         // ReSharper disable once StaticMemberInGenericType
         private static readonly Regex FinalResultRegex = new Regex("--Final Result: (?<result>.+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);

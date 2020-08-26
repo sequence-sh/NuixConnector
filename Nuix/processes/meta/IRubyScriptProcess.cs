@@ -1,4 +1,6 @@
-﻿using Reductech.EDR.Processes.Internal;
+﻿using CSharpFunctionalExtensions;
+using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
@@ -11,7 +13,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// Compiles the script for this process.
         /// </summary>
         /// <returns></returns>
-        public string CompileScript();
+        Result<string, IRunErrors> TryCompileScript(ProcessState processState);
     }
 
     /// <summary>

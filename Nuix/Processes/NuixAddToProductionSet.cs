@@ -54,7 +54,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string ProductionSetName { get; set; }
+        public IRunnableProcess<string> ProductionSetName { get; set; }
 
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         [Required]
         [RunnableProcessProperty]
-        public string SearchTerm { get; set; }
+        public IRunnableProcess<string> SearchTerm { get; set; }
 
         /// <summary>
         /// The path of the case to search
@@ -72,13 +72,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// Description of the production set.
         /// </summary>
         [RunnableProcessProperty]
-        public string? Description { get; set; }
+        public IRunnableProcess<string>? Description { get; set; }
 
         /// <summary>
         /// The name of the Production profile to use.
@@ -89,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RunnableProcessProperty]
         [Example("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
-        public string? ProductionProfileName { get; set; }
+        public IRunnableProcess<string>? ProductionProfileName { get; set; }
 
         /// <summary>
         /// The path to the Production profile to use.
@@ -99,27 +99,26 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RunnableProcessProperty]
         [Example("C:/Profiles/MyProcessingProfile.xml")]
         [DefaultValueExplanation("The default processing profile will be used.")]
-        public string? ProductionProfilePath { get; set; }
+        public IRunnableProcess<string>? ProductionProfilePath { get; set; }
 
         /// <summary>
         /// How to order the items to be added to the production set.
         /// </summary>
         [RunnableProcessProperty]
         [Example("name ASC, item-date DESC")]
-        public string? Order { get; set; }
+        public IRunnableProcess<string>? Order { get; set; }
 
         /// <summary>
         /// The maximum number of items to add to the production set.
         /// </summary>
         [RunnableProcessProperty]
-        public int? Limit { get; set; }
+        public IRunnableProcess<int>? Limit { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)>
-            GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
@@ -128,7 +127,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             yield return ("productionProfileNameArg", ProductionProfileName, true);
             yield return ("productionProfilePathArg", ProductionProfilePath, true);
             yield return ("orderArg", Order, true);
-            yield return ("limitArg", Limit?.ToString(), true);
+            yield return ("limitArg", Limit, true);
         }
 
         /// <inheritdoc />

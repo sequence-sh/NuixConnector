@@ -52,16 +52,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// The term to use for searching for files to OCR.
         /// </summary>
         [Required]
-
         [RunnableProcessProperty]
-        public string SearchTerm { get; set; } =
-            "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
+        [DefaultValueExplanation("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))")]
+        public IRunnableProcess<string> SearchTerm { get; set; } =
+            new Constant<string>("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))");
 
         /// <summary>
         /// The name of the OCR profile to use.
@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RunnableProcessProperty]
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("MyOcrProfile")]
-        public string? OCRProfileName { get; set; }
+        public IRunnableProcess<string>? OCRProfileName { get; set; }
 
         /// <summary>
         /// Path to the OCR profile to use.
@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RequiredVersion("Nuix", "7.6")]
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("C:\\Profiles\\MyProfile.xml")]
-        public string? OCRProfilePath { get; set; }
+        public IRunnableProcess<string>? OCRProfilePath { get; set; }
 
         /// <inheritdoc />
         internal override string ScriptText => @"
@@ -133,7 +133,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         }
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchTermArg", SearchTerm, false);

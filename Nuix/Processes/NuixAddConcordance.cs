@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -53,7 +54,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("MyProfile")]
-        public string ConcordanceProfileName { get; set; }
+        public IRunnableProcess<string> ConcordanceProfileName { get; set; }
 
         //TODO add a profile from a file - there is no Nuix function to do this right now.
 
@@ -63,7 +64,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
-        public string ConcordanceDateFormat { get; set; }
+        public IRunnableProcess<string> ConcordanceDateFormat { get; set; }
 
         /// <summary>
         /// The path of the concordance file to import.
@@ -71,27 +72,27 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/MyConcordance.dat")]
-        public string FilePath { get; set; }
+        public IRunnableProcess<string> FilePath { get; set; }
 
         /// <summary>
         /// The name of the custodian to assign the folder to.
         /// </summary>
         [Required]
         [RunnableProcessProperty]
-        public string Custodian { get; set; }
+        public IRunnableProcess<string> Custodian { get; set; }
 
         /// <summary>
         /// A description to add to the folder.
         /// </summary>
         [RunnableProcessProperty]
-        public string? Description { get; set; }
+        public IRunnableProcess<string>? Description { get; set; }
 
         /// <summary>
         /// The name of the folder to create.
         /// </summary>
         [Required]
         [RunnableProcessProperty]
-        public string FolderName { get; set; }
+        public IRunnableProcess<string> FolderName { get; set; }
 
         /// <summary>
         /// The path to the case to import into.
@@ -99,7 +100,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
@@ -134,7 +135,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "AddConcordanceToCase";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("folderNameArg", FolderName, false);

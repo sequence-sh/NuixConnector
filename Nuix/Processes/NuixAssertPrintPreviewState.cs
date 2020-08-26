@@ -5,6 +5,7 @@ using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -51,7 +52,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// The expected print preview state of the production set;
         /// </summary>
         [RunnableProcessProperty]
-        public PrintPreviewState ExpectedState { get; set; } = PrintPreviewState.All;
+        [DefaultValueExplanation(nameof(PrintPreviewState.All))]
+
+        public IRunnableProcess<PrintPreviewState> ExpectedState { get; set; } = new Constant<PrintPreviewState>(PrintPreviewState.All);
 
         /// <summary>
         /// The production set to reorder.
@@ -59,7 +62,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string ProductionSetName { get; set; }
+        public IRunnableProcess<string> ProductionSetName { get; set; }
 
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
 
@@ -99,11 +102,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("productionSetNameArg", ProductionSetName, false);
-            yield return ("expectedStateArg", ExpectedState.ToString().ToLower(), false);
+            yield return ("expectedStateArg", ExpectedState, false);
         }
     }
 }

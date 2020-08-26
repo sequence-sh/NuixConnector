@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -47,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [Example("C:/Output")]
         [RunnableProcessProperty]
-        public string OutputFolder { get; set; }
+        public IRunnableProcess<string> OutputFolder { get; set; }
 
         /// <summary>
         /// The path to the case.
@@ -55,7 +56,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <inheritdoc />
@@ -108,7 +109,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "ExtractEntities";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("casePathArg", CasePath, false);
             yield return ("outputFolderPathArg", OutputFolder, false);

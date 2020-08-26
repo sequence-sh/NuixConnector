@@ -5,6 +5,7 @@ using Reductech.EDR.Connectors.Nuix.enums;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -55,7 +56,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string ItemSetName { get; set; }
+        public IRunnableProcess<string> ItemSetName { get; set; }
 
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
         [Required]
         [RunnableProcessProperty]
-        public string SearchTerm { get; set; }
+        public IRunnableProcess<string> SearchTerm { get; set; }
 
         /// <summary>
         /// The path of the case to search.
@@ -71,27 +72,27 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <summary>
         /// The means of deduplicating items by key and prioritizing originals in a tie-break.
         /// </summary>
         [RunnableProcessProperty]
-        public ItemSetDeduplication ItemSetDeduplication { get; set; }
+        public IRunnableProcess<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
 
         /// <summary>
         /// The description of the item set.
         /// </summary>
 
         [RunnableProcessProperty]
-        public string? ItemSetDescription { get; set; }
+        public IRunnableProcess<string>? ItemSetDescription { get; set; }
 
         /// <summary>
         /// Whether to deduplicate as a family or individual.
         /// </summary>
 
         [RunnableProcessProperty]
-        public DeduplicateBy DeduplicateBy { get; set; }
+        public IRunnableProcess<DeduplicateBy>? DeduplicateBy { get; set; }
 
         /// <summary>
         /// A list of custodian names ordered from highest ranked to lowest ranked.
@@ -99,7 +100,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
 
         [RunnableProcessProperty]
-        public List<string>? CustodianRanking { get; set; }
+        public IRunnableProcess<List<string>>? CustodianRanking { get; set; }
 
 
         /// <summary>
@@ -107,13 +108,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// </summary>
         [RunnableProcessProperty]
         [Example("name ASC, item-date DESC")]
-        public string? Order { get; set; }
+        public IRunnableProcess<string>? Order { get; set; }
 
         /// <summary>
         /// The maximum number of items to add to the item set.
         /// </summary>
         [RunnableProcessProperty]
-        public int? Limit { get; set; }
+        public IRunnableProcess<int>? Limit { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable
 
@@ -152,26 +153,22 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("searchArg", SearchTerm, false);
             yield return ("itemSetNameArg", ItemSetName, false);
 
-            yield return ("deduplicationArg",
-                ItemSetDeduplication != ItemSetDeduplication.Default ? ItemSetDeduplication.GetDescription() : null,
-                true);
+            yield return ("deduplicationArg", ItemSetDeduplication, true);
 
             yield return("descriptionArg", ItemSetDescription, true);
 
-            yield return("deduplicateByArg",DeduplicateBy.GetDescription(), false);
+            yield return("deduplicateByArg", DeduplicateBy, false);
 
-            yield return("custodianRankingArg",
-                CustodianRanking != null?
-                    string.Join(",", CustodianRanking) : null, true);
+            yield return("custodianRankingArg", CustodianRanking, true);
 
             yield return ("orderArg", Order, true);
-            yield return ("limitArg", Limit?.ToString(), true);
+            yield return ("limitArg", Limit, true);
         }
     }
 }

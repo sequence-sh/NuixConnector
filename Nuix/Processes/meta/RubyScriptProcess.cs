@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,11 +18,26 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         public const string NuixProcessName = "Nuix";
 
+
+
         /// <summary>
-        /// The ruby blocks that make up this process.
+        /// Gets the ruby block to run.
         /// </summary>
-        public IReadOnlyCollection<IUnitRubyBlock> RubyBlocks => new IUnitRubyBlock[]{
-            new BasicRubyBlock(MethodName, ScriptText, MethodParameters, RunTimeNuixVersion?? RubyScriptProcessFactory.RequiredVersion, RubyScriptProcessFactory.RequiredFeatures), };
+        private Result<IUnitRubyBlock, IRunErrors> TryGetRubyBlock(ProcessState processState)
+        {
+            var parametersResult = TryGetMethodParameters(processState)
+                .Combine(RunErrorList.Combine)
+                .Map(x => x.ToList())
+                .Map(x =>
+                    new BasicRubyBlock(
+                        MethodName,
+                        ScriptText, x,
+                        RunTimeNuixVersion ?? RubyScriptProcessFactory.RequiredVersion,
+                RubyScriptProcessFactory.RequiredFeatures)  as IUnitRubyBlock);
+
+            return parametersResult;
+
+        }
 
         /// <inheritdoc />
         public override IEnumerable<Requirement> RuntimeRequirements
@@ -42,16 +56,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
 
-        /// <inheritdoc />
-        public override string CompileScript()
+        private string CompileScript(IUnitRubyBlock block)
         {
             var scriptBuilder = new StringBuilder();
+            var blocks = new[] {block};
 
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, RubyBlocks));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(RubyBlocks));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(Name, blocks));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(blocks));
 
             var i = 0;
-            foreach (var rubyBlock in RubyBlocks)
+            foreach (var rubyBlock in blocks)
             {
                 var blockText = rubyBlock.GetBlockText(ref i);
                 scriptBuilder.AppendLine(blockText);
@@ -61,6 +75,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             return (scriptBuilder.ToString());
         }
+
+        /// <inheritdoc />
+        public override Result<string, IRunErrors> TryCompileScript(ProcessState processState) => TryGetRubyBlock(processState).Map(CompileScript);
 
         /// <summary>
         /// The string that will be returned when the script completes successfully.
@@ -73,23 +90,25 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         protected override async Task<Result<Unit, IRunErrors>> RunAsync(ProcessState processState)
         {
-            if (RubyBlocks.Any())
-            {
-                var settingsResult = processState.GetProcessSettings<INuixProcessSettings>(Name);
-                if (settingsResult.IsFailure) return settingsResult.ConvertFailure<Unit>();
 
-                var scriptText = CompileScript();
-                var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, settingsResult.Value, RubyBlocks);
+            var blockResult = TryGetRubyBlock(processState);
+
+            if (blockResult.IsFailure)
+                return blockResult.ConvertFailure<Unit>();
 
 
-                var result =  await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath, processState.Logger,
-                    Name,
-                    trueArguments);
+            var settingsResult = processState.GetProcessSettings<INuixProcessSettings>(Name);
+            if (settingsResult.IsFailure) return settingsResult.ConvertFailure<Unit>();
 
-                return result;
-            }
+            var scriptText = CompileScript(blockResult.Value);
+            var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, settingsResult.Value, new []{blockResult.Value});
 
-            return Unit.Default;
+
+            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath, processState.Logger,
+                Name,
+                trueArguments);
+
+            return result;
         }
 
         //TODO restore combiners

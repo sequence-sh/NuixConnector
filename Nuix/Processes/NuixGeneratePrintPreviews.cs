@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Attributes;
+using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes
 {
@@ -49,7 +50,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public string ProductionSetName { get; set; }
+        public IRunnableProcess<string> ProductionSetName { get; set; }
 
         /// <summary>
         /// The path to the case.
@@ -58,7 +59,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-        public string CasePath { get; set; }
+        public IRunnableProcess<string> CasePath { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
@@ -87,7 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         internal override string MethodName => "GeneratePrintPreviews";
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, string? argumentValue, bool valueCanBeNull)> GetArgumentValues()
+        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
         {
             yield return ("pathArg", CasePath, false);
             yield return ("productionSetNameArg", ProductionSetName, false);
