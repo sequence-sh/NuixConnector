@@ -100,7 +100,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             FolderName = Constant("New Folder") };
 
 
-        public class TestData : TheoryData<ProcessSettingsCombo>
+        internal class TestData : TheoryData<ProcessSettingsCombo>
         {
             public TestData()
             {

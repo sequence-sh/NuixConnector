@@ -60,8 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     count = the_case.count(searchArg, searchOptions)
     the_case.close
     puts ""#{count} found matching '#{searchArg}'""
-    return count
-    ";
+    return count";
 
         /// <inheritdoc />
         public override string MethodName => "CountItems";
