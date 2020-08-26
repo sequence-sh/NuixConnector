@@ -1,4 +1,4 @@
-﻿#NuixAddConcordance()
+﻿#AddConcordanceToCase
 
 requiredNuixVersion = '7.6'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)

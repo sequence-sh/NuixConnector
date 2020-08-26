@@ -1,4 +1,4 @@
-﻿#NuixAnnotateDocumentIdList()
+﻿#AnnotateDocumentIds
 
 requiredNuixVersion = '7.4'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)

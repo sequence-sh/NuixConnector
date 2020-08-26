@@ -1,4 +1,4 @@
-﻿#NuixAddToProductionSet()
+﻿#AddToProductionSet
 
 requiredNuixVersion = '7.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)

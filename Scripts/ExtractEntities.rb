@@ -1,4 +1,4 @@
-﻿#NuixExtractEntities()
+﻿#ExtractEntities
 
 requiredNuixVersion = '4.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)

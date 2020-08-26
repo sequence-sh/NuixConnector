@@ -1,4 +1,4 @@
-﻿#NuixSearchAndTag()
+﻿#SearchAndTag
 
 requiredNuixVersion = '2.16'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)

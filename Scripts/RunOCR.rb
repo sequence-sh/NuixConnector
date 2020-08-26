@@ -1,4 +1,4 @@
-﻿#NuixPerformOCR(SearchTerm: NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) ))))
+﻿#RunOCR
 
 requiredNuixVersion = '7.6'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)

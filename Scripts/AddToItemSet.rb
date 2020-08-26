@@ -1,4 +1,4 @@
-﻿#NuixAddToItemSet()
+﻿#AddToItemSet
 
 requiredNuixVersion = '4.0'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)

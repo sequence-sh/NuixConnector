@@ -1,4 +1,4 @@
-﻿#NuixAssignCustodian()
+﻿#AssignCustodian
 
 requiredNuixVersion = '3.6'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)

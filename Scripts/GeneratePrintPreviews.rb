@@ -1,4 +1,4 @@
-﻿#NuixGeneratePrintPreviews()
+﻿#GeneratePrintPreviews
 
 requiredNuixVersion = '5.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
