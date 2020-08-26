@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
+using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -44,20 +45,22 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static void ShouldBeSuccessful(this Result result)
         {
             var (_, isFailure, error) = result;
-            Assert.False(isFailure, error);
+            if (isFailure)
+                throw new XunitException(error);
         }
 
         public static void ShouldBeSuccessful<T, TE>(this Result<T, TE> result, Func<TE, string> convert)
         {
             var (_, isFailure, _, error) = result;
             if (isFailure)
-                throw new Exception(convert(error));
+                throw new XunitException(convert(error));
         }
 
         public static void ShouldBeSuccessful<T>(this Result<T> result)
         {
             var (_, isFailure, _, error) = result;
-            Assert.False(isFailure, error);
+            if (isFailure)
+                throw new XunitException(error);
         }
 
 
