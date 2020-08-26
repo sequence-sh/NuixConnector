@@ -104,11 +104,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, settingsResult.Value, new []{blockResult.Value});
 
 
-            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath, processState.Logger,
-                Name,
-                trueArguments);
+            var logger = new ScriptProcessLogger(processState);
 
-            return result;
+            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath, logger, Name, trueArguments);
+
+            if (result.IsFailure)
+                return result;
+
+            if (logger.Completed)
+                return Unit.Default;
+
+            return new RunError("Nuix function did not complete successfully", Name, null, ErrorCode.ExternalProcessMissingOutput);
         }
 
         //TODO restore combiners
