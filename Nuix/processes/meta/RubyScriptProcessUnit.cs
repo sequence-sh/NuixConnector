@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Logging;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
@@ -17,6 +19,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// The string to use for the Nuix requirement
         /// </summary>
         public const string NuixProcessName = "Nuix";
+
+        /// <summary>
+        /// The string that will be returned when the script completes successfully.
+        /// </summary>
+        public const string SuccessToken = "--Script Completed Successfully--";
 
         /// <summary>
         /// Gets the ruby block to run.
@@ -77,11 +84,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public override Result<string, IRunErrors> TryCompileScript(ProcessState processState) => TryGetRubyBlock(processState).Map(CompileScript);
 
-        /// <summary>
-        /// The string that will be returned when the script completes successfully.
-        /// </summary>
-        public const string SuccessToken = "--Script Completed Successfully--";
-
 
         /// <summary>
         /// Runs this process asynchronously
@@ -131,7 +133,33 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         //}
 
 
+        internal sealed class ScriptProcessLogger : ILogger
+        {
+            public ScriptProcessLogger(ProcessState processState) => ProcessState = processState;
 
+            public ProcessState ProcessState { get; }
+
+            public bool Completed { get; private set; } = false;
+
+
+
+
+            /// <inheritdoc />
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+            {
+                if (state?.ToString() == SuccessToken)
+                    Completed = true;
+                else
+                    ProcessState.Logger.Log(logLevel, eventId, state, exception, formatter);
+            }
+
+            /// <inheritdoc />
+            public bool IsEnabled(LogLevel logLevel) => ProcessState.Logger.IsEnabled(logLevel);
+
+            /// <inheritdoc />
+            public IDisposable BeginScope<TState>(TState state) => ProcessState.Logger.BeginScope(state);
+
+        }
 
     }
 
