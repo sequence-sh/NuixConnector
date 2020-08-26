@@ -34,7 +34,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Annotates a document ID list to add production set names to it.
     /// </summary>
-    public class NuixAnnotateDocumentIdList : RubyScriptProcess
+    public class NuixAnnotateDocumentIdList : RubyScriptProcessUnit
     {
 
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "AnnotateDocumentIds";
+        public override string MethodName => "AnnotateDocumentIds";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

@@ -571,7 +571,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             Console.WriteLine(yaml);
 
-            var pfs = ProcessFactoryStore.CreateUsingReflection(typeof(RubyScriptProcess),
+            var pfs = ProcessFactoryStore.CreateUsingReflection(typeof(RubyScriptProcessUnit),
                 typeof(CompoundFreezableProcess));
 
             var r = YamlMethods.DeserializeFromYaml(yaml, pfs);
@@ -604,7 +604,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
 
 
-        internal class DoNothing : RubyScriptProcess
+        internal class DoNothing : RubyScriptProcessUnit
         {
             /// <inheritdoc />
             public override IRubyScriptProcessFactory RubyScriptProcessFactory  => new DoNothingProcessFactory(MyRequiredVersion, MyRequiredFeatures);
@@ -615,7 +615,7 @@ puts 'Doing Nothing'
 ";
 
             /// <inheritdoc />
-            internal override string MethodName => "DoNothing";
+            public override string MethodName => "DoNothing";
 
             public Version? MyRequiredVersion { get; set; }
 
@@ -682,7 +682,7 @@ puts 'Doing Nothing'
             return r.IsSuccess;
 
             //var requiredVersions = process.RuntimeRequirements.Concat(process.RunnableProcessFactory.Requirements)
-            //    .Where(x=>x.Name == RubyScriptProcess.NuixProcessName)
+            //    .Where(x=>x.Name == RubyScriptProcessUnit.NuixProcessName)
             //    .Select(x=>x.MinVersion).Where(x => x != null).ToList();
 
             //if (process.ToString() == "Migrate Case")

@@ -35,7 +35,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
     /// </summary>
-    public sealed class NuixAssignCustodian : RubyScriptProcess
+    public sealed class NuixAssignCustodian : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAssignCustodianFactory.Instance;
@@ -94,7 +94,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "AssignCustodian";
+        public override string MethodName => "AssignCustodian";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

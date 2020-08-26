@@ -46,14 +46,14 @@
 //            return Result.Failure<IImmutableProcess<T>>("Could not convert");
 //        }
 
-//        private static RubyScriptProcess? AsImmutableRubyScriptProcess(IImmutableProcess<Unit> process,
+//        private static RubyScriptProcessUnit? AsImmutableRubyScriptProcess(IImmutableProcess<Unit> process,
 //            INuixProcessSettings ns)
 //        {
-//            if (process is RubyScriptProcess immutableRubyScriptProcess) return immutableRubyScriptProcess;
+//            if (process is RubyScriptProcessUnit immutableRubyScriptProcess) return immutableRubyScriptProcess;
 
 //            if (process is DoNothing)
 //            {
-//                return new RubyScriptProcess(new List<IUnitRubyBlock>(), ns);
+//                return new RubyScriptProcessUnit(new List<IUnitRubyBlock>(), ns);
 //            }
 
 //            if (process is Processes.Immutable.AssertBool assertBool)
@@ -61,7 +61,7 @@
 //                var nuixSubprocess = AsImmutableRubyScriptProcessTyped(assertBool.SubProcess, ns);
 
 //                if (nuixSubprocess != null)
-//                    return new RubyScriptProcess(
+//                    return new RubyScriptProcessUnit(
 //                        new List<IUnitRubyBlock> { new AssertBoolRubyBlock(nuixSubprocess.RubyBlock, assertBool.ExpectedResult) }, ns);
 //            }
 
@@ -70,7 +70,7 @@
 //                var nuixSubProcess = AsImmutableRubyScriptProcess(assertError.SubProcess, ns);
 
 //                if (nuixSubProcess != null)
-//                    return new RubyScriptProcess(
+//                    return new RubyScriptProcessUnit(
 //                            new List<IUnitRubyBlock> { new AssertErrorRubyBlock(nuixSubProcess) }, ns);
 //            }
 
@@ -83,7 +83,7 @@
 //                    var fullPath = Path.Combine(writeFile.Folder, writeFile.FileName);
 //                    var writeBlock = new WriteFileRubyBlock(fullPath, nuixSubprocess.RubyBlock);
 
-//                    var p = new RubyScriptProcess(new []{writeBlock}, ns);
+//                    var p = new RubyScriptProcessUnit(new []{writeBlock}, ns);
 
 //                    return p;
 //                }
@@ -102,7 +102,7 @@
 //                        if(nuixElse != null)
 //                        {
 //                            var r = new ConditionalRubyBlock(nuixIf.RubyBlock, nuixThen, nuixElse);
-//                            return new RubyScriptProcess(new List<IUnitRubyBlock> {r}, ns);
+//                            return new RubyScriptProcessUnit(new List<IUnitRubyBlock> {r}, ns);
 //                        }
 //                    }
 //                }
@@ -125,7 +125,7 @@
 //                {
 //                    var checkNumberBlock = new CheckNumberRubyBlock(nuixSubprocess.RubyBlock, checkNumber.Minimum, checkNumber.Maximum);
 
-//                    var p = new RubyScriptProcessTyped<bool>(checkNumberBlock, ns, RubyScriptProcess.TryParseBool);
+//                    var p = new RubyScriptProcessTyped<bool>(checkNumberBlock, ns, RubyScriptProcessUnit.TryParseBool);
 
 //                    if (p is RubyScriptProcessTyped<T> resultProcess)
 //                        return resultProcess;

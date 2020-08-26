@@ -92,7 +92,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     return irregularText;";
 
         /// <inheritdoc />
-        internal override string MethodName => "CreateIrregularItemsReport";
+        public override string MethodName => "CreateIrregularItemsReport";
 
 
 

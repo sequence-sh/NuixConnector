@@ -8,7 +8,7 @@ Generates ruby scripts for all RubyScriptProcesses in the AppDomain.
 |:--------:|:------:|:------:|:------------------------------------------:|
 |folderPath|`string`|☑️      |Path to the folder to create the scripts in.|
 
-<a name="RubyScriptProcess"></a>
+<a name="RubyScriptProcessUnit"></a>
 # Nuix Processes
 <a name="NuixAddConcordance"></a>
 ## NuixAddConcordance

@@ -23,7 +23,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def AnnotateDocumentIds(pathArg,productionSetNameArg,dataPathArg)
+def AnnotateDocumentIds(utilities,pathArg,productionSetNameArg,dataPathArg)
 
     the_case = utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)

@@ -133,7 +133,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     return text;";
 
         /// <inheritdoc />
-        internal override string MethodName => "CreateReport";
+        public override string MethodName => "CreateReport";
 
 
         /// <inheritdoc />

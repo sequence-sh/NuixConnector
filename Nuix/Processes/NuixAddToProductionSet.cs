@@ -38,7 +38,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// Searches a case with a particular search string and adds all items it finds to a production set.
     /// Will create a new production set if one with the given name does not already exist.
     /// </summary>
-    public sealed class NuixAddToProductionSet : RubyScriptProcess
+    public sealed class NuixAddToProductionSet : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAddToProductionSetProcessFactory.Instance;
@@ -181,7 +181,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "AddToProductionSet";
+        public override string MethodName => "AddToProductionSet";
 
         /// <inheritdoc />
         public override Version? RunTimeNuixVersion => ProductionProfilePath == null? new Version(7, 2) : new Version(7,6);

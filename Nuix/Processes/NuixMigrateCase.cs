@@ -32,7 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Migrates a case to the latest version if necessary.
     /// </summary>
-    public sealed class NuixMigrateCase : RubyScriptProcess
+    public sealed class NuixMigrateCase : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixMigrateCaseProcessFactory.Instance;
@@ -61,7 +61,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case = utilities.case_factory.open(pathArg, options)";
 
         /// <inheritdoc />
-        internal override string MethodName => "MigrateCase";
+        public override string MethodName => "MigrateCase";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

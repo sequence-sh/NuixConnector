@@ -32,7 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Adds a file or directory to a Nuix Case.
     /// </summary>
-    public sealed class NuixAddItem : RubyScriptProcess
+    public sealed class NuixAddItem : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAddItemProcessFactory.Instance;
@@ -158,7 +158,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "AddToCase";
+        public override string MethodName => "AddToCase";
 
 
 

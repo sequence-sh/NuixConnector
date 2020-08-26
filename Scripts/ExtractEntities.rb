@@ -14,7 +14,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def ExtractEntities(casePathArg,outputFolderPathArg)
+def ExtractEntities(utilities,casePathArg,outputFolderPathArg)
 
     the_case = utilities.case_factory.open(casePathArg)
 

@@ -23,7 +23,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def SearchAndTag(pathArg,searchArg,tagArg)
+def SearchAndTag(utilities,pathArg,searchArg,tagArg)
 
     the_case = utilities.case_factory.open(pathArg)
     puts "Searching for '#{searchArg}'"

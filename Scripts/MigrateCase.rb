@@ -13,7 +13,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def MigrateCase(pathArg)
+def MigrateCase(utilities,pathArg)
 
     puts "Opening Case, migrating if necessary"
 

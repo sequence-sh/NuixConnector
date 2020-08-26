@@ -8,7 +8,7 @@
 //{
 //    internal sealed class ConditionalRubyBlock : IUnitRubyBlock
 //    {
-//        public ConditionalRubyBlock(ITypedRubyBlock<bool> ifBlock, RubyScriptProcess thenProcess, RubyScriptProcess elseProcess)
+//        public ConditionalRubyBlock(ITypedRubyBlock<bool> ifBlock, RubyScriptProcessUnit thenProcess, RubyScriptProcessUnit elseProcess)
 //        {
 //            _ifBlock = ifBlock;
 //            _thenProcess = thenProcess;
@@ -16,8 +16,8 @@
 //        }
 
 //        private readonly ITypedRubyBlock<bool> _ifBlock;
-//        private readonly RubyScriptProcess _thenProcess;
-//        private readonly RubyScriptProcess _elseProcess;
+//        private readonly RubyScriptProcessUnit _thenProcess;
+//        private readonly RubyScriptProcessUnit _elseProcess;
 
 //        /// <inheritdoc />
 //        public string BlockName => "Conditional"; //TODO fix

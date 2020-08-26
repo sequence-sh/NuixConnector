@@ -22,7 +22,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def GeneratePrintPreviews(pathArg,productionSetNameArg)
+def GeneratePrintPreviews(utilities,pathArg,productionSetNameArg)
 
     the_case = utilities.case_factory.open(pathArg)
 

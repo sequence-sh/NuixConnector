@@ -35,7 +35,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Performs optical character recognition on files in a NUIX case.
     /// </summary>
-    public sealed class NuixPerformOCR : RubyScriptProcess
+    public sealed class NuixPerformOCR : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixPerformOCRProcessFactory.Instance;
@@ -114,7 +114,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "RunOCR";
+        public override string MethodName => "RunOCR";
 
         /// <inheritdoc />
         public override Result<Unit, IRunErrors> VerifyThis

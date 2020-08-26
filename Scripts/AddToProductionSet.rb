@@ -28,7 +28,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def AddToProductionSet(pathArg,searchArg,productionSetNameArg,descriptionArg,productionProfileNameArg,productionProfilePathArg,orderArg,limitArg)
+def AddToProductionSet(utilities,pathArg,searchArg,productionSetNameArg,descriptionArg,productionProfileNameArg,productionProfilePathArg,orderArg,limitArg)
 
     the_case = utilities.case_factory.open(pathArg)
     puts "Searching"

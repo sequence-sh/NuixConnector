@@ -30,6 +30,13 @@
         /// </summary>
         public bool ValueCanBeNull { get; }
 
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{ParameterName} = {ParameterValue}";
+        }
+
+
         /// <summary>
         /// Deconstruct this RubyMethodParameter.
         /// </summary>

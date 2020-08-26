@@ -11,7 +11,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     {
         /// <inheritdoc />
         public BasicTypedRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters, Version requiredNuixVersion, IReadOnlyCollection<NuixFeature> requiredNuixFeatures)
-            : base(blockName, functionText, methodParameters)
+            : base(blockName, functionText, methodParameters, true)
         {
             RequiredNuixVersion = requiredNuixVersion;
             RequiredNuixFeatures = requiredNuixFeatures;
@@ -22,7 +22,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
             resultVariableName = "result" + blockNumber;
             //BlockName is also the name of the method
-            var callStringBuilder = new StringBuilder($"{resultVariableName} = {BlockName}(utilities"); //utilities is always first argument
+            var callStringBuilder = new StringBuilder($"{resultVariableName} = {BlockName}(");
+            callStringBuilder.Append(UtilitiesParameterName); //utilities is always first argument
 
             foreach (var (argumentName, _, _) in MethodParameters)
             {

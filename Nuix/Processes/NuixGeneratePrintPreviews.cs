@@ -33,7 +33,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Generates print previews for items in a production set.
     /// </summary>
-    public sealed class NuixGeneratePrintPreviews : RubyScriptProcess
+    public sealed class NuixGeneratePrintPreviews : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixGeneratePrintPreviewsProcessFactory.Instance;
@@ -85,7 +85,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "GeneratePrintPreviews";
+        public override string MethodName => "GeneratePrintPreviews";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

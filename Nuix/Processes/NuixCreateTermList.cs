@@ -77,7 +77,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     return text";
 
         /// <inheritdoc />
-        internal override string MethodName => "CreateTermList";
+        public override string MethodName => "CreateTermList";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

@@ -28,7 +28,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def AddToCase(pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg,processingProfilePathArg,passwordFilePathArg)
+def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,processingProfileNameArg,processingProfilePathArg,passwordFilePathArg)
 
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor

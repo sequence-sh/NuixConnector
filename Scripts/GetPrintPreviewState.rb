@@ -23,7 +23,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def GetPrintPreviewState(pathArg,productionSetNameArg,expectedStateArg)
+def GetPrintPreviewState(utilities,pathArg,productionSetNameArg,expectedStateArg)
 
     the_case = utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)

@@ -24,7 +24,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def ImportDocumentIds(pathArg,sourceProductionSetsInDataArg,productionSetNameArg,dataPathArg)
+def ImportDocumentIds(utilities,pathArg,sourceProductionSetsInDataArg,productionSetNameArg,dataPathArg)
 
 
     the_case = utilities.case_factory.open(pathArg)

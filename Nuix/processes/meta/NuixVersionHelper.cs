@@ -16,7 +16,7 @@ public static class NuixVersionHelper
 ///// <summary>
     ///// A process that runs a ruby script against NUIX
     ///// </summary>
-    ////public abstract class RubyScriptProcess : IRunnableProcess<Unit>, ICompoundRunnableProcess
+    ////public abstract class RubyScriptProcessUnit : IRunnableProcess<Unit>, ICompoundRunnableProcess
     ////{
     ////    / <summary>
     ////    / Checks if the current set of arguments is valid.
@@ -105,7 +105,7 @@ public static class NuixVersionHelper
     ////                {
     ////                    var block = new BasicRubyBlock(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
 
-    ////                    var ip = new RubyScriptProcess(new[] { block }, nuixProcessSettings);
+    ////                    var ip = new RubyScriptProcessUnit(new[] { block }, nuixProcessSettings);
 
     ////                    return TryConvertFreezeResult<TOutput, Unit>(ip);
     ////                }
@@ -141,13 +141,13 @@ public static class NuixVersionHelper
     ////        return ReturnType switch
     ////        {
     ////            NuixReturnType.Unit =>
-    ////            new ChainLinkBuilder<TInput, Unit, TFinal, RubyScriptProcess, RubyScriptProcess>(this),
+    ////            new ChainLinkBuilder<TInput, Unit, TFinal, RubyScriptProcessUnit, RubyScriptProcessUnit>(this),
     ////            NuixReturnType.Boolean =>
-    ////            new ChainLinkBuilder<TInput, bool, TFinal, RubyScriptProcessTyped<bool>, RubyScriptProcess>(this),
+    ////            new ChainLinkBuilder<TInput, bool, TFinal, RubyScriptProcessTyped<bool>, RubyScriptProcessUnit>(this),
     ////            NuixReturnType.Integer =>
-    ////            new ChainLinkBuilder<TInput, int, TFinal, RubyScriptProcessTyped<int>, RubyScriptProcess>(this),
+    ////            new ChainLinkBuilder<TInput, int, TFinal, RubyScriptProcessTyped<int>, RubyScriptProcessUnit>(this),
     ////            NuixReturnType.String =>
-    ////            new ChainLinkBuilder<TInput, string, TFinal, RubyScriptProcessTyped<string>, RubyScriptProcess>(this),
+    ////            new ChainLinkBuilder<TInput, string, TFinal, RubyScriptProcessTyped<string>, RubyScriptProcessUnit>(this),
     ////            _ => throw new ArgumentOutOfRangeException()
     ////        };
     ////    }

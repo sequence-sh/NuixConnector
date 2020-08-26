@@ -38,7 +38,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <returns></returns>
         internal abstract string ScriptText { get; }
 
-        internal abstract string MethodName { get; }
+        /// <inheritdoc />
+        public abstract string MethodName { get; }
 
         /// <summary>
         /// Required version of nuix, if it was changed by the parameters.

@@ -35,7 +35,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Exports Concordance for a particular production set.
     /// </summary>
-    public sealed class NuixExportConcordance : RubyScriptProcess
+    public sealed class NuixExportConcordance : RubyScriptProcessUnit
     {
 
         ///// <inheritdoc />
@@ -95,7 +95,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "ExportConcordance";
+        public override string MethodName => "ExportConcordance";
 
 
         /// <inheritdoc />

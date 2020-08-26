@@ -36,7 +36,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Checks the print preview state of the production set.
     /// </summary>
-    public sealed class NuixAssertPrintPreviewState : RubyScriptProcess
+    public sealed class NuixAssertPrintPreviewState : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAssertPrintPreviewStateProcessFactory.Instance;
@@ -98,7 +98,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     end";
 
         /// <inheritdoc />
-        internal override string MethodName => "GetPrintPreviewState";
+        public override string MethodName => "GetPrintPreviewState";
 
 
         /// <inheritdoc />

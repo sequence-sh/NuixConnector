@@ -24,7 +24,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def RunOCR(pathArg,searchTermArg,ocrProfileArg,ocrProfilePathArg)
+def RunOCR(utilities,pathArg,searchTermArg,ocrProfileArg,ocrProfilePathArg)
 
     the_case = utilities.case_factory.open(pathArg)
 

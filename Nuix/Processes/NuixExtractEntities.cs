@@ -30,7 +30,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Extract Entities from a Nuix Case.
     /// </summary>
-    public sealed class NuixExtractEntities : RubyScriptProcess
+    public sealed class NuixExtractEntities : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixExtractEntitiesProcessFactory.Instance;
@@ -106,7 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "ExtractEntities";
+        public override string MethodName => "ExtractEntities";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

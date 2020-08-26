@@ -7,9 +7,9 @@
 //{
 //    internal sealed class AssertErrorRubyBlock : IUnitRubyBlock
 //    {
-//        public readonly RubyScriptProcess SubProcess;
+//        public readonly RubyScriptProcessUnit SubProcess;
 
-//        public AssertErrorRubyBlock(RubyScriptProcess subProcess)
+//        public AssertErrorRubyBlock(RubyScriptProcessUnit subProcess)
 //        {
 //            SubProcess = subProcess;
 //        }

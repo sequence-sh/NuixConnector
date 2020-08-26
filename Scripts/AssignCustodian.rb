@@ -23,7 +23,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def AssignCustodian(pathArg,searchArg,custodianArg)
+def AssignCustodian(utilities,pathArg,searchArg,custodianArg)
 
     the_case = utilities.case_factory.open(pathArg)
     puts "Searching for '#{searchArg}'"

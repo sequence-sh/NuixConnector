@@ -23,7 +23,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def ExportConcordance(pathArg,exportPathArg,productionSetNameArg)
+def ExportConcordance(utilities,pathArg,exportPathArg,productionSetNameArg)
 
     the_case = utilities.case_factory.open(pathArg)
 

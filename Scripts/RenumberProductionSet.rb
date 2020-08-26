@@ -23,7 +23,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def RenumberProductionSet(pathArg,productionSetNameArg,sortOrderArg)
+def RenumberProductionSet(utilities,pathArg,productionSetNameArg,sortOrderArg)
 
     the_case = utilities.case_factory.open(pathArg)
 

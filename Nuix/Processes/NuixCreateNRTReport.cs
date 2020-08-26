@@ -31,7 +31,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Creates a report using an NRT file.
     /// </summary>
-    public sealed class NuixCreateNRTReport : RubyScriptProcess
+    public sealed class NuixCreateNRTReport : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateNRTReportProcessFactory.Instance;
@@ -112,7 +112,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "CreateNRTReport";
+        public override string MethodName => "CreateNRTReport";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

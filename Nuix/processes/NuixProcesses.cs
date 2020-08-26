@@ -31,7 +31,7 @@
 //        /// <summary>
 //        /// All nuix processes.
 //        /// </summary>
-//        private static readonly IReadOnlyCollection<RubyScriptProcess> AllProcesses = new List<RubyScriptProcess>
+//        private static readonly IReadOnlyCollection<RubyScriptProcessUnit> AllProcesses = new List<RubyScriptProcessUnit>
 //        {
 //            new NuixAddConcordance(),
 //            new NuixAddItem(),

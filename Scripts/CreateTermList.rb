@@ -12,14 +12,12 @@ OptionParser.new do |opts|
 	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
 end.parse!
 
-puts params
-
 
 def CreateTermList(utilities,casePathArg)
 
     the_case = utilities.case_factory.open(casePathArg)
 
-    puts "Generating Report:"   
+    puts "Generating Report:"
     caseStatistics = the_case.getStatistics()
     termStatistics = caseStatistics.getTermStatistics("", {"sort" => "on", "deduplicate" => "md5"}) #for some reason this takes strings rather than symbols
     #todo terms per custodian

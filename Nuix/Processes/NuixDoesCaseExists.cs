@@ -64,7 +64,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 ";
 
         /// <inheritdoc />
-        internal override string MethodName => "DoesCaseExist";
+        public override string MethodName => "DoesCaseExist";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

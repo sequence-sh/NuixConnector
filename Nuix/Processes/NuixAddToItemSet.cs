@@ -38,7 +38,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// Searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
-    public sealed class NuixAddToItemSet : RubyScriptProcess
+    public sealed class NuixAddToItemSet : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAddToItemSetProcessFactory.Instance;
@@ -148,7 +148,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "AddToItemSet";
+        public override string MethodName => "AddToItemSet";
 
 
 

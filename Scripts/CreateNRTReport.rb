@@ -25,7 +25,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def CreateNRTReport(pathArg,nrtPathArg,outputFormatArg,outputPathArg,localResourcesUrlArg)
+def CreateNRTReport(utilities,pathArg,nrtPathArg,outputFormatArg,outputPathArg,localResourcesUrlArg)
 
     the_case = utilities.case_factory.open(pathArg)
     puts 'Generating NRT Report:'

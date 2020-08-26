@@ -29,7 +29,7 @@ namespace Reductech.EDR.Connectors.Nuix.Console
 
 
                 var nuixProcesses = DynamicProcessFinder.GetAllDocumented(settings,
-                    new DocumentationCategory("Nuix Processes", typeof(RubyScriptProcess)), typeof(RubyScriptProcess), logger);
+                    new DocumentationCategory("Nuix Processes", typeof(RubyScriptProcessUnit)), typeof(RubyScriptProcessUnit), logger);
 
                 var generalProcesses = DynamicProcessFinder.GetAllDocumented(settings,
                     new DocumentationCategory("General Processes", typeof(Process)), typeof(Process), logger);

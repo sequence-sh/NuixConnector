@@ -35,7 +35,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Reorders and renumbers the items in a production set.
     /// </summary>
-    public sealed class NuixReorderProductionSet : RubyScriptProcess
+    public sealed class NuixReorderProductionSet : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixReorderProductionSetProcessFactory.Instance;
@@ -94,7 +94,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "RenumberProductionSet";
+        public override string MethodName => "RenumberProductionSet";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

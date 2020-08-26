@@ -117,7 +117,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     return text";
 
         /// <inheritdoc />
-        internal override string MethodName => "GetParticularProperties";
+        public override string MethodName => "GetParticularProperties";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

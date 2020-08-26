@@ -23,7 +23,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def RemoveFromProductionSet(pathArg,searchArg,productionSetNameArg)
+def RemoveFromProductionSet(utilities,pathArg,searchArg,productionSetNameArg)
 
     the_case = utilities.case_factory.open(pathArg)
 

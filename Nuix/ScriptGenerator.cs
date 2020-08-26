@@ -37,7 +37,7 @@ namespace Reductech.EDR.Connectors.Nuix
         {
             var processTypes = AppDomain.CurrentDomain
                 .GetAssemblies().SelectMany(x=>x.GetTypes())
-                .Where(t => typeof(RubyScriptProcess).IsAssignableFrom(t))
+                .Where(t => typeof(IRubyScriptProcess).IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract).ToList();
 
             foreach (var processType in processTypes)
@@ -48,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix
                     var instance = Activator.CreateInstance(processType);
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                    var process = (RubyScriptProcess) instance;
+                    var process = (IRubyScriptProcess) instance;
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
                     if (process == null)

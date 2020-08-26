@@ -12,15 +12,13 @@ OptionParser.new do |opts|
 	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
 end.parse!
 
-puts params
-
 
 def CreateIrregularItemsReport(utilities,casePathArg)
 
     the_case = utilities.case_factory.open(casePathArg)
 
-    puts "Generating Report:"   
-    fields = {    
+    puts "Generating Report:"
+    fields = {
         encrypted: "flag:encrypted",
         NonSearchablePDF: "mime-type:application/pdf AND NOT content:*",
         BadExtension: "flag:irregular_file_extension",
@@ -34,12 +32,12 @@ def CreateIrregularItemsReport(utilities,casePathArg)
         NeedManualExamination: "kind:unrecognised AND NOT ( flag:deleted OR mime-type:( filesystem/x-ntfs-mft OR filesystem/x-ntfs-logfile OR filesystem/x-ntfs-file-record OR filesystem/x-ntfs-index-record OR filesystem/x-ntfs-logfile-record OR filesystem/x-ntfs-usnjrnl OR filesystem/x-ntfs-usnjrnl-record OR filesystem/x-ntfs-vss-catalog OR filesystem/x-ntfs-vss-store ) OR ( path-mime-type:filesystem/drive AND ( ( path-name:\"[File System Root]\" AND name:( \"$AttrDef\" OR \"$Bitmap\" OR \"$BadClus\" OR \"$BadClus:$Bad\" OR \"$Boot\" OR \"$Extend\" OR \"$Secure\" OR \"$Secure:$SDS\" OR \"$UpCase\" OR \"$UpCase:$Info\" OR \"$Volume\" ) ) OR path-name:\"[File System Root]/$Extend\" ) ) )",
         CodeTextFiles: "kind:unrecognised AND (content:(function OR def) AND IF)"
     }
-    
+
     irregularText = "Reason\tPath\tGuid"
 
     fields.each do |key, value|
         items = the_case.search(value)
-        
+
         items.each do |i|
             path = i.getPathNames().join("/")
             guid = i.getGuid()

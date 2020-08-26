@@ -34,7 +34,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
     /// </summary>
-    public sealed class NuixImportDocumentIds : RubyScriptProcess
+    public sealed class NuixImportDocumentIds : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixImportDocumentIdsProcessFactory.Instance;
@@ -110,7 +110,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "ImportDocumentIds";
+        public override string MethodName => "ImportDocumentIds";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

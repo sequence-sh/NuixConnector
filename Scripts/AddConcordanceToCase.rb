@@ -27,7 +27,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-def AddConcordanceToCase(pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,dateFormatArg,profileNameArg)
+def AddConcordanceToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodianArg,filePathArg,dateFormatArg,profileNameArg)
 
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor

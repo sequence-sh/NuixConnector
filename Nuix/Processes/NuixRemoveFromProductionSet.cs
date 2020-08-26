@@ -35,7 +35,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Removes particular items from a Nuix production set.
     /// </summary>
-    public sealed class NuixRemoveFromProductionSet : RubyScriptProcess
+    public sealed class NuixRemoveFromProductionSet : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory =>
@@ -100,7 +100,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "RemoveFromProductionSet";
+        public override string MethodName => "RemoveFromProductionSet";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

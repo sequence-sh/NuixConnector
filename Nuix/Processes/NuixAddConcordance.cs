@@ -33,7 +33,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Adds data from a Concordance file to a NUIX case.
     /// </summary>
-    public sealed class NuixAddConcordance : RubyScriptProcess
+    public sealed class NuixAddConcordance : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAddConcordanceFactory.Instance;
@@ -132,7 +132,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        internal override string MethodName => "AddConcordanceToCase";
+        public override string MethodName => "AddConcordanceToCase";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

@@ -36,7 +36,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Searches a NUIX case with a particular search string and tags all files it finds.
     /// </summary>
-    public sealed class NuixSearchAndTag : RubyScriptProcess
+    public sealed class NuixSearchAndTag : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixSearchAndTagProcessFactory.Instance;
@@ -93,7 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "SearchAndTag";
+        public override string MethodName => "SearchAndTag";
 
         /// <inheritdoc />
         internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()

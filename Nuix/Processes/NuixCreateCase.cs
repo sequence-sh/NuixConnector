@@ -30,7 +30,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     /// <summary>
     /// Creates a new case.
     /// </summary>
-    public sealed class NuixCreateCase : RubyScriptProcess
+    public sealed class NuixCreateCase : RubyScriptProcessUnit
     {
         /// <inheritdoc />
         public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateCaseProcessFactory.Instance;
@@ -81,7 +81,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     the_case.close";
 
         /// <inheritdoc />
-        internal override string MethodName => "CreateCase";
+        public override string MethodName => "CreateCase";
 
 
 
