@@ -54,20 +54,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         protected IEnumerable<Result<RubyMethodParameter, IRunErrors>> TryGetMethodParameters(ProcessState processState)
         {
-            foreach (var a in GetArgumentValues())
+            foreach (var (argumentName, argumentValue, valueCanBeNull) in GetArgumentValues())
             {
-                if(a.argumentValue == null)
-                    yield return new RubyMethodParameter(a.argumentName, null, a.valueCanBeNull);
+                if(argumentValue == null)
+                    yield return new RubyMethodParameter(argumentName, null, valueCanBeNull);
                 else
                 {
-                    var r = a.argumentValue.Run<object>(processState);
+                    var r = argumentValue.Run<object>(processState);
 
                     if (r.IsFailure)
                         yield return r.ConvertFailure<RubyMethodParameter>();
 
                     var s = ConvertToString(r.Value);
 
-                    yield return new RubyMethodParameter(a.argumentName, s, a.valueCanBeNull);
+                    yield return new RubyMethodParameter(argumentName, s, valueCanBeNull);
                 }
             }
         }

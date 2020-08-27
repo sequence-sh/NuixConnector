@@ -35,7 +35,7 @@ end
 
 
 def binToHex(s)
-  suffix = s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
+  suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
   '0x' + suffix
 end
 
