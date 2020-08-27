@@ -15,7 +15,7 @@ test:
     image: mcr.microsoft.com/dotnet/core/sdk:3.1
     script: 
         - dotnet nuget add source -n reductech -u $GITLAB_NUGET_USERNAME -p $GITLAB_NUGET_PAT --store-password-in-clear-text "https://gitlab.com/api/v4/projects/18697166/packages/nuget/index.json"
-        - "dotnet test --filter TestCategory!=\"Integration\""
+        - "dotnet test --filter Category!=\"Integration\"
   
 integrationTest:
     stage: integrationTest
@@ -25,4 +25,4 @@ integrationTest:
         - nuix
     script:
         #- dotnet nuget add source -n reductech -u $GITLAB_NUGET_USERNAME -p $GITLAB_NUGET_PAT --store-password-in-clear-text "https://gitlab.com/api/v4/projects/18697166/packages/nuget/index.json"
-        - "dotnet test --filter TestCategory=\"Integration\""
+        - "dotnet test --filter Category=\"Integration\"
