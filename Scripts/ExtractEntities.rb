@@ -9,8 +9,8 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
-	opts.on('--outputFolderPathArg0 ARG') do |o| params[:outputFolderPathArg0] = o end
+	opts.on('--casePathArg1 [ARG]') do |o| params[:casePathArg1] = o end
+	opts.on('--outputFolderPathArg1 [ARG]') do |o| params[:outputFolderPathArg1] = o end
 end.parse!
 
 
@@ -62,6 +62,5 @@ def ExtractEntities(utilities,casePathArg,outputFolderPathArg)
 end
 
 
-
-ExtractEntities(utilities, params[:casePathArg0], params[:outputFolderPathArg0])
+ExtractEntities(utilities, params[:casePathArg1], params[:outputFolderPathArg1])
 puts '--Script Completed Successfully--'

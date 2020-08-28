@@ -25,42 +25,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
-    }
-
-    /// <summary>
-    /// Extract Entities from a Nuix Case.
-    /// </summary>
-    public sealed class NuixExtractEntities : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixExtractEntitiesProcessFactory.Instance;
-
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => "Extract Entities";
-
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-        /// <summary>
-        /// The path to the folder to put the output files in.
-        /// </summary>
-        [Required]
-        [Example("C:/Output")]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> OutputFolder { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string MethodName => "ExtractEntities";
+
+        /// <inheritdoc />
+        public override string ScriptText => @"
     the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Extracting Entities:""
@@ -105,14 +75,34 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     the_case.close";
 
-        /// <inheritdoc />
-        public override string MethodName => "ExtractEntities";
 
+
+    }
+
+    /// <summary>
+    /// Extract Entities from a Nuix Case.
+    /// </summary>
+    public sealed class NuixExtractEntities : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("casePathArg", CasePath, false);
-            yield return ("outputFolderPathArg", OutputFolder, false);
-        }
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixExtractEntitiesProcessFactory.Instance;
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("casePathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The path to the folder to put the output files in.
+        /// </summary>
+        [Required]
+        [Example("C:/Output")]
+        [RunnableProcessProperty]
+        [RubyArgument("outputFolderPathArg", 2)]
+        public IRunnableProcess<string> OutputFolder { get; set; } = null!;
     }
 }

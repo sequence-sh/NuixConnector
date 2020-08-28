@@ -31,96 +31,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             NuixFeature.ANALYSIS
         };
-    }
-
-
-    /// <summary>
-    /// Searches a case with a particular search string and adds all items it finds to a particular item set.
-    /// Will create a new item set if one doesn't already exist.
-    /// </summary>
-    public sealed class NuixAddToItemSet : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAddToItemSetProcessFactory.Instance;
-
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => "Search and add to item set";
-
-
-        /// <summary>
-        /// The item set to add results to. Will be created if it doesn't already exist.
-        /// </summary>
-
-        [Required]
-        [RunnableProcessProperty]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> ItemSetName { get; set; }
-
-
-        /// <summary>
-        /// The term to search for.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> SearchTerm { get; set; }
-
-        /// <summary>
-        /// The path of the case to search.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-
-        /// <summary>
-        /// The means of deduplicating items by key and prioritizing originals in a tie-break.
-        /// </summary>
-        [RunnableProcessProperty]
-        public IRunnableProcess<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
-
-        /// <summary>
-        /// The description of the item set.
-        /// </summary>
-
-        [RunnableProcessProperty]
-        public IRunnableProcess<string>? ItemSetDescription { get; set; }
-
-        /// <summary>
-        /// Whether to deduplicate as a family or individual.
-        /// </summary>
-
-        [RunnableProcessProperty]
-        public IRunnableProcess<DeduplicateBy>? DeduplicateBy { get; set; }
-
-        /// <summary>
-        /// A list of custodian names ordered from highest ranked to lowest ranked.
-        /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
-        /// </summary>
-
-        [RunnableProcessProperty]
-        public IRunnableProcess<List<string>>? CustodianRanking { get; set; }
-
-
-        /// <summary>
-        /// How to order the items to be added to the item set.
-        /// </summary>
-        [RunnableProcessProperty]
-        [Example("name ASC, item-date DESC")]
-        public IRunnableProcess<string>? Order { get; set; }
-
-        /// <summary>
-        /// The maximum number of items to add to the item set.
-        /// </summary>
-        [RunnableProcessProperty]
-        public IRunnableProcess<int>? Limit { get; set; }
-
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable
 
 
         /// <inheritdoc />
-        internal override string ScriptText =>
+        public override string MethodName => "AddToItemSet";
+
+        /// <inheritdoc />
+        public override string ScriptText =>
             @"
     the_case = utilities.case_factory.open(pathArg)
     itemSet = the_case.findItemSetByName(itemSetNameArg)
@@ -146,29 +63,91 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     itemSet.addItems(items)
     puts ""items added""
     the_case.close";
+    }
 
+
+    /// <summary>
+    /// Searches a case with a particular search string and adds all items it finds to a particular item set.
+    /// Will create a new item set if one doesn't already exist.
+    /// </summary>
+    public sealed class NuixAddToItemSet : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        public override string MethodName => "AddToItemSet";
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixAddToItemSetProcessFactory.Instance;
 
 
+        /// <summary>
+        /// The path of the case to search.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
 
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("searchArg", SearchTerm, false);
-            yield return ("itemSetNameArg", ItemSetName, false);
+        /// <summary>
+        /// The term to search for.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("searchArg", 2)]
+        public IRunnableProcess<string> SearchTerm { get; set; }= null!;
 
-            yield return ("deduplicationArg", ItemSetDeduplication, true);
+        /// <summary>
+        /// The item set to add results to. Will be created if it doesn't already exist.
+        /// </summary>
 
-            yield return("descriptionArg", ItemSetDescription, true);
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("itemSetNameArg", 3)]
+        public IRunnableProcess<string> ItemSetName { get; set; }= null!;
 
-            yield return("deduplicateByArg", DeduplicateBy, false);
+        /// <summary>
+        /// The means of deduplicating items by key and prioritizing originals in a tie-break.
+        /// </summary>
+        [RunnableProcessProperty]
+        [RubyArgument("deduplicationArg", 4)]
+        public IRunnableProcess<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
 
-            yield return("custodianRankingArg", CustodianRanking, true);
+        /// <summary>
+        /// The description of the item set.
+        /// </summary>
 
-            yield return ("orderArg", Order, true);
-            yield return ("limitArg", Limit, true);
-        }
+        [RunnableProcessProperty]
+        [RubyArgument("descriptionArg", 5)]
+        public IRunnableProcess<string>? ItemSetDescription { get; set; }
+
+        /// <summary>
+        /// Whether to deduplicate as a family or individual.
+        /// </summary>
+
+        [RunnableProcessProperty]
+        [RubyArgument("deduplicateByArg", 6)]
+        public IRunnableProcess<DeduplicateBy>? DeduplicateBy { get; set; }
+
+        /// <summary>
+        /// A list of custodian names ordered from highest ranked to lowest ranked.
+        /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
+        /// </summary>
+
+        [RunnableProcessProperty]
+        [RubyArgument("custodianRankingArg", 7)]
+        public IRunnableProcess<List<string>>? CustodianRanking { get; set; }
+
+
+        /// <summary>
+        /// How to order the items to be added to the item set.
+        /// </summary>
+        [RunnableProcessProperty]
+        [Example("name ASC, item-date DESC")]
+        [RubyArgument("orderArg", 8)]
+        public IRunnableProcess<string>? Order { get; set; }
+
+        /// <summary>
+        /// The maximum number of items to add to the item set.
+        /// </summary>
+        [RunnableProcessProperty]
+        [RubyArgument("limitArg", 9)]
+        public IRunnableProcess<int>? Limit { get; set; }
     }
 }

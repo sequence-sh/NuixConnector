@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -20,20 +18,67 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <summary>
         /// Gets the ruby block to run.
         /// </summary>
-        private Result<ITypedRubyBlock<T>, IRunErrors> TryGetRubyBlock(ProcessState processState)
+        private Result<ITypedRubyBlock<T>, IRunErrors> TryGetRubyBlock(ProcessState processState) =>
+            TryGetMethodParameters(processState)
+                .Map(x =>
+                    new TypedFunctionRubyBlock<T>(RubyScriptProcessFactory.RubyFunction, x) as ITypedRubyBlock<T>);
+
+
+        /// <inheritdoc />
+        public override Result<string, IRunErrors> TryCompileScript(ProcessState processState) => TryGetRubyBlock(processState)
+            .Bind(b => ScriptGenerator.CompileScript(RubyScriptProcessFactory.RubyFunction.FunctionName, b));
+
+        /// <inheritdoc />
+        public override Result<IRubyBlock> TryConvert() =>
+            TryGetArgumentsAsFunctions()
+                .Map(args=>new TypedCompoundRubyBlock<T>(RubyScriptProcessFactory.RubyFunction, args) as IRubyBlock);
+
+
+        /// <summary>
+        /// Runs this process asynchronously
+        /// </summary>
+        protected override async Task<Result<T, IRunErrors>> RunAsync(ProcessState processState)
         {
-            var parametersResult = TryGetMethodParameters(processState)
-                .Combine(RunErrorList.Combine)
-                .Map(x=>x.ToList())
-                .Map(x=>
-                    new BasicTypedRubyBlock<T>(
-                        MethodName,
-                        ScriptText, x,
-                        RunTimeNuixVersion ?? RubyScriptProcessFactory.RequiredVersion,
-                RubyScriptProcessFactory.RequiredFeatures) as ITypedRubyBlock<T>);
+            var settingsResult = processState.GetProcessSettings<INuixProcessSettings>(Name);
+            if (settingsResult.IsFailure)
+                return settingsResult.ConvertFailure<T>();
 
-            return parametersResult;
 
+            ITypedRubyBlock<T> block;
+
+
+            var argsAsFunctionsResult = TryGetArgumentsAsFunctions();
+            if (argsAsFunctionsResult.IsSuccess)
+            {
+                block = new TypedCompoundRubyBlock<T>(RubyScriptProcessFactory.RubyFunction, argsAsFunctionsResult.Value);
+            }
+            else
+            {
+                var blockResult = TryGetRubyBlock(processState);//This will run child functions
+                if (blockResult.IsFailure) return blockResult.ConvertFailure<T>();
+                block = blockResult.Value;
+
+            }
+
+            var argumentsResult = ScriptGenerator.CompileScript(Name, block)
+                    .Bind(st => RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settingsResult.Value, block)).Result;
+
+            if (argumentsResult.IsFailure)
+                return argumentsResult.ConvertFailure<T>();
+
+            var scriptProcessLogger = new ScriptProcessLogger(processState, GetMaybe);
+
+
+            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath,
+                scriptProcessLogger,
+                Name, argumentsResult.Value);
+
+            if (result.IsFailure) return result.ConvertFailure<T>();
+
+            if (scriptProcessLogger.FinalOutput.HasValue)
+                return scriptProcessLogger.FinalOutput.Value!;
+
+            return new RunError("No value was returned from nuix function", Name, null, ErrorCode.ExternalProcessMissingOutput);
         }
 
 
@@ -45,103 +90,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         private Maybe<T> GetMaybe(string s)
         {
-            if(TryParse(s, out var r))
+            if (TryParse(s, out var r))
                 return Maybe<T>.From(r);
 
             return Maybe<T>.None;
-        }
-
-
-        /// <summary>
-        /// Runs this process asynchronously
-        /// </summary>
-        protected override async Task<Result<T, IRunErrors>> RunAsync(ProcessState processState)
-        {
-            var settingsResult = processState.GetProcessSettings<INuixProcessSettings>(Name);
-            if (settingsResult.IsFailure) return settingsResult.ConvertFailure<T>();
-
-
-            var blockResult = TryGetRubyBlock(processState);
-
-            if (blockResult.IsFailure)
-                return blockResult.ConvertFailure<T>();
-
-
-            var script = CompileScript(blockResult.Value);
-
-            var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(script, settingsResult.Value, new[]{blockResult.Value});
-
-            var scriptProcessLogger = new ScriptProcessLogger(processState, GetMaybe);
-
-
-            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath,
-                scriptProcessLogger,
-                Name, trueArguments);
-
-            if (result.IsFailure) return result.ConvertFailure<T>();
-
-            if (scriptProcessLogger.FinalOutput.HasValue)
-                return scriptProcessLogger.FinalOutput.Value!;
-
-            return new RunError("No value was returned from nuix function", Name, null, ErrorCode.ExternalProcessMissingOutput);
-        }
-
-        private string CompileScript(ITypedRubyBlock<T> block)
-        {
-            var scriptBuilder = new StringBuilder();
-
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(MethodName, new IRubyBlock[] { block, BinToHexBlock.Instance }));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(new IRubyBlock[] { block, BinToHexBlock.Instance }));
-
-            var i = 0;
-            var fullMethodLine = block.GetBlockText(ref i, out var resultVariableName);
-
-            scriptBuilder.AppendLine(fullMethodLine);
-
-
-            scriptBuilder.AppendLine($"puts \"--Final Result: #{{binToHex({resultVariableName})}}\"");
-
-            return (scriptBuilder.ToString());
-        }
-
-        /// <inheritdoc />
-        public override Result<string, IRunErrors> TryCompileScript(ProcessState processState) => TryGetRubyBlock(processState).Map(CompileScript);
-
-
-
-
-        ///// <inheritdoc />
-        //public IProcessConverter? ProcessConverter => NuixProcessConverter.Instance;
-
-        private class BinToHexBlock : IUnitRubyBlock
-        {
-            public static readonly BinToHexBlock Instance = new BinToHexBlock();
-
-            private BinToHexBlock()
-            {
-
-            }
-
-            public string BlockName => "BinToHex";
-
-            public Version RequiredNuixVersion { get; } = new Version(5,0);
-
-            public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures { get; } = new List<NuixFeature>();
-
-            public IEnumerable<string> FunctionDefinitions { get; } = new List<string>()
-            {
-                @"def binToHex(s)
-  suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
-  '0x' + suffix
-end
-"
-            };
-
-            public IReadOnlyCollection<string> GetArguments(ref int blockNumber) => ArraySegment<string>.Empty;
-
-            public string GetBlockText(ref int blockNumber) => string.Empty;
-
-            public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber) => ArraySegment<string>.Empty;
         }
 
 
@@ -167,7 +119,7 @@ end
                 if (m.HasValue)
                     FinalOutput = m;
                 else
-                    ProcessState.Logger.Log<TState>(logLevel, eventId, state, exception, formatter);
+                    ProcessState.Logger.Log(logLevel, eventId, state, exception, formatter);
             }
 
             /// <inheritdoc />

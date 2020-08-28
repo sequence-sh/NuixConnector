@@ -17,9 +17,9 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-	opts.on('--tagArg0 ARG') do |o| params[:tagArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--searchArg1 [ARG]') do |o| params[:searchArg1] = o end
+	opts.on('--tagArg1 [ARG]') do |o| params[:tagArg1] = o end
 end.parse!
 
 
@@ -44,6 +44,5 @@ def SearchAndTag(utilities,pathArg,searchArg,tagArg)
 end
 
 
-
-SearchAndTag(utilities, params[:pathArg0], params[:searchArg0], params[:tagArg0])
+SearchAndTag(utilities, params[:pathArg1], params[:searchArg1], params[:tagArg1])
 puts '--Script Completed Successfully--'

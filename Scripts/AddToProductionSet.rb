@@ -17,14 +17,14 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-	opts.on('--productionSetNameArg0 ARG') do |o| params[:productionSetNameArg0] = o end
-	opts.on('--descriptionArg0 [ARG]') do |o| params[:descriptionArg0] = o end
-	opts.on('--productionProfileNameArg0 [ARG]') do |o| params[:productionProfileNameArg0] = o end
-	opts.on('--productionProfilePathArg0 [ARG]') do |o| params[:productionProfilePathArg0] = o end
-	opts.on('--orderArg0 [ARG]') do |o| params[:orderArg0] = o end
-	opts.on('--limitArg0 [ARG]') do |o| params[:limitArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--searchArg1 [ARG]') do |o| params[:searchArg1] = o end
+	opts.on('--productionSetNameArg1 [ARG]') do |o| params[:productionSetNameArg1] = o end
+	opts.on('--descriptionArg1 [ARG]') do |o| params[:descriptionArg1] = o end
+	opts.on('--productionProfileNameArg1 [ARG]') do |o| params[:productionProfileNameArg1] = o end
+	opts.on('--productionProfilePathArg1 [ARG]') do |o| params[:productionProfilePathArg1] = o end
+	opts.on('--orderArg1 [ARG]') do |o| params[:orderArg1] = o end
+	opts.on('--limitArg1 [ARG]') do |o| params[:limitArg1] = o end
 end.parse!
 
 
@@ -79,6 +79,5 @@ def AddToProductionSet(utilities,pathArg,searchArg,productionSetNameArg,descript
 end
 
 
-
-AddToProductionSet(utilities, params[:pathArg0], params[:searchArg0], params[:productionSetNameArg0], params[:descriptionArg0], params[:productionProfileNameArg0], params[:productionProfilePathArg0], params[:orderArg0], params[:limitArg0])
+AddToProductionSet(utilities, params[:pathArg1], params[:searchArg1], params[:productionSetNameArg1], params[:descriptionArg1], params[:productionProfileNameArg1], params[:productionProfilePathArg1], params[:orderArg1], params[:limitArg1])
 puts '--Script Completed Successfully--'

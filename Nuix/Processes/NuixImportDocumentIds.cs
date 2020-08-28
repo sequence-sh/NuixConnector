@@ -28,60 +28,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             NuixFeature.PRODUCTION_SET
         };
-    }
-
-
-    /// <summary>
-    /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
-    /// </summary>
-    public sealed class NuixImportDocumentIds : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixImportDocumentIdsProcessFactory.Instance;
-
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => $"Add document ids to production set.";
-
-        /// <summary>
-        /// The production set to add results to.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> ProductionSetName { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-
-        /// <summary>
-        /// Specifies that the source production set name(s) are contained in the document ID list.
-        /// </summary>
-
-        [Required]
-        [RunnableProcessProperty]
-        [DefaultValueExplanation("false")]
-        public IRunnableProcess<bool> AreSourceProductionSetsInData { get; set; } = new Constant<bool>(false);
-
-        /// <summary>
-        /// Specifies the file path of the document ID list.
-        /// </summary>
-
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> DataPath { get; set; }
-
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string MethodName => "ImportDocumentIds";
+
+        /// <inheritdoc />
+        public override string ScriptText => @"
 
     the_case = utilities.case_factory.open(pathArg)
 
@@ -108,17 +60,55 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     end
 
     the_case.close";
+    }
 
-        /// <inheritdoc />
-        public override string MethodName => "ImportDocumentIds";
 
+    /// <summary>
+    /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
+    /// </summary>
+    public sealed class NuixImportDocumentIds : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("sourceProductionSetsInDataArg", AreSourceProductionSetsInData, false);
-            yield return ("productionSetNameArg", ProductionSetName, false);
-            yield return ("dataPathArg", DataPath, false);
-        }
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixImportDocumentIdsProcessFactory.Instance;
+
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// Specifies that the source production set name(s) are contained in the document ID list.
+        /// </summary>
+
+        [Required]
+        [RunnableProcessProperty]
+        [DefaultValueExplanation("false")]
+        [RubyArgument("sourceProductionSetsInDataArg", 2)]
+        public IRunnableProcess<bool> AreSourceProductionSetsInData { get; set; } = new Constant<bool>(false);
+
+        /// <summary>
+        /// The production set to add results to.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("productionSetNameArg", 3)]
+
+        public IRunnableProcess<string> ProductionSetName { get; set; } = null!;
+
+
+
+        /// <summary>
+        /// Specifies the file path of the document ID list.
+        /// </summary>
+
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("dataPathArg", 4)]
+        public IRunnableProcess<string> DataPath { get; set; } = null!;
     }
 }

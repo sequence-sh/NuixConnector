@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
@@ -16,97 +13,64 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     public abstract class RubyScriptProcessUnit : RubyScriptProcessBase<Unit>
     {
         /// <summary>
-        /// The string to use for the Nuix requirement
-        /// </summary>
-        public const string NuixProcessName = "Nuix";
-
-        /// <summary>
-        /// The string that will be returned when the script completes successfully.
-        /// </summary>
-        public const string SuccessToken = "--Script Completed Successfully--";
-
-        /// <summary>
         /// Gets the ruby block to run.
         /// </summary>
-        private Result<IUnitRubyBlock, IRunErrors> TryGetRubyBlock(ProcessState processState)
-        {
-            var parametersResult = TryGetMethodParameters(processState)
-                .Combine(RunErrorList.Combine)
-                .Map(x => x.ToList())
+        private Result<IUnitRubyBlock, IRunErrors> TryGetRubyBlock(ProcessState processState) =>
+            TryGetMethodParameters(processState)
                 .Map(x =>
-                    new BasicRubyBlock(
-                        MethodName,
-                        ScriptText, x,
-                        RunTimeNuixVersion ?? RubyScriptProcessFactory.RequiredVersion,
-                RubyScriptProcessFactory.RequiredFeatures)  as IUnitRubyBlock);
+                    new UnitFunctionRubyBlock(RubyScriptProcessFactory.RubyFunction,x ) as IUnitRubyBlock);
 
-            return parametersResult;
-
-        }
 
         /// <inheritdoc />
-        public override IEnumerable<Requirement> RuntimeRequirements
-        {
-            get
-            {
-                if (RunTimeNuixVersion != null)
-                {
-                    yield return new Requirement
-                    {
-                        MinVersion = RunTimeNuixVersion,
-                        Name = NuixProcessName
-                    };
-                }
-            }
-        }
+        public override Result<string, IRunErrors> TryCompileScript(ProcessState processState) => TryGetRubyBlock(processState)
+            .Bind(b=>ScriptGenerator.CompileScript(RubyScriptProcessFactory.RubyFunction.FunctionName, b));
 
-
-        private string CompileScript(IUnitRubyBlock block)
-        {
-            var scriptBuilder = new StringBuilder();
-            var blocks = new[] {block};
-
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(MethodName, blocks));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptMethodText(blocks));
-
-            var i = 0;
-            foreach (var rubyBlock in blocks)
-            {
-                var blockText = rubyBlock.GetBlockText(ref i);
-                scriptBuilder.AppendLine(blockText);
-            }
-
-            scriptBuilder.AppendLine($"puts '{SuccessToken}'");
-
-            return (scriptBuilder.ToString());
-        }
 
         /// <inheritdoc />
-        public override Result<string, IRunErrors> TryCompileScript(ProcessState processState) => TryGetRubyBlock(processState).Map(CompileScript);
+        public override Result<IRubyBlock> TryConvert() =>
+            TryGetArgumentsAsFunctions()
+                .Map(args=> new UnitCompoundRubyBlock(RubyScriptProcessFactory.RubyFunction, args) as IRubyBlock);
 
 
         /// <summary>
-        /// Runs this process asynchronously
+        /// Runs this process asynchronously.
+        /// There are two possible strategies:
+        /// Either running all as one ruby block;
+        /// Or running all the parameters separately and passing them to the the final ruby block.
         /// </summary>
         protected override async Task<Result<Unit, IRunErrors>> RunAsync(ProcessState processState)
         {
-
-            var blockResult = TryGetRubyBlock(processState);
-
-            if (blockResult.IsFailure)
-                return blockResult.ConvertFailure<Unit>();
-
-
             var settingsResult = processState.GetProcessSettings<INuixProcessSettings>(Name);
-            if (settingsResult.IsFailure) return settingsResult.ConvertFailure<Unit>();
+            if (settingsResult.IsFailure)
+                return settingsResult.ConvertFailure<Unit>();
 
-            var scriptText = CompileScript(blockResult.Value);
-            var trueArguments = await RubyScriptCompilationHelper.GetTrueArgumentsAsync(scriptText, settingsResult.Value, new []{blockResult.Value});
+
+            IUnitRubyBlock block;
+
+
+            var argsAsFunctionsResult = TryGetArgumentsAsFunctions();
+            if (argsAsFunctionsResult.IsSuccess)
+            {
+                block = new UnitCompoundRubyBlock(RubyScriptProcessFactory.RubyFunction, argsAsFunctionsResult.Value);
+            }
+            else
+            {
+                var blockResult = TryGetRubyBlock(processState);//This will run child functions
+                if (blockResult.IsFailure) return blockResult.ConvertFailure<Unit>();
+                block = blockResult.Value;
+
+            }
+
+            var argumentsResult = ScriptGenerator.CompileScript(Name, block)
+                    .Bind(st=> RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settingsResult.Value, block)).Result;
+
+            if (argumentsResult.IsFailure)
+                return argumentsResult.ConvertFailure<Unit>();
 
 
             var logger = new ScriptProcessLogger(processState);
 
-            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath, logger, Name, trueArguments);
+            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath, logger, Name, argumentsResult.Value);
 
             if (result.IsFailure)
                 return result;
@@ -117,28 +81,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return new RunError("Nuix function did not complete successfully", Name, null, ErrorCode.ExternalProcessMissingOutput);
         }
 
-        //TODO restore combiners
-        ///// <inheritdoc />
-        //public override Result<IImmutableProcess<Unit>> TryCombine(IImmutableProcess<Unit> nextProcess, IProcessSettings processSettings)
-        //{
-        //    var np = nextProcess as RubyScriptProcessUnit;
-        //    if (np == null)
-        //    {
-        //        var (isSuccess, _, value) = NuixProcessConverter.Instance.TryConvert(nextProcess, processSettings);
-
-        //        if (isSuccess)
-        //            np = value as RubyScriptProcessUnit;
-        //    }
-
-        //    if (np == null || !(processSettings is INuixProcessSettings iNuixProcessSettings))
-        //        return Result.Failure<IImmutableProcess<Unit>>("Could not combine");
-
-        //    var newProcess = new RubyScriptProcessUnit(RubyBlocks.Concat(np.RubyBlocks).ToList(), iNuixProcessSettings);
-
-        //    return newProcess;
-        //}
-
-
         internal sealed class ScriptProcessLogger : ILogger
         {
             public ScriptProcessLogger(ProcessState processState) => ProcessState = processState;
@@ -147,13 +89,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             public bool Completed { get; private set; } = false;
 
-
-
-
             /// <inheritdoc />
             public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
             {
-                if (state?.ToString() == SuccessToken)
+                if (state?.ToString() == ScriptGenerator.UnitSuccessToken)
                     Completed = true;
                 else
                     ProcessState.Logger.Log(logLevel, eventId, state, exception, formatter);

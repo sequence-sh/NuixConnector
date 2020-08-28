@@ -9,7 +9,7 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
+	opts.on('--pathArg1a [ARG]') do |o| params[:pathArg1a] = o end
 end.parse!
 
 
@@ -25,13 +25,11 @@ def DoesCaseExist(utilities,pathArg)
 
 end
 
-
-def binToHex(s)
-  suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
-  '0x' + suffix
+def BinToHex(s)
+suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
+'0x' + suffix
 end
 
 
-
-result0 = DoesCaseExist(utilities, params[:pathArg0])
-puts "--Final Result: #{binToHex(result0)}"
+BinToHexBinToHex1 = (DoesCaseExist1a)
+puts "--Final Result: #{binToHex(BinToHex1)}"

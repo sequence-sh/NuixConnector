@@ -27,97 +27,18 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature> { NuixFeature.CASE_CREATION };
 
-    }
-
-    /// <summary>
-    /// Adds a file or directory to a Nuix Case.
-    /// </summary>
-    public sealed class NuixAddItem : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAddItemProcessFactory.Instance;
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => $"Add '{Path}'";
-
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-        /// <summary>
-        /// The path of the file or directory to add to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Data/File.txt")]
-        public IRunnableProcess<string> Path { get; set; }
-
-        /// <summary>
-        /// The custodian to assign to the new folder.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> Custodian { get; set; }
-
-        /// <summary>
-        /// The description of the new folder.
-        /// </summary>
-        [RunnableProcessProperty]
-        public IRunnableProcess<string>? Description { get; set; }
-
-        /// <summary>
-        /// The name of the folder to create.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> FolderName { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-        /// <summary>
-        /// The path of a file containing passwords to use for decryption.
-        /// </summary>
-        [RequiredVersion("Nuix", "7.6")]
-        [RunnableProcessProperty]
-        [Example("C:/Data/Passwords.txt")]
-        public IRunnableProcess<string>? PasswordFilePath { get; set; }
-
-
-        /// <summary>
-        /// The name of the Processing profile to use.
-        /// </summary>
-
-        [RequiredVersion("Nuix", "7.6")]
-        [RunnableProcessProperty]
-        [Example("MyProcessingProfile")]
-        [DefaultValueExplanation("The default processing profile will be used.")]
-        public IRunnableProcess<string>? ProcessingProfileName { get; set; }
-
-        /// <summary>
-        /// The path to the Processing profile to use
-        /// </summary>
-        [RequiredVersion("Nuix", "7.6")]
-        [RunnableProcessProperty]
-        [Example("C:/Profiles/MyProcessingProfile.xml")]
-        [DefaultValueExplanation("The default processing profile will be used.")]
-        public IRunnableProcess<string>? ProcessingProfilePath { get; set; }
-
-
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string MethodName => "AddToCase";
+
+        /// <inheritdoc />
+        public override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
 
 #This only works in 7.6 or later
     if processingProfileNameArg != nil
-        processor.setProcessingProfile(processingProfileNameArg) 
+        processor.setProcessingProfile(processingProfileNameArg)
     elsif processingProfilePathArg != nil
         profileBuilder = utilities.getProcessingProfileBuilder()
         profileBuilder.load(processingProfilePathArg)
@@ -157,10 +78,91 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     puts 'Items added'
     the_case.close";
 
+    }
+
+    /// <summary>
+    /// Adds a file or directory to a Nuix Case.
+    /// </summary>
+    public sealed class NuixAddItem : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        public override string MethodName => "AddToCase";
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixAddItemProcessFactory.Instance;
 
 
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The name of the folder to create.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("folderNameArg", 2)]
+        public IRunnableProcess<string> FolderName { get; set; } = null!;
+
+        /// <summary>
+        /// The description of the new folder.
+        /// </summary>
+        [RunnableProcessProperty]
+        [RubyArgument("folderDescriptionArg", 3)]
+        public IRunnableProcess<string>? Description { get; set; }
+
+        /// <summary>
+        /// The custodian to assign to the new folder.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("folderCustodianArg", 4)]
+        public IRunnableProcess<string> Custodian { get; set; } = null!;
+
+
+
+        /// <summary>
+        /// The path of the file or directory to add to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Data/File.txt")]
+        [RubyArgument("filePathArg", 5)]
+        public IRunnableProcess<string> Path { get; set; } = null!;
+
+        /// <summary>
+        /// The name of the Processing profile to use.
+        /// </summary>
+
+        [RequiredVersion("Nuix", "7.6")]
+        [RunnableProcessProperty]
+        [Example("MyProcessingProfile")]
+        [DefaultValueExplanation("The default processing profile will be used.")]
+        [RubyArgument("processingProfileNameArg", 6)]
+        public IRunnableProcess<string>? ProcessingProfileName { get; set; }
+
+        /// <summary>
+        /// The path to the Processing profile to use
+        /// </summary>
+        [RequiredVersion("Nuix", "7.6")]
+        [RunnableProcessProperty]
+        [Example("C:/Profiles/MyProcessingProfile.xml")]
+        [DefaultValueExplanation("The default processing profile will be used.")]
+        [RubyArgument("processingProfilePathArg", 7)]
+        public IRunnableProcess<string>? ProcessingProfilePath { get; set; }
+
+
+        /// <summary>
+        /// The path of a file containing passwords to use for decryption.
+        /// </summary>
+        [RequiredVersion("Nuix", "7.6")]
+        [RunnableProcessProperty]
+        [Example("C:/Data/Passwords.txt")]
+        [RubyArgument("passwordFilePathArg", 8)]
+        public IRunnableProcess<string>? PasswordFilePath { get; set; }
 
         /// <inheritdoc />
         public override Version? RunTimeNuixVersion
@@ -193,17 +195,5 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             }
         }
 
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("folderNameArg", FolderName, false);
-            yield return ("folderDescriptionArg", Description, true);
-            yield return ("folderCustodianArg", Custodian, false);
-            yield return ("filePathArg", Path, false);
-            yield return ("processingProfileNameArg", ProcessingProfileName, true);
-            yield return ("processingProfilePathArg", ProcessingProfilePath, true);
-            yield return ("passwordFilePathArg", PasswordFilePath, true);
-        }
     }
 }

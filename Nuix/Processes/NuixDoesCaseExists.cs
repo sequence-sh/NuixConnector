@@ -24,35 +24,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
-    }
-
-
-    /// <summary>
-    /// Returns whether or not a case exists.
-    /// </summary>
-    public sealed class NuixDoesCaseExists : RubyScriptProcessTyped<bool>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixDoesCaseExistsProcessFactory.Instance;
-
-        ///// <inheritdoc />
-        //public override string GetName()
-        //{
-        //    return "Does Case Exist?";
-        //}
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> CasePath { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <inheritdoc />
-        internal override string ScriptText =>
+        public override string MethodName => "DoesCaseExist";
+
+        /// <inheritdoc />
+        public override string ScriptText =>
             @"
     begin
         the_case = utilities.case_factory.open(pathArg)
@@ -62,15 +39,26 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         return false
     end
 ";
+    }
 
-        /// <inheritdoc />
-        public override string MethodName => "DoesCaseExist";
 
+    /// <summary>
+    /// Returns whether or not a case exists.
+    /// </summary>
+    public sealed class NuixDoesCaseExists : RubyScriptProcessTyped<bool>
+    {
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-        }
+        public override IRubyScriptProcessFactory<bool> RubyScriptProcessFactory => NuixDoesCaseExistsProcessFactory.Instance;
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
 
         /// <inheritdoc />
         public override bool TryParse(string s, out bool result) => bool.TryParse(s, out result);

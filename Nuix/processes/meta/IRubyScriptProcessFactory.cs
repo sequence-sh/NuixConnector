@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using Reductech.EDR.Processes.Internal;
+﻿using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
     /// <summary>
     /// The process factory for a ruby script process.
     /// </summary>
-    public interface IRubyScriptProcessFactory : IRunnableProcessFactory
+    public interface IRubyScriptProcessFactory<T> : IRunnableProcessFactory
     {
         /// <summary>
-        /// The required Nuix version for the process.
+        /// The ruby function to run.
         /// </summary>
-        Version RequiredVersion { get; }
-
-        /// <summary>
-        /// The required Nuix features.
-        /// </summary>
-        IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
+        IRubyFunction<T> RubyFunction { get; }
     }
 }

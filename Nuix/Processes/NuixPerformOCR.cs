@@ -29,61 +29,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             NuixFeature.OCR_PROCESSING
         };
-    }
-
-
-    /// <summary>
-    /// Performs optical character recognition on files in a NUIX case.
-    /// </summary>
-    public sealed class NuixPerformOCR : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixPerformOCRProcessFactory.Instance;
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => "RunOCR";
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> CasePath { get; set; }
-
-        /// <summary>
-        /// The term to use for searching for files to OCR.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [DefaultValueExplanation("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))")]
-        public IRunnableProcess<string> SearchTerm { get; set; } =
-            new Constant<string>("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))");
-
-        /// <summary>
-        /// The name of the OCR profile to use.
-        /// This cannot be set at the same time as OCRProfilePath.
-        /// </summary>
-        [RunnableProcessProperty]
-        [DefaultValueExplanation("The default profile will be used.")]
-        [Example("MyOcrProfile")]
-        public IRunnableProcess<string>? OCRProfileName { get; set; }
-
-        /// <summary>
-        /// Path to the OCR profile to use.
-        /// This cannot be set at the same times as OCRProfileName.
-        /// </summary>
-        [RunnableProcessProperty]
-        [RequiredVersion("Nuix", "7.6")]
-        [DefaultValueExplanation("The default profile will be used.")]
-        [Example("C:\\Profiles\\MyProfile.xml")]
-        public IRunnableProcess<string>? OCRProfilePath { get; set; }
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string MethodName => "RunOCR";
+
+        /// <inheritdoc />
+        public override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
 
     searchTerm = searchTermArg
@@ -112,9 +63,56 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         puts ""Items Processed""
     end
     the_case.close";
+    }
 
+
+    /// <summary>
+    /// Performs optical character recognition on files in a NUIX case.
+    /// </summary>
+    public sealed class NuixPerformOCR : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        public override string MethodName => "RunOCR";
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixPerformOCRProcessFactory.Instance;
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The term to use for searching for files to OCR.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [DefaultValueExplanation("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))")]
+        [RubyArgument("searchTermArg", 2)]
+        public IRunnableProcess<string> SearchTerm { get; set; } =
+            new Constant<string>("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))");
+
+        /// <summary>
+        /// The name of the OCR profile to use.
+        /// This cannot be set at the same time as OCRProfilePath.
+        /// </summary>
+        [RunnableProcessProperty]
+        [DefaultValueExplanation("The default profile will be used.")]
+        [Example("MyOcrProfile")]
+        [RubyArgument("ocrProfileArg", 3)]
+        public IRunnableProcess<string>? OCRProfileName { get; set; }
+
+        /// <summary>
+        /// Path to the OCR profile to use.
+        /// This cannot be set at the same times as OCRProfileName.
+        /// </summary>
+        [RunnableProcessProperty]
+        [RequiredVersion("Nuix", "7.6")]
+        [DefaultValueExplanation("The default profile will be used.")]
+        [Example("C:\\Profiles\\MyProfile.xml")]
+        [RubyArgument("ocrProfilePathArg", 4)]
+        public IRunnableProcess<string>? OCRProfilePath { get; set; }
 
         /// <inheritdoc />
         public override Result<Unit, IRunErrors> VerifyThis
@@ -130,15 +128,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
                 return Unit.Default;
             }
-        }
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("searchTermArg", SearchTerm, false);
-            yield return ("ocrProfileArg", OCRProfileName, true);
-            yield return ("ocrProfilePathArg", OCRProfilePath, true);
         }
     }
 }

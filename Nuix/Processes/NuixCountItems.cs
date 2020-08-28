@@ -24,6 +24,18 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+
+        /// <inheritdoc />
+        public override string MethodName => "CountItems";
+
+        /// <inheritdoc />
+        public override string ScriptText => @"
+    the_case = utilities.case_factory.open(pathArg)
+    searchOptions = {}
+    count = the_case.count(searchArg, searchOptions)
+    the_case.close
+    puts ""#{count} found matching '#{searchArg}'""
+    return count";
     }
 
     /// <summary>
@@ -32,7 +44,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     public sealed class NuixCountItems : RubyScriptProcessTyped<int>
     {
         /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCountItemsProcessFactory.Instance;
+        public override IRubyScriptProcessFactory<int> RubyScriptProcessFactory => NuixCountItemsProcessFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -40,8 +52,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> CasePath { get; set; }
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The search term to count.
@@ -49,31 +61,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [Example("*.txt")]
         [RunnableProcessProperty]
-        public IRunnableProcess<string> SearchTerm { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-
-        /// <inheritdoc />
-        internal override string ScriptText => @"
-    the_case = utilities.case_factory.open(pathArg)
-    searchOptions = {}
-    count = the_case.count(searchArg, searchOptions)
-    the_case.close
-    puts ""#{count} found matching '#{searchArg}'""
-    return count";
-
-        /// <inheritdoc />
-        public override string MethodName => "CountItems";
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("searchArg", SearchTerm, false);
-        }
-
-        ///// <inheritdoc />
-        //public override string GetName() => "Count Items";
+        [RubyArgument("searchArg", 2)]
+        public IRunnableProcess<string> SearchTerm { get; set; } = null!;
 
         /// <inheritdoc />
         public override bool TryParse(string s, out int result) => int.TryParse(s, out result);

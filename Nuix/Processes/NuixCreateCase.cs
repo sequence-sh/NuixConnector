@@ -25,53 +25,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>() { NuixFeature.CASE_CREATION };
-    }
-
-    /// <summary>
-    /// Creates a new case.
-    /// </summary>
-    public sealed class NuixCreateCase : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateCaseProcessFactory.Instance;
-
-        //public override string GetName() => "Create Case";
-
-        /// <summary>
-        /// The name of the case to create.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> CaseName { get; set; }
-
-        /// <summary>
-        /// The path to the folder to create the case in.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-
-        /// <summary>
-        /// Name of the investigator.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> Investigator { get; set; }
-
-        /// <summary>
-        /// Description of the case.
-        /// </summary>
-        [RunnableProcessProperty]
-        public IRunnableProcess<string>? Description { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string MethodName => "CreateCase";
+
+
+        /// <inheritdoc />
+        public override string ScriptText => @"
     puts 'Creating Case'
     the_case = utilities.case_factory.create(pathArg,
     :name => nameArg,
@@ -80,18 +41,47 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     puts 'Case Created'
     the_case.close";
 
+    }
+
+    /// <summary>
+    /// Creates a new case.
+    /// </summary>
+    public sealed class NuixCreateCase : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        public override string MethodName => "CreateCase";
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixCreateCaseProcessFactory.Instance;
+
+        /// <summary>
+        /// The path to the folder to create the case in.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The name of the case to create.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("nameArg", 2)]
+        public IRunnableProcess<string> CaseName { get; set; }= null!;
 
 
+        /// <summary>
+        /// Description of the case.
+        /// </summary>
+        [RunnableProcessProperty]
+        [RubyArgument("descriptionArg", 3)]
+        public IRunnableProcess<string>? Description { get; set; }
 
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("nameArg", CaseName, false);
-            yield return ("descriptionArg", Description, true);
-            yield return ("investigatorArg", Investigator, false);
-        }
+        /// <summary>
+        /// Name of the investigator.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("investigatorArg", 4)]
+        public IRunnableProcess<string> Investigator { get; set; }= null!;
     }
 }

@@ -141,11 +141,24 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         DeleteCaseFolder,
                         AssertCaseDoesNotExist,
                         CreateCase,
-                        new AssertTrue
+                        new SetVariable<bool>()
                         {
-                            Test = new NuixDoesCaseExists
+                            VariableName = new VariableName("Case Exists"),
+                            Value= new NuixDoesCaseExists
                             {
                                 CasePath = CasePath
+                            }
+                        },
+
+
+                        new AssertTrue
+                        {
+                            Test = new Not()
+                            {
+                                Boolean = new GetVariable<bool>()
+                                {
+                                    VariableName = new VariableName("Case Exists"),
+                                }
                             }
                         },
                         DeleteCaseFolder),
@@ -669,25 +682,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         internal class DoNothing : RubyScriptProcessUnit
         {
             /// <inheritdoc />
-            public override IRubyScriptProcessFactory RubyScriptProcessFactory  => new DoNothingProcessFactory(MyRequiredVersion, MyRequiredFeatures);
-
-            /// <inheritdoc />
-            internal override string ScriptText => @"
-puts 'Doing Nothing'
-";
-
-            /// <inheritdoc />
-            public override string MethodName => "DoNothing";
+            public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory  => new DoNothingProcessFactory(MyRequiredVersion, MyRequiredFeatures);
 
             public Version? MyRequiredVersion { get; set; }
 
             public List<NuixFeature>? MyRequiredFeatures { get; set; }
-
-            /// <inheritdoc />
-            internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-            {
-                yield break;
-            }
 
             internal class DoNothingProcessFactory : RubyScriptProcessFactory<DoNothing, Unit>
             {
@@ -708,6 +707,14 @@ puts 'Doing Nothing'
                 public override IReadOnlyCollection<NuixFeature> RequiredFeatures => MyRequiredFeatures ?? new List<NuixFeature>();
 
                 public List<NuixFeature>? MyRequiredFeatures { get; }
+
+                /// <inheritdoc />
+                public override string MethodName => "DoNothing";
+
+                /// <inheritdoc />
+                public override string ScriptText => @"
+puts 'Doing Nothing'
+";
             }
         }
     }

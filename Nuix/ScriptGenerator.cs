@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +8,9 @@ using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Connectors.Nuix.RubyFunctions;
 using Reductech.EDR.Processes;
+using Reductech.EDR.Processes.Internal;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix
@@ -21,10 +24,7 @@ namespace Reductech.EDR.Connectors.Nuix
         /// Create a new ScriptGenerator.
         /// </summary>
         /// <param name="nuixProcessSettings"></param>
-        public ScriptGenerator(INuixProcessSettings nuixProcessSettings)
-        {
-            _nuixProcessSettings = nuixProcessSettings;
-        }
+        public ScriptGenerator(INuixProcessSettings nuixProcessSettings) => _nuixProcessSettings = nuixProcessSettings;
 
         private readonly INuixProcessSettings _nuixProcessSettings;
 
@@ -69,7 +69,7 @@ namespace Reductech.EDR.Connectors.Nuix
                     var (isSuccess, _, value, error) = TryGenerateScript(process);
                     if (isSuccess)
                     {
-                        var fileName = process.MethodName + ".rb";
+                        var fileName = process.FunctionName + ".rb";
                         var newPath = Path.Combine(folderPath, fileName);
 
                         File.WriteAllText(newPath, value, Encoding.UTF8);
@@ -86,11 +86,87 @@ namespace Reductech.EDR.Connectors.Nuix
                     return e.Message;
                 }
 #pragma warning restore CA1031 // Do not catch general exception types
-
-
             }
 
             return "Scripts generated successfully";
+        }
+
+
+        /// <summary>
+        /// The string that will be returned when the script completes successfully.
+        /// </summary>
+        public const string UnitSuccessToken = "--Script Completed Successfully--";
+
+
+        /// <summary>
+        /// Compiles a ruby script for any number of unit blocks
+        /// </summary>
+        public static Result<string, IRunErrors> CompileScript(string methodName, params IUnitRubyBlock[] blocks)
+        {
+            var scriptBuilder = new StringBuilder();
+
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(methodName, blocks));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptFunctionText(blocks));
+
+            var suffixer = new Suffixer();
+
+            var errors = new List<IRunErrors>();
+            foreach (var rubyBlock in blocks)
+            {
+                var blockTextResult = rubyBlock.GetBlockText(suffixer);
+
+                if(blockTextResult.IsFailure)
+                    errors.Add(blockTextResult.Error);
+                else
+                    scriptBuilder.AppendLine(blockTextResult.Value);
+            }
+
+            if (errors.Any())
+                return Result.Failure <string, IRunErrors>(RunErrorList.Combine(errors));
+
+            scriptBuilder.AppendLine($"puts '{UnitSuccessToken}'");
+
+            return (scriptBuilder.ToString());
+        }
+
+
+        /// <summary>
+        /// Compiles a ruby script for a typed block.
+        /// </summary>
+        public static Result<string, IRunErrors> CompileScript<T>(string methodName, ITypedRubyBlock<T> block)
+        {
+
+
+            var bb = new TypedCompoundRubyBlock<string>(BinToHexFunction.Instance,
+                new Dictionary<RubyFunctionParameter, ITypedRubyBlock>()
+                {
+                    {
+                        BinToHexFunction.Instance.Arguments.Single(),
+                        block
+                    }
+                }
+            );
+
+
+            var blocks = new[] {bb};
+
+            var scriptBuilder = new StringBuilder();
+
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(methodName,  blocks));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptFunctionText(blocks));
+
+
+            var fullMethodLineResult = bb.GetBlockText(new Suffixer(), out var resultVariableName);
+
+            if (fullMethodLineResult.IsFailure)
+                return fullMethodLineResult.ConvertFailure<string>();
+
+            scriptBuilder.AppendLine(fullMethodLineResult.Value);
+
+
+            scriptBuilder.AppendLine($"puts \"--Final Result: #{{binToHex({resultVariableName})}}\"");
+
+            return scriptBuilder.ToString();
         }
 
         private Result<string> TryGenerateScript(IRubyScriptProcess process)
@@ -101,6 +177,5 @@ namespace Reductech.EDR.Connectors.Nuix
             return result;
 
         }
-
     }
 }

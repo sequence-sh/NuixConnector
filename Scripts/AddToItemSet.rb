@@ -17,15 +17,15 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-	opts.on('--itemSetNameArg0 ARG') do |o| params[:itemSetNameArg0] = o end
-	opts.on('--deduplicationArg0 [ARG]') do |o| params[:deduplicationArg0] = o end
-	opts.on('--descriptionArg0 [ARG]') do |o| params[:descriptionArg0] = o end
-	opts.on('--deduplicateByArg0 ARG') do |o| params[:deduplicateByArg0] = o end
-	opts.on('--custodianRankingArg0 [ARG]') do |o| params[:custodianRankingArg0] = o end
-	opts.on('--orderArg0 [ARG]') do |o| params[:orderArg0] = o end
-	opts.on('--limitArg0 [ARG]') do |o| params[:limitArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--searchArg1 [ARG]') do |o| params[:searchArg1] = o end
+	opts.on('--itemSetNameArg1 [ARG]') do |o| params[:itemSetNameArg1] = o end
+	opts.on('--deduplicationArg1 [ARG]') do |o| params[:deduplicationArg1] = o end
+	opts.on('--descriptionArg1 [ARG]') do |o| params[:descriptionArg1] = o end
+	opts.on('--deduplicateByArg1 [ARG]') do |o| params[:deduplicateByArg1] = o end
+	opts.on('--custodianRankingArg1 [ARG]') do |o| params[:custodianRankingArg1] = o end
+	opts.on('--orderArg1 [ARG]') do |o| params[:orderArg1] = o end
+	opts.on('--limitArg1 [ARG]') do |o| params[:limitArg1] = o end
 end.parse!
 
 
@@ -58,6 +58,5 @@ def AddToItemSet(utilities,pathArg,searchArg,itemSetNameArg,deduplicationArg,des
 end
 
 
-
-AddToItemSet(utilities, params[:pathArg0], params[:searchArg0], params[:itemSetNameArg0], params[:deduplicationArg0], params[:descriptionArg0], params[:deduplicateByArg0], params[:custodianRankingArg0], params[:orderArg0], params[:limitArg0])
+AddToItemSet(utilities, params[:pathArg1], params[:searchArg1], params[:itemSetNameArg1], params[:deduplicationArg1], params[:descriptionArg1], params[:deduplicateByArg1], params[:custodianRankingArg1], params[:orderArg1], params[:limitArg1])
 puts '--Script Completed Successfully--'

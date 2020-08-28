@@ -17,9 +17,9 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--productionSetNameArg0 ARG') do |o| params[:productionSetNameArg0] = o end
-	opts.on('--dataPathArg0 ARG') do |o| params[:dataPathArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--productionSetNameArg1 [ARG]') do |o| params[:productionSetNameArg1] = o end
+	opts.on('--dataPathArg1 [ARG]') do |o| params[:dataPathArg1] = o end
 end.parse!
 
 
@@ -45,6 +45,5 @@ def AnnotateDocumentIds(utilities,pathArg,productionSetNameArg,dataPathArg)
 end
 
 
-
-AnnotateDocumentIds(utilities, params[:pathArg0], params[:productionSetNameArg0], params[:dataPathArg0])
+AnnotateDocumentIds(utilities, params[:pathArg1], params[:productionSetNameArg1], params[:dataPathArg1])
 puts '--Script Completed Successfully--'

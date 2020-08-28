@@ -28,53 +28,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             NuixFeature.PRODUCTION_SET
         };
-    }
-
-
-    /// <summary>
-    /// Annotates a document ID list to add production set names to it.
-    /// </summary>
-    public class NuixAnnotateDocumentIdList : RubyScriptProcessUnit
-    {
 
         /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixAnnotateDocumentIdListProcessFactory.Instance;
-
-
-        ///// <summary>
-        ///// The name of this process
-        ///// </summary>
-        //public override string GetName() => $"Annotates a document ID list";
-
-
-        /// <summary>
-        /// The production set to get names from.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> ProductionSetName { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-
-        /// <summary>
-        /// Specifies the file path of the document ID list.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> DataPath { get; set; }
-
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
+        public override string MethodName => "AnnotateDocumentIds";
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
@@ -93,15 +52,43 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     the_case.close";
 
-        /// <inheritdoc />
-        public override string MethodName => "AnnotateDocumentIds";
+    }
+
+
+    /// <summary>
+    /// Annotates a document ID list to add production set names to it.
+    /// </summary>
+    public class NuixAnnotateDocumentIdList : RubyScriptProcessUnit
+    {
 
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("productionSetNameArg", ProductionSetName, false);
-            yield return ("dataPathArg", DataPath, false);
-        }
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixAnnotateDocumentIdListProcessFactory.Instance;
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The production set to get names from.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("productionSetNameArg", 2)]
+        public IRunnableProcess<string> ProductionSetName { get; set; }= null!;
+
+
+
+        /// <summary>
+        /// Specifies the file path of the document ID list.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("dataPathArg", 3)]
+        public IRunnableProcess<string> DataPath { get; set; }= null!;
     }
 }

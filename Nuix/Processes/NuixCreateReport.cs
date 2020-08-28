@@ -31,41 +31,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         {
             NuixFeature.ANALYSIS
         };
-    }
-
-
-    /// <summary>
-    /// Creates a report for a Nuix case.
-    /// The report is in csv format.
-    /// The headers are 'Custodian', 'Type', 'Value', and 'Count'.
-    /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
-    /// Use this inside a WriteFile process to write it to a file.
-    /// </summary>
-    public sealed class NuixCreateReport : RubyScriptProcessTyped<string>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateReportProcessFactory.Instance;
-
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => "Create Report";
-
-
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
 
         /// <inheritdoc />
-        internal override string ScriptText =>
+        public override string MethodName => "CreateReport";
+
+        /// <inheritdoc />
+        public override string ScriptText =>
             @"
     the_case = utilities.case_factory.open(casePathArg)
 
@@ -131,16 +102,31 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     the_case.close
     return text;";
+    }
 
+
+    /// <summary>
+    /// Creates a report for a Nuix case.
+    /// The report is in csv format.
+    /// The headers are 'Custodian', 'Type', 'Value', and 'Count'.
+    /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
+    /// Use this inside a WriteFile process to write it to a file.
+    /// </summary>
+    public sealed class NuixCreateReport : RubyScriptProcessTyped<string>
+    {
         /// <inheritdoc />
-        public override string MethodName => "CreateReport";
+        public override IRubyScriptProcessFactory<string> RubyScriptProcessFactory => NuixCreateReportProcessFactory.Instance;
 
 
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("casePathArg", CasePath, false);
-        }
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("casePathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
 
         /// <inheritdoc />
         public override bool TryParse(string s, out string result)

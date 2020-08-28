@@ -17,14 +17,14 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--folderNameArg0 ARG') do |o| params[:folderNameArg0] = o end
-	opts.on('--folderDescriptionArg0 [ARG]') do |o| params[:folderDescriptionArg0] = o end
-	opts.on('--folderCustodianArg0 ARG') do |o| params[:folderCustodianArg0] = o end
-	opts.on('--filePathArg0 ARG') do |o| params[:filePathArg0] = o end
-	opts.on('--processingProfileNameArg0 [ARG]') do |o| params[:processingProfileNameArg0] = o end
-	opts.on('--processingProfilePathArg0 [ARG]') do |o| params[:processingProfilePathArg0] = o end
-	opts.on('--passwordFilePathArg0 [ARG]') do |o| params[:passwordFilePathArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--folderNameArg1 [ARG]') do |o| params[:folderNameArg1] = o end
+	opts.on('--folderDescriptionArg1 [ARG]') do |o| params[:folderDescriptionArg1] = o end
+	opts.on('--folderCustodianArg1 [ARG]') do |o| params[:folderCustodianArg1] = o end
+	opts.on('--filePathArg1 [ARG]') do |o| params[:filePathArg1] = o end
+	opts.on('--processingProfileNameArg1 [ARG]') do |o| params[:processingProfileNameArg1] = o end
+	opts.on('--processingProfilePathArg1 [ARG]') do |o| params[:processingProfilePathArg1] = o end
+	opts.on('--passwordFilePathArg1 [ARG]') do |o| params[:passwordFilePathArg1] = o end
 end.parse!
 
 
@@ -35,7 +35,7 @@ def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodi
 
 #This only works in 7.6 or later
     if processingProfileNameArg != nil
-        processor.setProcessingProfile(processingProfileNameArg) 
+        processor.setProcessingProfile(processingProfileNameArg)
     elsif processingProfilePathArg != nil
         profileBuilder = utilities.getProcessingProfileBuilder()
         profileBuilder.load(processingProfilePathArg)
@@ -77,6 +77,5 @@ def AddToCase(utilities,pathArg,folderNameArg,folderDescriptionArg,folderCustodi
 end
 
 
-
-AddToCase(utilities, params[:pathArg0], params[:folderNameArg0], params[:folderDescriptionArg0], params[:folderCustodianArg0], params[:filePathArg0], params[:processingProfileNameArg0], params[:processingProfilePathArg0], params[:passwordFilePathArg0])
+AddToCase(utilities, params[:pathArg1], params[:folderNameArg1], params[:folderDescriptionArg1], params[:folderCustodianArg1], params[:filePathArg1], params[:processingProfileNameArg1], params[:processingProfilePathArg1], params[:passwordFilePathArg1])
 puts '--Script Completed Successfully--'

@@ -29,52 +29,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             {
                 NuixFeature.ANALYSIS
             };
-    }
-
-
-
-    /// <summary>
-    /// Searches a NUIX case with a particular search string and tags all files it finds.
-    /// </summary>
-    public sealed class NuixSearchAndTag : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixSearchAndTagProcessFactory.Instance;
-
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => $"Search and Tag with '{Tag}'";
-
-        /// <summary>
-        /// The tag to assign to found results.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> Tag { get; set; }
-
-
-        /// <summary>
-        /// The term to search for.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("*.txt")]
-        public IRunnableProcess<string> SearchTerm { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string MethodName => "SearchAndTag";
+
+        /// <inheritdoc />
+        public override string ScriptText => @"
     the_case = utilities.case_factory.open(pathArg)
     puts ""Searching for '#{searchArg}'""
 
@@ -91,16 +51,42 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     puts ""#{j} items tagged with #{tagArg}""
     the_case.close";
+    }
 
-        /// <inheritdoc />
-        public override string MethodName => "SearchAndTag";
 
+
+    /// <summary>
+    /// Searches a NUIX case with a particular search string and tags all files it finds.
+    /// </summary>
+    public sealed class NuixSearchAndTag : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("searchArg", SearchTerm, false);
-            yield return ("tagArg", Tag, false);
-        }
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixSearchAndTagProcessFactory.Instance;
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The term to search for.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("*.txt")]
+        [RubyArgument("searchArg", 2)]
+        public IRunnableProcess<string> SearchTerm { get; set; } = null!;
+
+        /// <summary>
+        /// The tag to assign to found results.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("tagArg", 3)]
+        public IRunnableProcess<string> Tag { get; set; }= null!;
     }
 }

@@ -10,15 +10,22 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     public interface IRubyScriptProcess : ICompoundRunnableProcess
     {
         /// <summary>
-        /// The name of the method in Ruby.
+        /// The name of the function to run.
         /// </summary>
-        string MethodName { get; }
+        string FunctionName { get; }
 
         /// <summary>
         /// Compiles the script for this process.
         /// </summary>
         /// <returns></returns>
         Result<string, IRunErrors> TryCompileScript(ProcessState processState);
+
+        /// <summary>
+        /// Tries to convert this process into a ruby block.
+        /// This may be a typed ruby block.
+        /// This will fail if the ruby block is dependent on non-nuix functions, or if it sets any variables.
+        /// </summary>
+        public Result<IRubyBlock> TryConvert();
     }
 
     /// <summary>
@@ -26,6 +33,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     /// </summary>
     public interface IRubyScriptProcess<T> : IRubyScriptProcess
     {
-
+        /// <summary>
+        /// The ruby factory to use for this process.
+        /// </summary>
+        IRubyScriptProcessFactory<T> RubyScriptProcessFactory { get; }
     }
 }

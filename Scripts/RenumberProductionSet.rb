@@ -17,9 +17,9 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--productionSetNameArg0 ARG') do |o| params[:productionSetNameArg0] = o end
-	opts.on('--sortOrderArg0 ARG') do |o| params[:sortOrderArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--productionSetNameArg1 [ARG]') do |o| params[:productionSetNameArg1] = o end
+	opts.on('--sortOrderArg1 [ARG]') do |o| params[:sortOrderArg1] = o end
 end.parse!
 
 
@@ -47,6 +47,5 @@ def RenumberProductionSet(utilities,pathArg,productionSetNameArg,sortOrderArg)
 end
 
 
-
-RenumberProductionSet(utilities, params[:pathArg0], params[:productionSetNameArg0], params[:sortOrderArg0])
+RenumberProductionSet(utilities, params[:pathArg1], params[:productionSetNameArg1], params[:sortOrderArg1])
 puts '--Script Completed Successfully--'

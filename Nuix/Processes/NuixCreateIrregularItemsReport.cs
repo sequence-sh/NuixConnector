@@ -27,37 +27,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
-    }
 
-
-    /// <summary>
-    /// Creates a list of all irregular items in a case.
-    /// The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid'
-    /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
-    /// Use this inside a WriteFile process to write it to a file.
-    /// </summary>
-    public sealed class NuixCreateIrregularItemsReport : RubyScriptProcessTyped<string>
-    {
         /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateIrregularItemsReportProcessFactory.Instance;
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => "Create Irregular Items report";
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
+        public override string MethodName => "CreateIrregularItemsReport";
 
         //TODO change how this works - at the moment it creates multiple files
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string ScriptText => @"
     the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Generating Report:""
@@ -90,17 +66,29 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
     the_case.close
     return irregularText;";
+    }
 
+
+    /// <summary>
+    /// Creates a list of all irregular items in a case.
+    /// The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid'
+    /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
+    /// Use this inside a WriteFile process to write it to a file.
+    /// </summary>
+    public sealed class NuixCreateIrregularItemsReport : RubyScriptProcessTyped<string>
+    {
         /// <inheritdoc />
-        public override string MethodName => "CreateIrregularItemsReport";
+        public override IRubyScriptProcessFactory<string> RubyScriptProcessFactory => NuixCreateIrregularItemsReportProcessFactory.Instance;
 
 
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("casePathArg", CasePath, false);
-        }
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("casePathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
 
         /// <inheritdoc />
         public override bool TryParse(string s, out string result)
