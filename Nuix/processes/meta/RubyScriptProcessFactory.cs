@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
@@ -73,5 +74,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// The Required Nuix Features.
         /// </summary>
         public abstract IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
+
+        /// <inheritdoc />
+        public override Maybe<IProcessCombiner> ProcessCombiner { get; } = Maybe<IProcessCombiner>.From(NuixProcessCombiner.Instance);
     }
 }

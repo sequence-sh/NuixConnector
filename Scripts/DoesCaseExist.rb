@@ -31,5 +31,6 @@ suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
 end
 
 
-BinToHexBinToHex1 = (DoesCaseExist1a)
-puts "--Final Result: #{binToHex(BinToHex1)}"
+DoesCaseExist1a = DoesCaseExist(utilities, params[:pathArg1a])
+BinToHex1 = BinToHex(DoesCaseExist1a)
+puts "--Final Result: #{BinToHex1}"

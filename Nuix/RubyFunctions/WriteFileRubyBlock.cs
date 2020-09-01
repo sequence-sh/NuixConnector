@@ -31,7 +31,7 @@
 //        /// <inheritdoc />
 //        public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
 //        {
-//            var args = new List<string> {"--" + GetArgName(ref blockNumber), FilePath};
+//            var args = new List<string> { "--" + GetArgName(ref blockNumber), FilePath };
 //            args.AddRange(SubBlock.GetArguments(ref blockNumber));
 //            return args;
 //        }

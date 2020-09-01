@@ -56,13 +56,26 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             else
             {
                 var blockResult = TryGetRubyBlock(processState);//This will run child functions
-                if (blockResult.IsFailure) return blockResult.ConvertFailure<Unit>();
+                if (blockResult.IsFailure)
+                    return blockResult.ConvertFailure<Unit>();
                 block = blockResult.Value;
 
             }
 
-            var argumentsResult = ScriptGenerator.CompileScript(Name, block)
-                    .Bind(st=> RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settingsResult.Value, block)).Result;
+            var r = await RubyProcessRunner.RunAsync(FunctionName, block, processState, settingsResult.Value);
+
+            return r;
+        }
+    }
+
+
+
+    internal static class RubyProcessRunner
+    {
+        public static async Task<Result<Unit, IRunErrors>> RunAsync(string name, IUnitRubyBlock block, ProcessState processState, INuixProcessSettings settings)
+        {
+            var argumentsResult = ScriptGenerator.CompileScript(name, block)
+                    .Bind(st => RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settings, block)).Result;
 
             if (argumentsResult.IsFailure)
                 return argumentsResult.ConvertFailure<Unit>();
@@ -70,7 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             var logger = new ScriptProcessLogger(processState);
 
-            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath, logger, Name, argumentsResult.Value);
+            var result = await processState.ExternalProcessRunner.RunExternalProcess(settings.NuixExeConsolePath, logger, name, argumentsResult.Value);
 
             if (result.IsFailure)
                 return result;
@@ -78,8 +91,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             if (logger.Completed)
                 return Unit.Default;
 
-            return new RunError("Nuix function did not complete successfully", Name, null, ErrorCode.ExternalProcessMissingOutput);
+            return new RunError("Nuix function did not complete successfully", name, null, ErrorCode.ExternalProcessMissingOutput);
         }
+
 
         internal sealed class ScriptProcessLogger : ILogger
         {
@@ -105,7 +119,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             public IDisposable BeginScope<TState>(TState state) => ProcessState.Logger.BeginScope(state);
 
         }
-
     }
 
 }

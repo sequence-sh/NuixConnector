@@ -39,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         protected override async Task<Result<T, IRunErrors>> RunAsync(ProcessState processState)
         {
-            var settingsResult = processState.GetProcessSettings<INuixProcessSettings>(Name);
+            var settingsResult = processState.GetProcessSettings<INuixProcessSettings>(FunctionName);
             if (settingsResult.IsFailure)
                 return settingsResult.ConvertFailure<T>();
 
@@ -60,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             }
 
-            var argumentsResult = ScriptGenerator.CompileScript(Name, block)
+            var argumentsResult = ScriptGenerator.CompileScript(FunctionName, block)
                     .Bind(st => RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settingsResult.Value, block)).Result;
 
             if (argumentsResult.IsFailure)
@@ -69,7 +69,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             var scriptProcessLogger = new ScriptProcessLogger(processState, GetMaybe);
 
 
-            var result = await ExternalProcessMethods.RunExternalProcess(settingsResult.Value.NuixExeConsolePath,
+            var result = await processState.ExternalProcessRunner.RunExternalProcess(settingsResult.Value.NuixExeConsolePath,
                 scriptProcessLogger,
                 Name, argumentsResult.Value);
 

@@ -95,5 +95,6 @@ suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
 end
 
 
-BinToHexBinToHex1 = (CreateReport1a)
-puts "--Final Result: #{binToHex(BinToHex1)}"
+CreateReport1a = CreateReport(utilities, params[:casePathArg1a])
+BinToHex1 = BinToHex(CreateReport1a)
+puts "--Final Result: #{BinToHex1}"

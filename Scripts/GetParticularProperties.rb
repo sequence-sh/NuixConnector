@@ -57,5 +57,6 @@ suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
 end
 
 
-BinToHexBinToHex1 = (GetParticularProperties1a)
-puts "--Final Result: #{binToHex(BinToHex1)}"
+GetParticularProperties1a = GetParticularProperties(utilities, params[:casePathArg1a], params[:searchArg1a], params[:propertyRegexArg1a], params[:valueRegexArg1a])
+BinToHex1 = BinToHex(GetParticularProperties1a)
+puts "--Final Result: #{BinToHex1}"

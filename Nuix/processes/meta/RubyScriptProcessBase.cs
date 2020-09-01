@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Connectors.Nuix.Conversion;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
@@ -75,7 +76,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 if (values.TryGetValue(rubyFunctionArgument, out var rp) && rp != null)
                 {
-                    var br = RubyBlockConverter.TryConvert(rp);
+                    var br = RubyBlockConversion.TryConvert(rp);
 
                     if (br.IsFailure)
                         return br.ConvertFailure<IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock>>(); //We can't convert this block - give up

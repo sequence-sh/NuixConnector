@@ -135,8 +135,6 @@ namespace Reductech.EDR.Connectors.Nuix
         /// </summary>
         public static Result<string, IRunErrors> CompileScript<T>(string methodName, ITypedRubyBlock<T> block)
         {
-
-
             var bb = new TypedCompoundRubyBlock<string>(BinToHexFunction.Instance,
                 new Dictionary<RubyFunctionParameter, ITypedRubyBlock>()
                 {
@@ -164,14 +162,15 @@ namespace Reductech.EDR.Connectors.Nuix
             scriptBuilder.AppendLine(fullMethodLineResult.Value);
 
 
-            scriptBuilder.AppendLine($"puts \"--Final Result: #{{binToHex({resultVariableName})}}\"");
+            //scriptBuilder.AppendLine($"puts \"--Final Result: #{{binToHex({resultVariableName})}}\"");
+            scriptBuilder.AppendLine($"puts \"--Final Result: #{{{resultVariableName}}}\"");
 
             return scriptBuilder.ToString();
         }
 
         private Result<string> TryGenerateScript(IRubyScriptProcess process)
         {
-            var state = new ProcessState(NullLogger.Instance, _nuixProcessSettings);
+            var state = new ProcessState(NullLogger.Instance, _nuixProcessSettings, ExternalProcessRunner.Instance);
 
             var result = process.TryCompileScript(state).MapFailure(x=>x.AsString);
             return result;

@@ -30,5 +30,6 @@ suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
 end
 
 
-BinToHexBinToHex1 = (CountItems1a)
-puts "--Final Result: #{binToHex(BinToHex1)}"
+CountItems1a = CountItems(utilities, params[:pathArg1a], params[:searchArg1a])
+BinToHex1 = BinToHex(CountItems1a)
+puts "--Final Result: #{BinToHex1}"

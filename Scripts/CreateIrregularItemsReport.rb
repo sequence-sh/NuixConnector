@@ -55,5 +55,6 @@ suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
 end
 
 
-BinToHexBinToHex1 = (CreateIrregularItemsReport1a)
-puts "--Final Result: #{binToHex(BinToHex1)}"
+CreateIrregularItemsReport1a = CreateIrregularItemsReport(utilities, params[:casePathArg1a])
+BinToHex1 = BinToHex(CreateIrregularItemsReport1a)
+puts "--Final Result: #{BinToHex1}"
