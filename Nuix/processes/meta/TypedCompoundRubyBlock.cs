@@ -24,14 +24,13 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public override IRubyFunction Function => TypedFunction;
 
-        /// <inheritdoc />
-        public Result<string, IRunErrors> GetBlockText(Suffixer suffixer, out string resultVariableName)
-        {
-            var stringBuilder = new StringBuilder();
 
+        /// <inheritdoc />
+        public Result<string, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
+        {
             var arguments = new List<string>();
             var errors = new List<IRunErrors>();
-            resultVariableName = Function.FunctionName + suffixer.CurrentSuffix;
+            var resultVariableName = Function.FunctionName.ToLowerInvariant() + suffixer.CurrentSuffix;
 
 
             foreach (var rubyFunctionArgument in Function.Arguments)
@@ -39,13 +38,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 var childSuffixer = suffixer.GetNextChild();
                 if (Arguments.TryGetValue(rubyFunctionArgument, out var block))
                 {
-                    var childResult = block.GetBlockText(childSuffixer, out var argument);
-                    arguments.Add(argument);
+                    var argumentResult = block.TryWriteBlockLines(childSuffixer, stringBuilder);
 
-                    if (childResult.IsSuccess)
-                        stringBuilder.AppendLine(childResult.Value);
+                    if (argumentResult.IsSuccess)
+                        arguments.Add(argumentResult.Value);
                     else
-                        errors.Add(childResult.Error);
+                        errors.Add(argumentResult.Error);
                 }
                 else if (!rubyFunctionArgument.IsOptional)
                     errors.Add(ErrorHelper.MissingParameterError(rubyFunctionArgument.ParameterName,
@@ -56,12 +54,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 return RunErrorList.Combine(errors);
             }
+            var callStringBuilder = new StringBuilder();
 
-            stringBuilder.Append($"{resultVariableName} = {Function.FunctionName}(");
-            stringBuilder.AppendJoin(", ", arguments);
-            stringBuilder.Append(")");
+            callStringBuilder.Append($"{resultVariableName} = {Function.FunctionName}(");
+            callStringBuilder.AppendJoin(", ", arguments);
+            callStringBuilder.Append(")");
 
-            return stringBuilder.ToString();
+            stringBuilder.AppendLine(callStringBuilder.ToString());
+
+            return resultVariableName;
         }
     }
 }

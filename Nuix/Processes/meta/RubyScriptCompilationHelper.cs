@@ -16,16 +16,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         public const string HashSetName = "params";
 
-        public static string CompileScriptSetup(string name, IReadOnlyCollection<IRubyBlock> rubyBlocks)
+        public static string CompileScriptSetup(IRubyBlock rubyBlock)
         {
             var scriptStringBuilder = new StringBuilder();
 
-            scriptStringBuilder.AppendLine($"#{name}");
+            scriptStringBuilder.AppendLine($"#{rubyBlock.Name}");
             scriptStringBuilder.AppendLine();
 
             var highestVersion =
-                rubyBlocks
-                    .SelectMany(x=>x.FunctionDefinitions)
+                rubyBlock.FunctionDefinitions
                     .Select(x => x.RequiredNuixVersion)
                     .OrderByDescending(x => x).FirstOrDefault();
 
@@ -39,8 +38,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 scriptStringBuilder.AppendLine();
             }
 
-            var requiredFeatures = rubyBlocks
-                .SelectMany(x=>x.FunctionDefinitions)
+            var requiredFeatures = rubyBlock.FunctionDefinitions
                 .SelectMany(x => x.RequiredNuixFeatures)
                 .Distinct().OrderBy(x=>x).ToList();
 
@@ -64,13 +62,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             scriptStringBuilder.AppendLine("OptionParser.new do |opts|");
 
 
-
             var suffixer = new Suffixer();
-            foreach (var methodCall in rubyBlocks)
-            {
-                var optParseLines = methodCall.GetOptParseLines(HashSetName, suffixer);
-                foreach (var optParseLine in optParseLines) scriptStringBuilder.AppendLine('\t' + optParseLine);
-            }
+            rubyBlock.WriteOptParseLines(HashSetName, new IndentationStringBuilder(scriptStringBuilder, 1), suffixer );
 
             scriptStringBuilder.AppendLine("end.parse!");
             scriptStringBuilder.AppendLine();
@@ -84,11 +77,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <summary>
         /// Compiles the text for all the called script functions.
         /// </summary>
-        public static string CompileScriptFunctionText(IReadOnlyCollection<IRubyBlock> rubyBlocks)
+        public static string CompileScriptFunctionText(IRubyBlock rubyBlock)
         {
             var stringBuilder = new StringBuilder();
 
-            foreach (var function in rubyBlocks.SelectMany(x=>x.FunctionDefinitions).Distinct())
+            foreach (var function in rubyBlock.FunctionDefinitions.Distinct())
             {
                 var parameters = function.Arguments.Select(x => x.ParameterName);
 

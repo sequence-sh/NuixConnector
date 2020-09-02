@@ -1,4 +1,4 @@
-﻿#CountItems
+﻿#BinToHex
 
 requiredNuixVersion = '5.0'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -31,5 +31,6 @@ end
 
 
 CountItems1a = CountItems(utilities, params[:pathArg1a], params[:searchArg1a])
-BinToHex1 = BinToHex(CountItems1a)
-puts "--Final Result: #{BinToHex1}"
+bintohex1 = BinToHex(CountItems1a)
+bintohex1
+puts "--Final Result: #{bintohex1}"

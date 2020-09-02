@@ -24,10 +24,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public override IRubyFunction Function => UnitFunction;
 
+
         /// <inheritdoc />
-        public Result<string, IRunErrors> GetBlockText(Suffixer suffixer)
+        public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
-            var stringBuilder = new StringBuilder();
             var arguments = new List<string>();
             var errors = new List<IRunErrors>();
 
@@ -36,11 +36,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 var childSuffixer = suffixer.GetNextChild();
                 if (Arguments.TryGetValue(rubyFunctionArgument, out var block))
                 {
-                    var childResult = block.GetBlockText(childSuffixer, out var argument);
-                    arguments.Add(argument);
+                    var childResult = block.TryWriteBlockLines(childSuffixer, stringBuilder);
 
                     if (childResult.IsSuccess)
-                        stringBuilder.AppendLine(childResult.Value);
+                        arguments.Add(childResult.Value);
                     else
                         errors.Add(childResult.Error);
                 }
@@ -52,13 +51,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             if (errors.Any())
                 return RunErrorList.Combine(errors);
 
-            stringBuilder.Append(Function.FunctionName);
-            stringBuilder.Append("(");
-            stringBuilder.AppendJoin(", ", arguments);
-            stringBuilder.Append(")");
+            var callStringBuilder = new StringBuilder();
 
-            return stringBuilder.ToString();
+            callStringBuilder.Append(Function.FunctionName);
+            callStringBuilder.Append("(");
+            callStringBuilder.AppendJoin(", ", arguments);
+            callStringBuilder.Append(")");
 
+            stringBuilder.AppendLine(callStringBuilder.ToString());
+
+            return Unit.Default;
         }
     }
 }

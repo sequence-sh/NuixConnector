@@ -1,4 +1,4 @@
-﻿#CreateReport
+﻿#BinToHex
 
 requiredNuixVersion = '6.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -96,5 +96,6 @@ end
 
 
 CreateReport1a = CreateReport(utilities, params[:casePathArg1a])
-BinToHex1 = BinToHex(CreateReport1a)
-puts "--Final Result: #{BinToHex1}"
+bintohex1 = BinToHex(CreateReport1a)
+bintohex1
+puts "--Final Result: #{bintohex1}"

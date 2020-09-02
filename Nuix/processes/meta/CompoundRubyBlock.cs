@@ -11,6 +11,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     public abstract class CompoundRubyBlock : IRubyBlock
     {
         /// <summary>
+        /// Creates a new CompoundRubyBlock
+        /// </summary>
+        protected CompoundRubyBlock(
+            IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock> arguments) =>
+            Arguments = arguments;
+
+
+        /// <summary>
         /// The final function to run.
         /// </summary>
         public abstract IRubyFunction Function { get; }
@@ -20,12 +28,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         public IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock> Arguments { get; }
 
-        /// <summary>
-        /// Creates a new CompoundRubyBlock
-        /// </summary>
-        protected CompoundRubyBlock(
-            IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock> arguments) =>
-            Arguments = arguments;
+
+        /// <inheritdoc />
+        public string Name => Function.FunctionName;
+
+        /// <inheritdoc />
+        public override string ToString() => Name;
 
 
         /// <inheritdoc />
@@ -64,48 +72,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, Suffixer suffixer)
+        public void WriteOptParseLines(string hashSetName, IIndentationStringBuilder sb, Suffixer suffixer)
         {
-            var r = new List<string>();
 
             foreach (var rubyFunctionArgument in Function.Arguments)
             {
                 var childSuffixer = suffixer.GetNextChild();
                 if (Arguments.TryGetValue(rubyFunctionArgument, out var block))
-                    r.AddRange(block.GetOptParseLines(hashSetName, childSuffixer));
+                    block.WriteOptParseLines(hashSetName, sb, childSuffixer);
                 //else assume the argument was optional, it will be nil later
             }
 
-            return r;
         }
-
-        internal Result<IReadOnlyCollection<string>, IRunErrors> GetArguments(Suffixer suffixer)
-        {
-            var argumentValues = new List<string>();
-            var errors = new List<IRunErrors>();
-
-            foreach (var rubyFunctionArgument in Function.Arguments)
-            {
-                var childSuffixer = suffixer.GetNextChild();
-                if (Arguments.TryGetValue(rubyFunctionArgument, out var block))
-                {
-                    block.GetBlockText(childSuffixer, out var variableName);
-                    argumentValues.Add(variableName);
-                }
-                else if (rubyFunctionArgument.IsOptional)
-                    argumentValues.Add("nil");
-                else
-                    errors.Add(ErrorHelper.MissingParameterError(rubyFunctionArgument.ParameterName,
-                        Function.FunctionName));
-            }
-
-            if (errors.Any())
-                return Result.Failure<IReadOnlyCollection<string>, IRunErrors>(RunErrorList.Combine(errors));
-
-            return argumentValues;
-        }
-
-
     }
-
 }

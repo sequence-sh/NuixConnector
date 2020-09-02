@@ -37,10 +37,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         protected RubyScriptProcessFactory()
         {
             _lazyRubyFunction
-            = new Lazy<IRubyFunction<TOutput>>(() => new RubyFunction<TOutput>(MethodName, ScriptText, true,
+            = new Lazy<IRubyFunction<TOutput>>(() => new RubyFunction<TOutput>(FunctionName, RubyFunctionText, true,
                 RubyFunctionParameter.GetRubyFunctionParameters<TProcess>())
             {
-                RequiredNuixVersion = RequiredVersion,
+                RequiredNuixVersion = RequiredNuixVersion,
                 RequiredNuixFeatures = RequiredFeatures
             });
         }
@@ -57,18 +57,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <summary>
         /// The Name of the Ruby Function.
         /// </summary>
-        public abstract string MethodName { get; } //TODO rename FunctionName
+        public abstract string FunctionName { get; }
 
         /// <summary>
         /// The text of the ruby function. Not Including the header.
         /// </summary>
-        public abstract string ScriptText { get; } //TODO rename
+        public abstract string RubyFunctionText { get; }
 
 
         /// <summary>
         /// The Required Nuix version
         /// </summary>
-        public abstract Version RequiredVersion { get; } //TODO rename RequiredNuixVersion
+        public abstract Version RequiredNuixVersion { get; }
+
+        /// <inheritdoc />
+        public override IProcessNameBuilder ProcessNameBuilder => new ProcessNameBuilderFromTemplate(FunctionName);
 
         /// <summary>
         /// The Required Nuix Features.

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
@@ -15,6 +15,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// Creates a new SequenceRubyBlock.
         /// </summary>
         public SequenceRubyBlock(IReadOnlyCollection<IUnitRubyBlock> blocks) => Blocks = blocks;
+
+        /// <inheritdoc />
+        public string Name => string.Join("; ", Blocks.Select(x => x.ToString()));
+
+        /// <inheritdoc />
+        public override string ToString() => Name;
 
         /// <summary>
         /// The blocks to run.
@@ -42,35 +48,25 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, Suffixer suffixer)
+        public void WriteOptParseLines(string hashSetName, IIndentationStringBuilder sb, Suffixer suffixer)
         {
-            var lines = new List<string>();
-
             foreach (var block in Blocks)
-            {
-                var r = block.GetOptParseLines(hashSetName, suffixer.GetNextChild());
+                block.WriteOptParseLines(hashSetName, sb, suffixer.GetNextChild());
 
-                lines.AddRange(r);
-            }
-
-            return lines;
         }
 
         /// <inheritdoc />
-        public Result<string, IRunErrors> GetBlockText(Suffixer suffixer)
+        public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
-            var sb = new StringBuilder();
-
             foreach (var block in Blocks)
             {
-                var r = block.GetBlockText(suffixer.GetNextChild());
+                var r = block.TryWriteBlockLines(suffixer.GetNextChild(), stringBuilder);
 
                 if (r.IsFailure) return r;
-
-                sb.AppendLine(r.Value);
             }
 
-            return sb.ToString();
+            return Unit.Default;
         }
+
     }
 }

@@ -22,18 +22,18 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixCreateTermList, string> Instance { get; } = new NuixCreateTermListProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(4, 2);
+        public override Version RequiredNuixVersion { get; } = new Version(4, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
 
 
         /// <inheritdoc />
-        public override string MethodName => "CreateTermList";
+        public override string FunctionName => "CreateTermList";
 
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Generating Report:""

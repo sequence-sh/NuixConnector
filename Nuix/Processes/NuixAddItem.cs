@@ -22,17 +22,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixAddItem, Unit> Instance { get; } = new NuixAddItemProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion => new Version(3, 2);
+        public override Version RequiredNuixVersion => new Version(3, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature> { NuixFeature.CASE_CREATION };
 
 
         /// <inheritdoc />
-        public override string MethodName => "AddToCase";
+        public override string FunctionName => "AddToCase";
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
 

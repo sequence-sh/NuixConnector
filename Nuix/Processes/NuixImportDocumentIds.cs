@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixImportDocumentIds, Unit> Instance { get; } = new NuixImportDocumentIdsProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(7, 4);
+        public override Version RequiredNuixVersion { get; } = new Version(7, 4);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -30,10 +30,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         };
 
         /// <inheritdoc />
-        public override string MethodName => "ImportDocumentIds";
+        public override string FunctionName => "ImportDocumentIds";
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
 
     the_case = utilities.case_factory.open(pathArg)
 

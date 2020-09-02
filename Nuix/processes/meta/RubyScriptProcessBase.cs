@@ -76,7 +76,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 if (values.TryGetValue(rubyFunctionArgument, out var rp) && rp != null)
                 {
-                    var br = RubyBlockConversion.TryConvert(rp);
+                    var br = RubyBlockConversion.TryConvert(rp, rubyFunctionArgument.ParameterName);
 
                     if (br.IsFailure)
                         return br.ConvertFailure<IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock>>(); //We can't convert this block - give up

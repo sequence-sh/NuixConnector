@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
@@ -90,6 +91,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     public interface IRubyBlock
     {
         /// <summary>
+        /// The name of this ruby block.
+        /// </summary>
+        string Name { get; }
+
+
+        /// <summary>
         /// The functions that this block of code is dependent on.
         /// </summary>
         IEnumerable<IRubyFunction> FunctionDefinitions { get; }
@@ -104,7 +111,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <summary>
         /// Gets the lines needed in the options parser to provide the arguments.
         /// </summary>
-        IReadOnlyCollection<string> GetOptParseLines(string hashSetName, Suffixer suffixer);
+        void WriteOptParseLines(string hashSetName, IIndentationStringBuilder sb, Suffixer suffixer);
     }
 
     /// <summary>
@@ -113,9 +120,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     public interface IUnitRubyBlock : IRubyBlock
     {
         /// <summary>
-        /// Gets the main block of ruby code.
+        /// Writes the main block of ruby code.
         /// </summary>
-        public Result<string, IRunErrors> GetBlockText(Suffixer suffixer);
+        public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder);
     }
 
     /// <summary>
@@ -124,9 +131,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     public interface ITypedRubyBlock : IRubyBlock
     {
         /// <summary>
-        /// Gets the main block of ruby code.
+        /// Writes the main block of ruby code.
+        /// Returns the result variable name.
         /// </summary>
-        public Result<string, IRunErrors> GetBlockText(Suffixer suffixer, out string resultVariableName);
+        public Result<string, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder);
     }
 
 

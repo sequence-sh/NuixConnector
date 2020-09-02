@@ -33,7 +33,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             .Select(c => new FreezeTestCase(c));
 
 
-        public class FreezeTestCase : ITestCase
+        private class FreezeTestCase : ITestCase
         {
             public FreezeTestCase(ProcessSettingsCombo processSettingsCombo) => ProcessSettingsCombo = processSettingsCombo;
 

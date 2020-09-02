@@ -23,17 +23,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixCreateIrregularItemsReport, string> Instance { get; } = new NuixCreateIrregularItemsReportProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(2, 16);
+        public override Version RequiredNuixVersion { get; } = new Version(2, 16);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
 
         /// <inheritdoc />
-        public override string MethodName => "CreateIrregularItemsReport";
+        public override string FunctionName => "CreateIrregularItemsReport";
 
         //TODO change how this works - at the moment it creates multiple files
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Generating Report:""

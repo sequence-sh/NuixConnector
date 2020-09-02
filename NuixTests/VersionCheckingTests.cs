@@ -49,7 +49,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
 
                 /// <inheritdoc />
-                public override Version RequiredVersion => MyRequiredVersion ?? new Version(1, 0);
+                public override Version RequiredNuixVersion => MyRequiredVersion ?? new Version(1, 0);
 
                 public Version? MyRequiredVersion { get; }
 
@@ -59,10 +59,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 public List<NuixFeature>? MyRequiredFeatures { get; }
 
                 /// <inheritdoc />
-                public override string MethodName => "DoNothing";
+                public override string FunctionName => "DoNothing";
 
                 /// <inheritdoc />
-                public override string ScriptText => @"
+                public override string RubyFunctionText => @"
 puts 'Doing Nothing'
 ";
             }

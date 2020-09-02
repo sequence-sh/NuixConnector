@@ -22,7 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixPerformOCR, Unit> Instance { get; } = new NuixPerformOCRProcessFactory();
 
         /// <inheritdoc />`,
-        public override Version RequiredVersion => new Version(7, 6);
+        public override Version RequiredNuixVersion => new Version(7, 6);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -31,10 +31,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         };
 
         /// <inheritdoc />
-        public override string MethodName => "RunOCR";
+        public override string FunctionName => "RunOCR";
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(pathArg)
 
     searchTerm = searchTermArg

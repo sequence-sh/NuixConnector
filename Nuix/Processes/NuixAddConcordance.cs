@@ -24,17 +24,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             new NuixAddConcordanceFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(7, 6); //This is required for the Metadata Import Profile
+        public override Version RequiredNuixVersion { get; } = new Version(7, 6); //This is required for the Metadata Import Profile
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature> { NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT };
 
 
         /// <inheritdoc />
-        public override string MethodName { get; } = "AddConcordanceToCase";
+        public override string FunctionName { get; } = "AddConcordanceToCase";
 
         /// <inheritdoc />
-        public override string ScriptText { get; } =
+        public override string RubyFunctionText { get; } =
 //language=RUBY
             @"
     the_case = utilities.case_factory.open(pathArg)

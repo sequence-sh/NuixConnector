@@ -22,16 +22,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixMigrateCase, Unit> Instance { get; } = new NuixMigrateCaseProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(3, 0);
+        public override Version RequiredNuixVersion { get; } = new Version(3, 0);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
 
         /// <inheritdoc />
-        public override string MethodName => "MigrateCase";
+        public override string FunctionName => "MigrateCase";
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     puts ""Opening Case, migrating if necessary""
 
     options = {migrate: true}

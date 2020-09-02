@@ -22,9 +22,9 @@ public static class NuixVersionHelper
     ////    / Checks if the current set of arguments is valid.
     ////    / </summary>
     ////    / <returns></returns>
-    ////    internal abstract string ScriptText { get; }
+    ////    internal abstract string RubyFunctionText { get; }
 
-    ////    internal abstract string MethodName { get; }
+    ////    internal abstract string FunctionName { get; }
 
 
 
@@ -68,11 +68,11 @@ public static class NuixVersionHelper
     ////            nuixProcessSettings = nps;
 
     ////            if (nuixProcessSettings.NuixVersion < TrueRequiredVersion)
-    ////                errors.Add($"Your version of Nuix ({nuixProcessSettings.NuixVersion}) is less than the required version ({TrueRequiredVersion}) for the process: '{MethodName}'");
+    ////                errors.Add($"Your version of Nuix ({nuixProcessSettings.NuixVersion}) is less than the required version ({TrueRequiredVersion}) for the process: '{FunctionName}'");
 
     ////            var missingFeatures = RequiredFeatures.Except(nuixProcessSettings.NuixFeatures).Distinct().ToList();
     ////            if (missingFeatures.Any())
-    ////                errors.Add($"You lack the required features: '{string.Join(", ", missingFeatures.Select(x => x.ToString()))}' for the process: '{MethodName}'");
+    ////                errors.Add($"You lack the required features: '{string.Join(", ", missingFeatures.Select(x => x.ToString()))}' for the process: '{FunctionName}'");
     ////        }
 
     ////        var arguments = GetArgumentValues()
@@ -93,17 +93,17 @@ public static class NuixVersionHelper
     ////            return Result.Failure<IImmutableProcess<TOutput>>(string.Join("\r\n", errors));
 
     ////        var methodBuilder = new StringBuilder();
-    ////        var methodHeader = $@"def {MethodName}({string.Join(",", parameterNames)})";
+    ////        var methodHeader = $@"def {FunctionName}({string.Join(",", parameterNames)})";
 
     ////        methodBuilder.AppendLine(methodHeader);
-    ////        methodBuilder.AppendLine(ScriptText);
+    ////        methodBuilder.AppendLine(RubyFunctionText);
     ////        methodBuilder.AppendLine("end");
 
     ////        switch (ReturnType)
     ////        {
     ////            case NuixReturnType.Unit:
     ////                {
-    ////                    var block = new BasicRubyBlock(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
+    ////                    var block = new BasicRubyBlock(FunctionName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
 
     ////                    var ip = new RubyScriptProcessUnit(new[] { block }, nuixProcessSettings);
 
@@ -111,21 +111,21 @@ public static class NuixVersionHelper
     ////                }
     ////            case NuixReturnType.Boolean:
     ////                {
-    ////                    var block = new BasicTypedRubyBlock<bool>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
+    ////                    var block = new BasicTypedRubyBlock<bool>(FunctionName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
     ////                    var ip = new RubyScriptProcessTyped<bool>(block, nuixProcessSettings, TryParseBool);
 
     ////                    return TryConvertFreezeResult<TOutput, bool>(ip);
     ////                }
     ////            case NuixReturnType.Integer:
     ////                {
-    ////                    var block = new BasicTypedRubyBlock<int>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
+    ////                    var block = new BasicTypedRubyBlock<int>(FunctionName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
     ////                    var ip = new RubyScriptProcessTyped<int>(block, nuixProcessSettings, TryParseInt);
 
     ////                    return TryConvertFreezeResult<TOutput, int>(ip);
     ////                }
     ////            case NuixReturnType.String:
     ////                {
-    ////                    var block = new BasicTypedRubyBlock<string>(MethodName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
+    ////                    var block = new BasicTypedRubyBlock<string>(FunctionName, methodBuilder.ToString(), arguments, TrueRequiredVersion, RequiredFeatures);
     ////                    var ip = new RubyScriptProcessTyped<string>(block, nuixProcessSettings, TryParseString);
 
     ////                    return TryConvertFreezeResult<TOutput, string>(ip);

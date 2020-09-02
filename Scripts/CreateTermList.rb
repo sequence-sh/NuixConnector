@@ -1,4 +1,4 @@
-﻿#CreateTermList
+﻿#BinToHex
 
 requiredNuixVersion = '5.0'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -40,5 +40,6 @@ end
 
 
 CreateTermList1a = CreateTermList(utilities, params[:casePathArg1a])
-BinToHex1 = BinToHex(CreateTermList1a)
-puts "--Final Result: #{BinToHex1}"
+bintohex1 = BinToHex(CreateTermList1a)
+bintohex1
+puts "--Final Result: #{bintohex1}"

@@ -21,17 +21,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixCreateNRTReport, Unit> Instance { get; } = new NuixCreateNRTReportProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(7, 4);
+        public override Version RequiredNuixVersion { get; } = new Version(7, 4);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
             new List<NuixFeature> { NuixFeature.ANALYSIS };
 
         /// <inheritdoc />
-        public override string MethodName => "CreateNRTReport";
+        public override string FunctionName => "CreateNRTReport";
 
         /// <inheritdoc />
-        public override string ScriptText =>
+        public override string RubyFunctionText =>
             @"
     the_case = utilities.case_factory.open(pathArg)
     puts 'Generating NRT Report:'

@@ -24,7 +24,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(4, 0);
+        public override Version RequiredNuixVersion { get; } = new Version(4, 0);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -34,10 +34,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        public override string MethodName => "AddToItemSet";
+        public override string FunctionName => "AddToItemSet";
 
         /// <inheritdoc />
-        public override string ScriptText =>
+        public override string RubyFunctionText =>
             @"
     the_case = utilities.case_factory.open(pathArg)
     itemSet = the_case.findItemSetByName(itemSetNameArg)

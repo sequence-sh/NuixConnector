@@ -199,7 +199,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new Conditional
                     {
                         Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                        ThenProcess = new AssertError() {Test = AddData},
+                        ThenProcess = new AssertError {Test = AddData},
                         ElseProcess = AssertCount(2, "*.txt")
                     },
                     AssertCount(2, "*.txt"),
@@ -417,8 +417,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         },
                         Folder = Constant(OutputFolder),
                         FileName = new Constant<string>("Stats.txt")
-                    }
-                    ,
+                    },
                     AssertFileContains(OutputFolder, "Stats.txt", "Mark	type	text/plain	2"),
 
                     DeleteCaseFolder,

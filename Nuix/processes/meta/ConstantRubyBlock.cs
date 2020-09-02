@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
@@ -11,12 +13,18 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     /// <typeparam name="T"></typeparam>
     internal sealed class ConstantRubyBlock<T> : ITypedRubyBlock<T>
     {
-        public ConstantRubyBlock(T value) => Value = value;
+        public ConstantRubyBlock(T value, string parameterName)
+        {
+            Value = value;
+            ParameterName = parameterName;
+        }
 
+        public string ParameterName { get; }
         public T Value { get; }
+        public string Name  => $"{ParameterName}({Value})";
 
         /// <inheritdoc />
-        public override string ToString() => $"Argument({Value})";
+        public override string ToString() => Name;
 
         /// <inheritdoc />
         public IEnumerable<IRubyFunction> FunctionDefinitions => ImmutableArray<IRubyFunction>.Empty;
@@ -26,41 +34,47 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         {
             var args = new List<string>
                         {
-                            $"--{ArgPrefix}" + suffixer.GetNext(),
-                            Value!.ToString()!
+                            $"--{ParameterName}" + suffixer.GetNext(),
+                            ConvertToString(Value!)
                         };
 
             return args;
         }
 
-        private const string VarPrefix = "value";
-        private const string KeyPrefix = "key";
-        private const string ArgPrefix = "arg";
-
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, Suffixer suffixer)
+        public void WriteOptParseLines(string hashSetName, IIndentationStringBuilder sb, Suffixer suffixer)
         {
             var number = suffixer.GetNext();
-
-            var lines = new List<string>
-                        {
-                            $"opts.on('--{ArgPrefix}{number} [ARG]') do |o| params[:{KeyPrefix}{number}] = o end",
-                        };
-
-            return lines;
+            sb.AppendLine($"opts.on('--{ParameterName}{number} [ARG]') do |o| params[:{ParameterName}{number}] = o end");
         }
 
         /// <inheritdoc />
-        public Result<string, IRunErrors> GetBlockText(Suffixer suffixer, out string resultVariableName)
+        public Result<string, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
             var number = suffixer.GetNext();
 
-            resultVariableName = VarPrefix + number;
-            var keyName = KeyPrefix + number;
+            var resultVariableName = ParameterName + number;
+            var keyName = ParameterName + number;
 
             var line = $"{resultVariableName} = {RubyScriptCompilationHelper.GetArgumentValueString(keyName)}";
 
-            return line;
+            stringBuilder.AppendLine(line);
+
+            return resultVariableName;
         }
+
+
+        private static string ConvertToString(object o)
+        {
+            return o switch
+            {
+                string s => s,
+                bool b => b.ToString().ToLowerInvariant(),
+                int i => i.ToString(),
+                Enum e => e.GetDisplayName(),
+                _ => o.ToString()!
+            };
+        }
+
     }
 }

@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixExportConcordance, Unit> Instance { get; } = new NuixExportConcordanceProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(7, 2); //I'm checking the production profile here
+        public override Version RequiredNuixVersion { get; } = new Version(7, 2); //I'm checking the production profile here
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -31,10 +31,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         };
 
         /// <inheritdoc />
-        public override string MethodName => "ExportConcordance";
+        public override string FunctionName => "ExportConcordance";
 
         /// <inheritdoc />
-        public override string ScriptText =>
+        public override string RubyFunctionText =>
             @"
     the_case = utilities.case_factory.open(pathArg)
 

@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixAssignCustodian, Unit> Instance { get; } = new NuixAssignCustodianFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(3, 6);
+        public override Version RequiredNuixVersion { get; } = new Version(3, 6);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
@@ -32,10 +32,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        public override string MethodName => "AssignCustodian";
+        public override string FunctionName => "AssignCustodian";
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(pathArg)
     puts ""Searching for '#{searchArg}'""
 

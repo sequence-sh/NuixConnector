@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixSearchAndTag, Unit> Instance { get; } = new NuixSearchAndTagProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(2, 16);
+        public override Version RequiredNuixVersion { get; } = new Version(2, 16);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
@@ -31,10 +31,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             };
 
         /// <inheritdoc />
-        public override string MethodName => "SearchAndTag";
+        public override string FunctionName => "SearchAndTag";
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(pathArg)
     puts ""Searching for '#{searchArg}'""
 

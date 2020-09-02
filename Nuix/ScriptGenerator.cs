@@ -76,9 +76,7 @@ namespace Reductech.EDR.Connectors.Nuix
 
                     }
                     else
-                    {
                         return error;
-                    }
                 }
 #pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
@@ -101,28 +99,19 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Compiles a ruby script for any number of unit blocks
         /// </summary>
-        public static Result<string, IRunErrors> CompileScript(string methodName, params IUnitRubyBlock[] blocks)
+        public static Result<string, IRunErrors> CompileScript(string methodName, IUnitRubyBlock block)
         {
             var scriptBuilder = new StringBuilder();
 
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(methodName, blocks));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptFunctionText(blocks));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(block));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptFunctionText(block));
 
             var suffixer = new Suffixer();
 
-            var errors = new List<IRunErrors>();
-            foreach (var rubyBlock in blocks)
-            {
-                var blockTextResult = rubyBlock.GetBlockText(suffixer);
+            var blockTextResult = block.TryWriteBlockLines(suffixer, new IndentationStringBuilder(scriptBuilder, 0));
 
-                if(blockTextResult.IsFailure)
-                    errors.Add(blockTextResult.Error);
-                else
-                    scriptBuilder.AppendLine(blockTextResult.Value);
-            }
-
-            if (errors.Any())
-                return Result.Failure <string, IRunErrors>(RunErrorList.Combine(errors));
+            if (blockTextResult.IsFailure)
+                return blockTextResult.ConvertFailure<string>();
 
             scriptBuilder.AppendLine($"puts '{UnitSuccessToken}'");
 
@@ -133,37 +122,32 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Compiles a ruby script for a typed block.
         /// </summary>
-        public static Result<string, IRunErrors> CompileScript<T>(string methodName, ITypedRubyBlock<T> block)
+        public static Result<string, IRunErrors> CompileScript<T>(ITypedRubyBlock<T> block)
         {
-            var bb = new TypedCompoundRubyBlock<string>(BinToHexFunction.Instance,
-                new Dictionary<RubyFunctionParameter, ITypedRubyBlock>()
+            var compoundRubyBlock = new TypedCompoundRubyBlock<string>(BinToHexFunction.Instance,
+                new Dictionary<RubyFunctionParameter, ITypedRubyBlock>
                 {
                     {
                         BinToHexFunction.Instance.Arguments.Single(),
                         block
                     }
-                }
-            );
+                });
 
-
-            var blocks = new[] {bb};
 
             var scriptBuilder = new StringBuilder();
 
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup(methodName,  blocks));
-            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptFunctionText(blocks));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptSetup( compoundRubyBlock));
+            scriptBuilder.AppendLine(RubyScriptCompilationHelper.CompileScriptFunctionText(compoundRubyBlock));
 
 
-            var fullMethodLineResult = bb.GetBlockText(new Suffixer(), out var resultVariableName);
+            var fullMethodLineResult = compoundRubyBlock.TryWriteBlockLines(new Suffixer(), new IndentationStringBuilder(scriptBuilder, 0));
 
             if (fullMethodLineResult.IsFailure)
-                return fullMethodLineResult.ConvertFailure<string>();
+                return fullMethodLineResult;
 
             scriptBuilder.AppendLine(fullMethodLineResult.Value);
 
-
-            //scriptBuilder.AppendLine($"puts \"--Final Result: #{{binToHex({resultVariableName})}}\"");
-            scriptBuilder.AppendLine($"puts \"--Final Result: #{{{resultVariableName}}}\"");
+            scriptBuilder.AppendLine($"puts \"--Final Result: #{{{fullMethodLineResult.Value}}}\"");
 
             return scriptBuilder.ToString();
         }

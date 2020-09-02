@@ -22,7 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(4, 2);
+        public override Version RequiredNuixVersion { get; } = new Version(4, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -31,10 +31,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         };
 
         /// <inheritdoc />
-        public override string MethodName => "RemoveFromProductionSet";
+        public override string FunctionName => "RemoveFromProductionSet";
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(pathArg)
 
     puts ""Searching""

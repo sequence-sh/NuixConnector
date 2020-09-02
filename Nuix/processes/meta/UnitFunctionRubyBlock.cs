@@ -25,7 +25,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         public abstract IRubyFunction Function { get; }
 
         /// <inheritdoc />
-        public override string ToString() => Function.FunctionName;
+        public string Name => Function.FunctionName;
+
+        /// <inheritdoc />
+        public override string ToString() => Name;
 
 
         /// <summary>
@@ -64,9 +67,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         }
 
         /// <inheritdoc />
-        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, Suffixer suffixer)
+        public void WriteOptParseLines(string hashSetName, IIndentationStringBuilder sb, Suffixer suffixer)
         {
-            var optParseLines = new List<string>();
             var number = suffixer.GetNext();
 
             foreach (var argument in Function.Arguments)
@@ -74,11 +76,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 var newParameterName = argument + number;
                 var argTerm = argument.IsOptional ? "[ARG]" : "ARG";
 
-                optParseLines.Add($"opts.on('--{newParameterName} {argTerm}') do |o| {hashSetName}[:{newParameterName}] = o end");
+                sb.AppendLine($"opts.on('--{newParameterName} {argTerm}') do |o| {hashSetName}[:{newParameterName}] = o end");
             }
-
-            return optParseLines;
         }
+
 
         internal IEnumerable<string> GetArguments(string suffix)
         {
@@ -114,12 +115,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public override IRubyFunction Function => TypedFunction;
 
+
         /// <inheritdoc />
-        public Result<string, IRunErrors> GetBlockText(Suffixer suffixer, out string resultVariableName)
+        public Result<string, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
             var number = suffixer.GetNext();
-
-            resultVariableName = Function.FunctionName + number;
+            var resultVariableName = Function.FunctionName + number;
             var callStringBuilder = new StringBuilder($"{resultVariableName} = {Function.FunctionName}(");
 
             var arguments = GetArguments(number);
@@ -128,7 +129,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             callStringBuilder.Append(")");
 
-            return callStringBuilder.ToString();
+            stringBuilder.AppendLine(callStringBuilder.ToString());
+
+            return resultVariableName;
         }
     }
     /// <summary>
@@ -154,7 +157,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
 
         /// <inheritdoc />
-        public Result<string, IRunErrors> GetBlockText(Suffixer suffixer)
+        public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
             var suffix = suffixer.GetNext();
             var callStringBuilder = new StringBuilder($"{Function.FunctionName}(");
@@ -163,97 +166,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             callStringBuilder.Append(")");
 
-            return callStringBuilder.ToString();
+            stringBuilder.AppendLine(callStringBuilder.ToString());
+
+            return Unit.Default;
         }
     }
 
 
 
 }
-//    internal abstract class AbstractBasicRubyBlock : IRubyBlock
-//    {
-//        protected AbstractBasicRubyBlock(string blockName, string functionText, IReadOnlyCollection<RubyMethodParameter> methodParameters, bool utilitiesParameter)
-//        {
-//            BlockName = blockName;
-//            MethodParameters = methodParameters;
-//            FunctionDefinitions = new List<string>{MakeRubyFunction(blockName, functionText, methodParameters, utilitiesParameter)} ;
-//        }
-
-//        /// <inheritdoc />
-//        public string BlockName { get; }
-
-//        /// <inheritdoc />
-//        public int NumberOfArguments => MethodParameters.Count;
-
-//        /// <inheritdoc />
-//        public abstract Version RequiredNuixVersion { get; }
-
-//        /// <inheritdoc />
-//        public abstract IReadOnlyCollection<NuixFeature> RequiredNuixFeatures { get; }
-
-//        /// <inheritdoc />
-//        public IEnumerable<string> FunctionDefinitions { get; }
-
-//        protected readonly IReadOnlyCollection<RubyMethodParameter> MethodParameters;
-
-//        /// <inheritdoc />
-//        public IReadOnlyCollection<string> GetArguments(ref int blockNumber)
-//        {
-//            var results = new List<string>();
-
-//            foreach (var (argumentName, argumentValue, _) in MethodParameters)
-//            {
-//                var newParameterName = argumentName + blockNumber;
-//                if (argumentValue == null) continue;
-
-//                results.Add($"--{newParameterName}");
-//                results.Add(argumentValue);
-//            }
-
-//            blockNumber++;
-//            return results;
-//        }
-
-//        /// <inheritdoc />
-//        public IReadOnlyCollection<string> GetOptParseLines(string hashSetName, ref int blockNumber)
-//        {
-//            var optParseLines = new List<string>();
-
-//            foreach (var (argumentName, _, valueCanBeNull) in MethodParameters)
-//            {
-//                var newParameterName = argumentName + blockNumber;
-//                var argTerm = valueCanBeNull ? "[ARG]" : "ARG";
-
-//                optParseLines.Add($"opts.on('--{newParameterName} {argTerm}') do |o| {hashSetName}[:{newParameterName}] = o end");
-//            }
-
-//            blockNumber++;
-
-//            return optParseLines;
-//        }
-
-//        public const string UtilitiesParameterName = "utilities";
-
-
-//        private static string MakeRubyFunction(string methodName,
-//            string functionText,
-//            IEnumerable<RubyMethodParameter> methodParameters,
-//            bool utilitiesParameter)
-//        {
-//            var methodBuilder = new StringBuilder();
-//            var parameters = methodParameters.Select(x => x.ParameterName);
-//            if (utilitiesParameter)
-//                parameters = parameters.Prepend(UtilitiesParameterName);
-
-
-//            var methodHeader = $@"def {methodName}({string.Join(",", parameters )})";
-
-//            methodBuilder.AppendLine(methodHeader);
-//            methodBuilder.AppendLine(functionText);
-//            methodBuilder.AppendLine("end");
-
-//            return methodBuilder.ToString();
-//        }
-
-//    }
-//}

@@ -1,4 +1,4 @@
-﻿#DoesCaseExist
+﻿#BinToHex
 
 requiredNuixVersion = '5.0'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
@@ -32,5 +32,6 @@ end
 
 
 DoesCaseExist1a = DoesCaseExist(utilities, params[:pathArg1a])
-BinToHex1 = BinToHex(DoesCaseExist1a)
-puts "--Final Result: #{BinToHex1}"
+bintohex1 = BinToHex(DoesCaseExist1a)
+bintohex1
+puts "--Final Result: #{bintohex1}"

@@ -22,16 +22,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixGetItemProperties, string> Instance { get; } = new NuixGetItemPropertiesProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(6, 2);
+        public override Version RequiredNuixVersion { get; } = new Version(6, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
 
         /// <inheritdoc />
-        public override string MethodName => "GetParticularProperties";
+        public override string FunctionName => "GetParticularProperties";
 
         /// <inheritdoc />
-        public override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(casePathArg)
 
     puts ""Finding Entities""
