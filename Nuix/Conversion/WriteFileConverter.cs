@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
-using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.General;
 using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
-    internal sealed class WriteFileConverter : CoreTypedMethodConverter<WriteFile, Unit>
+    internal sealed class WriteFileConverter : CoreUnitMethodConverter<WriteFile>
     {
         /// <inheritdoc />
         protected override IEnumerable<(RubyFunctionParameter parameter, IRunnableProcess argumentProcess)> GetArgumentBlocks(WriteFile process)
@@ -20,7 +19,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         public override string FunctionName => "WriteFile";
 
         /// <inheritdoc />
-        public override string FunctionText { get; } = $"File.write( File.join({FolderParameter.ParameterName}, {FileNameParameter.ParameterName}), {TextParameter.ParameterName})";
+        public override string FunctionText { get; } = $"   File.write( File.join({FolderParameter.ParameterName}, {FileNameParameter.ParameterName}), {TextParameter.ParameterName})";
 
 
         public static readonly RubyFunctionParameter FolderParameter = new RubyFunctionParameter("folderArg", false);

@@ -474,7 +474,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new WriteFile()
+                    new WriteFile
                     {
                         Text = new NuixCreateIrregularItemsReport
                         {
