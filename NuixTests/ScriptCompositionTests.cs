@@ -21,6 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// <inheritdoc />
         [Theory]
         [ClassData(typeof(ScriptCompositionTestCases))]
+        [Trait(NuixTestCases.Category, NuixTestCases.Integration)]
         public override void Test(string key)
         {
             base.Test(key);
