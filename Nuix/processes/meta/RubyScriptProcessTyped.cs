@@ -43,9 +43,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             if (settingsResult.IsFailure)
                 return settingsResult.ConvertFailure<T>();
 
-
             ITypedRubyBlock<T> block;
-
 
             var argsAsFunctionsResult = TryGetArgumentsAsFunctions();
             if (argsAsFunctionsResult.IsSuccess)

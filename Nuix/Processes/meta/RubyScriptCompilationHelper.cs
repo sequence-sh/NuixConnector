@@ -32,7 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             {
                 scriptStringBuilder.AppendLine($"requiredNuixVersion = '{highestVersion}'");
                 scriptStringBuilder.AppendLine("if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)");
-                scriptStringBuilder.AppendLine("\tputs \"Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required\"");
+                scriptStringBuilder.AppendLine("\traise \"Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required\"");
                 scriptStringBuilder.AppendLine("\texit");
                 scriptStringBuilder.AppendLine("end");
                 scriptStringBuilder.AppendLine();

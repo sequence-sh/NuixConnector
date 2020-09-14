@@ -77,10 +77,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                     {
                         var value = p.GetValue(process);
 
+                        var parameter = new RubyFunctionParameter(argumentAttribute.RubyName, isNullable);
+
                         if (value is IRunnableProcess rp)
                         {
-                            var parameter = new RubyFunctionParameter(argumentAttribute.RubyName, isNullable);
                             dict.Add(parameter, rp);
+                        }
+                        else
+                        {
+                            dict.Add(parameter, null);
                         }
                     }
                 }

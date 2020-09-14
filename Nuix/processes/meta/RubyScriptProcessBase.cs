@@ -87,6 +87,10 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                         return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock>>("Block was not typed"); //This will manifest as a proper error later
 
                 }
+                else if(rubyFunctionArgument.IsOptional)
+                {
+                    dictionary.Add(rubyFunctionArgument, new ConstantRubyBlock<string>(rubyFunctionArgument.ParameterName));
+                }
             }
 
             return dictionary;
@@ -105,11 +109,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
                 {
                     if (process is null)
                     {
-                        if (!argument.IsOptional)
-                        {
-                            return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, string>, IRunErrors>(
+                        return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, string>, IRunErrors>(
                                     ErrorHelper.MissingParameterError(argument.ParameterName, Name));
-                        }
                     }
                     else
                     {

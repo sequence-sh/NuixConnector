@@ -20,7 +20,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
             = new RubyFunctionParameter("booleanArg", false);
 
         /// <inheritdoc />
-        public override string FunctionText { get; } = $"return not {BooleanParameter.ParameterName}";
+        public override string FunctionText { get; } = $"   return ! {BooleanParameter.ParameterName}";
 
         /// <inheritdoc />
         public override IReadOnlyCollection<RubyFunctionParameter> Arguments { get; } = new[] {BooleanParameter};

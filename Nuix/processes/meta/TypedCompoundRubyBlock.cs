@@ -32,6 +32,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             var errors = new List<IRunErrors>();
             var resultVariableName = Function.FunctionName.ToLowerInvariant() + suffixer.CurrentSuffix;
 
+            if (Function.RequireUtilities)
+                arguments.Add(RubyScriptCompilationHelper.UtilitiesParameterName);
 
             foreach (var rubyFunctionArgument in Function.Arguments)
             {

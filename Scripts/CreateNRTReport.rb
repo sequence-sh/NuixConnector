@@ -2,7 +2,7 @@
 
 requiredNuixVersion = '7.4'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
-	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	raise "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
 end
 

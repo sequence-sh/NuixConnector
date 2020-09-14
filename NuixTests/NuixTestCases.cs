@@ -107,13 +107,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                     new AssertTrue
                     {
-                        Test = new Not
-                        {
-                            Boolean = new NuixDoesCaseExists
+                        Test = new NuixDoesCaseExists
                             {
                                 CasePath = CasePath
                             }
-                        }
                     },
                     DeleteCaseFolder),
 

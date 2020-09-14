@@ -19,9 +19,15 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             ParameterName = parameterName;
         }
 
+        public ConstantRubyBlock(string parameterName)
+        {
+            Value = Maybe<T>.None;
+            ParameterName = parameterName;
+        }
+
         public string ParameterName { get; }
-        public T Value { get; }
-        public string Name  => $"{ParameterName}({Value})";
+        public Maybe<T> Value { get; }
+        public string Name  => $"{ParameterName}({Value.Value })";
 
         /// <inheritdoc />
         public override string ToString() => Name;
@@ -32,11 +38,22 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public Result<IReadOnlyCollection<string>, IRunErrors>  TryGetArguments(Suffixer suffixer)
         {
-            var args = new List<string>
+            List<string> args;
+
+            if(Value.HasValue)
+            {
+                args = new List<string>
                         {
-                            $"--{ParameterName}" + suffixer.GetNext(),
-                            ConvertToString(Value!)
+                            $"--{ParameterName}" + suffixer.CurrentSuffix,
+                            ConvertToString(Value.Value!)
                         };
+            }
+            else
+            {
+                args = new List<string>();
+            }
+
+            
 
             return args;
         }

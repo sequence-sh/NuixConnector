@@ -31,6 +31,9 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             var arguments = new List<string>();
             var errors = new List<IRunErrors>();
 
+            if (Function.RequireUtilities)
+                arguments.Add(RubyScriptCompilationHelper.UtilitiesParameterName);
+
             foreach (var rubyFunctionArgument in Function.Arguments)
             {
                 var childSuffixer = suffixer.GetNextChild();

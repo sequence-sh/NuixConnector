@@ -18,7 +18,8 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
         /// <inheritdoc />
         public override string FunctionText { get; } = $@"if !{TestParameter.ParameterName}
-    raise 'Assertion failed'";
+    raise 'Assertion failed'
+    end";
 
         private static readonly RubyFunctionParameter TestParameter
             = new RubyFunctionParameter("testArg", false);
