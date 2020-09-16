@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Xunit;
 using Reductech.EDR.Processes;
 using Xunit;
 using Xunit.Abstractions;
@@ -47,7 +48,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 ProcessSettingsCombo.Process.Verify(ProcessSettingsCombo.Settings).ShouldBeSuccessful(x => x.AsString);
 
-                var processState = new ProcessState(NullLogger.Instance, ProcessSettingsCombo.Settings, ExternalProcessRunner.Instance);
+                var loggerFactory = new LoggerFactory(new[] { new XunitLoggerProvider(testOutputHelper) });
+
+                var logger =  loggerFactory.CreateLogger(Name);
+                var processState = new ProcessState(logger, ProcessSettingsCombo.Settings, ExternalProcessRunner.Instance);
 
                 var result = ProcessSettingsCombo.Process.Run(processState);
                 result.ShouldBeSuccessful(x => x.AsString);

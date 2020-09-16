@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
 {
+
     /// <summary>
     /// A ruby script process that returns a particular result.
     /// </summary>
@@ -69,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             var result = await processState.ExternalProcessRunner.RunExternalProcess(settingsResult.Value.NuixExeConsolePath,
                 scriptProcessLogger,
-                Name, argumentsResult.Value);
+                Name, NuixErrorHandler.Instance, argumentsResult.Value);
 
             if (result.IsFailure) return result.ConvertFailure<T>();
 
@@ -79,6 +81,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
             return new RunError("No value was returned from nuix function", Name, null, ErrorCode.ExternalProcessMissingOutput);
         }
 
+        
 
 
         /// <summary>

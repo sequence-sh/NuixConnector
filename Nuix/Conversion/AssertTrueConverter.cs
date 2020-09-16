@@ -17,7 +17,10 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         public override string FunctionName => "AssertTrue";
 
         /// <inheritdoc />
-        public override string FunctionText { get; } = $@"if !{TestParameter.ParameterName}
+        public override string FunctionText { get; } = $@"
+
+puts ""Assert #{{{TestParameter.ParameterName}}}""
+if !{TestParameter.ParameterName}  
     raise 'Assertion failed'
     end";
 

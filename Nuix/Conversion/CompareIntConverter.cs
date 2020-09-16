@@ -28,19 +28,21 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         /// <inheritdoc />
         public override string FunctionText { get; } =
             $@"
+    puts ""#{{{LeftParameter.ParameterName}}} #{{{OperatorParameter.ParameterName}}} #{{{RightParameter.ParameterName}}}""
+
     case {OperatorParameter.ParameterName}
     when '{CompareOperator.Equals.GetDisplayName()}'
-        return {LeftParameter.ParameterName} == {RightParameter.ParameterName}
+        return {LeftParameter.ParameterName}.to_i == {RightParameter.ParameterName}.to_i
     when '{CompareOperator.GreaterThan.GetDisplayName()}'
-        return {LeftParameter.ParameterName} > {RightParameter.ParameterName}
+        return {LeftParameter.ParameterName}.to_i > {RightParameter.ParameterName}.to_i
     when '{CompareOperator.LessThan.GetDisplayName()}'
-        return {LeftParameter.ParameterName} < {RightParameter.ParameterName}
+        return {LeftParameter.ParameterName}.to_i < {RightParameter.ParameterName}.to_i
     when '{CompareOperator.GreaterThanOrEqual.GetDisplayName()}'
-        return {LeftParameter.ParameterName} >= {RightParameter.ParameterName}
+        return {LeftParameter.ParameterName}.to_i >= {RightParameter.ParameterName}.to_i
     when '{CompareOperator.LessThanOrEqual.GetDisplayName()}'
-        return {LeftParameter.ParameterName} <= {RightParameter.ParameterName}
+        return {LeftParameter.ParameterName}.to_i <= {RightParameter.ParameterName}.to_i
     when '{CompareOperator.NotEquals.GetDisplayName()}'
-        return {LeftParameter.ParameterName} != {RightParameter.ParameterName}
+        return {LeftParameter.ParameterName}.to_i != {RightParameter.ParameterName}.to_i
     else
         raise '{OperatorParameter.ParameterName} not recognized'
     end

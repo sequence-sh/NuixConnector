@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public ITestOutputHelper TestOutputHelper { get; }
 
             /// <inheritdoc />
-            public async Task<Result<Unit, IRunErrors>> RunExternalProcess(string processPath, ILogger logger, string callingProcessName, IEnumerable<string> arguments)
+            public async Task<Result<Unit, IRunErrors>> RunExternalProcess(string processPath, ILogger logger, string callingProcessName, IErrorHandler errorHandler, IEnumerable<string> arguments)
             {
                 var args = arguments.ToList();
 

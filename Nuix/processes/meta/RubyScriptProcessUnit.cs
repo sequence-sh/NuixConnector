@@ -83,7 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
             var logger = new ScriptProcessLogger(processState);
 
-            var result = await processState.ExternalProcessRunner.RunExternalProcess(settings.NuixExeConsolePath, logger, name, argumentsResult.Value);
+            var result = await processState.ExternalProcessRunner.RunExternalProcess(settings.NuixExeConsolePath, logger, name, NuixErrorHandler.Instance, argumentsResult.Value);
 
             if (result.IsFailure)
                 return result;

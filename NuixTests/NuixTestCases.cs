@@ -123,7 +123,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                             {CasePath = MigrationTestCaseFolder, SearchTerm = Constant("*"), Tag = Constant("item")}
                     }, //This should fail because we can't open the case
                     new NuixMigrateCase {CasePath = MigrationTestCaseFolder},
-                    AssertCount(0, "*", MigrationTestCaseFolder),
+                    AssertCount(1, "jellyfish.txt", MigrationTestCaseFolder),
                     new DeleteItem {Path = MigrationTestCaseFolder}
                 ),
 
