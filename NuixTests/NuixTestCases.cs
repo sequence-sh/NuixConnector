@@ -53,13 +53,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static IRunnableProcess<Unit> AssertFileContains(string folderName, string fileName, string expectedContents)
         {
+            var path = Constant(Path.Combine(folderName, fileName));
 
             return new AssertTrue
             {
                 Test = new DoesFileContain
                 {
                     Text = new Constant<string>(expectedContents),
-                    Path = Constant(Path.Combine(folderName, fileName))
+                    Path = path
                 }
             };
         }
@@ -375,8 +376,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         ProductionSetName = Constant("charmset"),
                         ExportPath = Constant(ConcordanceFolder)
                     },
-                    AssertFileContains(ConcordanceFolder, "/loadfile.dat", "DOCID"),
-                    AssertFileContains(ConcordanceFolder, "/TEXT/000/000/DOC-000000001.txt", "Visible, invisible"),
+                    AssertFileContains(ConcordanceFolder, "loadfile.dat", "DOCID"),
+                    AssertFileContains(ConcordanceFolder, "TEXT/000/000/DOC-000000001.txt", "Visible, invisible"),
                     new DeleteItem {Path = new Constant<string>(ConcordanceFolder)},
                     DeleteCaseFolder
                 ),
@@ -459,7 +460,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         CasePath = CasePath,
                         OutputFolder = Constant(OutputFolder)
                     },
-                    AssertFileContains(OutputFolder, "/email.txt", "Marianne.Moore@yahoo.com"),
+                    AssertFileContains(OutputFolder, "email.txt", "Marianne.Moore@yahoo.com"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
@@ -505,7 +506,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                             SearchTerm = Constant("*")
                         }
                     },
-                    AssertFileContains(OutputFolder, "/ItemProperties.txt",
+                    AssertFileContains(OutputFolder, "ItemProperties.txt",
                         "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
 
                     DeleteCaseFolder,
