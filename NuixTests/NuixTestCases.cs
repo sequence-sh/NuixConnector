@@ -183,26 +183,26 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder
                 ),
 
-                new TestSequence("Conditionally Add file to case",
-                    DeleteCaseFolder,
-                    AssertCaseDoesNotExist,
-                    CreateCase,
-                    AssertCount(0, "*.txt"),
-                    new Conditional()
-                    {
-                        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                        ThenProcess = AddData
-                    },
-                    AssertCount(2, "*.txt"),
-                    new Conditional
-                    {
-                        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                        ThenProcess = new AssertError {Test = AddData},
-                        ElseProcess = AssertCount(2, "*.txt")
-                    },
-                    AssertCount(2, "*.txt"),
-                    DeleteCaseFolder
-                ),
+                //new TestSequence("Conditionally Add file to case",
+                //    DeleteCaseFolder,
+                //    AssertCaseDoesNotExist,
+                //    CreateCase,
+                //    AssertCount(0, "*.txt"),
+                //    new Conditional()
+                //    {
+                //        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
+                //        ThenProcess = AddData
+                //    },
+                //    AssertCount(2, "*.txt"),
+                //    new Conditional
+                //    {
+                //        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
+                //        ThenProcess = new AssertError {Test = AddData},
+                //        ElseProcess = AssertCount(2, "*.txt")
+                //    },
+                //    AssertCount(2, "*.txt"),
+                //    DeleteCaseFolder
+                //),
 
                 new TestSequence("Add concordance to case",
                     DeleteCaseFolder,
@@ -569,11 +569,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8, 2),
                     AllNuixFeatures),
-                new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7, 8),
-                    AllNuixFeatures),
+                //new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7, 8), AllNuixFeatures),
                 new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.2\nuix_console.exe", new Version(7, 2),
                     AllNuixFeatures),
-                new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(6, 2),
+                new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 6.2\nuix_console.exe", new Version(6, 2),
                     AllNuixFeatures),
             };
 
