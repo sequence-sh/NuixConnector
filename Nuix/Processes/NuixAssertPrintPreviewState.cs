@@ -40,17 +40,18 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
-        puts 'Production Set Not Found'
         the_case.close
+        raise 'Production Set Not Found'
+        
         exit
     else
         r = productionSet.getPrintPreviewState()
         the_case.close
 
-        if r == expectedStateArg
+        if r.downcase == expectedStateArg.downcase
             puts ""Print preview state was #{r}, as expected.""
         else
-            puts ""Print preview state was #{r}, but expected #{expectedStateArg}""
+            raise ""Print preview state was #{r}, but expected #{expectedStateArg}""
             exit
         end
     end";

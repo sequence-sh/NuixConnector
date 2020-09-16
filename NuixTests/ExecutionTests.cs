@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -53,7 +54,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 var logger =  loggerFactory.CreateLogger(Name);
                 var processState = new ProcessState(logger, ProcessSettingsCombo.Settings, ExternalProcessRunner.Instance);
 
+                var sw = Stopwatch.StartNew();
+
                 var result = ProcessSettingsCombo.Process.Run(processState);
+                sw.Stop();
+
+                testOutputHelper.WriteLine($"Elapsed: {sw.ElapsedMilliseconds}ms");
+
                 result.ShouldBeSuccessful(x => x.AsString);
             }
         }

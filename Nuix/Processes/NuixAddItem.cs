@@ -45,7 +45,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         profile = profileBuilder.build()
 
         if profile == nil
-            puts ""Could not find processing profile at #{processingProfilePathArg}""
+            raise ""Could not find processing profile at #{processingProfilePathArg}""
             exit
         end
 

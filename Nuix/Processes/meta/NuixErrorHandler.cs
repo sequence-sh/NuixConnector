@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Reductech.EDR.Processes;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
@@ -22,14 +23,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <inheritdoc />
         public bool ShouldIgnoreError(string s)
         {
-            if (WarningsToIgnore.Contains(s))
+            if (WarningsToIgnore.Any(s.Contains))
                 return true;
             return false;
         }
 
         private static readonly ISet<string> WarningsToIgnore = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "ERROR StatusLogger Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console..."
+                "ERROR StatusLogger Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...",
+                "warning: ambiguous Java methods found, using open(java.lang.String)",
+                "warning: multiple Java methods found, use -Xjruby.ji.ambiguous.calls.debug for backtrace. Choosing open(java.lang.String)"
             };
     }
 }
