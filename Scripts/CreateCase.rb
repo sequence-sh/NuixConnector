@@ -2,7 +2,7 @@
 
 requiredNuixVersion = '2.16'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
-	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	raise "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
 end
 
@@ -17,10 +17,10 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--nameArg0 ARG') do |o| params[:nameArg0] = o end
-	opts.on('--descriptionArg0 [ARG]') do |o| params[:descriptionArg0] = o end
-	opts.on('--investigatorArg0 ARG') do |o| params[:investigatorArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--nameArg1 [ARG]') do |o| params[:nameArg1] = o end
+	opts.on('--descriptionArg1 [ARG]') do |o| params[:descriptionArg1] = o end
+	opts.on('--investigatorArg1 [ARG]') do |o| params[:investigatorArg1] = o end
 end.parse!
 
 
@@ -36,6 +36,5 @@ def CreateCase(utilities,pathArg,nameArg,descriptionArg,investigatorArg)
 end
 
 
-
-CreateCase(utilities, params[:pathArg0], params[:nameArg0], params[:descriptionArg0], params[:investigatorArg0])
+CreateCase(utilities, params[:pathArg1], params[:nameArg1], params[:descriptionArg1], params[:investigatorArg1])
 puts '--Script Completed Successfully--'

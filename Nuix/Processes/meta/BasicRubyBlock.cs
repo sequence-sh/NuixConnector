@@ -1,50 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
-{
-    /// <summary>
-    /// A ruby block representing a single method call with no return value.
-    /// </summary>
-    internal sealed class BasicRubyBlock : AbstractBasicRubyBlock, IUnitRubyBlock
-    {
-        /// <inheritdoc />
-        public BasicRubyBlock(string blockName,
-            string functionText,
-            IReadOnlyCollection<RubyMethodParameter> methodParameters,
-            Version requiredNuixVersion,
-            IReadOnlyCollection<NuixFeature> requiredNuixFeatures) :
-            base(blockName, functionText, methodParameters, true)
-        {
-            RequiredNuixVersion = requiredNuixVersion;
-            RequiredNuixFeatures = requiredNuixFeatures;
-        }
+//namespace Reductech.EDR.Connectors.Nuix.processes.meta
+//{
+//    /// <summary>
+//    /// A ruby block representing a single method call with no return value.
+//    /// </summary>
+//    internal sealed class BasicRubyBlock : AbstractBasicRubyBlock, IUnitRubyBlock
+//    {
+//        /// <inheritdoc />
+//        public BasicRubyBlock(string blockName,
+//            string functionText,
+//            IReadOnlyCollection<RubyMethodParameter> methodParameters,
+//            Version requiredNuixVersion,
+//            IReadOnlyCollection<NuixFeature> requiredNuixFeatures) :
+//            base(blockName, functionText, methodParameters, true)
+//        {
+//            RequiredNuixVersion = requiredNuixVersion;
+//            RequiredNuixFeatures = requiredNuixFeatures;
+//        }
 
-        /// <inheritdoc />
-        public string GetBlockText(ref int blockNumber)
-        {
-            //BlockName is also the name of the method
-            var callStringBuilder = new StringBuilder(BlockName + "(");
-            callStringBuilder.Append(UtilitiesParameterName);//utilities is always first argument
+//        /// <inheritdoc />
+//        public string GetBlockText(ref int blockNumber)
+//        {
+//            var args = new List<string>();
 
-            foreach (var (argumentName, _, _) in MethodParameters)
-            {
-                var newParameterName = argumentName + blockNumber;
-                callStringBuilder.Append(", ");
+//            foreach (var (argumentName, _, _) in MethodParameters)
+//            {
+//                var newParameterName = argumentName + blockNumber;
+//                args.Add($"{RubyScriptCompilationHelper.HashSetName}[:{newParameterName}]");
+//            }
 
-                callStringBuilder.Append($"{RubyScriptCompilationHelper.HashSetName}[:{newParameterName}]");
-            }
+//            var r = GetBlockText(ref blockNumber, args);
 
-            callStringBuilder.Append(")");
-            blockNumber++;
-            return (callStringBuilder.ToString());
-        }
+//            return r;
+//        }
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; }
+//        /// <inheritdoc />
+//        public string GetBlockText(ref int blockNumber, IReadOnlyCollection<string> arguments)
+//        {
+//            //BlockName is also the name of the method
+//            var callStringBuilder = new StringBuilder(BlockName + "(");
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredNuixFeatures { get; }
-    }
-}
+
+//            callStringBuilder.AppendJoin(", ", arguments.Prepend(UtilitiesParameterName));
+
+//            callStringBuilder.Append(")");
+//            blockNumber++;
+//            return (callStringBuilder.ToString());
+//        }
+
+//        /// <inheritdoc />
+//        public override Version RequiredNuixVersion { get; }
+
+//        /// <inheritdoc />
+//        public override IReadOnlyCollection<NuixFeature> RequiredNuixFeatures { get; }
+//    }
+//}

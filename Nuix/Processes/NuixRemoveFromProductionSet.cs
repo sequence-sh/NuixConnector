@@ -22,56 +22,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(4, 2);
+        public override Version RequiredNuixVersion { get; } = new Version(4, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
         {
             NuixFeature.PRODUCTION_SET
         };
-    }
-
-
-    /// <summary>
-    /// Removes particular items from a Nuix production set.
-    /// </summary>
-    public sealed class NuixRemoveFromProductionSet : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory =>
-            NuixRemoveFromProductionSetProcessFactory.Instance;
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => "Remove items from Production Set";
-
-        /// <summary>
-        /// The production set to remove results from.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> ProductionSetName { get; set; }
-
-
-        /// <summary>
-        /// The search term to use for choosing which items to remove.
-        /// </summary>
-        [RunnableProcessProperty]
-        [DefaultValueExplanation("All items will be removed.")]
-        [Example("Tag:sushi")]
-        public IRunnableProcess<string>? SearchTerm { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string FunctionName => "RemoveFromProductionSet";
+
+        /// <inheritdoc />
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(pathArg)
 
     puts ""Searching""
@@ -98,16 +61,45 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     end
 
     the_case.close";
+    }
 
-        /// <inheritdoc />
-        public override string MethodName => "RemoveFromProductionSet";
 
+    /// <summary>
+    /// Removes particular items from a Nuix production set.
+    /// </summary>
+    public sealed class NuixRemoveFromProductionSet : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("searchArg", SearchTerm, true);
-            yield return ("productionSetNameArg", ProductionSetName, false);
-        }
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory =>
+            NuixRemoveFromProductionSetProcessFactory.Instance;
+
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The search term to use for choosing which items to remove.
+        /// </summary>
+        [RunnableProcessProperty]
+        [DefaultValueExplanation("All items will be removed.")]
+        [Example("Tag:sushi")]
+        [RubyArgument("searchArg", 2)]
+        public IRunnableProcess<string>? SearchTerm { get; set; }
+
+        /// <summary>
+        /// The production set to remove results from.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("productionSetNameArg", 3)]
+
+        public IRunnableProcess<string> ProductionSetName { get; set; }= null!;
+
     }
 }

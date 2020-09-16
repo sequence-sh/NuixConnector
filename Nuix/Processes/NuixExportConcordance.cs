@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixExportConcordance, Unit> Instance { get; } = new NuixExportConcordanceProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(7, 2); //I'm checking the production profile here
+        public override Version RequiredNuixVersion { get; } = new Version(7, 2); //I'm checking the production profile here
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -29,50 +29,12 @@ namespace Reductech.EDR.Connectors.Nuix.processes
             NuixFeature.PRODUCTION_SET,
             NuixFeature.EXPORT_ITEMS
         };
-    }
-
-
-    /// <summary>
-    /// Exports Concordance for a particular production set.
-    /// </summary>
-    public sealed class NuixExportConcordance : RubyScriptProcessUnit
-    {
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => $"Export {ProductionSetName}";
-
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        /// <summary>
-        /// The name of the production set to export.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> ProductionSetName { get; set; }
-
-        /// <summary>
-        /// Where to export the Concordance to.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> ExportPath { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
 
         /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixExportConcordanceProcessFactory.Instance;
+        public override string FunctionName => "ExportConcordance";
 
         /// <inheritdoc />
-        internal override string ScriptText =>
+        public override string RubyFunctionText =>
             @"
     the_case = utilities.case_factory.open(pathArg)
 
@@ -93,17 +55,42 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     end
 
     the_case.close";
+    }
 
+
+    /// <summary>
+    /// Exports Concordance for a particular production set.
+    /// </summary>
+    public sealed class NuixExportConcordance : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        public override string MethodName => "ExportConcordance";
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixExportConcordanceProcessFactory.Instance;
 
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
 
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("exportPathArg", ExportPath, false);
-            yield return ("productionSetNameArg", ProductionSetName, false);
-        }
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// Where to export the Concordance to.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("exportPathArg", 2)]
+        public IRunnableProcess<string> ExportPath { get; set; }= null!;
+
+        /// <summary>
+        /// The name of the production set to export.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("productionSetNameArg", 3)]
+        public IRunnableProcess<string> ProductionSetName { get; set; }= null!;
+
     }
 }

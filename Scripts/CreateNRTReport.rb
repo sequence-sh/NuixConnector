@@ -2,7 +2,7 @@
 
 requiredNuixVersion = '7.4'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
-	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	raise "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
 end
 
@@ -17,11 +17,11 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--nrtPathArg0 ARG') do |o| params[:nrtPathArg0] = o end
-	opts.on('--outputFormatArg0 ARG') do |o| params[:outputFormatArg0] = o end
-	opts.on('--outputPathArg0 ARG') do |o| params[:outputPathArg0] = o end
-	opts.on('--localResourcesUrlArg0 ARG') do |o| params[:localResourcesUrlArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--nrtPathArg1 [ARG]') do |o| params[:nrtPathArg1] = o end
+	opts.on('--outputFormatArg1 [ARG]') do |o| params[:outputFormatArg1] = o end
+	opts.on('--outputPathArg1 [ARG]') do |o| params[:outputPathArg1] = o end
+	opts.on('--localResourcesUrlArg1 [ARG]') do |o| params[:localResourcesUrlArg1] = o end
 end.parse!
 
 
@@ -53,6 +53,5 @@ def CreateNRTReport(utilities,pathArg,nrtPathArg,outputFormatArg,outputPathArg,l
 end
 
 
-
-CreateNRTReport(utilities, params[:pathArg0], params[:nrtPathArg0], params[:outputFormatArg0], params[:outputPathArg0], params[:localResourcesUrlArg0])
+CreateNRTReport(utilities, params[:pathArg1], params[:nrtPathArg1], params[:outputFormatArg1], params[:outputPathArg1], params[:localResourcesUrlArg1])
 puts '--Script Completed Successfully--'

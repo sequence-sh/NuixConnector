@@ -1,18 +1,18 @@
-﻿#GetParticularProperties
+﻿#BinToHex
 
 requiredNuixVersion = '6.2'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
-	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	raise "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
 end
 
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--casePathArg0 ARG') do |o| params[:casePathArg0] = o end
-	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-	opts.on('--propertyRegexArg0 ARG') do |o| params[:propertyRegexArg0] = o end
-	opts.on('--valueRegexArg0 [ARG]') do |o| params[:valueRegexArg0] = o end
+	opts.on('--casePathArg1a [ARG]') do |o| params[:casePathArg1a] = o end
+	opts.on('--searchArg1a [ARG]') do |o| params[:searchArg1a] = o end
+	opts.on('--propertyRegexArg1a [ARG]') do |o| params[:propertyRegexArg1a] = o end
+	opts.on('--valueRegexArg1a [ARG]') do |o| params[:valueRegexArg1a] = o end
 end.parse!
 
 
@@ -51,13 +51,13 @@ def GetParticularProperties(utilities,casePathArg,searchArg,propertyRegexArg,val
     return text
 end
 
-
-def binToHex(s)
-  suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
-  '0x' + suffix
+def BinToHex(s)
+suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
+'0x' + suffix
 end
 
 
-
-result0 = GetParticularProperties(utilities, params[:casePathArg0], params[:searchArg0], params[:propertyRegexArg0], params[:valueRegexArg0])
-puts "--Final Result: #{binToHex(result0)}"
+GetParticularProperties1a = GetParticularProperties(utilities, params[:casePathArg1a], params[:searchArg1a], params[:propertyRegexArg1a], params[:valueRegexArg1a])
+bintohex1 = BinToHex(GetParticularProperties1a)
+bintohex1
+puts "--Final Result: #{bintohex1}"

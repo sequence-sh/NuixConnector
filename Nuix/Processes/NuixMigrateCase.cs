@@ -22,10 +22,21 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixMigrateCase, Unit> Instance { get; } = new NuixMigrateCaseProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(3, 0);
+        public override Version RequiredNuixVersion { get; } = new Version(3, 0);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+
+        /// <inheritdoc />
+        public override string FunctionName => "MigrateCase";
+
+        /// <inheritdoc />
+        public override string RubyFunctionText => @"
+    puts ""Opening Case, migrating if necessary""
+
+    options = {migrate: true}
+
+    the_case = utilities.case_factory.open(pathArg, options)";
     }
 
 
@@ -35,7 +46,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     public sealed class NuixMigrateCase : RubyScriptProcessUnit
     {
         /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixMigrateCaseProcessFactory.Instance;
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixMigrateCaseProcessFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -43,30 +54,8 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [Required]
         [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string>  CasePath { get; set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        [RubyArgument("pathArg", 1)]
 
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => "Migrate Case";
-
-        /// <inheritdoc />
-        internal override string ScriptText => @"
-    puts ""Opening Case, migrating if necessary""
-
-    options = {migrate: true}
-
-    the_case = utilities.case_factory.open(pathArg, options)";
-
-        /// <inheritdoc />
-        public override string MethodName => "MigrateCase";
-
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-        }
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
     }
 }

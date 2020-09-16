@@ -21,71 +21,17 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixCreateNRTReport, Unit> Instance { get; } = new NuixCreateNRTReportProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(7, 4);
+        public override Version RequiredNuixVersion { get; } = new Version(7, 4);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
             new List<NuixFeature> { NuixFeature.ANALYSIS };
-    }
-
-    /// <summary>
-    /// Creates a report using an NRT file.
-    /// </summary>
-    public sealed class NuixCreateNRTReport : RubyScriptProcessUnit
-    {
-        /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixCreateNRTReportProcessFactory.Instance;
-
-
-        ///// <inheritdoc />
-        //public override string GetName() => "Create NRT Report";
-
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-
-        /// <summary>
-        /// The NRT file path.
-        /// </summary>
-        [Required]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> NRTPath { get; set; }
-
-        /// <summary>
-        /// The format of the report file that will be created.
-        /// </summary>
-        [Required]
-        [Example("PDF")]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> OutputFormat { get; set; }
-
-        /// <summary>
-        /// The path to the local resources folder.
-        /// To load the logo's etc.
-        /// </summary>
-        [Required]
-        [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> LocalResourcesURL { get; set; }
-
-        /// <summary>
-        /// The path to output the file at.
-        /// </summary>
-        [Required]
-        [Example("C:/Temp/report.pdf")]
-        [RunnableProcessProperty]
-        public IRunnableProcess<string> OutputPath { get; set; }
-
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <inheritdoc />
-        internal override string ScriptText =>
+        public override string FunctionName => "CreateNRTReport";
+
+        /// <inheritdoc />
+        public override string RubyFunctionText =>
             @"
     the_case = utilities.case_factory.open(pathArg)
     puts 'Generating NRT Report:'
@@ -110,18 +56,60 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     )
 
     the_case.close";
+    }
 
+    /// <summary>
+    /// Creates a report using an NRT file.
+    /// </summary>
+    public sealed class NuixCreateNRTReport : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        public override string MethodName => "CreateNRTReport";
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixCreateNRTReportProcessFactory.Instance;
 
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("nrtPathArg", NRTPath, false);
-            yield return ("outputFormatArg", OutputFormat, false);
-            yield return ("outputPathArg", OutputPath, false);
-            yield return ("localResourcesUrlArg", LocalResourcesURL, false);
-        }
+
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The NRT file path.
+        /// </summary>
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("nrtPathArg", 2)]
+        public IRunnableProcess<string> NRTPath { get; set; } = null!;
+
+        /// <summary>
+        /// The format of the report file that will be created.
+        /// </summary>
+        [Required]
+        [Example("PDF")]
+        [RunnableProcessProperty]
+        [RubyArgument("outputFormatArg", 3)]
+        public IRunnableProcess<string> OutputFormat { get; set; } = null!;
+
+        /// <summary>
+        /// The path to output the file at.
+        /// </summary>
+        [Required]
+        [Example("C:/Temp/report.pdf")]
+        [RunnableProcessProperty]
+        [RubyArgument("outputPathArg", 4)]
+        public IRunnableProcess<string> OutputPath { get; set; } = null!;
+
+        /// <summary>
+        /// The path to the local resources folder.
+        /// To load the logo's etc.
+        /// </summary>
+        [Required]
+        [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
+        [RunnableProcessProperty]
+        [RubyArgument("localResourcesUrlArg", 5)]
+        public IRunnableProcess<string> LocalResourcesURL { get; set; } = null!;
     }
 }

@@ -21,51 +21,20 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixGeneratePrintPreviews, Unit> Instance { get; } = new NuixGeneratePrintPreviewsProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredVersion { get; } = new Version(5, 2);
+        public override Version RequiredNuixVersion { get; } = new Version(5, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
         {
             NuixFeature.PRODUCTION_SET
         };
-    }
 
-    /// <summary>
-    /// Generates print previews for items in a production set.
-    /// </summary>
-    public sealed class NuixGeneratePrintPreviews : RubyScriptProcessUnit
-    {
         /// <inheritdoc />
-        public override IRubyScriptProcessFactory RubyScriptProcessFactory => NuixGeneratePrintPreviewsProcessFactory.Instance;
-
-
-        ///// <inheritdoc />
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public override string GetName() => "Generate print previews";
-
-        /// <summary>
-        /// The production set to generate print previews for.
-        /// </summary>
-
-        [Required]
-        [RunnableProcessProperty]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public IRunnableProcess<string> ProductionSetName { get; set; }
-
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-
-        [Required]
-        [RunnableProcessProperty]
-        [Example("C:/Cases/MyCase")]
-        public IRunnableProcess<string> CasePath { get; set; }
-
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        public override string FunctionName => "GeneratePrintPreviews";
 
 
         /// <inheritdoc />
-        internal override string ScriptText => @"
+        public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
@@ -83,15 +52,34 @@ namespace Reductech.EDR.Connectors.Nuix.processes
     end
 
     the_case.close";
+    }
 
+    /// <summary>
+    /// Generates print previews for items in a production set.
+    /// </summary>
+    public sealed class NuixGeneratePrintPreviews : RubyScriptProcessUnit
+    {
         /// <inheritdoc />
-        public override string MethodName => "GeneratePrintPreviews";
+        public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => NuixGeneratePrintPreviewsProcessFactory.Instance;
 
-        /// <inheritdoc />
-        internal override IEnumerable<(string argumentName, IRunnableProcess? argumentValue, bool valueCanBeNull)> GetArgumentValues()
-        {
-            yield return ("pathArg", CasePath, false);
-            yield return ("productionSetNameArg", ProductionSetName, false);
-        }
+        /// <summary>
+        /// The path to the case.
+        /// </summary>
+
+        [Required]
+        [RunnableProcessProperty]
+        [Example("C:/Cases/MyCase")]
+        [RubyArgument("pathArg", 1)]
+        public IRunnableProcess<string> CasePath { get; set; } = null!;
+
+        /// <summary>
+        /// The production set to generate print previews for.
+        /// </summary>
+
+        [Required]
+        [RunnableProcessProperty]
+        [RubyArgument("productionSetNameArg", 2)]
+
+        public IRunnableProcess<string> ProductionSetName { get; set; } = null!;
     }
 }

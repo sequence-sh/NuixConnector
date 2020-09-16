@@ -2,7 +2,7 @@
 
 requiredNuixVersion = '3.6'
 if Gem::Version.new(NUIX_VERSION) < Gem::Version.new(requiredNuixVersion)
-	puts "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
+	raise "Nuix Version is #{NUIX_VERSION} but #{requiredNuixVersion} is required"
 	exit
 end
 
@@ -17,9 +17,9 @@ end
 require 'optparse'
 params = {}
 OptionParser.new do |opts|
-	opts.on('--pathArg0 ARG') do |o| params[:pathArg0] = o end
-	opts.on('--searchArg0 ARG') do |o| params[:searchArg0] = o end
-	opts.on('--custodianArg0 ARG') do |o| params[:custodianArg0] = o end
+	opts.on('--pathArg1 [ARG]') do |o| params[:pathArg1] = o end
+	opts.on('--searchArg1 [ARG]') do |o| params[:searchArg1] = o end
+	opts.on('--custodianArg1 [ARG]') do |o| params[:custodianArg1] = o end
 end.parse!
 
 
@@ -46,6 +46,5 @@ def AssignCustodian(utilities,pathArg,searchArg,custodianArg)
 end
 
 
-
-AssignCustodian(utilities, params[:pathArg0], params[:searchArg0], params[:custodianArg0])
+AssignCustodian(utilities, params[:pathArg1], params[:searchArg1], params[:custodianArg1])
 puts '--Script Completed Successfully--'
