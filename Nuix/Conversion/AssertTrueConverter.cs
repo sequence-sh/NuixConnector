@@ -20,12 +20,12 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         public override string FunctionText { get; } = $@"
 
 puts ""Assert #{{{TestParameter.ParameterName}}}""
-if !{TestParameter.ParameterName}  
+if !{TestParameter.ParameterName}
     raise 'Assertion failed'
     end";
 
         private static readonly RubyFunctionParameter TestParameter
-            = new RubyFunctionParameter("testArg", false);
+            = new RubyFunctionParameter("testArg", false, null);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<RubyFunctionParameter> Arguments { get; } = new[] {TestParameter};

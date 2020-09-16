@@ -164,18 +164,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RubyArgument("passwordFilePathArg", 8)]
         public IRunnableProcess<string>? PasswordFilePath { get; set; }
 
-        /// <inheritdoc />
-        public override Version? RunTimeNuixVersion
-        {
-            get
-            {
-                if (ProcessingProfilePath != null || ProcessingProfileName != null)
-                    return new Version(7, 6);
-                if (PasswordFilePath != null)
-                    return new Version(7, 6);
-                return null;
-            }
-        }
 
         /// <inheritdoc />
         public override Result<Unit, IRunErrors> VerifyThis

@@ -23,8 +23,8 @@ $@"
     fileText = File.read({PathParameter.ParameterName})
     return fileText.include? {TextParameter.ParameterName}";
 
-        public static readonly RubyFunctionParameter PathParameter = new RubyFunctionParameter("pathArg", false);
-        public static readonly RubyFunctionParameter TextParameter = new RubyFunctionParameter("textArg", false);
+        public static readonly RubyFunctionParameter PathParameter = new RubyFunctionParameter("pathArg", false, null);
+        public static readonly RubyFunctionParameter TextParameter = new RubyFunctionParameter("textArg", false, null);
 
 
         /// <inheritdoc />

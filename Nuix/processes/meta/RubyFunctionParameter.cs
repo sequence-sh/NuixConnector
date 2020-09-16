@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using Reductech.EDR.Processes.Attributes;
 using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.processes.meta
@@ -15,10 +16,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// <summary>
         /// Creates a new RubyFunctionParameter.
         /// </summary>
-        public RubyFunctionParameter(string parameterName, bool isOptional)
+        public RubyFunctionParameter(string parameterName, bool isOptional, Version? requiredNuixVersion)
         {
             ParameterName = parameterName;
             IsOptional = isOptional;
+            RequiredNuixVersion = requiredNuixVersion;
         }
 
         /// <inheritdoc />
@@ -35,6 +37,11 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// False if this argument is required.
         /// </summary>
         public bool IsOptional { get; }
+
+        /// <summary>
+        /// The required Nuix version for this parameter.
+        /// </summary>
+        public Version? RequiredNuixVersion { get; }
 
         /// <inheritdoc />
         public bool Equals(RubyFunctionParameter other) => ParameterName == other.ParameterName;
@@ -75,18 +82,19 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
                     if (isRunnableProcess)
                     {
+                        var version = p.GetCustomAttributes<RequiredVersionAttribute>()
+                        .Where(x => x.SoftwareName.Equals("Nuix", StringComparison.OrdinalIgnoreCase))
+                        .Select(x => x.RequiredVersion)
+                        .FirstOrDefault();
+
+                        var parameter = new RubyFunctionParameter(argumentAttribute.RubyName, isNullable, version);
+
                         var value = p.GetValue(process);
 
-                        var parameter = new RubyFunctionParameter(argumentAttribute.RubyName, isNullable);
-
                         if (value is IRunnableProcess rp)
-                        {
                             dict.Add(parameter, rp);
-                        }
                         else
-                        {
                             dict.Add(parameter, null);
-                        }
                     }
                 }
             }
@@ -110,8 +118,14 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
                 if (argumentAttribute != null)
                 {
+                    var version = p.GetCustomAttributes<RequiredVersionAttribute>()
+                        .Where(x => x.SoftwareName.Equals("Nuix", StringComparison.OrdinalIgnoreCase))
+                        .Select(x => x.RequiredVersion)
+                        .FirstOrDefault();
+
+
                     if (isRunnableProcess)
-                        list.Add((new RubyFunctionParameter(argumentAttribute.RubyName, isNullable),
+                        list.Add((new RubyFunctionParameter(argumentAttribute.RubyName, isNullable, version),
                             argumentAttribute.Order));
                     else
 

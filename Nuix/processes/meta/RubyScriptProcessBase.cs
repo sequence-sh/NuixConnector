@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Conversion;
@@ -39,28 +40,35 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         public override IRunnableProcessFactory RunnableProcessFactory => RubyScriptProcessFactory;
 
 
-        /// <summary>
-        /// Required version of nuix, if it was changed by the parameters.
-        /// </summary>
-        public virtual Version? RunTimeNuixVersion => null;
+        ///// <summary>
+        ///// Required version of nuix, if it was changed by the parameters.
+        ///// </summary>
+        //public virtual Version? RunTimeNuixVersion => null;
 
         /// <inheritdoc />
         public override IEnumerable<Requirement> RuntimeRequirements
         {
             get
             {
-                if (RunTimeNuixVersion != null)
+                var highestRequiredVersion = GetArgumentValues().Keys
+                    .Select(x => x.RequiredNuixVersion)
+                    .Where(x=>x != null)
+                    .OrderByDescending(x=>x)
+                    .FirstOrDefault();
+
+                if (highestRequiredVersion != null)
                 {
                     yield return new Requirement
                     {
-                        MinVersion = RunTimeNuixVersion,
+                        MinVersion = highestRequiredVersion,
                         Name = NuixProcessName
                     };
                 }
             }
         }
 
-        internal IReadOnlyDictionary<RubyFunctionParameter, IRunnableProcess?> GetArgumentValues() => RubyFunctionParameter.GetRubyFunctionArguments(this);
+        internal IReadOnlyDictionary<RubyFunctionParameter, IRunnableProcess?> GetArgumentValues() =>
+            RubyFunctionParameter.GetRubyFunctionArguments(this);
 
         /// <inheritdoc />
         public abstract Result<IRubyBlock> TryConvert();

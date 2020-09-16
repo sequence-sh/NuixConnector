@@ -168,9 +168,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         [RubyArgument("limitArg", 8)]
         public IRunnableProcess<int>? Limit { get; set; }
 
-        /// <inheritdoc />
-        public override Version? RunTimeNuixVersion => ProductionProfilePath == null? new Version(7, 2) : new Version(7,6);
-
 
         /// <inheritdoc />
         public override Result<Unit, IRunErrors> VerifyThis

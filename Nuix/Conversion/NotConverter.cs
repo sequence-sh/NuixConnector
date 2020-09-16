@@ -17,7 +17,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         public override string FunctionName => "Negate";
 
         private static readonly RubyFunctionParameter BooleanParameter
-            = new RubyFunctionParameter("booleanArg", false);
+            = new RubyFunctionParameter("booleanArg", false, null);
 
         /// <inheritdoc />
         public override string FunctionText { get; } = $"   return ! {BooleanParameter.ParameterName}";

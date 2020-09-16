@@ -30,7 +30,7 @@ namespace Reductech.EDR.Connectors.Nuix.RubyFunctions
 
         /// <inheritdoc />
         public IReadOnlyCollection<RubyFunctionParameter> Arguments { get; } =
-            new[] {new RubyFunctionParameter("s", false)};
+            new[] {new RubyFunctionParameter("s", false, null)};
 
         /// <inheritdoc />
         public Version RequiredNuixVersion { get; }= new Version(5, 0);

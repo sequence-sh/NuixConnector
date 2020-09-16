@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.General;
@@ -8,9 +7,23 @@ using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
-    internal sealed class CompareIntConverter : CompareConverter<int> {}
-    internal sealed class CompareStringConverter : CompareConverter<string> {}
-    internal sealed class CompareBoolConverter : CompareConverter<bool> {}
+    internal sealed class CompareIntConverter : CompareConverter<int>
+    {
+        /// <inheritdoc />
+        protected override string ConvertFuncName => "to_i";
+    }
+
+    internal sealed class CompareStringConverter : CompareConverter<string>
+    {
+        /// <inheritdoc />
+        protected override string ConvertFuncName => "to_s";
+    }
+
+    internal sealed class CompareBoolConverter : CompareConverter<bool>
+    {
+        /// <inheritdoc />
+        protected override string ConvertFuncName => "to_s.downcase";
+    }
 
     internal abstract class CompareConverter<T> : CoreTypedMethodConverter<Compare<T>, bool> where T : IComparable
     {
@@ -25,32 +38,34 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         /// <inheritdoc />
         public override string FunctionName => "Compare";
 
+        protected abstract string ConvertFuncName { get; }
+
         /// <inheritdoc />
-        public override string FunctionText { get; } =
+        public override string FunctionText =>
             $@"
     puts ""#{{{LeftParameter.ParameterName}}} #{{{OperatorParameter.ParameterName}}} #{{{RightParameter.ParameterName}}}""
 
     case {OperatorParameter.ParameterName}
     when '{CompareOperator.Equals.GetDisplayName()}'
-        return {LeftParameter.ParameterName}.to_i == {RightParameter.ParameterName}.to_i
+        return {LeftParameter.ParameterName}.{ConvertFuncName} == {RightParameter.ParameterName}.{ConvertFuncName}
     when '{CompareOperator.GreaterThan.GetDisplayName()}'
-        return {LeftParameter.ParameterName}.to_i > {RightParameter.ParameterName}.to_i
+        return {LeftParameter.ParameterName}.{ConvertFuncName} > {RightParameter.ParameterName}.{ConvertFuncName}
     when '{CompareOperator.LessThan.GetDisplayName()}'
-        return {LeftParameter.ParameterName}.to_i < {RightParameter.ParameterName}.to_i
+        return {LeftParameter.ParameterName}.{ConvertFuncName} < {RightParameter.ParameterName}.{ConvertFuncName}
     when '{CompareOperator.GreaterThanOrEqual.GetDisplayName()}'
-        return {LeftParameter.ParameterName}.to_i >= {RightParameter.ParameterName}.to_i
+        return {LeftParameter.ParameterName}.{ConvertFuncName} >= {RightParameter.ParameterName}.{ConvertFuncName}
     when '{CompareOperator.LessThanOrEqual.GetDisplayName()}'
-        return {LeftParameter.ParameterName}.to_i <= {RightParameter.ParameterName}.to_i
+        return {LeftParameter.ParameterName}.{ConvertFuncName} <= {RightParameter.ParameterName}.{ConvertFuncName}
     when '{CompareOperator.NotEquals.GetDisplayName()}'
-        return {LeftParameter.ParameterName}.to_i != {RightParameter.ParameterName}.to_i
+        return {LeftParameter.ParameterName}.{ConvertFuncName} != {RightParameter.ParameterName}.{ConvertFuncName}
     else
         raise '{OperatorParameter.ParameterName} not recognized'
     end
 ";
 
-        public static readonly RubyFunctionParameter LeftParameter = new RubyFunctionParameter("leftArg", false);
-        public static readonly RubyFunctionParameter OperatorParameter = new RubyFunctionParameter("operatorArg", false);
-        public static readonly RubyFunctionParameter RightParameter = new RubyFunctionParameter("rightArg", false);
+        public static readonly RubyFunctionParameter LeftParameter = new RubyFunctionParameter("leftArg", false, null);
+        public static readonly RubyFunctionParameter OperatorParameter = new RubyFunctionParameter("operatorArg", false, null);
+        public static readonly RubyFunctionParameter RightParameter = new RubyFunctionParameter("rightArg", false, null);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<RubyFunctionParameter> Arguments { get; } =
