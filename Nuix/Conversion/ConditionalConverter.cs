@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
 using Reductech.EDR.Processes;
@@ -60,6 +61,10 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
             /// <inheritdoc />
             public override string Name => $"If {IfBlock.Name} then {ThenBlock.Name}";
+
+            /// <inheritdoc />
+            public override IEnumerable<IRubyFunction> FunctionDefinitions =>
+                IfBlock.FunctionDefinitions.Concat(ThenBlock.FunctionDefinitions);
 
             /// <inheritdoc />
             public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
@@ -128,6 +133,12 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
                 return Unit.Default;
             }
+
+            /// <inheritdoc />
+            public override IEnumerable<IRubyFunction> FunctionDefinitions =>
+                IfBlock.FunctionDefinitions
+                    .Concat(ThenBlock.FunctionDefinitions)
+                    .Concat(ElseBlock.FunctionDefinitions);
 
 
             /// <summary>

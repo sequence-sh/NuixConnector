@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.processes.meta;
@@ -22,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
 
         /// <inheritdoc />
-        public IEnumerable<IRubyFunction> FunctionDefinitions { get; } = ImmutableList<IRubyFunction>.Empty;
+        public abstract IEnumerable<IRubyFunction> FunctionDefinitions { get; }// = ImmutableList<IRubyFunction>.Empty;
 
         /// <summary>
         /// The constituent blocks in the order that they will be called.

@@ -40,6 +40,9 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
             public override string Name => $"AssertError({TestBlock.Name})";
 
             /// <inheritdoc />
+            public override IEnumerable<IRubyFunction> FunctionDefinitions => TestBlock.FunctionDefinitions;
+
+            /// <inheritdoc />
             public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
             {
                 stringBuilder.AppendLine("begin");
