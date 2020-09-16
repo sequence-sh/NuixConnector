@@ -99,7 +99,7 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Compiles a ruby script for any number of unit blocks
         /// </summary>
-        public static Result<string, IRunErrors> CompileScript(string methodName, IUnitRubyBlock block)
+        public static Result<string, IRunErrors> CompileScript(IUnitRubyBlock block)
         {
             var scriptBuilder = new StringBuilder();
 

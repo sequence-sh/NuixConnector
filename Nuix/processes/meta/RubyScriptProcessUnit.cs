@@ -23,7 +23,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
 
         /// <inheritdoc />
         public override Result<string, IRunErrors> TryCompileScript(ProcessState processState) => TryGetRubyBlock(processState)
-            .Bind(b=>ScriptGenerator.CompileScript(RubyScriptProcessFactory.RubyFunction.FunctionName, b));
+            .Bind(ScriptGenerator.CompileScript);
 
 
         /// <inheritdoc />
@@ -74,7 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
     {
         public static async Task<Result<Unit, IRunErrors>> RunAsync(string name, IUnitRubyBlock block, ProcessState processState, INuixProcessSettings settings)
         {
-            var argumentsResult = ScriptGenerator.CompileScript(name, block)
+            var argumentsResult = ScriptGenerator.CompileScript(block)
                     .Bind(st => RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settings, block)).Result;
 
             if (argumentsResult.IsFailure)
