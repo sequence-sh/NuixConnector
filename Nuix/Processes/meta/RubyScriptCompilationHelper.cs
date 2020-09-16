@@ -131,6 +131,6 @@ namespace Reductech.EDR.Connectors.Nuix.processes.meta
         /// </summary>
         public static string GetArgumentValueString(string argumentName) => $"{HashSetName}[:{argumentName}]";
 
-        
+
     }
 }
