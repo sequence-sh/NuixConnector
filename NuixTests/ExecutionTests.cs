@@ -14,6 +14,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     /// Tests freezing and execution - much slower
     /// </summary>
     /// <returns></returns>
+    [Collection("RequiresNuixLicense")]
     public class ExecutionTests : ExecutionTestCases
     {
         public ExecutionTests(ITestOutputHelper testOutputHelper) => TestOutputHelper = testOutputHelper;
