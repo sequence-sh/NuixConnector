@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
+    [Collection("RequiresNuixLicense")]
     public class ScriptCompositionTests : ScriptCompositionTestCases
     {
         public ScriptCompositionTests(ITestOutputHelper testOutputHelper) => TestOutputHelper = testOutputHelper;
