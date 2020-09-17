@@ -77,7 +77,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
                 stringBuilder.AppendLine($"if {ifResult.Value}");
 
-                var thenResult = ThenBlock.TryWriteBlockLines(suffixer, stringBuilder.Indent());
+                var thenResult = ThenBlock.TryWriteBlockLines(suffixer.GetNextChild(), stringBuilder.Indent());
 
                 if (thenResult.IsFailure)
                     return thenResult;

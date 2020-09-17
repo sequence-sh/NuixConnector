@@ -183,26 +183,26 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     DeleteCaseFolder
                 ),
 
-                //new TestSequence("Conditionally Add file to case",
-                //    DeleteCaseFolder,
-                //    AssertCaseDoesNotExist,
-                //    CreateCase,
-                //    AssertCount(0, "*.txt"),
-                //    new Conditional()
-                //    {
-                //        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                //        ThenProcess = AddData
-                //    },
-                //    AssertCount(2, "*.txt"),
-                //    new Conditional
-                //    {
-                //        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                //        ThenProcess = new AssertError {Test = AddData},
-                //        ElseProcess = AssertCount(2, "*.txt")
-                //    },
-                //    AssertCount(2, "*.txt"),
-                //    DeleteCaseFolder
-                //),
+                new TestSequence("Conditionally Add file to case",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new Conditional()
+                    {
+                        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
+                        ThenProcess = AddData
+                    },
+                    AssertCount(2, "*.txt"),
+                    new Conditional
+                    {
+                        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
+                        ThenProcess = new AssertError {Test = AddData},
+                        ElseProcess = AssertCount(2, "*.txt")
+                    },
+                    AssertCount(2, "*.txt"),
+                    DeleteCaseFolder
+                ),
 
                 new TestSequence("Add concordance to case",
                     DeleteCaseFolder,
