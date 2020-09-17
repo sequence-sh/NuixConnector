@@ -9,6 +9,7 @@ using Xunit;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
+    [Collection("RequiresNuixLicense")]
     public class VersionCheckingTests
     {
         [Fact]

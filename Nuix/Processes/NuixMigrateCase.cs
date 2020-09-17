@@ -22,7 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public static RubyScriptProcessFactory<NuixMigrateCase, Unit> Instance { get; } = new NuixMigrateCaseProcessFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new Version(3, 0);
+        public override Version RequiredNuixVersion { get; } = new Version(7, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();

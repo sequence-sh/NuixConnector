@@ -218,7 +218,7 @@ Imports the given document IDs into this production set. Only works if this prod
 
 **NuixMigrateCase**
 
-*(Nuix, 5.0, , )*
+*(Nuix, 7.2, , )*
 
 Migrates a case to the latest version if necessary.
 
