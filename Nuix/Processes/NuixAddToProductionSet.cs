@@ -170,29 +170,23 @@ namespace Reductech.EDR.Connectors.Nuix.processes
 
 
         /// <inheritdoc />
-        public override Result<Unit, IRunErrors> VerifyThis
+        public override Result<Unit, IRunErrors> VerifyThis(IProcessSettings settings)
         {
-            get
-            {
-                if (ProductionProfileName != null && ProductionProfilePath != null)
-                    return new RunError(
-                        $"Only one of {nameof(ProductionProfileName)} and {nameof(ProductionProfilePath)} may be set.",
-                        Name,
-                        null,
-                        ErrorCode.ConflictingParameters);
+            if (ProductionProfileName != null && ProductionProfilePath != null)
+                return new RunError(
+                    $"Only one of {nameof(ProductionProfileName)} and {nameof(ProductionProfilePath)} may be set.",
+                    Name,
+                    null,
+                    ErrorCode.ConflictingParameters);
 
-                if (ProductionProfileName == null && ProductionProfilePath == null)
-                    return new RunError(
-                        $"Either {nameof(ProductionProfileName)} or {nameof(ProductionProfilePath)} must be set.",
-                        Name,
-                        null,
-                        ErrorCode.MissingParameter);
+            if (ProductionProfileName == null && ProductionProfilePath == null)
+                return new RunError(
+                    $"Either {nameof(ProductionProfileName)} or {nameof(ProductionProfilePath)} must be set.",
+                    Name,
+                    null,
+                    ErrorCode.MissingParameter);
 
-                return Unit.Default;
-            }
+            return base.VerifyThis(settings);
         }
-
-
-
     }
 }

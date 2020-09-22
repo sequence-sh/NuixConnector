@@ -115,19 +115,16 @@ namespace Reductech.EDR.Connectors.Nuix.processes
         public IRunnableProcess<string>? OCRProfilePath { get; set; }
 
         /// <inheritdoc />
-        public override Result<Unit, IRunErrors> VerifyThis
+        public override Result<Unit, IRunErrors> VerifyThis(IProcessSettings settings)
         {
-            get
-            {
-                if (OCRProfileName != null && OCRProfilePath != null)
-                    return new RunError(
-                        $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.",
-                        Name,
-                        null,
-                        ErrorCode.ConflictingParameters);
+            if (OCRProfileName != null && OCRProfilePath != null)
+                return new RunError(
+                    $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.",
+                    Name,
+                    null,
+                    ErrorCode.ConflictingParameters);
 
-                return Unit.Default;
-            }
+            return base.VerifyThis(settings);
         }
     }
 }
