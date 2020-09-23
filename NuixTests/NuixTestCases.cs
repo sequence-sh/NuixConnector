@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Reductech.EDR.Connectors.Nuix.enums;
-using Reductech.EDR.Connectors.Nuix.processes;
-using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Connectors.Nuix.Enums;
+using Reductech.EDR.Connectors.Nuix.Processes;
+using Reductech.EDR.Connectors.Nuix.Processes.Meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.General;
 using Reductech.EDR.Processes.Internal;

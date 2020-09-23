@@ -7,7 +7,7 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
-using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Connectors.Nuix.Processes.Meta;
 using Reductech.EDR.Connectors.Nuix.RubyFunctions;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
