@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Connectors.Nuix.Processes.Meta;
 using Reductech.EDR.Processes.Internal;
 using Xunit;
 
@@ -29,7 +29,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [MemberData(nameof(TestCases))]
         public void TestRequirements((string? expectedError, NuixProcessSettings settings) args)
         {
-            var process = new processes.NuixSearchAndTag{SearchTerm = new Constant<string>("a") , CasePath = new Constant<string>("b") , Tag = new Constant<string>("c") };
+            var process = new Processes.NuixSearchAndTag{SearchTerm = new Constant<string>("a") , CasePath = new Constant<string>("b") , Tag = new Constant<string>("c") };
 
             var result = process.Verify(args.settings);
 

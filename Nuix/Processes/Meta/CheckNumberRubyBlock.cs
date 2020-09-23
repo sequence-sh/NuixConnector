@@ -3,7 +3,7 @@
 //using System.Linq;
 //using System.Text;
 
-//namespace Reductech.EDR.Connectors.Nuix.processes.meta
+//namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 //{
 //    internal sealed class CheckNumberRubyBlock : ITypedRubyBlock<bool>
 //    {

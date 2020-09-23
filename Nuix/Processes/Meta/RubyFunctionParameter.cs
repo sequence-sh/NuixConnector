@@ -6,7 +6,7 @@ using System.Reflection;
 using Reductech.EDR.Processes.Attributes;
 using Reductech.EDR.Processes.Internal;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// The argument to a ruby function.

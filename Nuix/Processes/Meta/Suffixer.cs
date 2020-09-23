@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// Apply arbitrary unique deterministic suffixes to terms within scripts

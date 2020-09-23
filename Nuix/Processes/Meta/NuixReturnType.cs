@@ -1,4 +1,4 @@
-﻿//namespace Reductech.EDR.Connectors.Nuix.processes.meta
+﻿//namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 //{
 //    /// <summary>
 //    /// The return type of a nuix method, within nuix

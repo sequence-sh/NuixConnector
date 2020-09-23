@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Connectors.Nuix.Processes.Meta;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 

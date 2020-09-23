@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Reductech.EDR.Processes;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// Error Handler for running Nuix.exe

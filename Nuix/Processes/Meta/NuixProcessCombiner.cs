@@ -6,7 +6,7 @@ using Reductech.EDR.Connectors.Nuix.Conversion;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// Combines multiple nuix processes into a single process.

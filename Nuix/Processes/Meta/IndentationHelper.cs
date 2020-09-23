@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// A string builder that can accept an indentation level.

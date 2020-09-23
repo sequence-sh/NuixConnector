@@ -3,7 +3,7 @@ using System.Linq;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Processes.Internal;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// A ruby block that executes a function where every child function is another block.

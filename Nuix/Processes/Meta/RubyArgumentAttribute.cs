@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// Indicates that this argument is to be passed to a ruby function.

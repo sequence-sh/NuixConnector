@@ -2,7 +2,7 @@
 //using System.Collections.Generic;
 //using System.Text;
 
-//namespace Reductech.EDR.Connectors.Nuix.processes.meta
+//namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 //{
 //    /// <summary>
 //    /// A ruby block representing a single method call with a return value of a particular type.

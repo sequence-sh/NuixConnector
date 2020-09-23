@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// Helper methods relating to Nuix Versions-

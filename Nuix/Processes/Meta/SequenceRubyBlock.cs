@@ -4,7 +4,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// A ruby block that runs several ruby blocks in sequence.

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Reductech.EDR.Connectors.Nuix.enums
+namespace Reductech.EDR.Connectors.Nuix.Enums
 {
     /// <summary>
     /// Selects the method of sorting items during production set sort ordering

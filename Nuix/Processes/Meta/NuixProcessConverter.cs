@@ -5,7 +5,7 @@
 //using Reductech.EDR.Processes.Immutable;
 //using Reductech.EDR.Processes.Mutable;
 
-//namespace Reductech.EDR.Connectors.Nuix.processes.meta //TODO redo this
+//namespace Reductech.EDR.Connectors.Nuix.Processes.Meta //TODO redo this
 //{
 //    internal sealed class NuixProcessConverter : IProcessConverter
 //    {

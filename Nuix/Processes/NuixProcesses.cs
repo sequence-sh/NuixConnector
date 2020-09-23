@@ -1,13 +1,13 @@
 ﻿//using System.Collections.Generic;
 //using System.Diagnostics;
 //using System.Linq;
-//using Reductech.EDR.Connectors.Nuix.processes.meta;
+//using Reductech.EDR.Connectors.Nuix.Processes.Meta;
 //using Reductech.EDR.Processes;
 //using Reductech.EDR.Processes.Internal;
 //using Reductech.EDR.Processes.Serialization;
 //using Reductech.Utilities.InstantConsole;
 
-//namespace Reductech.EDR.Connectors.Nuix.processes
+//namespace Reductech.EDR.Connectors.Nuix.Processes
 //{
 //    /// <summary>
 //    /// All nuix processes.

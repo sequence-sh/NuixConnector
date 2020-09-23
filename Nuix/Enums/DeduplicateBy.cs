@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Reductech.EDR.Connectors.Nuix.enums
+namespace Reductech.EDR.Connectors.Nuix.Enums
 {
     /// <summary>
     /// Whether to deduplicate as a family or individual

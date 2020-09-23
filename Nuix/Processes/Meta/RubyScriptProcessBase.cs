@@ -7,7 +7,7 @@ using Reductech.EDR.Connectors.Nuix.Conversion;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
 
-namespace Reductech.EDR.Connectors.Nuix.processes.meta
+namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
     /// <summary>
     /// The base of a ruby script process.

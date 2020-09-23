@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.processes.meta;
+using Reductech.EDR.Connectors.Nuix.Processes.Meta;
 using Reductech.EDR.Processes.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
