@@ -4,8 +4,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Processes.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
@@ -20,7 +20,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
                     GetArgumentBlocks(tProcess).Select(x =>
                             RubyBlockConversion.TryConvert(x.argumentProcess, x.parameter.ParameterName)
                                 .BindCast<IRubyBlock, ITypedRubyBlock>()
-                                .Map<ITypedRubyBlock, (RubyFunctionParameter parameter, ITypedRubyBlock rubyBlock)>(rubyBlock => (x.parameter, rubyBlock))
+                                .Map(rubyBlock => (x.parameter, rubyBlock))
 
                         ).Combine()
                         .Map(enumerable =>

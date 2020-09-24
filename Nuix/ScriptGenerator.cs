@@ -11,6 +11,7 @@ using Reductech.EDR.Connectors.Nuix.Processes.Meta;
 using Reductech.EDR.Connectors.Nuix.RubyFunctions;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Processes.Util;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix

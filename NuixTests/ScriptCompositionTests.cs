@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Processes.Util;
 using Xunit;
 using Xunit.Abstractions;
 
