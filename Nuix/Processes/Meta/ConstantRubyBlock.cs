@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Processes;
 using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Processes.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
 {
@@ -53,7 +53,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes.Meta
                 args = new List<string>();
             }
 
-            
+
 
             return args;
         }
