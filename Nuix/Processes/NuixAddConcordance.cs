@@ -76,7 +76,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case to import into.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -85,14 +85,14 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The name of the folder to create.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("folderNameArg", 2)]
         public IRunnableProcess<string> FolderName { get; set; } = null!;
 
         /// <summary>
         /// A description to add to the folder.
         /// </summary>
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("folderDescriptionArg", 3)]
         public IRunnableProcess<string>? Description { get; set; }
 
@@ -100,7 +100,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The name of the custodian to assign the folder to.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("folderCustodianArg", 4)]
         public IRunnableProcess<string> Custodian { get; set; } = null!;
 
@@ -108,7 +108,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path of the concordance file to import.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("C:/MyConcordance.dat")]
         [RubyArgument("filePathArg", 5)]
         public IRunnableProcess<string> FilePath { get; set; } = null!;
@@ -117,7 +117,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The concordance date format to use.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
         [RubyArgument("dateFormatArg", 6)]
         public IRunnableProcess<string> ConcordanceDateFormat { get; set; } = null!;
@@ -126,7 +126,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The name of the concordance profile to use.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("MyProfile")]
         [RubyArgument("profileNameArg", 7)]
         public IRunnableProcess<string> ConcordanceProfileName { get; set; } = null!;

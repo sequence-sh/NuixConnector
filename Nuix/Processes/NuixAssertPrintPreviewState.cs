@@ -71,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -80,14 +80,14 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The production set to reorder.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("productionSetNameArg", 2)]
         public IRunnableProcess<string> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// The expected print preview state of the production set;
         /// </summary>
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [DefaultValueExplanation(nameof(PrintPreviewState.All))]
         [RubyArgument("expectedStateArg", 3)]
 
