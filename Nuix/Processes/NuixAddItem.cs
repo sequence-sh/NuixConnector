@@ -95,7 +95,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -104,14 +104,14 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The name of the folder to create.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("folderNameArg", 2)]
         public IRunnableProcess<string> FolderName { get; set; } = null!;
 
         /// <summary>
         /// The description of the new folder.
         /// </summary>
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("folderDescriptionArg", 3)]
         public IRunnableProcess<string>? Description { get; set; }
 
@@ -119,7 +119,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The custodian to assign to the new folder.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("folderCustodianArg", 4)]
         public IRunnableProcess<string> Custodian { get; set; } = null!;
 
@@ -129,7 +129,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path of the file or directory to add to the case.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Data/File.txt")]
         [RubyArgument("filePathArg", 5)]
         public IRunnableProcess<string> Path { get; set; } = null!;
@@ -139,7 +139,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
 
         [RequiredVersion("Nuix", "7.6")]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("processingProfileNameArg", 6)]
@@ -149,7 +149,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the Processing profile to use
         /// </summary>
         [RequiredVersion("Nuix", "7.6")]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Profiles/MyProcessingProfile.xml")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("processingProfilePathArg", 7)]
@@ -160,7 +160,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path of a file containing passwords to use for decryption.
         /// </summary>
         [RequiredVersion("Nuix", "7.6")]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Data/Passwords.txt")]
         [RubyArgument("passwordFilePathArg", 8)]
         public IRunnableProcess<string>? PasswordFilePath { get; set; }

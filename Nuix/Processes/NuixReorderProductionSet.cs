@@ -73,7 +73,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -82,7 +82,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The production set to reorder.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("productionSetNameArg", 2)]
 
         public IRunnableProcess<string> ProductionSetName { get; set; } = null!;
@@ -91,7 +91,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The method of sorting items during the renumbering.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
         [RubyArgument("sortOrderArg", 3)]
         public IRunnableProcess<ProductionSetSortOrder> SortOrder { get; set; } = new Constant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);

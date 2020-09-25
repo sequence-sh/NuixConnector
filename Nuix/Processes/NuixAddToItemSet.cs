@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path of the case to search.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -89,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The term to search for.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("searchArg", 2)]
         public IRunnableProcess<string> SearchTerm { get; set; }= null!;
 
@@ -98,14 +98,14 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
 
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("itemSetNameArg", 3)]
         public IRunnableProcess<string> ItemSetName { get; set; }= null!;
 
         /// <summary>
         /// The means of deduplicating items by key and prioritizing originals in a tie-break.
         /// </summary>
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("deduplicationArg", 4)]
         public IRunnableProcess<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
 
@@ -113,7 +113,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The description of the item set.
         /// </summary>
 
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("descriptionArg", 5)]
         public IRunnableProcess<string>? ItemSetDescription { get; set; }
 
@@ -121,7 +121,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// Whether to deduplicate as a family or individual.
         /// </summary>
 
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("deduplicateByArg", 6)]
         public IRunnableProcess<DeduplicateBy>? DeduplicateBy { get; set; }
 
@@ -130,7 +130,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
         /// </summary>
 
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("custodianRankingArg", 7)]
         public IRunnableProcess<List<string>>? CustodianRanking { get; set; }
 
@@ -138,7 +138,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// <summary>
         /// How to order the items to be added to the item set.
         /// </summary>
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("name ASC, item-date DESC")]
         [RubyArgument("orderArg", 8)]
         public IRunnableProcess<string>? Order { get; set; }
@@ -146,7 +146,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// <summary>
         /// The maximum number of items to add to the item set.
         /// </summary>
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("limitArg", 9)]
         public IRunnableProcess<int>? Limit { get; set; }
     }

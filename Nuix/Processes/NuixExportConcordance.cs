@@ -71,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
 
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// Where to export the Concordance to.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("exportPathArg", 2)]
         public IRunnableProcess<string> ExportPath { get; set; }= null!;
 
@@ -88,7 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The name of the production set to export.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("productionSetNameArg", 3)]
         public IRunnableProcess<string> ProductionSetName { get; set; }= null!;
 

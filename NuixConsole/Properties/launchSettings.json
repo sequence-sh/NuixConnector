@@ -2,7 +2,7 @@
   "profiles": {
     "NuixClientConsole": {
       "commandName": "Project",
-      "commandLineArgs": "GenerateScripts -folderpath C:\\Users\\wainw\\source\\repos\\Reductech\\nuix\\Scripts"
+      "commandLineArgs": "documentation -p \"C:\\Users\\wainw\\source\\repos\\Reductech\\nuix\\NuixConsole\\Documentation.md\""
     }
   }
 }
