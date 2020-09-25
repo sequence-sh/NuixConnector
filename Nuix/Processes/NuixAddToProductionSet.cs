@@ -103,7 +103,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
 
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -112,7 +112,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The term to search for
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("searchArg", 2)]
         public IRunnableProcess<string> SearchTerm { get; set; } = null!;
 
@@ -120,14 +120,14 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The production set to add results to. Will be created if it doesn't already exist
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("productionSetNameArg", 3)]
         public IRunnableProcess<string> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// Description of the production set.
         /// </summary>
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("descriptionArg", 4)]
         public IRunnableProcess<string>? Description { get; set; }
 
@@ -137,7 +137,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
 
         [RequiredVersion("Nuix", "7.2")]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("productionProfileNameArg", 5)]
@@ -148,7 +148,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// Either this or the ProductionProfileName must be set.
         /// </summary>
         [RequiredVersion("Nuix", "7.6")]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("C:/Profiles/MyProcessingProfile.xml")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("productionProfilePathArg", 6)]
@@ -157,7 +157,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// <summary>
         /// How to order the items to be added to the production set.
         /// </summary>
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("name ASC, item-date DESC")]
         [RubyArgument("orderArg", 7)]
         public IRunnableProcess<string>? Order { get; set; }
@@ -165,7 +165,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// <summary>
         /// The maximum number of items to add to the production set.
         /// </summary>
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("limitArg", 8)]
         public IRunnableProcess<int>? Limit { get; set; }
 

@@ -82,7 +82,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -92,7 +92,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
         [Required]
         [Example("*.txt")]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("searchArg", 2)]
         public IRunnableProcess<string> SearchTerm { get; set; }= null!;
 
@@ -102,7 +102,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
         [Example("Date")]
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("propertyRegexArg", 3)]
         public IRunnableProcess<string> PropertyRegex { get; set; }= null!;
 
@@ -111,7 +111,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// If this is set, only values which match this regex will be returned, and only the contents of the first capture group.
         /// </summary>
         [Example(@"(199\d)")]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("valueRegexArg", 4)]
         public IRunnableProcess<string>? ValueRegex { get; set; }
 

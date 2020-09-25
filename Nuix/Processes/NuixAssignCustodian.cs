@@ -69,7 +69,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -79,7 +79,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The term to search for.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [Example("*.txt")]
         [RubyArgument("searchArg", 2)]
         public IRunnableProcess<string> SearchTerm { get; set; } = null!;
@@ -88,7 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The custodian to assign to found results.
         /// </summary>
         [Required]
-        [RunnableProcessPropertyAttribute]
+        [RunnableProcessProperty]
         [RubyArgument("custodianArg", 3)]
         public IRunnableProcess<string> Custodian { get; set; } = null!;
     }
