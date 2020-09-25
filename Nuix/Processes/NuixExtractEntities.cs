@@ -91,7 +91,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -101,7 +101,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
         [Required]
         [Example("C:/Output")]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("outputFolderPathArg", 2)]
         public IRunnableProcess<string> OutputFolder { get; set; } = null!;
     }

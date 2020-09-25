@@ -68,7 +68,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -77,7 +77,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The production set to get names from.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("productionSetNameArg", 2)]
         public IRunnableProcess<string> ProductionSetName { get; set; }= null!;
 
@@ -87,7 +87,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// Specifies the file path of the document ID list.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("dataPathArg", 3)]
         public IRunnableProcess<string> DataPath { get; set; }= null!;
     }

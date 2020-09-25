@@ -78,7 +78,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -86,7 +86,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// <summary>
         /// The search term to use for choosing which items to remove.
         /// </summary>
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [DefaultValueExplanation("All items will be removed.")]
         [Example("Tag:sushi")]
         [RubyArgument("searchArg", 2)]
@@ -96,7 +96,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The production set to remove results from.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("productionSetNameArg", 3)]
 
         public IRunnableProcess<string> ProductionSetName { get; set; }= null!;

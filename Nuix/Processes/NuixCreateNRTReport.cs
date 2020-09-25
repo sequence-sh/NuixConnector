@@ -71,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The NRT file path.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("nrtPathArg", 2)]
         public IRunnableProcess<string> NRTPath { get; set; } = null!;
 
@@ -89,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
         [Required]
         [Example("PDF")]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("outputFormatArg", 3)]
         public IRunnableProcess<string> OutputFormat { get; set; } = null!;
 
@@ -98,7 +98,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
         [Required]
         [Example("C:/Temp/report.pdf")]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("outputPathArg", 4)]
         public IRunnableProcess<string> OutputPath { get; set; } = null!;
 
@@ -108,7 +108,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// </summary>
         [Required]
         [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("localResourcesUrlArg", 5)]
         public IRunnableProcess<string> LocalResourcesURL { get; set; } = null!;
     }

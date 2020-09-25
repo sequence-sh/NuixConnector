@@ -79,7 +79,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the case.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -88,7 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The term to use for searching for files to OCR.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [DefaultValueExplanation("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))")]
         [RubyArgument("searchTermArg", 2)]
         public IRunnableProcess<string> SearchTerm { get; set; } =
@@ -98,7 +98,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The name of the OCR profile to use.
         /// This cannot be set at the same time as OCRProfilePath.
         /// </summary>
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("MyOcrProfile")]
         [RubyArgument("ocrProfileArg", 3)]
@@ -108,7 +108,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// Path to the OCR profile to use.
         /// This cannot be set at the same times as OCRProfileName.
         /// </summary>
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RequiredVersion("Nuix", "7.6")]
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("C:\\Profiles\\MyProfile.xml")]

@@ -55,7 +55,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The path to the folder to create the case in.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IRunnableProcess<string> CasePath { get; set; } = null!;
@@ -64,7 +64,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// The name of the case to create.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("nameArg", 2)]
         public IRunnableProcess<string> CaseName { get; set; }= null!;
 
@@ -72,7 +72,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// <summary>
         /// Description of the case.
         /// </summary>
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("descriptionArg", 3)]
         public IRunnableProcess<string>? Description { get; set; }
 
@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Processes
         /// Name of the investigator.
         /// </summary>
         [Required]
-        [RunnableProcessProperty]
+        [RunnableProcessPropertyAttribute]
         [RubyArgument("investigatorArg", 4)]
         public IRunnableProcess<string> Investigator { get; set; }= null!;
     }
