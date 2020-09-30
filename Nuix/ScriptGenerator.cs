@@ -7,11 +7,11 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.RubyFunctions;
-using Reductech.EDR.Processes;
-using Reductech.EDR.Processes.Internal;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Core;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
 using YamlDotNet.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix
@@ -24,10 +24,10 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Create a new ScriptGenerator.
         /// </summary>
-        /// <param name="nuixProcessSettings"></param>
-        public ScriptGenerator(INuixProcessSettings nuixProcessSettings) => _nuixProcessSettings = nuixProcessSettings;
+        /// <param name="nuixSettings"></param>
+        public ScriptGenerator(INuixSettings nuixSettings) => _nuixSettings = nuixSettings;
 
-        private readonly INuixProcessSettings _nuixProcessSettings;
+        private readonly INuixSettings _nuixSettings;
 
         /// <summary>
         /// Generates ruby scripts for all RubyScriptProcesses in the AppDomain.
@@ -38,7 +38,7 @@ namespace Reductech.EDR.Connectors.Nuix
         {
             var processTypes = AppDomain.CurrentDomain
                 .GetAssemblies().SelectMany(x=>x.GetTypes())
-                .Where(t => typeof(IRubyScriptProcess).IsAssignableFrom(t))
+                .Where(t => typeof(IRubyScriptStep).IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract).ToList();
 
             foreach (var processType in processTypes)
@@ -49,11 +49,11 @@ namespace Reductech.EDR.Connectors.Nuix
                     var instance = Activator.CreateInstance(processType);
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                    var process = (IRubyScriptProcess) instance;
+                    var process = (IRubyScriptStep) instance;
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
                     if (process == null)
-                        return $"Could not create process '{processType.Name}'";
+                        return $"Could not create step '{processType.Name}'";
 
                     foreach (var propertyInfo in processType.GetProperties()
                         .Where(x=>x.GetCustomAttributes(typeof(YamlMemberAttribute)).Any()))
@@ -153,11 +153,11 @@ namespace Reductech.EDR.Connectors.Nuix
             return scriptBuilder.ToString();
         }
 
-        private Result<string> TryGenerateScript(IRubyScriptProcess process)
+        private Result<string> TryGenerateScript(IRubyScriptStep step)
         {
-            var state = new ProcessState(NullLogger.Instance, _nuixProcessSettings, ExternalProcessRunner.Instance);
+            var state = new StateMonad(NullLogger.Instance, _nuixSettings, ExternalProcessRunner.Instance);
 
-            var result = process.TryCompileScript(state).MapFailure(x=>x.AsString);
+            var result = step.TryCompileScript(state).MapFailure(x=>x.AsString);
             return result;
 
         }

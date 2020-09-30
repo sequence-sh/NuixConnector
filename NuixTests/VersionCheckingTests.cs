@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
+using Reductech.EDR.Core.Util;
 using Xunit;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -19,30 +19,30 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             var baseSettings = NuixTestCases.NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
 
-            var superSettings = new NuixProcessSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100, 0), baseSettings.NuixFeatures);
+            var superSettings = new NuixSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100, 0), baseSettings.NuixFeatures);
 
             baseSettings.Should().NotBeNull();
 
             var process = new DoNothing { MyRequiredVersion = new Version(100, 0) };
 
-            var result = process.Run(new ProcessState(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance));
+            var result = process.Run(new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance));
 
             result.ShouldBeFailure(x => x.AsString, "Nuix Version is");
         }
 
 
-        internal class DoNothing : RubyScriptProcessUnit
+        internal class DoNothing : RubyScriptStepUnit
         {
             /// <inheritdoc />
-            public override IRubyScriptProcessFactory<Unit> RubyScriptProcessFactory => new DoNothingProcessFactory(MyRequiredVersion, MyRequiredFeatures);
+            public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => new DoNothingStepFactory(MyRequiredVersion, MyRequiredFeatures);
 
             public Version? MyRequiredVersion { get; set; }
 
             public List<NuixFeature>? MyRequiredFeatures { get; set; }
 
-            internal class DoNothingProcessFactory : RubyScriptProcessFactory<DoNothing, Unit>
+            internal class DoNothingStepFactory : RubyScriptStepFactory<DoNothing, Unit>
             {
-                public DoNothingProcessFactory(Version? myRequiredVersion, List<NuixFeature>? myRequiredFeatures)
+                public DoNothingStepFactory(Version? myRequiredVersion, List<NuixFeature>? myRequiredFeatures)
                 {
                     MyRequiredVersion = myRequiredVersion;
                     MyRequiredFeatures = myRequiredFeatures;

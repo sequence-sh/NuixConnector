@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
@@ -14,31 +14,31 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
     public static class RubyBlockConversion
     {
         /// <summary>
-        /// Tries to convert a process into a collection of ruby blocks
+        /// Tries to convert a step into a collection of ruby blocks
         /// </summary>
-        public static Result<IRubyBlock> TryConvert(IRunnableProcess process, string parameterName)
+        public static Result<IRubyBlock> TryConvert(IStep step, string parameterName)
         {
-            if (process is IConstantRunnableProcess)
+            if (step is IConstantStep)
             {
-                var dynamicConstant = ConvertConstant(process as dynamic, parameterName);
+                var dynamicConstant = ConvertConstant(step as dynamic, parameterName);
                 var constantRubyBlock = (IRubyBlock)dynamicConstant;
 
                 return Result.Success(constantRubyBlock);
             }
-            if (process is BlockProcess blockProcess)
+            if (step is BlockStep blockProcess)
                 return Result.Success<IRubyBlock>(blockProcess.Block);
-            if (process is IRubyScriptProcess rubyScriptProcess)
+            if (step is IRubyScriptStep rubyScriptProcess)
                 return rubyScriptProcess.TryConvert();
 
             foreach (var coreMethodConverter in CoreMethodConverters.Value)
             {
-                var r = coreMethodConverter.Convert(process);
+                var r = coreMethodConverter.Convert(step);
                 if (r.IsSuccess)
                     return r;
             }
 
 
-            return Result.Failure<IRubyBlock>($"Could not convert '{process.Name}' to ruby block.");
+            return Result.Failure<IRubyBlock>($"Could not convert '{step.Name}' to ruby block.");
         }
 
         //TODO many special cases

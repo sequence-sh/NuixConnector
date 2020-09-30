@@ -6,9 +6,9 @@ using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Reductech.EDR.Processes;
-using Reductech.EDR.Processes.Internal;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Core;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -34,16 +34,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     {
         /// <inheritdoc />
         protected override IEnumerable<ITestCase> TestCases =>
-            NuixTestCases.GetProcessSettingsCombos().Select(x => new ScriptCompositionTest(x));
+            NuixTestCases.GetSettingsCombos().Select(x => new ScriptCompositionTest(x));
 
         private class ScriptCompositionTest : ITestCase
         {
-            public ScriptCompositionTest(ProcessSettingsCombo processSettingsCombo) => ProcessSettingsCombo = processSettingsCombo;
+            public ScriptCompositionTest(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 
             /// <inheritdoc />
-            public string Name => ProcessSettingsCombo.ToString();
+            public string Name => StepSettingsCombo.ToString();
 
-            public ProcessSettingsCombo ProcessSettingsCombo { get; }
+            public StepSettingsCombo StepSettingsCombo { get; }
 
             /// <inheritdoc />
             public void Execute(ITestOutputHelper testOutputHelper)
@@ -51,13 +51,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 var externalProcessRunner = new TestExternalProcessRunner(testOutputHelper);
 
 
-                ProcessSettingsCombo.IsProcessCompatible.Should().BeTrue("Process should be compatible");
+                StepSettingsCombo.IsStepCompatible.Should().BeTrue("Step should be compatible");
 
-                ProcessSettingsCombo.Process.Verify(ProcessSettingsCombo.Settings).ShouldBeSuccessful(x => x.AsString);
+                StepSettingsCombo.Step.Verify(StepSettingsCombo.Settings).ShouldBeSuccessful(x => x.AsString);
 
-                var processState = new ProcessState(NullLogger.Instance, ProcessSettingsCombo.Settings, externalProcessRunner);
+                var stateMonad = new StateMonad(NullLogger.Instance, StepSettingsCombo.Settings, externalProcessRunner);
 
-                var result = ProcessSettingsCombo.Process.Run(processState);
+                var result = StepSettingsCombo.Step.Run(stateMonad);
                 result.ShouldBeSuccessful(x => x.AsString);
 
                 externalProcessRunner.TimesCalled.Should().Be(1, "exactly one script should be called");

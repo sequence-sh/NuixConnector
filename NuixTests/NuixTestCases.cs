@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Reductech.EDR.Connectors.Nuix.Enums;
-using Reductech.EDR.Connectors.Nuix.Processes;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.General;
-using Reductech.EDR.Processes.Internal;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.General;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -20,38 +20,38 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly string GeneralDataFolder = Path.Combine(Directory.GetCurrentDirectory(), "IntegrationTest");
 
-        private static readonly IRunnableProcess<string> CasePath = Constant(Path.Combine(GeneralDataFolder, "TestCase"));
+        private static readonly IStep<string> CasePath = Constant(Path.Combine(GeneralDataFolder, "TestCase"));
         private static readonly string OutputFolder = Path.Combine(GeneralDataFolder, "OutputFolder");
         private static readonly string ConcordanceFolder = Path.Combine(GeneralDataFolder, "ConcordanceFolder");
-        private static readonly IRunnableProcess<string> NRTFolder = Constant(Path.Combine(GeneralDataFolder, "NRT"));
-        private static readonly IRunnableProcess<string> MigrationTestCaseFolder = Constant(Path.Combine(GeneralDataFolder, "MigrationTest"));
+        private static readonly IStep<string> NRTFolder = Constant(Path.Combine(GeneralDataFolder, "NRT"));
+        private static readonly IStep<string> MigrationTestCaseFolder = Constant(Path.Combine(GeneralDataFolder, "MigrationTest"));
 
-        private static readonly IRunnableProcess<string> DataPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data"));
+        private static readonly IStep<string> DataPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data"));
 
-        private static readonly IRunnableProcess<string> EncryptedDataPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData"));
+        private static readonly IStep<string> EncryptedDataPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData"));
 
-        private static readonly IRunnableProcess<string> PasswordFilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt"));
+        private static readonly IStep<string> PasswordFilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt"));
 
         //private static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultOCRProfile.xml");
-        private static readonly IRunnableProcess<string> DefaultProcessingProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml"));
-        private static readonly IRunnableProcess<string> TestProductionProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml"));
+        private static readonly IStep<string> DefaultProcessingProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml"));
+        private static readonly IStep<string> TestProductionProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml"));
 
-        private static readonly IRunnableProcess<string> PoemTextImagePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png"));
-        private static readonly IRunnableProcess<string> ConcordancePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat"));
-        private static readonly IRunnableProcess<string> MigrationPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip"));
+        private static readonly IStep<string> PoemTextImagePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png"));
+        private static readonly IStep<string> ConcordancePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat"));
+        private static readonly IStep<string> MigrationPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip"));
 
-        private static readonly IRunnableProcess<Unit> DeleteCaseFolder = new DeleteItem { Path = CasePath };
-        private static readonly IRunnableProcess<Unit> DeleteOutputFolder = new DeleteItem { Path = Constant(OutputFolder) };
-        private static readonly IRunnableProcess<Unit> CreateOutputFolder = new CreateDirectory { Path = Constant(OutputFolder) };
-        private static readonly IRunnableProcess<Unit> AssertCaseDoesNotExist = new AssertTrue { Test = new Not { Boolean = new NuixDoesCaseExists { CasePath = CasePath } } };
-        private static readonly IRunnableProcess<Unit> CreateCase = new NuixCreateCase
+        private static readonly IStep<Unit> DeleteCaseFolder = new DeleteItem { Path = CasePath };
+        private static readonly IStep<Unit> DeleteOutputFolder = new DeleteItem { Path = Constant(OutputFolder) };
+        private static readonly IStep<Unit> CreateOutputFolder = new CreateDirectory { Path = Constant(OutputFolder) };
+        private static readonly IStep<Unit> AssertCaseDoesNotExist = new AssertTrue { Test = new Not { Boolean = new NuixDoesCaseExists { CasePath = CasePath } } };
+        private static readonly IStep<Unit> CreateCase = new NuixCreateCase
         {
             CaseName = Constant("Integration Test Case"),
             CasePath = CasePath,
             Investigator = Constant("Mark")
         };
 
-        private static IRunnableProcess<Unit> AssertFileContains(string folderName, string fileName, string expectedContents)
+        private static IStep<Unit> AssertFileContains(string folderName, string fileName, string expectedContents)
         {
             var path = Constant(Path.Combine(folderName, fileName));
 
@@ -65,15 +65,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             };
         }
 
-        private static IRunnableProcess<T> Constant<T>(T c) => new Constant<T>(c);
+        private static IStep<T> Constant<T>(T c) => new Constant<T>(c);
 
-        private static IRunnableProcess<Unit> AssertCount(int expected, string searchTerm, IRunnableProcess<string>? casePath = null) =>
+        private static IStep<Unit> AssertCount(int expected, string searchTerm, IStep<string>? casePath = null) =>
             new AssertTrue
             {
                 Test = CompareItemsCount(expected, CompareOperator.Equals, searchTerm, casePath)
             };
 
-        private static IRunnableProcess<bool> CompareItemsCount(int right, CompareOperator op, string searchTerm, IRunnableProcess<string>? casePath)
+        private static IStep<bool> CompareItemsCount(int right, CompareOperator op, string searchTerm, IStep<string>? casePath)
         {
             return new Compare<int>
             {
@@ -87,7 +87,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             };
         }
 
-        private static readonly IRunnableProcess<Unit> AddData = new NuixAddItem
+        private static readonly IStep<Unit> AddData = new NuixAddItem
         {
             CasePath = CasePath,
             Custodian = Constant("Mark"),
@@ -95,7 +95,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             FolderName = Constant("New Folder")
         };
 
-        private static readonly IReadOnlyCollection<TestSequence> TestProcesses =
+        private static readonly IReadOnlyCollection<TestSequence> TestSequences =
             new List<TestSequence>
             {
                 //TODO AnnotateDocumentIdList
@@ -191,14 +191,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new Conditional()
                     {
                         Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                        ThenProcess = AddData
+                        ThenStep = AddData
                     },
                     AssertCount(2, "*.txt"),
                     new Conditional
                     {
                         Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                        ThenProcess = new AssertError {Test = AddData},
-                        ElseProcess = AssertCount(2, "*.txt")
+                        ThenStep = new AssertError {Test = AddData},
+                        ElseStep = AssertCount(2, "*.txt")
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
@@ -527,7 +527,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         internal class TestSequence
         {
-            public TestSequence(string name, params IRunnableProcess<Unit>[] steps)
+            public TestSequence(string name, params IStep<Unit>[] steps)
             {
                 Name = name;
                 Sequence = new Sequence()
@@ -548,14 +548,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         }
 
 
-        public static IEnumerable<ProcessSettingsCombo> GetProcessSettingsCombos()
+        public static IEnumerable<StepSettingsCombo> GetSettingsCombos()
         {
             foreach (var nuixSettings in NuixSettingsList)
             {
-                foreach (var testSequence in TestProcesses)
+                foreach (var testSequence in TestSequences)
                 {
-                    var combo = new ProcessSettingsCombo(testSequence.Name, testSequence.Sequence, nuixSettings);
-                    if (combo.IsProcessCompatible)
+                    var combo = new StepSettingsCombo(testSequence.Name, testSequence.Sequence, nuixSettings);
+                    if (combo.IsStepCompatible)
                         yield return combo;
                 }
             }
@@ -564,15 +564,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private static readonly List<NuixFeature> AllNuixFeatures = Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
 
-        public static readonly IReadOnlyCollection<INuixProcessSettings> NuixSettingsList =
-            new List<INuixProcessSettings>
+        public static readonly IReadOnlyCollection<INuixSettings> NuixSettingsList =
+            new List<INuixSettings>
             {
-                new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8, 2),
+                new NuixSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8, 2),
                     AllNuixFeatures),
-                //new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7, 8), AllNuixFeatures),
-                new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 7.2\nuix_console.exe", new Version(7, 2),
+                //new NuixSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7, 8), AllNuixFeatures),
+                new NuixSettings(true, @"C:\Program Files\Nuix\Nuix 7.2\nuix_console.exe", new Version(7, 2),
                     AllNuixFeatures),
-                new NuixProcessSettings(true, @"C:\Program Files\Nuix\Nuix 6.2\nuix_console.exe", new Version(6, 2),
+                new NuixSettings(true, @"C:\Program Files\Nuix\Nuix 6.2\nuix_console.exe", new Version(6, 2),
                     AllNuixFeatures),
             };
 

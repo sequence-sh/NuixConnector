@@ -4,7 +4,7 @@
     startTime="Mon Mar 23 17:50:40 2020 (Europe/London)"
     endTime="Mon Mar 23 17:50:57 2020 (Europe/London)"
     exportDuration="16s"
-    processingDuration="16s">
+    stepingDuration="16s">
 
     <ExportConfiguration>
 

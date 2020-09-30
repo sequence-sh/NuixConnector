@@ -1,26 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.General;
-using Reductech.EDR.Processes.Internal;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.General;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
     internal sealed class ConditionalConverter : ICoreMethodConverter
     {
         /// <inheritdoc />
-        public Result<IRubyBlock> Convert(IRunnableProcess process)
+        public Result<IRubyBlock> Convert(IStep step)
         {
-            if (process is Conditional conditional)
+            if (step is Conditional conditional)
             {
-                if (conditional.ElseProcess != null)
+                if (conditional.ElseStep != null)
                 {
                     var conversionResult =
                         RubyBlockConversion.TryConvert(conditional.Condition, nameof(conditional.Condition)).BindCast<IRubyBlock, ITypedRubyBlock<bool>>()
-                            .Compose(()=> RubyBlockConversion.TryConvert(conditional.ThenProcess, nameof(conditional.ThenProcess)).BindCast<IRubyBlock, IUnitRubyBlock>(),
-                                ()=> RubyBlockConversion.TryConvert(conditional.ElseProcess, nameof(conditional.ElseProcess)).BindCast<IRubyBlock, IUnitRubyBlock>())
+                            .Compose(()=> RubyBlockConversion.TryConvert(conditional.ThenStep, nameof(conditional.ThenStep)).BindCast<IRubyBlock, IUnitRubyBlock>(),
+                                ()=> RubyBlockConversion.TryConvert(conditional.ElseStep, nameof(conditional.ElseStep)).BindCast<IRubyBlock, IUnitRubyBlock>())
                             .Map(x=> new IfThenElseBlock(x.Item1, x.Item2, x.Item3) as IRubyBlock);
 
                     return conversionResult;
@@ -29,7 +29,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
                 {
                     var conversionResult =
                         RubyBlockConversion.TryConvert(conditional.Condition, nameof(conditional.Condition)).BindCast<IRubyBlock, ITypedRubyBlock<bool>>()
-                            .Compose(() => RubyBlockConversion.TryConvert(conditional.ThenProcess, nameof(conditional.ThenProcess)).BindCast<IRubyBlock, IUnitRubyBlock>())
+                            .Compose(() => RubyBlockConversion.TryConvert(conditional.ThenStep, nameof(conditional.ThenStep)).BindCast<IRubyBlock, IUnitRubyBlock>())
                             .Map(x => new IfThenBlock(x.Item1, x.Item2) as IRubyBlock);
 
                     return conversionResult;

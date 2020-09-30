@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.General;
-using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.General;
+using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
     internal sealed class AssertTrueConverter : CoreUnitMethodConverter<AssertTrue>
     {
         /// <inheritdoc />
-        protected override IEnumerable<(RubyFunctionParameter parameter, IRunnableProcess argumentProcess)> GetArgumentBlocks(AssertTrue process)
+        protected override IEnumerable<(RubyFunctionParameter parameter, IStep argumentProcess)> GetArgumentBlocks(AssertTrue process)
         {
             yield return (TestParameter, process.Test);
         }
