@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixConsole", "NuixConsole\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuix", "Nuix\Nuix.csproj", "{DC18DF1A-570F-4380-A266-3EF9CA771699}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuixTests", "NuixTests\NuixTests.csproj", "{B242ECE0-86EB-4295-BDF4-20D419308253}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuix.Tests", "Nuix.Tests\Nuix.Tests.csproj", "{B242ECE0-86EB-4295-BDF4-20D419308253}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74B1B4BD-D3BB-4210-99C1-7E577ED3E18C}"
 	ProjectSection(SolutionItems) = preProject
