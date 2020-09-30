@@ -163,7 +163,7 @@ namespace Reductech.EDR.Connectors.Nuix
             if (Enum.TryParse<NuixFeature>(feature, true, out var nuixFeature) && NuixFeatures.Contains(nuixFeature))
                 return Unit.Default;
 
-            return new RunError($"{feature} missing.", processName, null, ErrorCode.RequirementsNotMet);
+            return new RunError($"{feature} missing", processName, null, ErrorCode.RequirementsNotMet);
 
         }
     }
