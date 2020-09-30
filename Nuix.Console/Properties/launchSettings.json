@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NuixClientConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "documentation -p \"C:\\Users\\wainw\\source\\repos\\Reductech\\nuix\\NuixConsole\\Documentation.md\""
+    }
+  }
+}
