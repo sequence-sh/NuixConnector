@@ -4,7 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Xunit;
-using Reductech.EDR.Processes;
+using Reductech.EDR.Core;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -30,34 +30,34 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     {
         /// <inheritdoc />
         protected override IEnumerable<ITestCase> TestCases =>
-            NuixTestCases.GetProcessSettingsCombos().Select(x => new ExecutionTestCase(x));
+            NuixTestCases.GetSettingsCombos().Select(x => new ExecutionTestCase(x));
 
 
         private class ExecutionTestCase : ITestCase
         {
-            public ExecutionTestCase(ProcessSettingsCombo processSettingsCombo) => ProcessSettingsCombo = processSettingsCombo;
+            public ExecutionTestCase(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 
-            public ProcessSettingsCombo ProcessSettingsCombo { get; }
+            public StepSettingsCombo StepSettingsCombo { get; }
 
 
             /// <inheritdoc />
-            public string Name => ProcessSettingsCombo.ToString();
+            public string Name => StepSettingsCombo.ToString();
 
             /// <inheritdoc />
             public void Execute(ITestOutputHelper testOutputHelper)
             {
-                ProcessSettingsCombo.IsProcessCompatible.Should().BeTrue("Process should be compatible");
+                StepSettingsCombo.IsStepCompatible.Should().BeTrue("Step should be compatible");
 
-                ProcessSettingsCombo.Process.Verify(ProcessSettingsCombo.Settings).ShouldBeSuccessful(x => x.AsString);
+                StepSettingsCombo.Step.Verify(StepSettingsCombo.Settings).ShouldBeSuccessful(x => x.AsString);
 
                 var loggerFactory = new LoggerFactory(new[] { new XunitLoggerProvider(testOutputHelper) });
 
                 var logger =  loggerFactory.CreateLogger(Name);
-                var processState = new ProcessState(logger, ProcessSettingsCombo.Settings, ExternalProcessRunner.Instance);
+                var stateMonad = new StateMonad(logger, StepSettingsCombo.Settings, ExternalProcessRunner.Instance);
 
                 var sw = Stopwatch.StartNew();
 
-                var result = ProcessSettingsCombo.Process.Run(processState);
+                var result = StepSettingsCombo.Step.Run(stateMonad);
                 sw.Stop();
 
                 testOutputHelper.WriteLine($"Elapsed: {sw.ElapsedMilliseconds}ms");

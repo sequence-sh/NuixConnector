@@ -4,11 +4,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using FluentAssertions;
 using Reductech.EDR.Connectors.Nuix.Conversion;
-using Reductech.EDR.Connectors.Nuix.Processes;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.General;
-using Reductech.EDR.Processes.Internal;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Steps;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -60,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 yield return new ScriptArgumentTestCase("If Then", new Conditional
                 {
                     Condition = new Constant<bool>(true),
-                    ThenProcess = new NuixCreateCase()
+                    ThenStep = new NuixCreateCase()
                     {
                         CaseName = new Constant<string>("Case"),
                         CasePath = new Constant<string>("Case Path"),
@@ -72,14 +72,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 yield return new ScriptArgumentTestCase("If Then Else", new Conditional
                 {
                     Condition = new Constant<bool>(true),
-                    ThenProcess = new NuixCreateCase()
+                    ThenStep = new NuixCreateCase()
                     {
                         CaseName = new Constant<string>("Case"),
                         CasePath = new Constant<string>("Case Path"),
                         Description = new Constant<string>("Description"),
                         Investigator = new Constant<string>("Investigator")
                     },
-                    ElseProcess = new NuixCreateCase()
+                    ElseStep = new NuixCreateCase()
                     {
                         CaseName = new Constant<string>("Case"),
                         CasePath = new Constant<string>("Case Path"),
@@ -93,13 +93,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private sealed class ScriptArgumentTestCase : ITestCase
         {
-            public ScriptArgumentTestCase(string name, IRunnableProcess process)
+            public ScriptArgumentTestCase(string name, IStep step)
             {
                 Name = name;
-                RubyBlockProcess = process;
+                RubyBlockStep = step;
             }
 
-            public IRunnableProcess RubyBlockProcess { get; }
+            public IStep RubyBlockStep { get; }
 
 
             /// <inheritdoc />
@@ -110,7 +110,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             /// <inheritdoc />
             public void Execute(ITestOutputHelper testOutputHelper)
             {
-                var r = RubyBlockConversion.TryConvert(RubyBlockProcess, "Parameter");
+                var r = RubyBlockConversion.TryConvert(RubyBlockStep, "Parameter");
 
                 r.ShouldBeSuccessful();
 

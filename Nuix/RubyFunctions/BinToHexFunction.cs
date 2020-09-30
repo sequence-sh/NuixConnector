@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 namespace Reductech.EDR.Connectors.Nuix.RubyFunctions
 {

@@ -5,16 +5,16 @@ using CommandDotNet;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes;
-using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core;
 
 namespace Reductech.EDR.Connectors.Nuix.Console
 {
-    [Command(Description = "Executes Nuix processes")]
-    internal class NuixMethods : ProcessMethods
+    [Command(Description = "Executes Nuix Sequences")]
+    internal class NuixMethods : ConsoleMethods
     {
-        [Command(Name = "execute", Description = "Execute a process defined in yaml")]
+        [Command(Name = "execute", Description = "Execute a step defined in yaml")]
         public void Execute(
             [Option(LongName = "yaml", ShortName = "y", Description = "The yaml to execute")]
             string? yaml = null,
@@ -27,12 +27,12 @@ namespace Reductech.EDR.Connectors.Nuix.Console
             string path)
             => GenerateDocumentationAbstract(path);
 
-        [Command(Name= "generatescripts", Description = "Generates Ruby Scripts for Nuix processes")]
+        [Command(Name= "generatescripts", Description = "Generates Ruby Scripts for Nuix steps")]
         public void GenerateScripts(
             [Option(LongName = "folderPath", ShortName = "f", Description = "The path to the output folder")]
             string folderPath)
         {
-            var settingsResult = NuixProcessSettings
+            var settingsResult = NuixSettings
                 .TryCreate(sn => ConfigurationManager.AppSettings[sn]);
             if (settingsResult.IsFailure)
                 throw new Exception(settingsResult.Error);
@@ -45,17 +45,17 @@ namespace Reductech.EDR.Connectors.Nuix.Console
         }
 
         /// <inheritdoc />
-        protected override Result<IProcessSettings> TryGetSettings()
+        protected override Result<ISettings> TryGetSettings()
         {
-            var settingsResult = NuixProcessSettings
+            var settingsResult = NuixSettings
                 .TryCreate(sn => ConfigurationManager.AppSettings[sn])
-                .Map(x=>x as IProcessSettings);
+                .Map(x=>x as ISettings);
 
             return settingsResult;
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<Type> ConnectorTypes { get; } = new List<Type>(){typeof(IRubyScriptProcess)};
+        protected override IEnumerable<Type> ConnectorTypes { get; } = new List<Type>(){typeof(IRubyScriptStep)};
 
         /// <inheritdoc />
         protected override ILogger Logger { get; } =

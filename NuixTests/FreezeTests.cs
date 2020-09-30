@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Core.Internal;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     /// <summary>
-    /// Tests just the freezing and unfreezing of the processes. Suitable as a unit test.
+    /// Tests just the freezing and unfreezing of the steps. Suitable as a unit test.
     /// </summary>
     /// <returns></returns>
     public class FreezeTests : FreezeTestCases
@@ -29,30 +29,30 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     public class FreezeTestCases : TestBase
     {
         /// <inheritdoc />
-        protected override IEnumerable<ITestCase> TestCases => NuixTestCases.GetProcessSettingsCombos()
+        protected override IEnumerable<ITestCase> TestCases => NuixTestCases.GetSettingsCombos()
             .Select(c => new FreezeTestCase(c));
 
 
         private class FreezeTestCase : ITestCase
         {
-            public FreezeTestCase(ProcessSettingsCombo processSettingsCombo) => ProcessSettingsCombo = processSettingsCombo;
+            public FreezeTestCase(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 
-            public ProcessSettingsCombo ProcessSettingsCombo { get; }
+            public StepSettingsCombo StepSettingsCombo { get; }
 
 
             /// <inheritdoc />
-            public string Name => ProcessSettingsCombo.ToString();
+            public string Name => StepSettingsCombo.ToString();
 
             /// <inheritdoc />
             public void Execute(ITestOutputHelper testOutputHelper)
             {
-                ProcessSettingsCombo.IsProcessCompatible.Should().BeTrue("Process should be compatible");
+                StepSettingsCombo.IsStepCompatible.Should().BeTrue("Step should be compatible");
 
 
-                var unfrozen = ProcessSettingsCombo.Process.Unfreeze();
+                var unfrozen = StepSettingsCombo.Step.Unfreeze();
                 var freezeResult = unfrozen.TryFreeze();
                 freezeResult.ShouldBeSuccessful();
-                var verifyResult = freezeResult.Value.Verify(ProcessSettingsCombo.Settings);
+                var verifyResult = freezeResult.Value.Verify(StepSettingsCombo.Settings);
 
 
                 verifyResult.ShouldBeSuccessful(x => x.AsString);

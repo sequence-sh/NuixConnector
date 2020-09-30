@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.Internal;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
@@ -9,6 +9,6 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
     /// </summary>
     internal interface ICoreMethodConverter
     {
-        Result<IRubyBlock> Convert(IRunnableProcess process);
+        Result<IRubyBlock> Convert(IStep step);
     }
 }

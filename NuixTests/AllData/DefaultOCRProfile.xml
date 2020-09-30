@@ -19,12 +19,12 @@
       <clockwise-text-rotation>false</clockwise-text-rotation>
       <counter-clockwise-text-rotation>false</counter-clockwise-text-rotation>
       <one-eighty-text-rotation>false</one-eighty-text-rotation>
-      <processing-profile>DOCUMENT_ARCHIVING_ACCURACY</processing-profile>
+      <steping-profile>DOCUMENT_ARCHIVING_ACCURACY</steping-profile>
       <timeout>90</timeout>
       <update-pdf>true</update-pdf>
       <printed-image-rotation>AUTO</printed-image-rotation>
       <page-flushing-policy>AUTO</page-flushing-policy>
-      <multi-processing-mode>SEQUENTIAL</multi-processing-mode>
+      <multi-steping-mode>SEQUENTIAL</multi-steping-mode>
       <create-image-documents-in-memory>false</create-image-documents-in-memory>
     </ocr-template>
     <ocr-template version="1.1">
@@ -41,12 +41,12 @@
       <clockwise-text-rotation>false</clockwise-text-rotation>
       <counter-clockwise-text-rotation>false</counter-clockwise-text-rotation>
       <one-eighty-text-rotation>false</one-eighty-text-rotation>
-      <processing-profile>DOCUMENT_ARCHIVING_ACCURACY</processing-profile>
+      <steping-profile>DOCUMENT_ARCHIVING_ACCURACY</steping-profile>
       <timeout>90</timeout>
       <update-pdf>true</update-pdf>
       <printed-image-rotation>AUTO</printed-image-rotation>
       <page-flushing-policy>AUTO</page-flushing-policy>
-      <multi-processing-mode>SEQUENTIAL</multi-processing-mode>
+      <multi-steping-mode>SEQUENTIAL</multi-steping-mode>
       <create-image-documents-in-memory>false</create-image-documents-in-memory>
     </ocr-template>
   </ocr-templates>

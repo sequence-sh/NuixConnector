@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.General;
-using Reductech.EDR.Processes.Internal;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Steps;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
@@ -28,7 +28,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
     internal abstract class CompareConverter<T> : CoreTypedMethodConverter<Compare<T>, bool> where T : IComparable
     {
         /// <inheritdoc />
-        protected override IEnumerable<(RubyFunctionParameter parameter, IRunnableProcess argumentProcess)> GetArgumentBlocks(Compare<T> process)
+        protected override IEnumerable<(RubyFunctionParameter parameter, IStep argumentProcess)> GetArgumentBlocks(Compare<T> process)
         {
             yield return (LeftParameter, process.Left);
             yield return (RightParameter, process.Right);

@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.General;
-using Reductech.EDR.Processes.Internal;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Steps;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
     internal sealed class AssertErrorConverter : ICoreMethodConverter
     {
         /// <inheritdoc />
-        public Result<IRubyBlock> Convert(IRunnableProcess process)
+        public Result<IRubyBlock> Convert(IStep step)
         {
-            if (process is AssertError assertError)
+            if (step is AssertError assertError)
             {
                 var r =
                     RubyBlockConversion.TryConvert(assertError.Test, nameof(AssertError.Test))

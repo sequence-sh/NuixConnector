@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Processes.Meta;
-using Reductech.EDR.Processes.Internal;
-using Reductech.EDR.Processes.Util;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
-    internal abstract class CoreMethodConverter<TProcess> : ICoreMethodConverter, IRubyFunction
+    internal abstract class CoreMethodConverter<TStep> : ICoreMethodConverter, IRubyFunction
     {
         /// <inheritdoc />
-        public Result<IRubyBlock> Convert(IRunnableProcess process)
+        public Result<IRubyBlock> Convert(IStep step)
         {
-            if (process is TProcess tProcess)
+            if (step is TStep tStep)
             {
                 var argumentValuesResult =
-                    GetArgumentBlocks(tProcess).Select(x =>
+                    GetArgumentBlocks(tStep).Select(x =>
                             RubyBlockConversion.TryConvert(x.argumentProcess, x.parameter.ParameterName)
                                 .BindCast<IRubyBlock, ITypedRubyBlock>()
                                 .Map(rubyBlock => (x.parameter, rubyBlock))
@@ -40,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
         protected abstract IRubyBlock Create(IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock> dictionary);
 
-        protected abstract IEnumerable<(RubyFunctionParameter parameter, IRunnableProcess argumentProcess)> GetArgumentBlocks(TProcess process);
+        protected abstract IEnumerable<(RubyFunctionParameter parameter, IStep argumentProcess)> GetArgumentBlocks(TStep process);
 
 
         /// <inheritdoc />
