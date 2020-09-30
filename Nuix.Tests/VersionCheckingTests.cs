@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Util;
+using Reductech.Utilities.Testing;
 using Xunit;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -27,7 +28,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             var result = process.Run(new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance));
 
-            result.ShouldBeFailure(x => x.AsString, "Nuix Version is");
+            result.MapFailure(x=>x.AsString).ShouldBeFailure("Nuix Version is");
         }
 
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
+using Reductech.Utilities.Testing;
 using Xunit;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -37,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             if (args.expectedError == null)
                 result.ShouldBeSuccessful(x => x.AsString);
             else
-                result.ShouldBeFailure(x => x.AsString, args.expectedError);
+                result.MapFailure(x=>x.AsString).ShouldBeFailure(args.expectedError);
 
         }
     }

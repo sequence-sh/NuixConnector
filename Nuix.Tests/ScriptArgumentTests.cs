@@ -9,6 +9,7 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Util;
+using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -18,24 +19,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
     public class ScriptArgumentTests : ScriptArgumentTestCases
     {
-        public ScriptArgumentTests(ITestOutputHelper testOutputHelper)
-        {
-            TestOutputHelper = testOutputHelper;
-        }
+        public ScriptArgumentTests(ITestOutputHelper testOutputHelper) => TestOutputHelper = testOutputHelper;
 
         /// <inheritdoc />
         [Theory]
         [ClassData(typeof(ScriptArgumentTestCases))]
-        public override void Test(string key)
-        {
-            base.Test(key);
-        }
+        public override void Test(string key) => base.Test(key);
     }
 
     public class ScriptArgumentTestCases : TestBase
     {
         /// <inheritdoc />
-        protected override IEnumerable<ITestCase> TestCases {
+        protected override IEnumerable<ITestBaseCase> TestCases {
             get
             {
                 yield return new ScriptArgumentTestCase("Case with Description",
@@ -91,7 +86,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         }
 
 
-        private sealed class ScriptArgumentTestCase : ITestCase
+        private sealed class ScriptArgumentTestCase : ITestBaseCase
         {
             public ScriptArgumentTestCase(string name, IStep step)
             {
