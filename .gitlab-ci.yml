@@ -175,6 +175,7 @@ integration test:
   variables:
     CONFIG: $CONFIG_DEV
   script:
+    - dotnet restore --runtime $BUILD_RUNTIME --packages ./packages
     - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
       --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
     - >-
