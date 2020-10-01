@@ -1,19 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
     <RootNamespace>Reductech.EDR.Connectors.Nuix.Console</RootNamespace>
-    <Authors>Mark Wainwright</Authors>
-    <Company>Reductech</Company>
+    <AssemblyName>EDRNuixConsole</AssemblyName>
+    <Nullable>enable</Nullable>
+    <Version>0.2.0-alpha$(VersionSuffix)</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Reductech.EDR.Connectors.Nuix.Console</PackageId>
+    <Title>EDR NUIX Connector Console Application</Title>
+    <Description>Console application for running Nuix sequences.</Description>
     <Product>EDR</Product>
-    <Description>Console app for working with Nuix processes</Description>
-    <Copyright>©2020 Reductech Ltd.</Copyright>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://reductech.io/</PackageProjectUrl>
+
+    <PackageProjectUrl>https://gitlab.com/reductech/edr/connectors/nuix</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/edr/connectors/nuix</RepositoryUrl>
+    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/connectors/nuix/-/releases</PackageReleaseNotes>
     <PackageTags>ediscovery,forensics,nuix,automation,orchestration,edrm</PackageTags>
-    <PackageReleaseNotes>First Release</PackageReleaseNotes>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    
+    <Authors>reductech</Authors>
+    <Company>Reductech</Company>
+    <Copyright>Copyright (c) 2020 Reductech Ltd</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,13 +41,6 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
   <Target Name="CopyPackageXML" BeforeTargets="Build">
     <ItemGroup>
       <DocumentationFiles Include="%(Reference.RelativeDir)%(Reference.Filename).xml" />
@@ -44,11 +48,5 @@
 
     <Copy SourceFiles="@(DocumentationFiles)" DestinationFolder="$(OutputPath)" Condition="Exists('%(RootDir)%(Directory)%(Filename)%(Extension)')" />
   </Target>
-
-
-  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="IF EXIST &quot;$(SolutionDir)Nuix.Console\bin\Debug\netcoreapp3.1\Nuix.exe&quot; $(SolutionDir)Nuix.Console\bin\Debug\netcoreapp3.1\Nuix.exe documentation -p $(SolutionDir)documentation.md"/>
-    <Exec Command="IF EXIST &quot;$(SolutionDir)Nuix.Console\bin\Debug\netcoreapp3.1\Nuix.exe&quot; $(SolutionDir)Nuix.Console\bin\Debug\netcoreapp3.1\Nuix.exe GenerateScripts -folderPath $(SolutionDir)Scripts" IgnoreExitCode="true" />
-  </Target>-->
 
 </Project>
