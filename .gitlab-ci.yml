@@ -7,6 +7,7 @@ include:
 stages:
   - build
   - test
+  - integration
   - quality
   - package
   - push
@@ -17,10 +18,13 @@ workflow:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH !~ /^\d+-/
     - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
 
 variables:
-  PACKAGE_NAME_NUGET: $CI_PROJECT_NAME
-  PACKAGE_NAME_DLL: $CI_PROJECT_NAME
+  BUILD_RUNTIME: win-x64
+  PACKAGE_NAME_NUGET: Reductech.EDR.Connectors.Nuix
+  PACKAGE_NAME_DLL: EDRNuixConnector
+  PACKAGE_NAME_EXE: EDRNuixConsole
   DEFAULT_PRERELEASE_VERSION: a
   CONFIG_DEV: Debug
   CONFIG_RELEASE: Release
@@ -41,12 +45,27 @@ variables:
     - if: *is_master
     - when: manual
       allow_failure: true
+  rules_integration: &rules_integration
+    - if: *is_master
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+    - if: *not_release
+      when: manual
+      allow_failure: true
 
 .script defaults:
   nuget_add_source: &nuget_add_source
     - dotnet nuget add source --name reductech --username $NUGET_USERNAME
       --password $NUGET_TOKEN --store-password-in-clear-text
       "https://gitlab.com/api/v4/projects/$NUGET_PROJECT_ID/packages/nuget/index.json"
+  get_coverage: &get_coverage >-
+    pwsh -Command '$report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
+    $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
+    [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
+    $xml = [xml]$report ;
+    $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
+    $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
+    Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
+    Write-Host "Coverage (Line)   : ${lineCoverage}%"'
 
 build dev:
   stage: build
@@ -57,14 +76,14 @@ build dev:
     NUGET_TOKEN: $NUGET_TOKEN_DEV
   before_script: *nuget_add_source
   script:
-    - dotnet restore --packages ./packages
-    - dotnet build --configuration $CONFIG --no-restore
+    - dotnet restore --runtime $BUILD_RUNTIME --packages ./packages
+    - dotnet build --runtime $BUILD_RUNTIME --configuration $CONFIG --no-restore
   artifacts:
     paths:
       - '*/bin'
       - '*/obj'
       - packages/
-    expire_in: 30 mins
+    expire_in: 60 mins
   rules: *rules_dev
 
 build release:
@@ -81,16 +100,9 @@ test dev:
   variables:
     CONFIG: $CONFIG_DEV
   script:
-    - dotnet test --no-build --configuration $CONFIG --collect:"XPlat Code Coverage" --results-directory ./
-    - >-
-      pwsh -Command '$report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
-      $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
-      [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
-      $xml = [xml]$report ;
-      $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
-      $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
-      Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
-      Write-Host "Coverage (Line)   : ${lineCoverage}%"'
+    - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
+      --filter "Category!=Integration" --collect:"XPlat Code Coverage" --results-directory ./
+    - *get_coverage
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
     reports:
@@ -154,6 +166,34 @@ version check release:
   extends: version check dev
   rules: *rules_release
 
+integration test:
+  stage: integration
+  needs:
+    - build dev
+    - test dev
+  tags:
+    - nuix
+  variables:
+    CONFIG: $CONFIG_DEV
+  script:
+    - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
+      --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
+    - *get_coverage
+  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
+  artifacts:
+    reports:
+      cobertura: coverage.cobertura.xml
+  rules: *rules_integration
+
+integration test release:
+  extends: integration test
+  needs:
+    - build release
+    - test release
+  variables:
+    CONFIG: $CONFIG_RELEASE
+  rules: *rules_release
+
 code_quality:
   stage: quality
   rules: *rules_manual
@@ -181,14 +221,15 @@ mutation testing:
     expire_in: never
   rules: *rules_manual
 
-package nuget dev:
+package NuixConnector nuget dev:
   stage: package
   needs:
     - build dev
     - test dev
     - version check dev
   script:
-    - dotnet pack --no-build --configuration $CONFIG_DEV --version-suffix $VERSION_SUFFIX --output ./
+    - dotnet pack --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG_DEV
+      --version-suffix $VERSION_SUFFIX --output ./
   artifacts:
     name: "$PACKAGE_NAME_NUGET-$PROJECT_VERSION"
     paths:
@@ -201,8 +242,8 @@ package nuget dev:
       when: never
     - if: *not_release
 
-package nuget master:
-  extends: package nuget dev
+package NuixConnector nuget master:
+  extends: package NuixConnector nuget dev
   artifacts:
     name: "$PACKAGE_NAME_NUGET-$PROJECT_VERSION"
     paths:
@@ -213,14 +254,14 @@ package nuget master:
   rules:
     - if: *is_master
 
-package nuget release:
+package NuixConnector nuget release:
   stage: package
   needs:
     - build release
     - test release
     - version check release
   script:
-    - dotnet pack --no-build --configuration $CONFIG_RELEASE --output ./
+    - dotnet pack --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG_RELEASE --output ./
   artifacts:
     name: "$PACKAGE_NAME_NUGET-$PROJECT_VERSION"
     paths:
@@ -230,27 +271,38 @@ package nuget release:
     expire_in: never
   rules: *rules_release
 
-package dll release:
+package NuixConnector dll:
   stage: package
   needs:
     - build release
     - test release
     - version check release
+  variables:
+    PACKAGE_NAME: $PACKAGE_NAME_DLL
+    PACKAGE_PATH: ./Nuix
   script:
-    - dotnet publish --no-build --configuration $CONFIG_RELEASE --output "./$PACKAGE_NAME_DLL-$PROJECT_VERSION"
-    - cp LICENSE "./$PACKAGE_NAME_DLL-$PROJECT_VERSION/"
-    - cp README.md "./$PACKAGE_NAME_DLL-$PROJECT_VERSION/"
+    - dotnet publish --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG_RELEASE
+      -o "./$PACKAGE_NAME" $PACKAGE_PROPERTIES $PACKAGE_PATH
+    - cp LICENSE "./$PACKAGE_NAME/"
+    - cp README.md "./$PACKAGE_NAME/"
   artifacts:
-    name: "$PACKAGE_NAME_DLL-$PROJECT_VERSION"
+    name: "$PACKAGE_NAME-$PROJECT_VERSION"
     paths:
-      - $PACKAGE_NAME_DLL-$PROJECT_VERSION/
+      - $PACKAGE_NAME/
     expire_in: never
   rules: *rules_release
+
+package NuixConsole exe:
+  extends: package NuixConnector dll
+  variables:
+    PACKAGE_NAME: $PACKAGE_NAME_EXE
+    PACKAGE_PATH: ./NuixConsole
+    PACKAGE_PROPERTIES: -p:PublishSingleFile=true
 
 push to nuget dev:
   stage: push
   needs:
-    - package nuget dev
+    - package NuixConnector nuget dev
   variables:
     NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
     NUGET_USERNAME: $NUGET_USER_DEV
@@ -268,14 +320,14 @@ push to nuget dev:
 push to nuget master:
   extends: push to nuget dev
   needs:
-    - package nuget master
+    - package NuixConnector nuget master
   rules:
     - if: *is_master
 
 push to nuget release:
   extends: push to nuget dev
   needs:
-    - package nuget release
+    - package NuixConnector nuget release
   variables:
     NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
     NUGET_USERNAME: $NUGET_USER_PROD
