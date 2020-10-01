@@ -2,37 +2,27 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
-    <Nullable>enable</Nullable>
-
+    <IsPublishable>false</IsPublishable>
+    <IsTestProject>true</IsTestProject>
     <RootNamespace>Reductech.EDR.Connectors.Nuix.Tests</RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <Authors>Mark Wainwright</Authors>
-
+  <PropertyGroup>
+    <RepositoryUrl>https://gitlab.com/reductech/edr/connectors/nuix</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    
+    <Authors>reductech</Authors>
     <Company>Reductech</Company>
-
-    <Product>EDR</Product>
-
-    <Description>Test for Nuix.</Description>
-
-    <Copyright>©2020 Reductech Ltd.</Copyright>
-
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-
-    <PackageProjectUrl>https://reductech.io/</PackageProjectUrl>
-
-    <PackageTags>ediscovery,forensics,nuix,automation,orchestration,edrm, unittests</PackageTags>
-
-    <PackageReleaseNotes>First Release</PackageReleaseNotes>
-
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-
-    <FileVersion>0.1.0.0</FileVersion>
+    <Copyright>Copyright (c) 2020 Reductech Ltd</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="1.3.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
@@ -48,13 +38,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Nuix\Nuix.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

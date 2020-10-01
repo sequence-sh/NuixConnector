@@ -2,28 +2,29 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	  <Nullable>enable</Nullable>
-	  <Authors>Mark Wainwright</Authors>
-	  <Company>Reductech</Company>
-	  <Product>EDR</Product>
-	  <Copyright>©2020 Reductech Ltd.</Copyright>
-	  <PackageLicenseExpression></PackageLicenseExpression>
-	  <PackageProjectUrl>https://reductech.io/</PackageProjectUrl>
-	  <PackageTags>ediscovery,forensics,nuix,automation,orchestration,edrm</PackageTags>
-	  <PackageReleaseNotes>First Release</PackageReleaseNotes>
-	  <AssemblyVersion>0.1.0.0</AssemblyVersion>
-	  <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
-	  <AssemblyName>Nuix</AssemblyName>
-	  <Description>Class library containing processes for working with Nuix.</Description>
-	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
-	  <FileVersion>0.1.0.0</FileVersion>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>1.0.10</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
+    <AssemblyName>Reductech.EDR.Connectors.Nuix</AssemblyName>
+    <Nullable>enable</Nullable>
+    <Version>0.2.0-alpha$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Reductech.EDR.Connectors.Nuix</PackageId>
+    <Title>EDR NUIX Connector</Title>
+    <Description>Class library containing Steps for build Nuix sequences.</Description>
+    <Product>EDR</Product>
+
+    <PackageProjectUrl>https://gitlab.com/reductech/edr/connectors/nuix</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/edr/connectors/nuix</RepositoryUrl>
+    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/connectors/nuix/-/releases</PackageReleaseNotes>
+    <PackageTags>ediscovery;forensics;nuix;automation;orchestration;edrm</PackageTags>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    
+    <Authors>reductech</Authors>
+    <Company>Reductech</Company>
+    <Copyright>Copyright (c) 2020 Reductech Ltd</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,13 +34,6 @@
     <PackageReference Include="Superpower" Version="2.3.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
     <PackageReference Include="YamlDotNet" Version="8.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 
 </Project>
