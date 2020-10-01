@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using Reductech.EDR.Core.Internal;
+using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -19,21 +20,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// <inheritdoc />
         [Theory]
         [ClassData(typeof(FreezeTestCases))]
-        public override void Test(string key)
-        {
-            base.Test(key);
-        }
+        public override void Test(string key) => base.Test(key);
     }
 
 
     public class FreezeTestCases : TestBase
     {
         /// <inheritdoc />
-        protected override IEnumerable<ITestCase> TestCases => NuixTestCases.GetSettingsCombos()
+        protected override IEnumerable<ITestBaseCase> TestCases => NuixTestCases.GetSettingsCombos()
             .Select(c => new FreezeTestCase(c));
 
 
-        private class FreezeTestCase : ITestCase
+        private class FreezeTestCase : ITestBaseCase
         {
             public FreezeTestCase(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 

@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Xunit;
 using Reductech.EDR.Core;
+using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -29,11 +30,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     public class ExecutionTestCases : TestBase
     {
         /// <inheritdoc />
-        protected override IEnumerable<ITestCase> TestCases =>
+        protected override IEnumerable<ITestBaseCase> TestCases =>
             NuixTestCases.GetSettingsCombos().Select(x => new ExecutionTestCase(x));
 
 
-        private class ExecutionTestCase : ITestCase
+        private class ExecutionTestCase : ITestBaseCase
         {
             public ExecutionTestCase(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 

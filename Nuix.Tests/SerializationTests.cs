@@ -3,6 +3,7 @@ using System.Linq;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Serialization;
+using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,10 +22,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     public class SerializationTestCases : TestBase
     {
         /// <inheritdoc />
-        protected override IEnumerable<ITestCase> TestCases =>
+        protected override IEnumerable<ITestBaseCase> TestCases =>
             NuixTestCases.GetSettingsCombos().Select(x => new SerializationTest(x));
 
-        private class SerializationTest : ITestCase
+        private class SerializationTest : ITestBaseCase
         {
             public SerializationTest(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 

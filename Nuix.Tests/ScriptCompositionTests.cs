@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Util;
+using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -23,20 +24,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Theory]
         [ClassData(typeof(ScriptCompositionTestCases))]
         [Trait(NuixTestCases.Category, NuixTestCases.Integration)]
-        public override void Test(string key)
-        {
-            base.Test(key);
-        }
+        public override void Test(string key) => base.Test(key);
     }
 
 
     public class ScriptCompositionTestCases : TestBase
     {
         /// <inheritdoc />
-        protected override IEnumerable<ITestCase> TestCases =>
+        protected override IEnumerable<ITestBaseCase> TestCases =>
             NuixTestCases.GetSettingsCombos().Select(x => new ScriptCompositionTest(x));
 
-        private class ScriptCompositionTest : ITestCase
+        private class ScriptCompositionTest : ITestBaseCase
         {
             public ScriptCompositionTest(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 

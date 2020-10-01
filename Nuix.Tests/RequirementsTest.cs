@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Util;
+using Reductech.Utilities.Testing;
 using Xunit;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -12,7 +14,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         public static readonly TheoryData<(string? expectedError, NuixSettings settings)> TestCases =
 
-            new TheoryData<(string? expectedError, NuixSettings settings)>()
+            new TheoryData<(string? expectedError, NuixSettings settings)>
             {
                 ( "Required Nuix Version >= 5.0 but had 1.0",
                     new NuixSettings(true, "abcd", new Version(1,0), new List<NuixFeature>{NuixFeature.ANALYSIS} ) ),
@@ -37,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             if (args.expectedError == null)
                 result.ShouldBeSuccessful(x => x.AsString);
             else
-                result.ShouldBeFailure(x => x.AsString, args.expectedError);
+                result.MapFailure(x=>x.AsString).ShouldBeFailure(args.expectedError);
 
         }
     }
