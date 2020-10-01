@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<steping-profile xmlns="http://schemas.nuix.com/2017/steping-profile" version="1" created-by="8.2.0.123">
+<processing-profile xmlns="http://schemas.nuix.com/2017/processing-profile" version="1" created-by="8.2.0.123">
   <id>01c5c685-aa0d-4520-be81-4b92af728a28</id>
-  <data-steping-settings>
+  <data-processing-settings>
     <create-thumbnails>false</create-thumbnails>
     <workstation-thumbnail-enabled>false</workstation-thumbnail-enabled>
     <web-thumbnail-enabled>false</web-thumbnail-enabled>
     <custom-thumbnail-enabled>false</custom-thumbnail-enabled>
-    <step-text>true</step-text>
-    <step-loose-file-contents>true</step-loose-file-contents>
-    <step-forensic-images>true</step-forensic-images>
+    <process-text>true</process-text>
+    <process-loose-file-contents>true</process-loose-file-contents>
+    <process-forensic-images>true</process-forensic-images>
     <index-chars-fields>false</index-chars-fields>
     <store-binary>false</store-binary>
     <skin-tone-analysis>false</skin-tone-analysis>
@@ -25,225 +25,225 @@
     <extract-named-entities-from-properties>false</extract-named-entities-from-properties>
     <extract-named-entities-from-text-stripped>false</extract-named-entities-from-text-stripped>
     <use-custom-named-entity-profile>false</use-custom-named-entity-profile>
-    <step-text-summaries>true</step-text-summaries>
+    <process-text-summaries>true</process-text-summaries>
     <extract-shingles>true</extract-shingles>
     <calculate-audited-size>false</calculate-audited-size>
-    <step-family-fields>false</step-family-fields>
+    <process-family-fields>false</process-family-fields>
     <hide-embedded-immaterial-data>false</hide-embedded-immaterial-data>
     <mime-type-settings>
       <mime-type-setting>
         <mime-type>APPLICATION_VND_MS_IIS_LOG</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_VND_MS_REGISTRY</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>true</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>true</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>IMAGE_VND_AUTOCAD_DWFX</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>true</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>true</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>IMAGE_VND_AUTOCAD_DWF</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>true</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>true</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_VND_TCPDUMP_PCAP</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>FILESYSTEM_X_NTFS_USNJRNL</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_VND_MS_WINDOWS_EVENT_LOG</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>IMAGE_VND_AUTOCAD_DXF</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>true</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>true</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>IMAGE_VND_AUTOCAD_DWG</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>true</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>true</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_X_PLIST</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>PROCESS_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>PROCESS_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_EXE</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>SKIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>true</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>SKIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>true</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>FILESYSTEM_X_NTFS_MFT</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>TEXT_X_COMMON_LOG</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_X_PCAPNG</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>TEXT_CSV</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>PROCESS_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>PROCESS_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>IMAGE_VND_AUTOCAD_SHP</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>true</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>true</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_VND_MS_WINDOWS_EVENT_LOGX</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>TEXT_TAB_SEPARATED_VALUES</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>PROCESS_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>PROCESS_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_VND_MS_CAB_COMPRESSED</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>PROCESS_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>PROCESS_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>FILESYSTEM_X_NTFS_LOGFILE</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
       <mime-type-setting>
         <mime-type>APPLICATION_VND_SQLITE_DATABASE</mime-type>
-        <mime-type-steping-setting>
-          <text-steping-mode>STRIP_TEXT</text-steping-mode>
-          <step-named-entities>true</step-named-entities>
-          <step-images>true</step-images>
-          <step-embedded>false</step-embedded>
+        <mime-type-processing-setting>
+          <text-processing-mode>STRIP_TEXT</text-processing-mode>
+          <process-named-entities>true</process-named-entities>
+          <process-images>true</process-images>
+          <process-embedded>false</process-embedded>
           <store-binary>true</store-binary>
-        </mime-type-steping-setting>
+        </mime-type-processing-setting>
       </mime-type-setting>
     </mime-type-settings>
-    <calculate-steping-size>false</calculate-steping-size>
-    <steping-settings-software-version>8.2.0.123</steping-settings-software-version>
+    <calculate-processing-size>false</calculate-processing-size>
+    <processing-settings-software-version>8.2.0.123</processing-settings-software-version>
     <calculate-ss-deep-fuzzy-hash>false</calculate-ss-deep-fuzzy-hash>
     <calculate-photo-dna-robust-hash>false</calculate-photo-dna-robust-hash>
     <classify-images-with-deep-learning>false</classify-images-with-deep-learning>
@@ -251,14 +251,14 @@
     <perform-ocr>false</perform-ocr>
     <ocr-profile-name>Default</ocr-profile-name>
     <export-metadata>false</export-metadata>
-  </data-steping-settings>
+  </data-processing-settings>
   <data-settings>
     <software-version>7.6</software-version>
     <extract-from-slack-space>false</extract-from-slack-space>
     <carve-file-system-unallocated-space>false</carve-file-system-unallocated-space>
     <carve-unidentified-data>false</carve-unidentified-data>
     <extract-end-of-file-slack-space>false</extract-end-of-file-slack-space>
-    <smart-step-registry>true</smart-step-registry>
+    <smart-process-registry>true</smart-process-registry>
     <recover-deleted-files>true</recover-deleted-files>
     <expose-binary-data-for-directories>false</expose-binary-data-for-directories>
     <direct-access-to-mailboxes>false</direct-access-to-mailboxes>
@@ -270,7 +270,7 @@
       <disabled-mime-type>APPLICATION_VND_SYMANTEC_VAULT_STREAM_DATA</disabled-mime-type>
     </disabled-mime-types>
   </data-settings>
-  <parallel-steping-settings>
+  <parallel-processing-settings>
     <run-local-workers>true</run-local-workers>
     <worker-count>2</worker-count>
     <worker-memory>2048</worker-memory>
@@ -278,7 +278,7 @@
     <broker-memory>4096</broker-memory>
     <worker-temp-directory />
     <user-defined-temp-directory>false</user-defined-temp-directory>
-  </parallel-steping-settings>
+  </parallel-processing-settings>
   <case-evidence-settings>
     <text-index-settings>
       <analysis-language>ENGLISH</analysis-language>
@@ -289,4 +289,4 @@
   <password-discovery-settings>
     <mode>NONE</mode>
   </password-discovery-settings>
-</steping-profile>
+</processing-profile>
