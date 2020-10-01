@@ -55,7 +55,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     folder.save
 
     puts 'Starting processing.'
-    processor.step
+    processor.process
     puts 'Processing complete.'
     the_case.close";
     }
