@@ -26,9 +26,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             var process = new DoNothing { MyRequiredVersion = new Version(100, 0) };
 
-            var result = process.Run(new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance));
+            var result = process
+                .Run(new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance))
+                .MapFailure(x => x.AsString);
 
-            result.MapFailure(x=>x.AsString).ShouldBeFailure("Nuix Version is");
+            result.ShouldBeFailure();
+
+            result.Error.Should().Contain("Nuix Version is");
         }
 
 
