@@ -167,6 +167,7 @@ version check release:
 
 integration test:
   stage: integration
+  needs: []
   tags:
     - nuix
   variables:
