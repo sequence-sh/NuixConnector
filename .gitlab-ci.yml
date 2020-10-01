@@ -176,14 +176,14 @@ integration test:
     CONFIG: $CONFIG_DEV
   script:
     - >-
-      pwsh -Command '$report = Get-Content -Path """"""*/coverage.cobertura.xml"""""" -Raw ;
-      $fixPaths = $report -replace """"""filename=`"""""".+?${env:CI_PROJECT_NAME}(/|\\)"""""", """"""filename=`"""""""""""" ;
-      [System.IO.File]::WriteAllText(""""""./coverage.cobertura.xml"""""", $fixPaths) ;
+      $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
+      $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
+      [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
       $xml = [xml]$report ;
-      $branchCoverage = [double]($xml.coverage.""""""branch-rate"""""") * 100 ;
-      $lineCoverage = [double]($xml.coverage.""""""line-rate"""""") * 100 ;
-      Write-Host """"""Coverage (Branch) : ${branchCoverage}%"""""" ;
-      Write-Host """"""Coverage (Line)   : ${lineCoverage}%""""""'
+      $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
+      $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
+      Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
+      Write-Host "Coverage (Line)   : ${lineCoverage}%"
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
     reports:
