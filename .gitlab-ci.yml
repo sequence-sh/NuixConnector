@@ -57,15 +57,6 @@ variables:
     - dotnet nuget add source --name reductech --username $NUGET_USERNAME
       --password $NUGET_TOKEN --store-password-in-clear-text
       "https://gitlab.com/api/v4/projects/$NUGET_PROJECT_ID/packages/nuget/index.json"
-  get_coverage: &get_coverage >-
-    pwsh -Command '$report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
-    $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
-    [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
-    $xml = [xml]$report ;
-    $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
-    $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
-    Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
-    Write-Host "Coverage (Line)   : ${lineCoverage}%"'
 
 build dev:
   stage: build
@@ -102,7 +93,15 @@ test dev:
   script:
     - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
       --filter "Category!=Integration" --collect:"XPlat Code Coverage" --results-directory ./
-    - *get_coverage
+    - >-
+      pwsh -Command '$report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
+      $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
+      [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
+      $xml = [xml]$report ;
+      $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
+      $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
+      Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
+      Write-Host "Coverage (Line)   : ${lineCoverage}%"'
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
     reports:
@@ -178,7 +177,15 @@ integration test:
   script:
     - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
       --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
-    - *get_coverage
+    - >-
+      pwsh -Command '$report = Get-Content -Path """"""*/coverage.cobertura.xml"""""" -Raw ;
+      $fixPaths = $report -replace """"""filename=`"""""".+?${env:CI_PROJECT_NAME}(/|\\)"""""", """"""filename=`"""""""""""" ;
+      [System.IO.File]::WriteAllText(""""""./coverage.cobertura.xml"""""", $fixPaths) ;
+      $xml = [xml]$report ;
+      $branchCoverage = [double]($xml.coverage.""""""branch-rate"""""") * 100 ;
+      $lineCoverage = [double]($xml.coverage.""""""line-rate"""""") * 100 ;
+      Write-Host """"""Coverage (Branch) : ${branchCoverage}%"""""" ;
+      Write-Host """"""Coverage (Line)   : ${lineCoverage}%""""""'
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
     reports:
