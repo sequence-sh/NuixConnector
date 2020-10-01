@@ -175,6 +175,8 @@ integration test:
   variables:
     CONFIG: $CONFIG_DEV
   script:
+    - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
+      --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
     - >-
       $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
       $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
