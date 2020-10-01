@@ -167,16 +167,17 @@ version check release:
 
 integration test:
   stage: integration
-  needs:
-    - build dev
-    - test dev
   tags:
     - nuix
   variables:
     CONFIG: $CONFIG_DEV
+    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
+    NUGET_USERNAME: $NUGET_USER_DEV
+    NUGET_TOKEN: $NUGET_TOKEN_DEV
+  before_script: *nuget_add_source
   script:
     - dotnet restore --runtime $BUILD_RUNTIME --packages ./packages
-    - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
+    - dotnet test --no-restore --runtime $BUILD_RUNTIME --configuration $CONFIG
       --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
     - >-
       $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
@@ -195,11 +196,11 @@ integration test:
 
 integration test release:
   extends: integration test
-  needs:
-    - build release
-    - test release
   variables:
     CONFIG: $CONFIG_RELEASE
+    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
+    NUGET_USERNAME: $NUGET_USER_PROD
+    NUGET_TOKEN: $NUGET_TOKEN_PROD
   rules: *rules_release
 
 code_quality:
