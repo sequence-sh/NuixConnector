@@ -205,7 +205,7 @@ code_quality:
   stage: quality
   rules: *rules_manual
 
-mutation testing:
+.mutation testing:
   stage: quality
   needs: []
   variables:
