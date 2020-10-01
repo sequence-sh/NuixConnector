@@ -75,7 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     folder.save
 
     puts 'Adding items'
-    processor.step
+    processor.process
     puts 'Items added'
     the_case.close";
 

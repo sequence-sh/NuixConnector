@@ -47,7 +47,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
     if ocrProfileArg != nil
         ocrOptions = {:ocrProfileName => ocrProfileArg}
-        processor.step(items, ocrOptions)
+        processor.process(items, ocrOptions)
         puts ""Items Processed""
     elsif ocrProfilePathArg != nil
         profileBuilder = utilities.getOcrProfileBuilder()
@@ -60,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         processor.setOcrProfileObject(profile)
     else
-        processor.step(items)
+        processor.process(items)
         puts ""Items Processed""
     end
     the_case.close";
