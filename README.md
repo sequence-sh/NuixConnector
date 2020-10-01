@@ -1,55 +1,15 @@
 # Introduction
 
-This is a project that lets you execute various processes in NUIX from outside of NUIX.
+This is a project that lets you execute various processes in NUIX from outside of NUIX and construct pipelines to automate entire workflows.<br>
 
-There is a console app which runs all the processes individually and you can also provide yaml containing a sequence of processes to perform.
+To do this you will need to create a settings file with details about your NUIX application and a YAML file explaining your pipeline.
 
-The following yaml will create a case, add evidence from both a file and a concordance, tag some of the evidence and move it to a production set and then export the production set
+The following yaml will create a case, adds evidence from a file, and then creates a report.
 
 
 ```yaml
-!Sequence
-Steps:
-- !NuixCreateCase
-  CaseName: Case Name
-  CasePath: &CasePath Case Path
-  Investigator: Investigator
-- !NuixAddItem
-  Path: File Path
-  Custodian: Custodian
-  FolderName: Folder Name
-  CasePath: *CasePath
-- !NuixCreateReport
-  OutputFolder: Report Output Folder
-  CasePath: *CasePath
-- !NuixPerformOCR
-  CasePath: *CasePath
-  OCRProfileName: OCR Profile
-- !Loop
-  For: !CSV
-    CSVFilePath: CSV Path
-    InjectColumns:
-      SearchTerm:
-        Property: SearchTerm
-      Tag:
-        Property: Tag
-    Delimiter: ','
-    HasFieldsEnclosedInQuotes: false
-  RunProcess: !NuixSearchAndTag
-    CasePath: *CasePath
-- !NuixAddToItemSet
-  ItemSetName: TaggedItems
-  SearchTerm: Tag:*
-  CasePath: *CasePath
-- !NuixAddToProductionSet
-  ProductionSetName: &ProductionSetName Production Set Name
-  SearchTerm: ItemSet:TaggedItems
-  CasePath: *CasePath
-- !NuixExportConcordance
-  MetadataProfileName: Default
-  ProductionSetName: *ProductionSetName
-  ExportPath: Export Path
-  CasePath: *CasePath
-
+- NuixCreateCase(CaseName = 'My Case', CasePath = 'C:/MyCase', Investigator = 'Sherlock Holmes')
+- NuixAddItem(CasePath = 'C:/MyCase', Custodian = 'Moriarty', FolderName = 'My Folder', Path = 'C:/Data/MyFile.txt')
+- WriteFile(FileName = 'Report', Folder = 'C:/Output', Text = NuixCreateReport(CasePath = 'C:/MyCase'))
 
 ```
