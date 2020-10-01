@@ -176,6 +176,8 @@ integration test:
     NUGET_USERNAME: $NUGET_USER_DEV
     NUGET_TOKEN: $NUGET_TOKEN_DEV
   before_script: *nuget_add_source
+  after_script:
+    - dotnet nuget remove source reductech
   script:
     - dotnet restore --runtime $BUILD_RUNTIME --packages ./packages
     - dotnet test --no-restore --runtime $BUILD_RUNTIME --configuration $CONFIG
