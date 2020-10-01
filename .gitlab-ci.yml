@@ -182,10 +182,12 @@ integration test:
     - dotnet restore --runtime $BUILD_RUNTIME --packages ./packages
     - dotnet test --no-restore --runtime $BUILD_RUNTIME --configuration $CONFIG
       --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
+      -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=false
     - >-
       $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
       $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
-      [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
+      $outPath = Join-Path (Get-Location) "coverage.cobertura.xml" ;
+      [System.IO.File]::WriteAllText($outPath, $fixPaths) ;
       $xml = [xml]$report ;
       $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
       $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
