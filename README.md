@@ -8,7 +8,7 @@ To do this you will need to create a settings file with details about your NUIX 
 
 To run a sequence, use the Nuix.Console application
 
-`Nuix.Console.exe execute -p C:/MySequence.yaml`
+`EDRNuixConsole.exe execute -p C:/MySequence.yaml`
 
 
 ### Yaml
