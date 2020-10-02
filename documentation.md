@@ -1,3 +1,76 @@
+# Contents
+|Step                                                             |Summary                                                                                                                                                                                                                                                                                                                                                                                      |
+|:---------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|[NuixAddConcordance](#NuixAddConcordance)                        |Adds data from a Concordance file to a NUIX case.                                                                                                                                                                                                                                                                                                                                            |
+|[NuixAddItem](#NuixAddItem)                                      |Adds a file or directory to a Nuix Case.                                                                                                                                                                                                                                                                                                                                                     |
+|[NuixAddToItemSet](#NuixAddToItemSet)                            |Searches a case with a particular search string and adds all items it finds to a particular item set. Will create a new item set if one doesn't already exist.                                                                                                                                                                                                                               |
+|[NuixAddToProductionSet](#NuixAddToProductionSet)                |Searches a case with a particular search string and adds all items it finds to a production set. Will create a new production set if one with the given name does not already exist.                                                                                                                                                                                                         |
+|[NuixAnnotateDocumentIdList](#NuixAnnotateDocumentIdList)        |Annotates a document ID list to add production set names to it.                                                                                                                                                                                                                                                                                                                              |
+|[NuixAssertPrintPreviewState](#NuixAssertPrintPreviewState)      |Checks the print preview state of the production set.                                                                                                                                                                                                                                                                                                                                        |
+|[NuixAssignCustodian](#NuixAssignCustodian)                      |Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.                                                                                                                                                                                                                                                                               |
+|[NuixCountItems](#NuixCountItems)                                |Returns the number of items matching a particular search term                                                                                                                                                                                                                                                                                                                                |
+|[NuixCreateCase](#NuixCreateCase)                                |Creates a new case.                                                                                                                                                                                                                                                                                                                                                                          |
+|[NuixCreateIrregularItemsReport](#NuixCreateIrregularItemsReport)|Creates a list of all irregular items in a case. The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid' Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles' Use this inside a WriteFile step to write it to a file.|
+|[NuixCreateNRTReport](#NuixCreateNRTReport)                      |Creates a report using an NRT file.                                                                                                                                                                                                                                                                                                                                                          |
+|[NuixCreateReport](#NuixCreateReport)                            |Creates a report for a Nuix case. The report is in csv format. The headers are 'Custodian', 'Type', 'Value', and 'Count'. The different types are: 'Kind', 'Type', 'Tag', and 'Address'. Use this inside a WriteFile step to write it to a file.                                                                                                                                             |
+|[NuixCreateTermList](#NuixCreateTermList)                        |Creates a list of all terms appearing in the case and their frequencies. The report is in CSV format. The headers are 'Term' and 'Count' Use this inside a WriteFile step to write it to a file.                                                                                                                                                                                             |
+|[NuixDoesCaseExists](#NuixDoesCaseExists)                        |Returns whether or not a case exists.                                                                                                                                                                                                                                                                                                                                                        |
+|[NuixExportConcordance](#NuixExportConcordance)                  |Exports Concordance for a particular production set.                                                                                                                                                                                                                                                                                                                                         |
+|[NuixExtractEntities](#NuixExtractEntities)                      |Extract Entities from a Nuix Case.                                                                                                                                                                                                                                                                                                                                                           |
+|[NuixGeneratePrintPreviews](#NuixGeneratePrintPreviews)          |Generates print previews for items in a production set.                                                                                                                                                                                                                                                                                                                                      |
+|[NuixGetItemProperties](#NuixGetItemProperties)                  |A step that the searches a case for items and outputs the values of item properties. The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid' Use this inside a WriteFile step to write it to a file.                                                                                                                                                                  |
+|[NuixImportDocumentIds](#NuixImportDocumentIds)                  |Imports the given document IDs into this production set. Only works if this production set has imported numbering.                                                                                                                                                                                                                                                                           |
+|[NuixMigrateCase](#NuixMigrateCase)                              |Migrates a case to the latest version if necessary.                                                                                                                                                                                                                                                                                                                                          |
+|[NuixPerformOCR](#NuixPerformOCR)                                |Performs optical character recognition on files in a NUIX case.                                                                                                                                                                                                                                                                                                                              |
+|[NuixRemoveFromProductionSet](#NuixRemoveFromProductionSet)      |Removes particular items from a Nuix production set.                                                                                                                                                                                                                                                                                                                                         |
+|[NuixReorderProductionSet](#NuixReorderProductionSet)            |Reorders and renumbers the items in a production set.                                                                                                                                                                                                                                                                                                                                        |
+|[NuixSearchAndTag](#NuixSearchAndTag)                            |Searches a NUIX case with a particular search string and tags all files it finds.                                                                                                                                                                                                                                                                                                            |
+|[AppendString](#AppendString)                                    |Appends a string to an existing string variable.                                                                                                                                                                                                                                                                                                                                             |
+|[ApplyBooleanOperator](#ApplyBooleanOperator)                    |Returns true if both operands are true                                                                                                                                                                                                                                                                                                                                                       |
+|[ApplyMathOperator](#ApplyMathOperator)                          |Applies a mathematical operator to two integers. Returns the result of the operation.                                                                                                                                                                                                                                                                                                        |
+|[Array<T>](#Array<T>)                                            |Represents an ordered collection of objects.                                                                                                                                                                                                                                                                                                                                                 |
+|[ArrayCount<T>](#ArrayCount<T>)                                  |Counts the elements in an array.                                                                                                                                                                                                                                                                                                                                                             |
+|[ArrayIsEmpty<T>](#ArrayIsEmpty<T>)                              |Checks if an array is empty.                                                                                                                                                                                                                                                                                                                                                                 |
+|[AssertError](#AssertError)                                      |Returns success if the Test step returns an error and a failure otherwise.                                                                                                                                                                                                                                                                                                                   |
+|[AssertTrue](#AssertTrue)                                        |Returns an error if the nested step does not return true.                                                                                                                                                                                                                                                                                                                                    |
+|[Compare<T>](#Compare<T>)                                        |Compares two items.                                                                                                                                                                                                                                                                                                                                                                          |
+|[Conditional](#Conditional)                                      |Executes a statement if a condition is true.                                                                                                                                                                                                                                                                                                                                                 |
+|[CreateDirectory](#CreateDirectory)                              |Creates a new directory in the file system.                                                                                                                                                                                                                                                                                                                                                  |
+|[CreateFile](#CreateFile)                                        |Creates a file.                                                                                                                                                                                                                                                                                                                                                                              |
+|[DeleteItem](#DeleteItem)                                        |Deletes a file or folder from the file system.                                                                                                                                                                                                                                                                                                                                               |
+|[DirectoryExists](#DirectoryExists)                              |Returns whether a directory on the file system exists.                                                                                                                                                                                                                                                                                                                                       |
+|[DoesFileContain](#DoesFileContain)                              |Returns whether a file on the file system contains a particular string.                                                                                                                                                                                                                                                                                                                      |
+|[ElementAtIndex<T>](#ElementAtIndex<T>)                          |Gets the array element at a particular index.                                                                                                                                                                                                                                                                                                                                                |
+|[FileExists](#FileExists)                                        |Returns whether a file on the file system exists.                                                                                                                                                                                                                                                                                                                                            |
+|[FirstIndexOf](#FirstIndexOf)                                    |Gets the first instance of substring in a string.                                                                                                                                                                                                                                                                                                                                            |
+|[FirstIndexOfElement<T>](#FirstIndexOfElement<T>)                |Gets the first index of an element in an array.                                                                                                                                                                                                                                                                                                                                              |
+|[For](#For)                                                      |Do an action for each value of a given variable in a range.                                                                                                                                                                                                                                                                                                                                  |
+|[ForEach<T>](#ForEach<T>)                                        |Do an action for each member of the list.                                                                                                                                                                                                                                                                                                                                                    |
+|[GetLetterAtIndex](#GetLetterAtIndex)                            |Gets the letters that appears at a specific index                                                                                                                                                                                                                                                                                                                                            |
+|[GetSubstring](#GetSubstring)                                    |Gets a substring from a string.                                                                                                                                                                                                                                                                                                                                                              |
+|[GetVariable<T>](#GetVariable<T>)                                |Gets the value of a named variable.                                                                                                                                                                                                                                                                                                                                                          |
+|[IncrementVariable](#IncrementVariable)                          |Increment an integer variable by a particular amount                                                                                                                                                                                                                                                                                                                                         |
+|[JoinStrings](#JoinStrings)                                      |Join strings with a delimiter.                                                                                                                                                                                                                                                                                                                                                               |
+|[LastIndexOf](#LastIndexOf)                                      |Gets the last instance of substring in a string.                                                                                                                                                                                                                                                                                                                                             |
+|[LengthOfString](#LengthOfString)                                |Calculates the length of the string.                                                                                                                                                                                                                                                                                                                                                         |
+|[Not](#Not)                                                      |Negation of a boolean value.                                                                                                                                                                                                                                                                                                                                                                 |
+|[Print<T>](#Print<T>)                                            |Prints a value to the log.                                                                                                                                                                                                                                                                                                                                                                   |
+|[ReadCsv](#ReadCsv)                                              |Extracts elements from a CSV file                                                                                                                                                                                                                                                                                                                                                            |
+|[ReadFile](#ReadFile)                                            |Reads text from a file.                                                                                                                                                                                                                                                                                                                                                                      |
+|[Repeat<T>](#Repeat<T>)                                          |Creates an array by repeating an element.                                                                                                                                                                                                                                                                                                                                                    |
+|[RepeatWhile](#RepeatWhile)                                      |Repeat an action while the condition is met.                                                                                                                                                                                                                                                                                                                                                 |
+|[RepeatXTimes](#RepeatXTimes)                                    |Repeat a step a set number of times.                                                                                                                                                                                                                                                                                                                                                         |
+|[RunExternalProcess](#RunExternalProcess)                        |Runs an external executable program.                                                                                                                                                                                                                                                                                                                                                         |
+|[Sequence](#Sequence)                                            |A sequence of steps to be run one after the other.                                                                                                                                                                                                                                                                                                                                           |
+|[SetVariable<T>](#SetVariable<T>)                                |Gets the value of a named variable.                                                                                                                                                                                                                                                                                                                                                          |
+|[SortArray<T>](#SortArray<T>)                                    |Reorder an array.                                                                                                                                                                                                                                                                                                                                                                            |
+|[SplitString](#SplitString)                                      |Splits a string.                                                                                                                                                                                                                                                                                                                                                                             |
+|[StringIsEmpty](#StringIsEmpty)                                  |Returns whether a string is empty.                                                                                                                                                                                                                                                                                                                                                           |
+|[Test<T>](#Test<T>)                                              |Returns one result if a condition is true and another if the condition is false.                                                                                                                                                                                                                                                                                                             |
+|[ToCase](#ToCase)                                                |Converts a string to a particular case.                                                                                                                                                                                                                                                                                                                                                      |
+|[Trim](#Trim)                                                    |Trims a string.                                                                                                                                                                                                                                                                                                                                                                              |
+|[Unzip](#Unzip)                                                  |Unzip a file in the file system.                                                                                                                                                                                                                                                                                                                                                             |
+|[WriteFile](#WriteFile)                                          |Writes a file to the local file system.                                                                                                                                                                                                                                                                                                                                                      |
 # Nuix
 <a name="NuixAddConcordance"></a>
 ## NuixAddConcordance
@@ -181,7 +254,7 @@ Creates a new case.
 
 *Requires Nuix Version 5.0*
 
-Creates a list of all irregular items in a case. The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid' Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles' Use this inside a WriteFile process to write it to a file.
+Creates a list of all irregular items in a case. The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid' Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles' Use this inside a WriteFile step to write it to a file.
 
 |Parameter|Type    |Required|Summary              |Example        |
 |:-------:|:------:|:------:|:-------------------:|:-------------:|
@@ -215,7 +288,7 @@ Creates a report using an NRT file.
 
 *Requires NuixANALYSIS*
 
-Creates a report for a Nuix case. The report is in csv format. The headers are 'Custodian', 'Type', 'Value', and 'Count'. The different types are: 'Kind', 'Type', 'Tag', and 'Address'. Use this inside a WriteFile process to write it to a file.
+Creates a report for a Nuix case. The report is in csv format. The headers are 'Custodian', 'Type', 'Value', and 'Count'. The different types are: 'Kind', 'Type', 'Tag', and 'Address'. Use this inside a WriteFile step to write it to a file.
 
 |Parameter|Type    |Required|Summary              |Example        |
 |:-------:|:------:|:------:|:-------------------:|:-------------:|
@@ -228,7 +301,7 @@ Creates a report for a Nuix case. The report is in csv format. The headers are '
 
 *Requires Nuix Version 5.0*
 
-Creates a list of all terms appearing in the case and their frequencies. The report is in CSV format. The headers are 'Term' and 'Count' Use this inside a WriteFile process to write it to a file.
+Creates a list of all terms appearing in the case and their frequencies. The report is in CSV format. The headers are 'Term' and 'Count' Use this inside a WriteFile step to write it to a file.
 
 |Parameter|Type    |Required|Summary              |Example        |
 |:-------:|:------:|:------:|:-------------------:|:-------------:|
@@ -303,7 +376,7 @@ Generates print previews for items in a production set.
 
 *Requires Nuix Version 6.2*
 
-A process that the searches a case for items and outputs the values of item properties. The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid' Use this inside a WriteFile process to write it to a file.
+A step that the searches a case for items and outputs the values of item properties. The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid' Use this inside a WriteFile step to write it to a file.
 
 |Parameter    |Type    |Required|Summary                                                                                                                                                     |Example        |
 |:-----------:|:------:|:------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|
@@ -412,7 +485,7 @@ Searches a NUIX case with a particular search string and tags all files it finds
 |SearchTerm|`string`|☑️      |The term to search for.            |\*.txt         |
 |Tag       |`string`|☑️      |The tag to assign to found results.|               |
 
-# Processes
+# Reductech.EDR.Core
 <a name="AppendString"></a>
 ## AppendString
 
@@ -443,7 +516,7 @@ Returns true if both operands are true
 
 **Int32**
 
-Applies a mathematical operator to two integers.
+Applies a mathematical operator to two integers. Returns the result of the operation.
 
 |Parameter|Type                         |Required|Summary               |
 |:-------:|:---------------------------:|:------:|:--------------------:|
@@ -451,19 +524,19 @@ Applies a mathematical operator to two integers.
 |Operator |[MathOperator](#MathOperator)|☑️      |The operator to apply.|
 |Right    |`int`                        |☑️      |The right operand.    |
 
-<a name="Array`1"></a>
-## Array`1
+<a name="Array<T>"></a>
+## Array<T>
 
 **List<T>**
 
 Represents an ordered collection of objects.
 
-|Parameter|Type                     |Required|Summary                    |
-|:-------:|:-----------------------:|:------:|:-------------------------:|
-|Elements |IRunnableProcess<[T](#T)>|☑️      |The elements of this array.|
+|Parameter|Type          |Required|Summary                    |
+|:-------:|:------------:|:------:|:-------------------------:|
+|Elements |IStep<[T](#T)>|☑️      |The elements of this array.|
 
-<a name="ArrayCount`1"></a>
-## ArrayCount`1
+<a name="ArrayCount<T>"></a>
+## ArrayCount<T>
 
 **Int32**
 
@@ -473,8 +546,8 @@ Counts the elements in an array.
 |:-------:|:-----------:|:------:|:-----------------:|
 |Array    |List<[T](#T)>|☑️      |The array to count.|
 
-<a name="ArrayIsEmpty`1"></a>
-## ArrayIsEmpty`1
+<a name="ArrayIsEmpty<T>"></a>
+## ArrayIsEmpty<T>
 
 **Boolean**
 
@@ -489,25 +562,25 @@ Checks if an array is empty.
 
 **Unit**
 
-Returns success if the Test process returns an error and a failure otherwise.
+Returns success if the Test step returns an error and a failure otherwise.
 
-|Parameter|Type         |Required|Summary             |
-|:-------:|:-----------:|:------:|:------------------:|
-|Test     |[Unit](#Unit)|☑️      |The process to test.|
+|Parameter|Type         |Required|Summary          |
+|:-------:|:-----------:|:------:|:---------------:|
+|Test     |[Unit](#Unit)|☑️      |The step to test.|
 
 <a name="AssertTrue"></a>
 ## AssertTrue
 
 **Unit**
 
-Returns an error if the nested process does not return true.
+Returns an error if the nested step does not return true.
 
-|Parameter|Type  |Required|Summary             |
-|:-------:|:----:|:------:|:------------------:|
-|Test     |`bool`|☑️      |The process to test.|
+|Parameter|Type  |Required|Summary          |
+|:-------:|:----:|:------:|:---------------:|
+|Test     |`bool`|☑️      |The step to test.|
 
-<a name="Compare`1"></a>
-## Compare`1
+<a name="Compare<T>"></a>
+## Compare<T>
 
 **Boolean**
 
@@ -526,11 +599,11 @@ Compares two items.
 
 Executes a statement if a condition is true.
 
-|Parameter  |Type         |Required|Summary                          |
-|:---------:|:-----------:|:------:|:-------------------------------:|
-|Condition  |`bool`       |☑️      |Whether to follow the Then Branch|
-|ElseProcess|[Unit](#Unit)|        |The Else branch, if it exists.   |
-|ThenProcess|[Unit](#Unit)|☑️      |The Then Branch.                 |
+|Parameter|Type         |Required|Summary                          |
+|:-------:|:-----------:|:------:|:-------------------------------:|
+|Condition|`bool`       |☑️      |Whether to follow the Then Branch|
+|ElseStep |[Unit](#Unit)|        |The Else branch, if it exists.   |
+|ThenStep |[Unit](#Unit)|☑️      |The Then Branch.                 |
 
 <a name="CreateDirectory"></a>
 ## CreateDirectory
@@ -543,6 +616,18 @@ Creates a new directory in the file system.
 |:-------:|:------:|:------:|:----------------------------------:|
 |Path     |`string`|☑️      |The path to the directory to create.|
 
+<a name="CreateFile"></a>
+## CreateFile
+
+**Unit**
+
+Creates a file.
+
+|Parameter|Type    |Required|Summary                        |
+|:-------:|:------:|:------:|:-----------------------------:|
+|Path     |`string`|☑️      |The path to the file to create.|
+|Text     |`string`|☑️      |The text to put in the file.   |
+
 <a name="DeleteItem"></a>
 ## DeleteItem
 
@@ -554,6 +639,17 @@ Deletes a file or folder from the file system.
 |:-------:|:------:|:------:|:---------------------------------------:|
 |Path     |`string`|☑️      |The path to the file or folder to delete.|
 
+<a name="DirectoryExists"></a>
+## DirectoryExists
+
+**Boolean**
+
+Returns whether a directory on the file system exists.
+
+|Parameter|Type    |Required|Summary                         |
+|:-------:|:------:|:------:|:------------------------------:|
+|Path     |`string`|☑️      |The path to the folder to check.|
+
 <a name="DoesFileContain"></a>
 ## DoesFileContain
 
@@ -561,13 +657,13 @@ Deletes a file or folder from the file system.
 
 Returns whether a file on the file system contains a particular string.
 
-|Parameter|Type    |Required|Summary                                 |
-|:-------:|:------:|:------:|:--------------------------------------:|
-|Path     |`string`|☑️      |The path to the file or folder to check.|
-|Text     |`string`|☑️      |The text to check for.                  |
+|Parameter|Type    |Required|Summary                       |
+|:-------:|:------:|:------:|:----------------------------:|
+|Path     |`string`|☑️      |The path to the file to check.|
+|Text     |`string`|☑️      |The text to check for.        |
 
-<a name="ElementAtIndex`1"></a>
-## ElementAtIndex`1
+<a name="ElementAtIndex<T>"></a>
+## ElementAtIndex<T>
 
 **T**
 
@@ -577,6 +673,17 @@ Gets the array element at a particular index.
 |:-------:|:-----------:|:------:|:------------------------------:|
 |Array    |List<[T](#T)>|☑️      |The array to check.             |
 |Index    |`int`        |☑️      |The index to get the element at.|
+
+<a name="FileExists"></a>
+## FileExists
+
+**Boolean**
+
+Returns whether a file on the file system exists.
+
+|Parameter|Type    |Required|Summary                       |
+|:-------:|:------:|:------:|:----------------------------:|
+|Path     |`string`|☑️      |The path to the file to check.|
 
 <a name="FirstIndexOf"></a>
 ## FirstIndexOf
@@ -590,8 +697,8 @@ Gets the first instance of substring in a string.
 |String   |`string`|☑️      |The string to check.  |
 |SubString|`string`|☑️      |The substring to find.|
 
-<a name="FirstIndexOfElement`1"></a>
-## FirstIndexOfElement`1
+<a name="FirstIndexOfElement<T>"></a>
+## FirstIndexOfElement<T>
 
 **Int32**
 
@@ -617,8 +724,8 @@ Do an action for each value of a given variable in a range.
 |To          |`int`                        |☑️      |The highest value of the variable to use  |
 |VariableName|[VariableName](#VariableName)|☑️      |The name of the variable to loop over.    |
 
-<a name="ForEach`1"></a>
-## ForEach`1
+<a name="ForEach<T>"></a>
+## ForEach<T>
 
 **Unit**
 
@@ -655,8 +762,8 @@ Gets a substring from a string.
 |Length   |`int`   |☑️      |The length of the substring to extract.|
 |String   |`string`|☑️      |The string to extract a substring from.|
 
-<a name="GetVariable`1"></a>
-## GetVariable`1
+<a name="GetVariable<T>"></a>
+## GetVariable<T>
 
 **T**
 
@@ -724,8 +831,8 @@ Negation of a boolean value.
 |:-------:|:----:|:------:|:------------------:|
 |Boolean  |`bool`|☑️      |The value to negate.|
 
-<a name="Print`1"></a>
-## Print`1
+<a name="Print<T>"></a>
+## Print<T>
 
 **Unit**
 
@@ -735,8 +842,35 @@ Prints a value to the log.
 |:-------:|:-----:|:------:|:-----------------:|
 |Value    |[T](#T)|☑️      |The Value to Print.|
 
-<a name="Repeat`1"></a>
-## Repeat`1
+<a name="ReadCsv"></a>
+## ReadCsv
+
+**List`1**
+
+Extracts elements from a CSV file
+
+|Parameter                |Type          |Required|Summary                                            |Default Value|
+|:-----------------------:|:------------:|:------:|:-------------------------------------------------:|:-----------:|
+|Text                     |`string`      |☑️      |The text of the CSV file.                          |             |
+|Delimiter                |`string`      |☑️      |The delimiter to use to separate rows.             |,            |
+|CommentToken             |`string`      |        |The token to use to indicate comments.             |             |
+|HasFieldsEnclosedInQuotes|`bool`        |☑️      |Whether CSV fields are enclosed in quotes.         |false        |
+|ColumnsToMap             |List<`string`>|☑️      |The csv columns to map to result columns, in order.|             |
+
+<a name="ReadFile"></a>
+## ReadFile
+
+**String**
+
+Reads text from a file.
+
+|Parameter|Type    |Required|Summary                          |
+|:-------:|:------:|:------:|:-------------------------------:|
+|FileName |`string`|☑️      |The name of the file to write to.|
+|Folder   |`string`|☑️      |The name of the folder.          |
+
+<a name="Repeat<T>"></a>
+## Repeat<T>
 
 **List<T>**
 
@@ -764,12 +898,24 @@ Repeat an action while the condition is met.
 
 **Unit**
 
-Repeat a process a set number of times.
+Repeat a step a set number of times.
 
 |Parameter|Type         |Required|Summary                                   |
 |:-------:|:-----------:|:------:|:----------------------------------------:|
 |Action   |[Unit](#Unit)|☑️      |The action to perform repeatedly.         |
 |Number   |`int`        |☑️      |The number of times to perform the action.|
+
+<a name="RunExternalProcess"></a>
+## RunExternalProcess
+
+**Unit**
+
+Runs an external executable program.
+
+|Parameter  |Type          |Required|Summary                         |
+|:---------:|:------------:|:------:|:------------------------------:|
+|ProcessPath|`string`      |☑️      |The path to the external process|
+|Arguments  |List<`string`>|        |Arguments to the step.          |
 
 <a name="Sequence"></a>
 ## Sequence
@@ -778,12 +924,12 @@ Repeat a process a set number of times.
 
 A sequence of steps to be run one after the other.
 
-|Parameter|Type                           |Required|Summary                    |
-|:-------:|:-----------------------------:|:------:|:-------------------------:|
-|Steps    |IRunnableProcess<[Unit](#Unit)>|☑️      |The steps of this sequence.|
+|Parameter|Type                |Required|Summary                    |
+|:-------:|:------------------:|:------:|:-------------------------:|
+|Steps    |IStep<[Unit](#Unit)>|☑️      |The steps of this sequence.|
 
-<a name="SetVariable`1"></a>
-## SetVariable`1
+<a name="SetVariable<T>"></a>
+## SetVariable<T>
 
 **Unit**
 
@@ -794,8 +940,8 @@ Gets the value of a named variable.
 |Value       |[T](#T)                      |☑️      |The value to set the variable to.|
 |VariableName|[VariableName](#VariableName)|☑️      |The name of the variable to set. |
 
-<a name="SortArray`1"></a>
-## SortArray`1
+<a name="SortArray<T>"></a>
+## SortArray<T>
 
 **List<T>**
 
@@ -829,8 +975,8 @@ Returns whether a string is empty.
 |:-------:|:------:|:------:|:----------------------------------:|
 |String   |`string`|☑️      |The string to check for being empty.|
 
-<a name="Test`1"></a>
-## Test`1
+<a name="Test<T>"></a>
+## Test<T>
 
 **T**
 
