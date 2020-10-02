@@ -28,45 +28,45 @@
 |[AppendString](#AppendString)                                    |Appends a string to an existing string variable.                                                                                                                                                                                                                                                                                                                                             |
 |[ApplyBooleanOperator](#ApplyBooleanOperator)                    |Returns true if both operands are true                                                                                                                                                                                                                                                                                                                                                       |
 |[ApplyMathOperator](#ApplyMathOperator)                          |Applies a mathematical operator to two integers. Returns the result of the operation.                                                                                                                                                                                                                                                                                                        |
-|[Array`1](#Array`1)                                              |Represents an ordered collection of objects.                                                                                                                                                                                                                                                                                                                                                 |
-|[ArrayCount`1](#ArrayCount`1)                                    |Counts the elements in an array.                                                                                                                                                                                                                                                                                                                                                             |
-|[ArrayIsEmpty`1](#ArrayIsEmpty`1)                                |Checks if an array is empty.                                                                                                                                                                                                                                                                                                                                                                 |
+|[Array<T>](#Array<T>)                                            |Represents an ordered collection of objects.                                                                                                                                                                                                                                                                                                                                                 |
+|[ArrayCount<T>](#ArrayCount<T>)                                  |Counts the elements in an array.                                                                                                                                                                                                                                                                                                                                                             |
+|[ArrayIsEmpty<T>](#ArrayIsEmpty<T>)                              |Checks if an array is empty.                                                                                                                                                                                                                                                                                                                                                                 |
 |[AssertError](#AssertError)                                      |Returns success if the Test step returns an error and a failure otherwise.                                                                                                                                                                                                                                                                                                                   |
 |[AssertTrue](#AssertTrue)                                        |Returns an error if the nested step does not return true.                                                                                                                                                                                                                                                                                                                                    |
-|[Compare`1](#Compare`1)                                          |Compares two items.                                                                                                                                                                                                                                                                                                                                                                          |
+|[Compare<T>](#Compare<T>)                                        |Compares two items.                                                                                                                                                                                                                                                                                                                                                                          |
 |[Conditional](#Conditional)                                      |Executes a statement if a condition is true.                                                                                                                                                                                                                                                                                                                                                 |
 |[CreateDirectory](#CreateDirectory)                              |Creates a new directory in the file system.                                                                                                                                                                                                                                                                                                                                                  |
 |[CreateFile](#CreateFile)                                        |Creates a file.                                                                                                                                                                                                                                                                                                                                                                              |
 |[DeleteItem](#DeleteItem)                                        |Deletes a file or folder from the file system.                                                                                                                                                                                                                                                                                                                                               |
 |[DirectoryExists](#DirectoryExists)                              |Returns whether a directory on the file system exists.                                                                                                                                                                                                                                                                                                                                       |
 |[DoesFileContain](#DoesFileContain)                              |Returns whether a file on the file system contains a particular string.                                                                                                                                                                                                                                                                                                                      |
-|[ElementAtIndex`1](#ElementAtIndex`1)                            |Gets the array element at a particular index.                                                                                                                                                                                                                                                                                                                                                |
+|[ElementAtIndex<T>](#ElementAtIndex<T>)                          |Gets the array element at a particular index.                                                                                                                                                                                                                                                                                                                                                |
 |[FileExists](#FileExists)                                        |Returns whether a file on the file system exists.                                                                                                                                                                                                                                                                                                                                            |
 |[FirstIndexOf](#FirstIndexOf)                                    |Gets the first instance of substring in a string.                                                                                                                                                                                                                                                                                                                                            |
-|[FirstIndexOfElement`1](#FirstIndexOfElement`1)                  |Gets the first index of an element in an array.                                                                                                                                                                                                                                                                                                                                              |
+|[FirstIndexOfElement<T>](#FirstIndexOfElement<T>)                |Gets the first index of an element in an array.                                                                                                                                                                                                                                                                                                                                              |
 |[For](#For)                                                      |Do an action for each value of a given variable in a range.                                                                                                                                                                                                                                                                                                                                  |
-|[ForEach`1](#ForEach`1)                                          |Do an action for each member of the list.                                                                                                                                                                                                                                                                                                                                                    |
+|[ForEach<T>](#ForEach<T>)                                        |Do an action for each member of the list.                                                                                                                                                                                                                                                                                                                                                    |
 |[GetLetterAtIndex](#GetLetterAtIndex)                            |Gets the letters that appears at a specific index                                                                                                                                                                                                                                                                                                                                            |
 |[GetSubstring](#GetSubstring)                                    |Gets a substring from a string.                                                                                                                                                                                                                                                                                                                                                              |
-|[GetVariable`1](#GetVariable`1)                                  |Gets the value of a named variable.                                                                                                                                                                                                                                                                                                                                                          |
+|[GetVariable<T>](#GetVariable<T>)                                |Gets the value of a named variable.                                                                                                                                                                                                                                                                                                                                                          |
 |[IncrementVariable](#IncrementVariable)                          |Increment an integer variable by a particular amount                                                                                                                                                                                                                                                                                                                                         |
 |[JoinStrings](#JoinStrings)                                      |Join strings with a delimiter.                                                                                                                                                                                                                                                                                                                                                               |
 |[LastIndexOf](#LastIndexOf)                                      |Gets the last instance of substring in a string.                                                                                                                                                                                                                                                                                                                                             |
 |[LengthOfString](#LengthOfString)                                |Calculates the length of the string.                                                                                                                                                                                                                                                                                                                                                         |
 |[Not](#Not)                                                      |Negation of a boolean value.                                                                                                                                                                                                                                                                                                                                                                 |
-|[Print`1](#Print`1)                                              |Prints a value to the log.                                                                                                                                                                                                                                                                                                                                                                   |
+|[Print<T>](#Print<T>)                                            |Prints a value to the log.                                                                                                                                                                                                                                                                                                                                                                   |
 |[ReadCsv](#ReadCsv)                                              |Extracts elements from a CSV file                                                                                                                                                                                                                                                                                                                                                            |
 |[ReadFile](#ReadFile)                                            |Reads text from a file.                                                                                                                                                                                                                                                                                                                                                                      |
-|[Repeat`1](#Repeat`1)                                            |Creates an array by repeating an element.                                                                                                                                                                                                                                                                                                                                                    |
+|[Repeat<T>](#Repeat<T>)                                          |Creates an array by repeating an element.                                                                                                                                                                                                                                                                                                                                                    |
 |[RepeatWhile](#RepeatWhile)                                      |Repeat an action while the condition is met.                                                                                                                                                                                                                                                                                                                                                 |
 |[RepeatXTimes](#RepeatXTimes)                                    |Repeat a step a set number of times.                                                                                                                                                                                                                                                                                                                                                         |
 |[RunExternalProcess](#RunExternalProcess)                        |Runs an external executable program.                                                                                                                                                                                                                                                                                                                                                         |
 |[Sequence](#Sequence)                                            |A sequence of steps to be run one after the other.                                                                                                                                                                                                                                                                                                                                           |
-|[SetVariable`1](#SetVariable`1)                                  |Gets the value of a named variable.                                                                                                                                                                                                                                                                                                                                                          |
-|[SortArray`1](#SortArray`1)                                      |Reorder an array.                                                                                                                                                                                                                                                                                                                                                                            |
+|[SetVariable<T>](#SetVariable<T>)                                |Gets the value of a named variable.                                                                                                                                                                                                                                                                                                                                                          |
+|[SortArray<T>](#SortArray<T>)                                    |Reorder an array.                                                                                                                                                                                                                                                                                                                                                                            |
 |[SplitString](#SplitString)                                      |Splits a string.                                                                                                                                                                                                                                                                                                                                                                             |
 |[StringIsEmpty](#StringIsEmpty)                                  |Returns whether a string is empty.                                                                                                                                                                                                                                                                                                                                                           |
-|[Test`1](#Test`1)                                                |Returns one result if a condition is true and another if the condition is false.                                                                                                                                                                                                                                                                                                             |
+|[Test<T>](#Test<T>)                                              |Returns one result if a condition is true and another if the condition is false.                                                                                                                                                                                                                                                                                                             |
 |[ToCase](#ToCase)                                                |Converts a string to a particular case.                                                                                                                                                                                                                                                                                                                                                      |
 |[Trim](#Trim)                                                    |Trims a string.                                                                                                                                                                                                                                                                                                                                                                              |
 |[Unzip](#Unzip)                                                  |Unzip a file in the file system.                                                                                                                                                                                                                                                                                                                                                             |
@@ -524,8 +524,8 @@ Applies a mathematical operator to two integers. Returns the result of the opera
 |Operator |[MathOperator](#MathOperator)|☑️      |The operator to apply.|
 |Right    |`int`                        |☑️      |The right operand.    |
 
-<a name="Array`1"></a>
-## Array`1
+<a name="Array<T>"></a>
+## Array<T>
 
 **List<T>**
 
@@ -535,8 +535,8 @@ Represents an ordered collection of objects.
 |:-------:|:------------:|:------:|:-------------------------:|
 |Elements |IStep<[T](#T)>|☑️      |The elements of this array.|
 
-<a name="ArrayCount`1"></a>
-## ArrayCount`1
+<a name="ArrayCount<T>"></a>
+## ArrayCount<T>
 
 **Int32**
 
@@ -546,8 +546,8 @@ Counts the elements in an array.
 |:-------:|:-----------:|:------:|:-----------------:|
 |Array    |List<[T](#T)>|☑️      |The array to count.|
 
-<a name="ArrayIsEmpty`1"></a>
-## ArrayIsEmpty`1
+<a name="ArrayIsEmpty<T>"></a>
+## ArrayIsEmpty<T>
 
 **Boolean**
 
@@ -579,8 +579,8 @@ Returns an error if the nested step does not return true.
 |:-------:|:----:|:------:|:---------------:|
 |Test     |`bool`|☑️      |The step to test.|
 
-<a name="Compare`1"></a>
-## Compare`1
+<a name="Compare<T>"></a>
+## Compare<T>
 
 **Boolean**
 
@@ -662,8 +662,8 @@ Returns whether a file on the file system contains a particular string.
 |Path     |`string`|☑️      |The path to the file to check.|
 |Text     |`string`|☑️      |The text to check for.        |
 
-<a name="ElementAtIndex`1"></a>
-## ElementAtIndex`1
+<a name="ElementAtIndex<T>"></a>
+## ElementAtIndex<T>
 
 **T**
 
@@ -697,8 +697,8 @@ Gets the first instance of substring in a string.
 |String   |`string`|☑️      |The string to check.  |
 |SubString|`string`|☑️      |The substring to find.|
 
-<a name="FirstIndexOfElement`1"></a>
-## FirstIndexOfElement`1
+<a name="FirstIndexOfElement<T>"></a>
+## FirstIndexOfElement<T>
 
 **Int32**
 
@@ -724,8 +724,8 @@ Do an action for each value of a given variable in a range.
 |To          |`int`                        |☑️      |The highest value of the variable to use  |
 |VariableName|[VariableName](#VariableName)|☑️      |The name of the variable to loop over.    |
 
-<a name="ForEach`1"></a>
-## ForEach`1
+<a name="ForEach<T>"></a>
+## ForEach<T>
 
 **Unit**
 
@@ -762,8 +762,8 @@ Gets a substring from a string.
 |Length   |`int`   |☑️      |The length of the substring to extract.|
 |String   |`string`|☑️      |The string to extract a substring from.|
 
-<a name="GetVariable`1"></a>
-## GetVariable`1
+<a name="GetVariable<T>"></a>
+## GetVariable<T>
 
 **T**
 
@@ -831,8 +831,8 @@ Negation of a boolean value.
 |:-------:|:----:|:------:|:------------------:|
 |Boolean  |`bool`|☑️      |The value to negate.|
 
-<a name="Print`1"></a>
-## Print`1
+<a name="Print<T>"></a>
+## Print<T>
 
 **Unit**
 
@@ -869,8 +869,8 @@ Reads text from a file.
 |FileName |`string`|☑️      |The name of the file to write to.|
 |Folder   |`string`|☑️      |The name of the folder.          |
 
-<a name="Repeat`1"></a>
-## Repeat`1
+<a name="Repeat<T>"></a>
+## Repeat<T>
 
 **List<T>**
 
@@ -928,8 +928,8 @@ A sequence of steps to be run one after the other.
 |:-------:|:------------------:|:------:|:-------------------------:|
 |Steps    |IStep<[Unit](#Unit)>|☑️      |The steps of this sequence.|
 
-<a name="SetVariable`1"></a>
-## SetVariable`1
+<a name="SetVariable<T>"></a>
+## SetVariable<T>
 
 **Unit**
 
@@ -940,8 +940,8 @@ Gets the value of a named variable.
 |Value       |[T](#T)                      |☑️      |The value to set the variable to.|
 |VariableName|[VariableName](#VariableName)|☑️      |The name of the variable to set. |
 
-<a name="SortArray`1"></a>
-## SortArray`1
+<a name="SortArray<T>"></a>
+## SortArray<T>
 
 **List<T>**
 
@@ -975,8 +975,8 @@ Returns whether a string is empty.
 |:-------:|:------:|:------:|:----------------------------------:|
 |String   |`string`|☑️      |The string to check for being empty.|
 
-<a name="Test`1"></a>
-## Test`1
+<a name="Test<T>"></a>
+## Test<T>
 
 **T**
 
