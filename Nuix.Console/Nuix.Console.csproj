@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.EDR.Connectors.Nuix.Console</RootNamespace>
     <AssemblyName>EDRNuixConsole</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.2.0-alpha$(VersionSuffix)</Version>
+    <Version>0.2.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
