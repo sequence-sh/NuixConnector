@@ -1,4 +1,3 @@
-
 image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
 include:
@@ -310,7 +309,7 @@ package NuixConsole exe:
   extends: package NuixConnector dll
   variables:
     PACKAGE_NAME: $PACKAGE_NAME_EXE
-    PACKAGE_PATH: ./NuixConsole
+    PACKAGE_PATH: ./Nuix.Console
     PACKAGE_PROPERTIES: -p:PublishSingleFile=true
 
 push to nuget dev:
