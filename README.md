@@ -1,3 +1,8 @@
+[![pipeline status](https://gitlab.com/reductech/edr/connectors/nuix/badges/master/pipeline.svg)](https://gitlab.com/reductech/edr/connectors/nuix/-/commits/master)
+[![coverage report](https://gitlab.com/reductech/edr/connectors/nuix/badges/master/coverage.svg)](https://gitlab.com/reductech/edr/connectors/nuix/-/commits/master)
+[![Gitter](https://badges.gitter.im/reductech/edr.svg)](https://gitter.im/reductech/edr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+
 # Introduction
 
 This is a project that lets you execute various processes in NUIX from outside of NUIX and construct pipelines to automate entire workflows.<br>
