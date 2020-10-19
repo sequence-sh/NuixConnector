@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
     <AssemblyName>Reductech.EDR.Connectors.Nuix</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.2.0$(VersionSuffix)</Version>
+    <Version>0.2.1$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
