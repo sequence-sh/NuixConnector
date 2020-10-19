@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
@@ -19,14 +20,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Gets the ruby block to run.
         /// </summary>
-        private Result<ITypedRubyBlock<T>, IRunErrors> TryGetRubyBlock(StateMonad stateMonad) =>
-            TryGetMethodParameters(stateMonad)
+        private Task<Result<ITypedRubyBlock<T>, IRunErrors>>  TryGetRubyBlock(StateMonad stateMonad, CancellationToken cancellationToken) =>
+            TryGetMethodParameters(stateMonad, cancellationToken)
                 .Map(x =>
                     new TypedFunctionRubyBlock<T>(RubyScriptStepFactory.RubyFunction, x) as ITypedRubyBlock<T>);
 
 
         /// <inheritdoc />
-        public override Result<string, IRunErrors> TryCompileScript(StateMonad stateMonad) => TryGetRubyBlock(stateMonad)
+        public override Task<Result<string, IRunErrors>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken) => TryGetRubyBlock(stateMonad, cancellationToken)
             .Bind(ScriptGenerator.CompileScript);
 
         /// <inheritdoc />
@@ -38,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Runs this step asynchronously
         /// </summary>
-        protected override async Task<Result<T, IRunErrors>> RunAsync(StateMonad stateMonad)
+        protected override async Task<Result<T, IRunErrors>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken)
         {
             var settingsResult = stateMonad.GetSettings<INuixSettings>(FunctionName);
             if (settingsResult.IsFailure)
@@ -53,7 +54,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             }
             else
             {
-                var blockResult = TryGetRubyBlock(stateMonad);//This will run child functions
+                var blockResult = await TryGetRubyBlock(stateMonad, cancellationToken);//This will run child functions
                 if (blockResult.IsFailure) return blockResult.ConvertFailure<T>();
                 block = blockResult.Value;
 

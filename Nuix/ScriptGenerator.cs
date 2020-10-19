@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -33,8 +35,9 @@ namespace Reductech.EDR.Connectors.Nuix
         /// Generates ruby scripts for all RubyScriptProcesses in the AppDomain.
         /// </summary>
         /// <param name="folderPath">Path to the folder to create the scripts in.</param>
+        /// <param name="cancellationToken"></param>
         [UsedImplicitly]
-        public string GenerateScripts(string folderPath)
+        public async Task<string> GenerateScriptsAsync(string folderPath, CancellationToken cancellationToken)
         {
             var processTypes = AppDomain.CurrentDomain
                 .GetAssemblies().SelectMany(x=>x.GetTypes())
@@ -67,13 +70,13 @@ namespace Reductech.EDR.Connectors.Nuix
                     }
 
 
-                    var (isSuccess, _, value, error) = TryGenerateScript(process);
+                    var (isSuccess, _, value, error) = await TryGenerateScript(process, cancellationToken);
                     if (isSuccess)
                     {
                         var fileName = process.FunctionName + ".rb";
                         var newPath = Path.Combine(folderPath, fileName);
 
-                        File.WriteAllText(newPath, value, Encoding.UTF8);
+                        await File.WriteAllTextAsync(newPath, value, Encoding.UTF8, cancellationToken);
 
                     }
                     else
@@ -153,11 +156,11 @@ namespace Reductech.EDR.Connectors.Nuix
             return scriptBuilder.ToString();
         }
 
-        private Result<string> TryGenerateScript(IRubyScriptStep step)
+        private Task<Result<string>> TryGenerateScript(IRubyScriptStep step, CancellationToken cancellationToken)
         {
             var state = new StateMonad(NullLogger.Instance, _nuixSettings, ExternalProcessRunner.Instance);
 
-            var result = step.TryCompileScript(state).MapFailure(x=>x.AsString);
+            var result = step.TryCompileScriptAsync(state, cancellationToken).MapFailure(x=>x.AsString);
             return result;
 
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
@@ -24,17 +25,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Theory]
         [ClassData(typeof(ScriptCompositionTestCases))]
         [Trait(NuixTestCases.Category, NuixTestCases.Integration)]
-        public override void Test(string key) => base.Test(key);
+        public override Task Test(string key) => base.Test(key);
     }
 
 
-    public class ScriptCompositionTestCases : TestBase
+    public class ScriptCompositionTestCases : TestBaseParallel
     {
         /// <inheritdoc />
-        protected override IEnumerable<ITestBaseCase> TestCases =>
+        protected override IEnumerable<ITestBaseCaseParallel> TestCases =>
             NuixTestCases.GetSettingsCombos().Select(x => new ScriptCompositionTest(x));
 
-        private class ScriptCompositionTest : ITestBaseCase
+        private class ScriptCompositionTest : ITestBaseCaseParallel
         {
             public ScriptCompositionTest(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 
@@ -44,7 +45,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public StepSettingsCombo StepSettingsCombo { get; }
 
             /// <inheritdoc />
-            public void Execute(ITestOutputHelper testOutputHelper)
+            public async Task ExecuteAsync(ITestOutputHelper testOutputHelper)
             {
                 var externalProcessRunner = new TestExternalProcessRunner(testOutputHelper);
 
@@ -55,7 +56,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 var stateMonad = new StateMonad(NullLogger.Instance, StepSettingsCombo.Settings, externalProcessRunner);
 
-                var result = StepSettingsCombo.Step.Run(stateMonad);
+                var result = await StepSettingsCombo.Step.Run(stateMonad, CancellationToken.None);
                 result.ShouldBeSuccessful(x => x.AsString);
 
                 externalProcessRunner.TimesCalled.Should().Be(1, "exactly one script should be called");
