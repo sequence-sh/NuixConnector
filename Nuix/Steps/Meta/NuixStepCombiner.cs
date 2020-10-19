@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Conversion;
 using Reductech.EDR.Core;
@@ -88,14 +90,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
         /// <inheritdoc />
-        public Result<Unit, IRunErrors> Run(StateMonad stateMonad)
+        public async Task<Result<Unit, IRunErrors>> Run(StateMonad stateMonad, CancellationToken cancellationToken)
         {
             var settingsResult = stateMonad.GetSettings<INuixSettings>(Name);
             if (settingsResult.IsFailure)
                 return settingsResult.ConvertFailure<Unit>();
 
 
-            var r = RubyBlockRunner.RunAsync(Name, Block, stateMonad, settingsResult.Value).Result;
+            var r = await RubyBlockRunner.RunAsync(Name, Block, stateMonad, settingsResult.Value);
 
             return r;
         }
@@ -108,8 +110,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         }
 
         /// <inheritdoc />
-        public Result<T, IRunErrors> Run<T>(StateMonad stateMonad) =>
-            Run(stateMonad).BindCast<Unit, T, IRunErrors>(
+        public Task<Result<T, IRunErrors>> Run<T>(StateMonad stateMonad, CancellationToken cancellationToken) =>
+            Run(stateMonad, cancellationToken).BindCast<Unit, T, IRunErrors>(
                 new RunError($"Could not cast {typeof(T)} to {typeof(Unit)}", Name, null, ErrorCode.InvalidCast));
 
         /// <inheritdoc />

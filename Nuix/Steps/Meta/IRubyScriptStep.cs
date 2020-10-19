@@ -1,4 +1,6 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 
@@ -18,7 +20,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// Compiles the script for this step.
         /// </summary>
         /// <returns></returns>
-        Result<string, IRunErrors> TryCompileScript(StateMonad stateMonad);
+        Task<Result<string, IRunErrors>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken);
 
         /// <summary>
         /// Tries to convert this step into a ruby block.

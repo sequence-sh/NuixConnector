@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Conversion;
@@ -24,15 +25,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public string FunctionName => RubyScriptStepFactory.RubyFunction.FunctionName;
 
         /// <inheritdoc />
-        public abstract Result<string, IRunErrors> TryCompileScript(StateMonad stateMonad);
+        public abstract Task<Result<string, IRunErrors>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken);
 
         /// <inheritdoc />
-        public override Result<T, IRunErrors> Run(StateMonad stateMonad) => RunAsync(stateMonad).Result;
+        public override Task<Result<T, IRunErrors>> Run(StateMonad stateMonad, CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
 
         /// <summary>
         /// Runs this step asynchronously.
         /// </summary>
-        protected abstract Task<Result<T, IRunErrors>> RunAsync(StateMonad stateMonad);
+        protected abstract Task<Result<T, IRunErrors>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken);
 
         /// <inheritdoc />
         public abstract IRubyScriptStepFactory<T> RubyScriptStepFactory { get; }
@@ -100,7 +101,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         }
 
 
-        internal Result<IReadOnlyDictionary<RubyFunctionParameter, string>, IRunErrors> TryGetMethodParameters(StateMonad stateMonad)
+        internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, string>, IRunErrors>>
+            TryGetMethodParameters(StateMonad stateMonad, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<RubyFunctionParameter, string>();
 
@@ -117,7 +119,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     }
                     else
                     {
-                        var r = process.Run<object>(stateMonad);
+                        var r = await process.Run<object>(stateMonad, cancellationToken);
                         if (r.IsFailure)
                             return r.ConvertFailure<IReadOnlyDictionary<RubyFunctionParameter, string>>();
 

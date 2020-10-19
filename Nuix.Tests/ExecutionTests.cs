@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Xunit;
@@ -24,17 +26,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Theory]
         [ClassData(typeof(ExecutionTestCases))]
         [Trait(NuixTestCases.Category, NuixTestCases.Integration)]
-        public override void Test(string key) => base.Test(key);
+        public override Task Test(string key) => base.Test(key);
     }
 
-    public class ExecutionTestCases : TestBase
+    public class ExecutionTestCases : TestBaseParallel
     {
         /// <inheritdoc />
-        protected override IEnumerable<ITestBaseCase> TestCases =>
+        protected override IEnumerable<ITestBaseCaseParallel> TestCases =>
             NuixTestCases.GetSettingsCombos().Select(x => new ExecutionTestCase(x));
 
 
-        private class ExecutionTestCase : ITestBaseCase
+        private class ExecutionTestCase : ITestBaseCaseParallel
         {
             public ExecutionTestCase(StepSettingsCombo stepSettingsCombo) => StepSettingsCombo = stepSettingsCombo;
 
@@ -45,7 +47,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public string Name => StepSettingsCombo.ToString();
 
             /// <inheritdoc />
-            public void Execute(ITestOutputHelper testOutputHelper)
+            public async Task ExecuteAsync(ITestOutputHelper testOutputHelper)
             {
                 StepSettingsCombo.IsStepCompatible.Should().BeTrue("Step should be compatible");
 
@@ -58,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 var sw = Stopwatch.StartNew();
 
-                var result = StepSettingsCombo.Step.Run(stateMonad);
+                var result = await StepSettingsCombo.Step.Run(stateMonad, CancellationToken.None);
                 sw.Stop();
 
                 testOutputHelper.WriteLine($"Elapsed: {sw.ElapsedMilliseconds}ms");

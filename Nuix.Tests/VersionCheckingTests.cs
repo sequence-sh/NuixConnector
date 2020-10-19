@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -16,7 +18,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     {
         [Fact]
         [Trait(NuixTestCases.Category, NuixTestCases.Integration)]
-        public void TestVersionCheckingWithinScript()
+        public async Task TestVersionCheckingWithinScript()
         {
             var baseSettings = NuixTestCases.NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
 
@@ -26,8 +28,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             var process = new DoNothing { MyRequiredVersion = new Version(100, 0) };
 
-            var result = process
-                .Run(new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance))
+            var result = await process
+                .Run(new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance), CancellationToken.None)
                 .MapFailure(x => x.AsString);
 
             result.ShouldBeFailure();
