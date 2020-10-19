@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuix.Console", "Nuix.Console\Nuix.Console.csproj", "{80972A8F-0387-4C7E-9846-F3F54B01932B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuix", "Nuix\Nuix.csproj", "{DC18DF1A-570F-4380-A266-3EF9CA771699}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuix.Tests", "Nuix.Tests\Nuix.Tests.csproj", "{B242ECE0-86EB-4295-BDF4-20D419308253}"
@@ -48,10 +46,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{80972A8F-0387-4C7E-9846-F3F54B01932B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{80972A8F-0387-4C7E-9846-F3F54B01932B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{80972A8F-0387-4C7E-9846-F3F54B01932B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{80972A8F-0387-4C7E-9846-F3F54B01932B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC18DF1A-570F-4380-A266-3EF9CA771699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC18DF1A-570F-4380-A266-3EF9CA771699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC18DF1A-570F-4380-A266-3EF9CA771699}.Release|Any CPU.ActiveCfg = Release|Any CPU
