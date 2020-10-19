@@ -23,7 +23,6 @@ variables:
   BUILD_RUNTIME: win-x64
   PACKAGE_NAME_NUGET: Reductech.EDR.Connectors.Nuix
   PACKAGE_NAME_DLL: EDRNuixConnector
-  PACKAGE_NAME_EXE: EDRNuixConsole
   DEFAULT_PRERELEASE_VERSION: a
   CONFIG_DEV: Debug
   CONFIG_RELEASE: Release
@@ -304,13 +303,6 @@ package NuixConnector dll:
       - $PACKAGE_NAME/
     expire_in: never
   rules: *rules_release
-
-package NuixConsole exe:
-  extends: package NuixConnector dll
-  variables:
-    PACKAGE_NAME: $PACKAGE_NAME_EXE
-    PACKAGE_PATH: ./Nuix.Console
-    PACKAGE_PROPERTIES: -p:PublishSingleFile=true
 
 push to nuget dev:
   stage: push
