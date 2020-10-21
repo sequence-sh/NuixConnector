@@ -71,7 +71,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixImportDocumentIdsStepFactory.Instance;
 
-
         /// <summary>
         /// The path to the case.
         /// </summary>
@@ -84,8 +83,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// Specifies that the source production set name(s) are contained in the document ID list.
         /// </summary>
-
-        [Required]
         [StepProperty]
         [DefaultValueExplanation("false")]
         [RubyArgument("sourceProductionSetsInDataArg", 2)]
@@ -97,18 +94,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty]
         [RubyArgument("productionSetNameArg", 3)]
-
         public IStep<string> ProductionSetName { get; set; } = null!;
-
-
 
         /// <summary>
         /// Specifies the file path of the document ID list.
         /// </summary>
-
         [Required]
         [StepProperty]
         [RubyArgument("dataPathArg", 4)]
         public IStep<string> DataPath { get; set; } = null!;
+
     }
+
 }
