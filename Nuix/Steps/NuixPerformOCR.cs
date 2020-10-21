@@ -66,7 +66,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     the_case.close";
     }
 
-
     /// <summary>
     /// Performs optical character recognition on files in a NUIX case.
     /// </summary>
@@ -87,7 +86,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The term to use for searching for files to OCR.
         /// </summary>
-        [Required]
         [StepProperty]
         [DefaultValueExplanation("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))")]
         [RubyArgument("searchTermArg", 2)]

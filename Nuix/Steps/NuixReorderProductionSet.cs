@@ -33,7 +33,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string FunctionName => "RenumberProductionSet";
 
-
         /// <inheritdoc />
         public override string RubyFunctionText => @"
     the_case = utilities.case_factory.open(pathArg)
@@ -57,7 +56,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     the_case.close";
     }
 
-
     /// <summary>
     /// Reorders and renumbers the items in a production set.
     /// </summary>
@@ -65,9 +63,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixReorderProductionSetStepFactory.Instance;
-
-
-
 
         /// <summary>
         /// The path to the case.
@@ -84,18 +79,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty]
         [RubyArgument("productionSetNameArg", 2)]
-
         public IStep<string> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// The method of sorting items during the renumbering.
         /// </summary>
-        [Required]
         [StepProperty]
         [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
         [RubyArgument("sortOrderArg", 3)]
         public IStep<ProductionSetSortOrder> SortOrder { get; set; } = new Constant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);
 
-
     }
+
 }
