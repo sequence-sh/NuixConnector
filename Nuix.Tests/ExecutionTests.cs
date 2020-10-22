@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Xunit;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Internal;
 using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
@@ -56,7 +58,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 var loggerFactory = new LoggerFactory(new[] { new XunitLoggerProvider(testOutputHelper) });
 
                 var logger =  loggerFactory.CreateLogger(Name);
-                var stateMonad = new StateMonad(logger, StepSettingsCombo.Settings, ExternalProcessRunner.Instance);
+                var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
+
+                var stateMonad = new StateMonad(logger, StepSettingsCombo.Settings, ExternalProcessRunner.Instance, factoryStore);
 
                 var sw = Stopwatch.StartNew();
 

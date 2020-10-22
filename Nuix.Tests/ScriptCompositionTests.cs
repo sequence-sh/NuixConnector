@@ -7,6 +7,7 @@ using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Util;
@@ -53,8 +54,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 StepSettingsCombo.IsStepCompatible.Should().BeTrue("Step should be compatible");
 
                 StepSettingsCombo.Step.Verify(StepSettingsCombo.Settings).ShouldBeSuccessful(x => x.AsString);
+                var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
-                var stateMonad = new StateMonad(NullLogger.Instance, StepSettingsCombo.Settings, externalProcessRunner);
+                var stateMonad = new StateMonad(NullLogger.Instance, StepSettingsCombo.Settings, externalProcessRunner, factoryStore);
 
                 var result = await StepSettingsCombo.Step.Run(stateMonad, CancellationToken.None);
                 result.ShouldBeSuccessful(x => x.AsString);

@@ -128,6 +128,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public IEnumerable<IStepCombiner> StepCombiners { get; } = new[] {NuixStepCombiner.Instance};
 
+        /// <inheritdoc />
+        public Type OutputType => typeof(Unit);
+
         public IEnumerable<Requirement> Requirements { get; }
     }
 

@@ -44,11 +44,12 @@ namespace Reductech.EDR.Connectors.Nuix
                 .Where(t => typeof(IRubyScriptStep).IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract).ToList();
 
+            var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
+
             foreach (var processType in processTypes)
             {
                 try
                 {
-
                     var instance = Activator.CreateInstance(processType);
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
@@ -70,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix
                     }
 
 
-                    var (isSuccess, _, value, error) = await TryGenerateScript(process, cancellationToken);
+                    var (isSuccess, _, value, error) = await TryGenerateScript(process, factoryStore, cancellationToken);
                     if (isSuccess)
                     {
                         var fileName = process.FunctionName + ".rb";
@@ -156,9 +157,9 @@ namespace Reductech.EDR.Connectors.Nuix
             return scriptBuilder.ToString();
         }
 
-        private Task<Result<string>> TryGenerateScript(IRubyScriptStep step, CancellationToken cancellationToken)
+        private Task<Result<string>> TryGenerateScript(IRubyScriptStep step, StepFactoryStore factoryStore, CancellationToken cancellationToken)
         {
-            var state = new StateMonad(NullLogger.Instance, _nuixSettings, ExternalProcessRunner.Instance);
+            var state = new StateMonad(NullLogger.Instance, _nuixSettings, ExternalProcessRunner.Instance, factoryStore);
 
             var result = step.TryCompileScriptAsync(state, cancellationToken).MapFailure(x=>x.AsString);
             return result;
