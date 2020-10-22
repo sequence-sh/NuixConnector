@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
@@ -24,13 +25,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             var superSettings = new NuixSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100, 0), baseSettings.NuixFeatures);
 
+            var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
+
+            var stateMonad = new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance, factoryStore);
+
             baseSettings.Should().NotBeNull();
 
             var process = new DoNothing { MyRequiredVersion = new Version(100, 0) };
 
             var result = await process
-                .Run(new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance), CancellationToken.None)
-                .MapFailure(x => x.AsString);
+                .Run(stateMonad, CancellationToken.None)
+                .MapError(x => x.AsString);
 
             result.ShouldBeFailure();
 

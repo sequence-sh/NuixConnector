@@ -7,8 +7,10 @@ using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
@@ -53,8 +55,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 StepSettingsCombo.IsStepCompatible.Should().BeTrue("Step should be compatible");
 
                 StepSettingsCombo.Step.Verify(StepSettingsCombo.Settings).ShouldBeSuccessful(x => x.AsString);
+                var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
-                var stateMonad = new StateMonad(NullLogger.Instance, StepSettingsCombo.Settings, externalProcessRunner);
+                var stateMonad = new StateMonad(NullLogger.Instance, StepSettingsCombo.Settings, externalProcessRunner, factoryStore);
 
                 var result = await StepSettingsCombo.Step.Run(stateMonad, CancellationToken.None);
                 result.ShouldBeSuccessful(x => x.AsString);
@@ -70,7 +73,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public ITestOutputHelper TestOutputHelper { get; }
 
             /// <inheritdoc />
-            public async Task<Result<Unit, IRunErrors>> RunExternalProcess(string processPath, ILogger logger, string callingProcessName, IErrorHandler errorHandler, IEnumerable<string> arguments)
+            public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(string processPath, ILogger logger, IErrorHandler errorHandler, IEnumerable<string> arguments)
             {
                 var args = arguments.ToList();
 

@@ -7,6 +7,8 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -20,15 +22,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Gets the ruby block to run.
         /// </summary>
-        private Task<Result<ITypedRubyBlock<T>, IRunErrors>>  TryGetRubyBlock(StateMonad stateMonad, CancellationToken cancellationToken) =>
+        private Task<Result<ITypedRubyBlock<T>, IError>>  TryGetRubyBlock(StateMonad stateMonad, CancellationToken cancellationToken) =>
             TryGetMethodParameters(stateMonad, cancellationToken)
                 .Map(x =>
                     new TypedFunctionRubyBlock<T>(RubyScriptStepFactory.RubyFunction, x) as ITypedRubyBlock<T>);
 
 
         /// <inheritdoc />
-        public override Task<Result<string, IRunErrors>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken) => TryGetRubyBlock(stateMonad, cancellationToken)
-            .Bind(ScriptGenerator.CompileScript);
+        public override Task<Result<string, IError>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken) =>
+            TryGetRubyBlock(stateMonad, cancellationToken)
+            .Bind(x=>ScriptGenerator.CompileScript(x).MapError(a=>a.WithLocation(this)));
 
         /// <inheritdoc />
         public override Result<IRubyBlock> TryConvert() =>
@@ -39,9 +42,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Runs this step asynchronously
         /// </summary>
-        protected override async Task<Result<T, IRunErrors>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken)
+        protected override async Task<Result<T, IError>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken)
         {
-            var settingsResult = stateMonad.GetSettings<INuixSettings>(FunctionName);
+            var settingsResult = stateMonad.GetSettings<INuixSettings>().MapError(x=>x.WithLocation(this));
             if (settingsResult.IsFailure)
                 return settingsResult.ConvertFailure<T>();
 
@@ -60,8 +63,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             }
 
-            var argumentsResult = ScriptGenerator.CompileScript(block)
-                    .Bind(st => RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settingsResult.Value, block)).Result;
+            var argumentsResult = await ScriptGenerator.CompileScript(block)
+                    .Bind(st => RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settingsResult.Value, block))
+                    .MapError(x=>x.WithLocation(this));
 
             if (argumentsResult.IsFailure)
                 return argumentsResult.ConvertFailure<T>();
@@ -70,15 +74,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
             var result = await stateMonad.ExternalProcessRunner.RunExternalProcess(settingsResult.Value.NuixExeConsolePath,
-                scriptProcessLogger,
-                Name, NuixErrorHandler.Instance, argumentsResult.Value);
+                scriptProcessLogger, NuixErrorHandler.Instance, argumentsResult.Value)
+                    .MapError(x=>x.WithLocation(this));
 
-            if (result.IsFailure) return result.ConvertFailure<T>();
+            if (result.IsFailure)
+                return result.ConvertFailure<T>();
 
             if (scriptProcessLogger.FinalOutput.HasValue)
                 return scriptProcessLogger.FinalOutput.Value!;
 
-            return new RunError("No value was returned from nuix function", Name, null, ErrorCode.ExternalProcessMissingOutput);
+            return new SingleError("No value was returned from nuix function", ErrorCode.ExternalProcessMissingOutput, new StepErrorLocation(this));
         }
 
 

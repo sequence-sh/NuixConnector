@@ -49,7 +49,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 var unfrozen = StepSettingsCombo.Step.Unfreeze();
                 var freezeResult = unfrozen.TryFreeze();
-                freezeResult.ShouldBeSuccessful();
+                freezeResult.ShouldBeSuccessful(x=>x.AsString);
                 var verifyResult = freezeResult.Value.Verify(StepSettingsCombo.Settings);
 
 

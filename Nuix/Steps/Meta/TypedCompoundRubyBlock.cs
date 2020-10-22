@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -26,10 +27,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
         /// <inheritdoc />
-        public Result<string, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
+        public Result<string, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
             var arguments = new List<string>();
-            var errors = new List<IRunErrors>();
+            var errors = new List<IErrorBuilder>();
             var resultVariableName = Function.FunctionName.ToLowerInvariant() + suffixer.CurrentSuffix;
 
             if (Function.RequireUtilities)
@@ -54,7 +55,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             if (errors.Any())
             {
-                return RunErrorList.Combine(errors);
+                return Result.Failure<string, IErrorBuilder>(ErrorBuilderList.Combine(errors));
             }
             var callStringBuilder = new StringBuilder();
 

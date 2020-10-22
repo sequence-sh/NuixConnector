@@ -7,6 +7,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix
@@ -142,28 +143,28 @@ namespace Reductech.EDR.Connectors.Nuix
             new Regex(@$"\A{RubyScriptStepUnit.NuixRequirementName}(?<feature>.+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <inheritdoc />
-        public Result<Unit, IRunErrors> CheckRequirement(string processName, Requirement requirement)
+        public Result<Unit, IErrorBuilder> CheckRequirement(Requirement requirement)
         {
             if (requirement.Name == RubyScriptStepUnit.NuixRequirementName)
             {
                 if(requirement.MinVersion != null && requirement.MinVersion > NuixVersion)
-                    return new RunError($"Required Nuix Version >= {requirement.MinVersion} but had {NuixVersion}", processName, null, ErrorCode.RequirementsNotMet);
+                    return new ErrorBuilder($"Required Nuix Version >= {requirement.MinVersion} but had {NuixVersion}",ErrorCode.RequirementsNotMet);
 
                 if(requirement.MaxVersion != null && requirement.MaxVersion < NuixVersion)
-                    return new RunError($"Required Nuix Version <= {requirement.MaxVersion} but had {NuixVersion}", processName, null, ErrorCode.RequirementsNotMet);
+                    return new ErrorBuilder($"Required Nuix Version <= {requirement.MaxVersion} but had {NuixVersion}", ErrorCode.RequirementsNotMet);
 
                 return Unit.Default;
             }
 
             if (!NuixFeatureRegex.TryMatch(requirement.Name, out var match))
-                return EmptySettings.Instance.CheckRequirement(processName, requirement);
+                return EmptySettings.Instance.CheckRequirement( requirement);
 
             var feature = match.Groups["feature"].Value;
 
             if (Enum.TryParse<NuixFeature>(feature, true, out var nuixFeature) && NuixFeatures.Contains(nuixFeature))
                 return Unit.Default;
 
-            return new RunError($"{feature} missing", processName, null, ErrorCode.RequirementsNotMet);
+            return new ErrorBuilder($"{feature} missing", ErrorCode.RequirementsNotMet);
 
         }
     }

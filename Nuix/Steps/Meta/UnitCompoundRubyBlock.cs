@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -26,10 +27,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
         /// <inheritdoc />
-        public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
+        public Result<Unit, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
             var arguments = new List<string>();
-            var errors = new List<IRunErrors>();
+            var errors = new List<IErrorBuilder>();
 
             if (Function.RequireUtilities)
                 arguments.Add(RubyScriptCompilationHelper.UtilitiesParameterName);
@@ -52,7 +53,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             }
 
             if (errors.Any())
-                return RunErrorList.Combine(errors);
+                return Result.Failure<Unit, IErrorBuilder>( ErrorBuilderList.Combine(errors));
 
             var callStringBuilder = new StringBuilder();
 

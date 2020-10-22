@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -106,7 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// Will generally include the argument name (prefixed by '--' and the argument).
         /// Will fail if some required arguments are missing.
         /// </summary>
-        Result<IReadOnlyCollection<string>, IRunErrors> TryGetArguments(Suffixer suffixer);
+        Result<IReadOnlyCollection<string>, IErrorBuilder> TryGetArguments(Suffixer suffixer);
 
         /// <summary>
         /// Gets the lines needed in the options parser to provide the arguments.
@@ -122,7 +122,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Writes the main block of ruby code.
         /// </summary>
-        public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder);
+        public Result<Unit, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder);
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// Writes the main block of ruby code.
         /// Returns the result variable name.
         /// </summary>
-        public Result<string, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder);
+        public Result<string, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder);
     }
 
 

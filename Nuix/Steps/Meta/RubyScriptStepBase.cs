@@ -7,6 +7,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Conversion;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -25,15 +26,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public string FunctionName => RubyScriptStepFactory.RubyFunction.FunctionName;
 
         /// <inheritdoc />
-        public abstract Task<Result<string, IRunErrors>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken);
+        public abstract Task<Result<string, IError>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken);
 
         /// <inheritdoc />
-        public override Task<Result<T, IRunErrors>> Run(StateMonad stateMonad, CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
+        public override Task<Result<T, IError>> Run(StateMonad stateMonad, CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
 
         /// <summary>
         /// Runs this step asynchronously.
         /// </summary>
-        protected abstract Task<Result<T, IRunErrors>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken);
+        protected abstract Task<Result<T, IError>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken);
 
         /// <inheritdoc />
         public abstract IRubyScriptStepFactory<T> RubyScriptStepFactory { get; }
@@ -101,7 +102,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         }
 
 
-        internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, string>, IRunErrors>>
+        internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, string>, IError>>
             TryGetMethodParameters(StateMonad stateMonad, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<RubyFunctionParameter, string>();
@@ -114,8 +115,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 {
                     if (process is null)
                     {
-                        return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, string>, IRunErrors>(
-                                    ErrorHelper.MissingParameterError(argument.ParameterName, Name));
+                        return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, string>, IError>(
+                                    ErrorHelper.MissingParameterError(argument.ParameterName, Name).WithLocation(this));
                     }
                     else
                     {

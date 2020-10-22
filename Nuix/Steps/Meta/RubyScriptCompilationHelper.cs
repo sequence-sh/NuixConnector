@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -101,7 +101,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             return stringBuilder.ToString();
         }
 
-        public static async Task<Result<IReadOnlyCollection<string>, IRunErrors>> TryGetTrueArgumentsAsync(string scriptText, INuixSettings nuixSettings, IRubyBlock rubyBlock)
+        public static async Task<Result<IReadOnlyCollection<string>, IErrorBuilder>> TryGetTrueArgumentsAsync(string scriptText, INuixSettings nuixSettings, IRubyBlock rubyBlock)
         {
             var suffixer = new Suffixer();
             var blockArguments = rubyBlock.TryGetArguments(suffixer);

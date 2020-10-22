@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -32,7 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public IEnumerable<IRubyFunction> FunctionDefinitions => Blocks.SelectMany(x=>x.FunctionDefinitions).Distinct();
 
         /// <inheritdoc />
-        public Result<IReadOnlyCollection<string>, IRunErrors> TryGetArguments(Suffixer suffixer)
+        public Result<IReadOnlyCollection<string>, IErrorBuilder> TryGetArguments(Suffixer suffixer)
         {
             var arguments = new List<string>();
 
@@ -56,7 +56,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         }
 
         /// <inheritdoc />
-        public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
+        public Result<Unit, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
             foreach (var block in Blocks)
             {

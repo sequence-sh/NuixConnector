@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -15,7 +15,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     {
         public ConstantRubyBlock(T value, string parameterName)
         {
-            Value = value;
+            Value = value!;
             ParameterName = parameterName;
         }
 
@@ -36,7 +36,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public IEnumerable<IRubyFunction> FunctionDefinitions => ImmutableArray<IRubyFunction>.Empty;
 
         /// <inheritdoc />
-        public Result<IReadOnlyCollection<string>, IRunErrors>  TryGetArguments(Suffixer suffixer)
+        public Result<IReadOnlyCollection<string>, IErrorBuilder>  TryGetArguments(Suffixer suffixer)
         {
             List<string> args;
 
@@ -66,7 +66,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         }
 
         /// <inheritdoc />
-        public Result<string, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
+        public Result<string, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
         {
             var number = suffixer.GetNext();
 
