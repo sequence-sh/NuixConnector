@@ -112,7 +112,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 var block = r.Value;
 
                 var argsResult = block.TryGetArguments(new Suffixer());
-                argsResult.MapFailure(x=>x.AsString).ShouldBeSuccessful();
+                argsResult.MapError(x=>x.AsString).ShouldBeSuccessful();
 
                 var args = argsResult.Value.ToList();
 
@@ -145,13 +145,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 if (block is ITypedRubyBlock typedRubyBlock)
                 {
                     typedRubyBlock.TryWriteBlockLines(new Suffixer(), blockLines)
-                        .MapFailure(x=>x.AsString)
+                        .MapError(x=>x.AsString)
                         .ShouldBeSuccessful();
                 }
                 else if (block is IUnitRubyBlock unitRubyBlock)
                 {
                     unitRubyBlock.TryWriteBlockLines(new Suffixer(), blockLines)
-                        .MapFailure(x => x.AsString)
+                        .MapError(x => x.AsString)
                         .ShouldBeSuccessful();
                 }
                 else

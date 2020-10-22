@@ -3,6 +3,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
@@ -43,7 +44,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
             public override IEnumerable<IRubyFunction> FunctionDefinitions => TestBlock.FunctionDefinitions;
 
             /// <inheritdoc />
-            public Result<Unit, IRunErrors> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
+            public Result<Unit, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
             {
                 stringBuilder.AppendLine("begin");
 

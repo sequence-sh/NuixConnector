@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -20,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// Compiles the script for this step.
         /// </summary>
         /// <returns></returns>
-        Task<Result<string, IRunErrors>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken);
+        Task<Result<string, IError>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken);
 
         /// <summary>
         /// Tries to convert this step into a ruby block.

@@ -2,7 +2,7 @@
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Conversion
 {
@@ -29,10 +29,10 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         protected abstract IEnumerable<IRubyBlock> OrderedBlocks { get; }
 
         /// <inheritdoc />
-        public Result<IReadOnlyCollection<string>, IRunErrors> TryGetArguments(Suffixer suffixer)
+        public Result<IReadOnlyCollection<string>, IErrorBuilder> TryGetArguments(Suffixer suffixer)
         {
             var arguments = new List<string>();
-            var errors = new List<IRunErrors>();
+            var errors = new List<IErrorBuilder>();
 
             foreach (var block in OrderedBlocks)
             {
@@ -48,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
             }
 
             if (errors.Any())
-                return RunErrorList.Combine(errors);
+                return Result.Failure<IReadOnlyCollection<string>, IErrorBuilder>(ErrorBuilderList.Combine(errors));
 
             return arguments;
         }

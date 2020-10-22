@@ -48,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 var r = YamlMethods.DeserializeFromYaml(yaml, pfs);
 
-                r.ShouldBeSuccessful();
+                r.ShouldBeSuccessful(x=>x.AsString);
             }
         }
     }

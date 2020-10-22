@@ -35,7 +35,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             var result = await process
                 .Run(stateMonad, CancellationToken.None)
-                .MapFailure(x => x.AsString);
+                .MapError(x => x.AsString);
 
             result.ShouldBeFailure();
 

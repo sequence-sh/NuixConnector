@@ -13,6 +13,7 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.RubyFunctions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 using YamlDotNet.Serialization;
 
@@ -104,7 +105,7 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Compiles a ruby script for any number of unit blocks
         /// </summary>
-        public static Result<string, IRunErrors> CompileScript(IUnitRubyBlock block)
+        public static Result<string, IErrorBuilder> CompileScript(IUnitRubyBlock block)
         {
             var scriptBuilder = new StringBuilder();
 
@@ -127,7 +128,7 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Compiles a ruby script for a typed block.
         /// </summary>
-        public static Result<string, IRunErrors> CompileScript<T>(ITypedRubyBlock<T> block)
+        public static Result<string, IErrorBuilder> CompileScript<T>(ITypedRubyBlock<T> block)
         {
             var compoundRubyBlock = new TypedCompoundRubyBlock<string>(BinToHexFunction.Instance,
                 new Dictionary<RubyFunctionParameter, ITypedRubyBlock>
@@ -161,7 +162,7 @@ namespace Reductech.EDR.Connectors.Nuix
         {
             var state = new StateMonad(NullLogger.Instance, _nuixSettings, ExternalProcessRunner.Instance, factoryStore);
 
-            var result = step.TryCompileScriptAsync(state, cancellationToken).MapFailure(x=>x.AsString);
+            var result = step.TryCompileScriptAsync(state, cancellationToken).MapError(x=>x.AsString);
             return result;
 
         }

@@ -6,6 +6,7 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -171,21 +172,20 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
 
         /// <inheritdoc />
-        public override Result<Unit, IRunErrors> VerifyThis(ISettings settings)
+        public override Result<Unit, IError> VerifyThis(ISettings settings)
         {
             if (ProductionProfileName != null && ProductionProfilePath != null)
-                return new RunError(
+                return new SingleError(
                     $"Only one of {nameof(ProductionProfileName)} and {nameof(ProductionProfilePath)} may be set.",
-                    Name,
-                    null,
-                    ErrorCode.ConflictingParameters);
+                    ErrorCode.ConflictingParameters,
+                    new StepErrorLocation(this)
+                    );
 
             if (ProductionProfileName == null && ProductionProfilePath == null)
-                return new RunError(
+                return new SingleError(
                     $"Either {nameof(ProductionProfileName)} or {nameof(ProductionProfilePath)} must be set.",
-                    Name,
-                    null,
-                    ErrorCode.MissingParameter);
+                    ErrorCode.MissingParameter,
+                    new StepErrorLocation(this));
 
             return base.VerifyThis(settings);
         }

@@ -39,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             if (args.expectedError == null)
                 result.ShouldBeSuccessful(x => x.AsString);
             else
-                result.MapFailure(x=>x.AsString).ShouldBeFailure(args.expectedError);
+                result.MapError(x=>x.AsString).ShouldBeFailure(args.expectedError);
 
         }
     }

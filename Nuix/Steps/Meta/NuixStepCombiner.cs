@@ -7,6 +7,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Conversion;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -90,14 +91,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
         /// <inheritdoc />
-        public async Task<Result<Unit, IRunErrors>> Run(StateMonad stateMonad, CancellationToken cancellationToken)
+        public async Task<Result<Unit, IError>> Run(StateMonad stateMonad, CancellationToken cancellationToken)
         {
-            var settingsResult = stateMonad.GetSettings<INuixSettings>(Name);
+            var settingsResult = stateMonad.GetSettings<INuixSettings>().MapError(x=>x.WithLocation(this));
             if (settingsResult.IsFailure)
                 return settingsResult.ConvertFailure<Unit>();
 
 
-            var r = await RubyBlockRunner.RunAsync(Name, Block, stateMonad, settingsResult.Value);
+            var r = await RubyBlockRunner.RunAsync(Name, Block, stateMonad, settingsResult.Value).
+                MapError(x=>x.WithLocation(this));
 
             return r;
         }
@@ -110,14 +112,24 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         }
 
         /// <inheritdoc />
-        public Task<Result<T, IRunErrors>> Run<T>(StateMonad stateMonad, CancellationToken cancellationToken) =>
-            Run(stateMonad, cancellationToken).BindCast<Unit, T, IRunErrors>(
-                new RunError($"Could not cast {typeof(T)} to {typeof(Unit)}", Name, null, ErrorCode.InvalidCast));
+        public async Task<Result<T, IError>> Run<T>(StateMonad stateMonad, CancellationToken cancellationToken)
+        {
+            var runResult = await Run(stateMonad, cancellationToken);
+
+            if (runResult.IsFailure)
+                return runResult.ConvertFailure<T>();
+
+            if (runResult.Value is T t)
+                return t;
+
+            return new SingleError($"Could not cast {typeof(T)} to {typeof(Unit)}", ErrorCode.InvalidCast, new StepErrorLocation(this));
+        }
 
         /// <inheritdoc />
-        public Result<Unit, IRunErrors> Verify(ISettings settings) =>
-            Requirements.Select(x => settings.CheckRequirement(Name, x))
-                .Combine(_ => Unit.Default, RunErrorList.Combine);
+        public Result<Unit, IError> Verify(ISettings settings) =>
+            Requirements.Select(settings.CheckRequirement)
+                .Combine(_ => Unit.Default, ErrorBuilderList.Combine)
+                .MapError(x=>x.WithLocation(this));
 
         /// <inheritdoc />
         public string Name { get; }

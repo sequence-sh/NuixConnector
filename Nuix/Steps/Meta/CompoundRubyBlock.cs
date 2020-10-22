@@ -2,6 +2,7 @@
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -41,10 +42,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             Arguments.SelectMany(x => x.Value.FunctionDefinitions).Append(Function);
 
         /// <inheritdoc />
-        public Result<IReadOnlyCollection<string>, IRunErrors> TryGetArguments(Suffixer suffixer)
+        public Result<IReadOnlyCollection<string>, IErrorBuilder> TryGetArguments(Suffixer suffixer)
         {
             var resultsStrings = new List<string>();
-            var errors = new List<IRunErrors>();
+            var errors = new List<IErrorBuilder>();
 
             foreach (var rubyFunctionArgument in Function.Arguments)
             {
@@ -66,7 +67,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             }
 
             if (errors.Any())
-                return Result.Failure<IReadOnlyCollection<string>, IRunErrors>(RunErrorList.Combine(errors));
+                ErrorBuilderList.Combine(errors);
 
             return resultsStrings;
         }
