@@ -115,7 +115,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 {
                     if (process is null)
                     {
-                        return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, string>, IError>(
+                        if (!argument.IsOptional)
+                            return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, string>, IError>(
                                     ErrorHelper.MissingParameterError(argument.ParameterName, Name).WithLocation(this));
                     }
                     else

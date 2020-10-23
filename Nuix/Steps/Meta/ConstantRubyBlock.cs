@@ -62,7 +62,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public void WriteOptParseLines(string hashSetName, IIndentationStringBuilder sb, Suffixer suffixer)
         {
             var number = suffixer.GetNext();
-            sb.AppendLine($"opts.on('--{ParameterName}{number} [ARG]') do |o| params[:{ParameterName}{number}] = o end");
+            sb.AppendLine($"opts.on('--{ParameterName}{number} ARG') do |o| params[:{ParameterName}{number}] = o end");
         }
 
         /// <inheritdoc />

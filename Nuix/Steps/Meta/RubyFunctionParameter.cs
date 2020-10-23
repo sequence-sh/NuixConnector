@@ -78,7 +78,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 if (argumentAttribute != null)
                 {
-                    var (isRunnableProcess, isNullable) = CheckType(p.PropertyType);
+                    var (isRunnableProcess, isNullable) = CheckType(p);
 
                     if (isRunnableProcess)
                     {
@@ -114,7 +114,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 var argumentAttribute = p.GetCustomAttribute<RubyArgumentAttribute>();
 
-                var (isRunnableProcess, isNullable) = CheckType(p.PropertyType);
+                var (isRunnableProcess, isNullable) = CheckType(p);
 
                 if (argumentAttribute != null)
                 {
@@ -141,11 +141,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
         }
 
-        private static (bool isRunnableProcess, bool isOptional) CheckType(Type propertyType)
+        private static (bool isRunnableProcess, bool isOptional) CheckType(PropertyInfo propertyInfo)
         {
-            var isOptional = propertyType.GetCustomAttribute<RequiredAttribute>() == null;
+            var isOptional = propertyInfo.GetCustomAttribute<RequiredAttribute>() == null;
 
-            if (typeof(IStep).IsAssignableFrom(propertyType))
+            if (typeof(IStep).IsAssignableFrom(propertyInfo.PropertyType))
                 return (true, isOptional);
 
             return (false, isOptional);
