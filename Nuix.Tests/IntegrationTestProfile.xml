@@ -13,7 +13,7 @@
       <should-replace-generated-md5>false</should-replace-generated-md5>
     </concordance-options>
     <charset>UTF-8</charset>
-    <file-path>D:\Source\Repos\nuix\NuixTests\Concordance\loadfile.dat</file-path>
+    <file-path>D:\IntegrationTest\Nuix\Concordance\loadfile.dat</file-path>
     <use-default-date-time-formatter>true</use-default-date-time-formatter>
   </data-source>
   <data-mapping>
