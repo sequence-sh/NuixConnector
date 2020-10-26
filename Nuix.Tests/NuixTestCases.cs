@@ -15,6 +15,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     {
         //TODO set paths from a config file, or something
 
+        public const string Nuix6Path = @"C:\Program Files\Nuix\Nuix 6.2";
+        public const string Nuix7Path = @"C:\Program Files\Nuix\Nuix 7.8";
+        public const string Nuix8Path = @"C:\Program Files\Nuix\Nuix 8.8";
+
         public const string Integration = "Integration";
         public const string Category = "Category";
 
@@ -346,10 +350,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     new NuixCreateNRTReport
                     {
                         CasePath = CasePath,
-                        NRTPath = Constant(@"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary.nrt"),
+                        NRTPath = Constant(Path.Join(Nuix8Path, @"user-data\Reports\Case Summary.nrt")),
                         OutputFormat = Constant("PDF"),
                         LocalResourcesURL =
-                            Constant(@"C:\Program Files\Nuix\Nuix 8.2\user-data\Reports\Case Summary\Resources\"),
+                            Constant(Path.Join(Nuix8Path, @"user-data\Reports\Case Summary\Resources\")),
                         OutputPath = NRTFolder
                     },
                     AssertFileContains(GeneralDataFolder, "NRT", "PDF-1.4"),
@@ -567,12 +571,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static readonly IReadOnlyCollection<INuixSettings> NuixSettingsList =
             new List<INuixSettings>
             {
-                new NuixSettings(true, @"C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe", new Version(8, 2),
+                new NuixSettings(true, Path.Join(Nuix8Path, "nuix_console.exe"), new Version(8, 8),
                     AllNuixFeatures),
-                //new NuixSettings(true, @"C:\Program Files\Nuix\Nuix 7.8\nuix_console.exe", new Version(7, 8), AllNuixFeatures),
-                new NuixSettings(true, @"C:\Program Files\Nuix\Nuix 7.2\nuix_console.exe", new Version(7, 2),
+                new NuixSettings(true, Path.Join(Nuix7Path, "nuix_console.exe"), new Version(7, 8),
                     AllNuixFeatures),
-                new NuixSettings(true, @"C:\Program Files\Nuix\Nuix 6.2\nuix_console.exe", new Version(6, 2),
+                new NuixSettings(true, Path.Join(Nuix6Path, "nuix_console.exe"), new Version(6, 2),
                     AllNuixFeatures),
             };
 
