@@ -47,7 +47,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private static readonly IStep<Unit> DeleteCaseFolder = new DeleteItem { Path = CasePath };
         private static readonly IStep<Unit> DeleteOutputFolder = new DeleteItem { Path = Constant(OutputFolder) };
         private static readonly IStep<Unit> CreateOutputFolder = new CreateDirectory { Path = Constant(OutputFolder) };
-        private static readonly IStep<Unit> AssertCaseDoesNotExist = new AssertTrue { Test = new Not { Boolean = new NuixDoesCaseExists { CasePath = CasePath } } };
+        private static readonly IStep<Unit> AssertCaseDoesNotExist = new AssertTrue { Test = new Not { Boolean = new NuixDoesCaseExist { CasePath = CasePath } } };
         private static readonly IStep<Unit> CreateCase = new NuixCreateCase
         {
             CaseName = Constant("Integration Test Case"),
@@ -112,7 +112,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                     new AssertTrue
                     {
-                        Test = new NuixDoesCaseExists
+                        Test = new NuixDoesCaseExist
                             {
                                 CasePath = CasePath
                             }
