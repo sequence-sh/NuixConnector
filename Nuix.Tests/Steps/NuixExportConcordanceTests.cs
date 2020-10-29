@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixExportConcordanceTests : StepTestBase<NuixExportConcordance, Unit>
+    public class NuixExportConcordanceTests : NuixStepTestBase<NuixExportConcordance, Unit>
     {
         /// <inheritdoc />
         public NuixExportConcordanceTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)

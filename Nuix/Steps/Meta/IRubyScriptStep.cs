@@ -34,7 +34,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     /// <summary>
     /// A ruby script step
     /// </summary>
-    public interface IRubyScriptStep<T> : IRubyScriptStep
+    public interface IRubyScriptStep<T> : IRubyScriptStep, ICompoundStep<T>
     {
         /// <summary>
         /// The ruby factory to use for this step.

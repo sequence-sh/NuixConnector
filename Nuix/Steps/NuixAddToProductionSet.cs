@@ -130,6 +130,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [StepProperty]
         [RubyArgument("descriptionArg", 4)]
+        [DefaultValueExplanation("No description")]
         public IStep<string>? Description { get; set; }
 
         /// <summary>
@@ -161,6 +162,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty]
         [Example("name ASC, item-date DESC")]
         [RubyArgument("orderArg", 7)]
+        [DefaultValueExplanation("Default order")]
         public IStep<string>? Order { get; set; }
 
         /// <summary>
@@ -168,6 +170,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [StepProperty]
         [RubyArgument("limitArg", 8)]
+        [DefaultValueExplanation("No limit")]
         public IStep<int>? Limit { get; set; }
 
 

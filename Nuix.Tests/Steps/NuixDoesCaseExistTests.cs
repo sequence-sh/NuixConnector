@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixDoesCaseExistTests : StepTestBase<NuixDoesCaseExist, bool>
+    public class NuixDoesCaseExistTests : NuixStepTestBase<NuixDoesCaseExist, bool>
     {
         /// <inheritdoc />
         public NuixDoesCaseExistTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)

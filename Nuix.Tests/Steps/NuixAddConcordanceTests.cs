@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixAddConcordanceTests : StepTestBase<NuixAddConcordance, Unit>
+    public class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordance, Unit>
     {
         /// <inheritdoc />
         public NuixAddConcordanceTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -14,17 +13,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<StepCase> StepCases
-        {
-            get { yield break; }
-        }
+        protected override IEnumerable<DeserializeCase> DeserializeCases { get { yield break; } }
 
         /// <inheritdoc />
-        protected override IEnumerable<DeserializeCase> DeserializeCases
-        {
-            get { yield break; }
-
-        }
-
+        protected override IEnumerable<StepCase> StepCases { get { yield break; } }
     }
 }

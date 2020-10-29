@@ -1,4 +1,6 @@
-﻿using Reductech.EDR.Core.Internal;
+﻿using System;
+using System.Collections.Generic;
+using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -11,5 +13,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// The ruby function to run.
         /// </summary>
         IRubyFunction<T> RubyFunction { get; }
+
+        /// <summary>
+        /// The Required Nuix version
+        /// </summary>
+        Version RequiredNuixVersion { get; }
+
+        /// <summary>
+        /// The Required Nuix Features.
+        /// </summary>
+        IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
     }
 }

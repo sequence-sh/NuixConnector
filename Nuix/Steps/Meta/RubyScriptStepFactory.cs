@@ -70,13 +70,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// </summary>
         public abstract Version RequiredNuixVersion { get; }
 
-        /// <inheritdoc />
-        public override IStepNameBuilder StepNameBuilder => new StepNameBuilderFromTemplate(FunctionName);
-
         /// <summary>
         /// The Required Nuix Features.
         /// </summary>
         public abstract IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
+
+        /// <inheritdoc />
+        public override IStepNameBuilder StepNameBuilder => new StepNameBuilderFromTemplate(FunctionName);
+
+
 
         /// <inheritdoc />
         public override Maybe<IStepCombiner> StepCombiner { get; } = Maybe<IStepCombiner>.From(NuixStepCombiner.Instance);

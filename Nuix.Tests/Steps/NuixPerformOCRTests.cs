@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixPerformOCRTests : StepTestBase<NuixPerformOCR, Unit>
+    public class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit>
     {
         /// <inheritdoc />
         public NuixPerformOCRTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)

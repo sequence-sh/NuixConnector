@@ -94,6 +94,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [StepProperty]
         [RubyArgument("folderDescriptionArg", 3)]
+        [DefaultValueExplanation("No description")]
         public IStep<string>? Description { get; set; }
 
         /// <summary>

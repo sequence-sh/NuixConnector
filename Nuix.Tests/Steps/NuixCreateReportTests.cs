@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixCreateReportTests : StepTestBase<NuixCreateReport, string>
+    public class NuixCreateReportTests : NuixStepTestBase<NuixCreateReport, string>
     {
         /// <inheritdoc />
         public NuixCreateReportTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
