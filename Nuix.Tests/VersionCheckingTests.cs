@@ -17,21 +17,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
     [Collection("RequiresNuixLicense")]
     public class VersionCheckingTests
     {
-        [Fact]
-        [Trait(NuixTestCases.Category, NuixTestCases.Integration)]
-        public async Task TestVersionCheckingWithinScript()
-        {
-            var baseSettings = NuixTestCases.NuixSettingsList.OrderByDescending(x => x.NuixVersion).FirstOrDefault();
 
-            var superSettings = new NuixSettings(baseSettings.UseDongle, baseSettings.NuixExeConsolePath, new Version(100, 0), baseSettings.NuixFeatures);
+        [Fact]
+        [Trait(Constants.Category, Constants.Integration)]
+        public async Task Nuix_script_should_fail_if_required_version_is_above_nuix_version()
+        {
+
+            var superSettings = new NuixSettings(true, Constants.NuixSettingsList.First().NuixExeConsolePath, new Version(100, 0), Constants.AllNuixFeatures);
 
             var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
-
             var stateMonad = new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance, factoryStore);
-
-            baseSettings.Should().NotBeNull();
-
-            var process = new DoNothing { MyRequiredVersion = new Version(100, 0) };
+            var process = new NuixDoNothing { MyRequiredVersion = new Version(100, 0) };
 
             var result = await process
                 .Run(stateMonad, CancellationToken.None)
@@ -43,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         }
 
 
-        internal class DoNothing : RubyScriptStepUnit
+        internal class NuixDoNothing : RubyScriptStepUnit
         {
             /// <inheritdoc />
             public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => new DoNothingStepFactory(MyRequiredVersion, MyRequiredFeatures);
@@ -52,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             public List<NuixFeature>? MyRequiredFeatures { get; set; }
 
-            internal class DoNothingStepFactory : RubyScriptStepFactory<DoNothing, Unit>
+            internal class DoNothingStepFactory : RubyScriptStepFactory<NuixDoNothing, Unit>
             {
                 public DoNothingStepFactory(Version? myRequiredVersion, List<NuixFeature>? myRequiredFeatures)
                 {
@@ -73,7 +69,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 public List<NuixFeature>? MyRequiredFeatures { get; }
 
                 /// <inheritdoc />
-                public override string FunctionName => "DoNothing";
+                public override string FunctionName => "NuixDoNothing";
 
                 /// <inheritdoc />
                 public override string RubyFunctionText => @"

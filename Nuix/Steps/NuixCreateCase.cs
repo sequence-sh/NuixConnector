@@ -74,6 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [StepProperty]
         [RubyArgument("descriptionArg", 3)]
+        [DefaultValueExplanation("No Description")]
         public IStep<string>? Description { get; set; }
 
         /// <summary>

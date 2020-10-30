@@ -13,11 +13,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
         }
 
-        /// <inheritdoc />
-        protected override IEnumerable<StepCase> StepCases
-        {
-            get { yield break; }
-        }
 
         /// <inheritdoc />
         protected override IEnumerable<DeserializeCase> DeserializeCases
@@ -26,5 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
         }
 
+        /// <inheritdoc />
+        protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases { get{yield break;} }
     }
 }

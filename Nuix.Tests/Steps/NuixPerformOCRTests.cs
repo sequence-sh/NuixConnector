@@ -3,6 +3,7 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
+using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -13,11 +14,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
         }
 
-        /// <inheritdoc />
-        protected override IEnumerable<StepCase> StepCases
-        {
-            get { yield break; }
-        }
 
         /// <inheritdoc />
         protected override IEnumerable<DeserializeCase> DeserializeCases
@@ -26,5 +22,45 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
         }
 
+        /// <inheritdoc />
+        protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases {
+            get
+            {
+                yield return new NuixIntegrationTestCase("Perform OCR",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AssertCount(0, "sheep"),
+                    new NuixAddItem
+                    {
+                        CasePath = CasePath,
+                        Custodian = Constant("Mark"),
+                        Path = PoemTextImagePath,
+                        FolderName = Constant("New Folder")
+                    },
+                    new NuixPerformOCR {CasePath = CasePath, SearchTerm = Constant("*.png")},
+                    AssertCount(1, "sheep"),
+                    DeleteCaseFolder
+                );
+
+
+                yield return new NuixIntegrationTestCase("Perform OCR with named profile",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AssertCount(0, "sheep"),
+                    new NuixAddItem
+                    {
+                        CasePath = CasePath,
+                        Custodian = Constant("Mark"),
+                        Path = PoemTextImagePath,
+                        FolderName = Constant("New Folder")
+                    },
+                    new NuixPerformOCR
+                        {CasePath = CasePath, SearchTerm = Constant("*.png"), OCRProfileName = Constant("Default")},
+                    AssertCount(1, "sheep"),
+                    DeleteCaseFolder
+                );
+
+
+            } }
     }
 }

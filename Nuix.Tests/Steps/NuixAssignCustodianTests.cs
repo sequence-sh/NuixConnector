@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
+using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -14,17 +14,27 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         }
 
         /// <inheritdoc />
-        protected override IEnumerable<StepCase> StepCases
-        {
-            get { yield break; }
-        }
-
-        /// <inheritdoc />
         protected override IEnumerable<DeserializeCase> DeserializeCases
         {
             get { yield break; }
 
         }
 
+        /// <inheritdoc />
+        protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases {
+            get
+            {
+                yield return new NuixIntegrationTestCase("Assign Custodians",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
+                    AssertCount(0, "custodian:\"Jason\""),
+                    new NuixAssignCustodian()
+                        {CasePath = CasePath, Custodian = Constant("Jason"), SearchTerm = Constant("*")},
+                    AssertCount(4, "custodian:\"Jason\""),
+                    DeleteCaseFolder);
+
+
+            } }
     }
 }

@@ -3,6 +3,7 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
+using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -13,11 +14,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
         }
 
-        /// <inheritdoc />
-        protected override IEnumerable<StepCase> StepCases
-        {
-            get { yield break; }
-        }
 
         /// <inheritdoc />
         protected override IEnumerable<DeserializeCase> DeserializeCases
@@ -26,5 +22,26 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
         }
 
+        /// <inheritdoc />
+        protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases {
+            get
+            {
+                yield return new NuixIntegrationTestCase("Search and tag",
+                    DeleteCaseFolder,
+                    CreateCase,
+                    AddData,
+                    new NuixSearchAndTag
+                    {
+                        CasePath = CasePath,
+                        SearchTerm = Constant("charm"),
+                        Tag = Constant("charm")
+                    },
+                    AssertCount(1, "tag:charm"),
+                    DeleteCaseFolder
+
+                );
+
+
+            } }
     }
 }

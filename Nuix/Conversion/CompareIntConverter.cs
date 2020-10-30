@@ -63,9 +63,9 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
     end
 ";
 
-        public static readonly RubyFunctionParameter LeftParameter = new RubyFunctionParameter("leftArg", false, null);
-        public static readonly RubyFunctionParameter OperatorParameter = new RubyFunctionParameter("operatorArg", false, null);
-        public static readonly RubyFunctionParameter RightParameter = new RubyFunctionParameter("rightArg", false, null);
+        public static readonly RubyFunctionParameter LeftParameter = new RubyFunctionParameter("leftArg", nameof(Compare<int>.Left),  false, null);
+        public static readonly RubyFunctionParameter OperatorParameter = new RubyFunctionParameter("operatorArg",nameof(Compare<int>.Operator), false, null);
+        public static readonly RubyFunctionParameter RightParameter = new RubyFunctionParameter("rightArg",nameof(Compare<int>.Right), false, null);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<RubyFunctionParameter> Arguments { get; } =
