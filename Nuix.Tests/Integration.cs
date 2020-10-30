@@ -22,6 +22,7 @@ using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
+    [Collection("RequiresNuixLicense")]
     public abstract partial class NuixStepTestBase<TStep, TOutput>
     {
         private IEnumerable<IntegrationTestCase> IntegrationTestCasesWithSettings =>
