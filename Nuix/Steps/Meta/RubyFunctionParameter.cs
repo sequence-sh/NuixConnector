@@ -16,9 +16,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Creates a new RubyFunctionParameter.
         /// </summary>
-        public RubyFunctionParameter(string parameterName, bool isOptional, Version? requiredNuixVersion)
+        public RubyFunctionParameter(string parameterName, string propertyName, bool isOptional, Version? requiredNuixVersion)
         {
             ParameterName = parameterName;
+            PropertyName = propertyName;
             IsOptional = isOptional;
             RequiredNuixVersion = requiredNuixVersion;
         }
@@ -32,6 +33,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// The arguments to a function should have unique names.
         /// </summary>
         public string ParameterName { get; }
+
+        /// <summary>
+        /// The name of the property on the step.
+        /// </summary>
+        public string PropertyName { get; }
 
         /// <summary>
         /// False if this argument is required.
@@ -87,7 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         .Select(x => x.RequiredVersion)
                         .FirstOrDefault();
 
-                        var parameter = new RubyFunctionParameter(argumentAttribute.RubyName, isNullable, version);
+                        var parameter = new RubyFunctionParameter(argumentAttribute.RubyName, p.Name, isNullable, version);
 
                         var value = p.GetValue(process);
 
@@ -125,7 +131,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
                     if (isRunnableProcess)
-                        list.Add((new RubyFunctionParameter(argumentAttribute.RubyName, isNullable, version),
+                        list.Add((new RubyFunctionParameter(argumentAttribute.RubyName, p.Name, isNullable, version),
                             argumentAttribute.Order));
                     else
 

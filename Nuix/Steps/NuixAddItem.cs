@@ -114,6 +114,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [StepProperty]
         [RubyArgument("folderDescriptionArg", 3)]
+        [DefaultValueExplanation("No Description")]
         public IStep<string>? Description { get; set; }
 
         /// <summary>
@@ -164,6 +165,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty]
         [Example("C:/Data/Passwords.txt")]
         [RubyArgument("passwordFilePathArg", 8)]
+        [DefaultValueExplanation("Do not attempt decryption")]
         public IStep<string>? PasswordFilePath { get; set; }
 
 

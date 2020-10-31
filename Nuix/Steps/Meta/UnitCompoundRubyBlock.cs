@@ -48,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         errors.Add(childResult.Error);
                 }
                 else if (!rubyFunctionArgument.IsOptional)
-                    errors.Add(ErrorHelper.MissingParameterError(rubyFunctionArgument.ParameterName,
+                    errors.Add(ErrorHelper.MissingParameterError(rubyFunctionArgument.PropertyName,
                         Function.FunctionName));
             }
 

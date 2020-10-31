@@ -1,0 +1,50 @@
+﻿using System.Collections.Generic;
+using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core.Steps;
+using Reductech.EDR.Core.TestHarness;
+using Reductech.EDR.Core.Util;
+using Xunit.Abstractions;
+
+namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
+{
+    public class NuixMigrateCaseTests : NuixStepTestBase<NuixMigrateCase, Unit>
+    {
+        /// <inheritdoc />
+        public NuixMigrateCaseTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        {
+        }
+
+
+        /// <inheritdoc />
+        protected override IEnumerable<DeserializeCase> DeserializeCases
+        {
+            get { yield break; }
+
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases {
+            get
+            {
+                yield return new NuixIntegrationTestCase("Migrate Case",
+                    new DeleteItem {Path = Constants.MigrationTestCaseFolder},
+                    new Unzip
+                    {
+                        ArchiveFilePath = Constants.MigrationPath,
+                        DestinationDirectory = Constant(Constants.GeneralDataFolder)
+                    },
+                    new AssertError
+                    {
+                        Test = new NuixSearchAndTag
+                        {
+                            CasePath = Constants.MigrationTestCaseFolder, SearchTerm = Constant("*"),
+                            Tag = Constant("item")
+                        }
+                    }, //This should fail because we can't open the case
+                    new NuixMigrateCase {CasePath = Constants.MigrationTestCaseFolder},
+                    Constants.AssertCount(1, "jellyfish.txt", Constants.MigrationTestCaseFolder),
+                    new DeleteItem {Path = Constants.MigrationTestCaseFolder}
+                );
+            } }
+    }
+}

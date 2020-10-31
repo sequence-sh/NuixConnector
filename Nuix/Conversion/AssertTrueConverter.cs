@@ -25,7 +25,7 @@ if !{TestParameter.ParameterName}
     end";
 
         private static readonly RubyFunctionParameter TestParameter
-            = new RubyFunctionParameter("testArg", false, null);
+            = new RubyFunctionParameter("testArg", nameof(AssertTrue.Test),  false, null);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<RubyFunctionParameter> Arguments { get; } = new[] {TestParameter};

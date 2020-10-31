@@ -113,6 +113,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example(@"(199\d)")]
         [StepProperty]
         [RubyArgument("valueRegexArg", 4)]
+        [DefaultValueExplanation("All values will be returned")]
         public IStep<string>? ValueRegex { get; set; }
 
 

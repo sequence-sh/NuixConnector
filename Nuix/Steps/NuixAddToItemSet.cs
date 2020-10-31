@@ -107,6 +107,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [StepProperty]
         [RubyArgument("deduplicationArg", 4)]
+        [DefaultValueExplanation("No deduplication")]
         public IStep<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
 
         /// <summary>
@@ -115,6 +116,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         [StepProperty]
         [RubyArgument("descriptionArg", 5)]
+        [DefaultValueExplanation("No description")]
         public IStep<string>? ItemSetDescription { get; set; }
 
         /// <summary>
@@ -123,6 +125,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         [StepProperty]
         [RubyArgument("deduplicateByArg", 6)]
+        [DefaultValueExplanation("Neither")]
         public IStep<DeduplicateBy>? DeduplicateBy { get; set; }
 
         /// <summary>
@@ -132,6 +135,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         [StepProperty]
         [RubyArgument("custodianRankingArg", 7)]
+        [DefaultValueExplanation("Do not rank custodians")]
         public IStep<List<string>>? CustodianRanking { get; set; }
 
 
@@ -141,6 +145,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty]
         [Example("name ASC, item-date DESC")]
         [RubyArgument("orderArg", 8)]
+        [DefaultValueExplanation("Do not reorder")]
         public IStep<string>? Order { get; set; }
 
         /// <summary>
@@ -148,6 +153,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [StepProperty]
         [RubyArgument("limitArg", 9)]
+        [DefaultValueExplanation("No limit")]
         public IStep<int>? Limit { get; set; }
     }
 }

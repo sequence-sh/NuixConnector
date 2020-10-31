@@ -22,9 +22,9 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         public override string FunctionText { get; } = $"   File.write( File.join({FolderParameter.ParameterName}, {FileNameParameter.ParameterName}), {TextParameter.ParameterName})";
 
 
-        public static readonly RubyFunctionParameter FolderParameter = new RubyFunctionParameter("folderArg", false, null);
-        public static readonly RubyFunctionParameter FileNameParameter = new RubyFunctionParameter("fileNameArg", false, null);
-        public static readonly RubyFunctionParameter TextParameter = new RubyFunctionParameter("textArg", false, null);
+        public static readonly RubyFunctionParameter FolderParameter = new RubyFunctionParameter("folderArg", nameof(WriteFile.Folder), false, null);
+        public static readonly RubyFunctionParameter FileNameParameter = new RubyFunctionParameter("fileNameArg",nameof(WriteFile.FileName), false, null);
+        public static readonly RubyFunctionParameter TextParameter = new RubyFunctionParameter("textArg", nameof(WriteFile.Text),false, null);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<RubyFunctionParameter> Arguments { get; } = new[] {FolderParameter, FileNameParameter, TextParameter};
