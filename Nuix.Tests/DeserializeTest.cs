@@ -11,13 +11,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public class DeserializeUnitTest : DeserializeCase
         {
             /// <inheritdoc />
-            public DeserializeUnitTest(string name, string yaml, TOutput expectedOutput, IReadOnlyCollection<string> valuesToLog, params object[] expectedLoggedValues) : base(name, yaml, expectedOutput, expectedLoggedValues)
+            public DeserializeUnitTest(string name, string yaml, TOutput expectedOutput, IReadOnlyCollection<string> valuesToLog, params string[] expectedLoggedValues) : base(name, yaml, expectedOutput, expectedLoggedValues)
             {
                 SetupRunner(valuesToLog);
             }
 
             /// <inheritdoc />
-            public DeserializeUnitTest(string name, string yaml, Unit _, IReadOnlyCollection<string> valuesToLog, params object[] expectedLoggedValues) : base(name, yaml, _, expectedLoggedValues)
+            public DeserializeUnitTest(string name, string yaml, Unit _, IReadOnlyCollection<string> valuesToLog, params string[] expectedLoggedValues) : base(name, yaml, _, expectedLoggedValues)
             {
                 SetupRunner(valuesToLog);
             }

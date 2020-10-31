@@ -17,13 +17,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public class UnitTest : StepCase
         {
 
-            public UnitTest(string name, Sequence sequence, IReadOnlyCollection<string> valuesToLog, params object[] expectedLogValues)
+            public UnitTest(string name, Sequence sequence, IReadOnlyCollection<string> valuesToLog, params string[] expectedLogValues)
                 : base(name, sequence, Maybe<TOutput>.None, expectedLogValues)
             {
                 SetupRunner(valuesToLog);
             }
 
-            public UnitTest(string name, TStep step, TOutput expectedOutput, IReadOnlyCollection<string> valuesToLog, params object[] expectedLogValues)
+            public UnitTest(string name, TStep step, TOutput expectedOutput, IReadOnlyCollection<string> valuesToLog, params string[] expectedLogValues)
                 : base(name, step, expectedOutput, expectedLogValues)
             {
                 SetupRunner(valuesToLog);
