@@ -19,6 +19,10 @@
 
 ## v0.2.0 (2020-10-02)
 
+Updated to use v0.2.0 of reductech/edr/core>
+
+The yaml specification has changed entirely so yaml from the previous version will not work with this version.
+
 ### New Features
 
 - Allow composition of ruby processes #64
