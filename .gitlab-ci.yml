@@ -1,7 +1,6 @@
-image: mcr.microsoft.com/dotnet/core/sdk:3.1
-
 include:
-  - template: Code-Quality.gitlab-ci.yml
+  - project: reductech/templates/cicd/dotnet
+    file: .gitlab-ci.windows.yml
 
 stages:
   - build
@@ -20,151 +19,30 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
 
 variables:
-  BUILD_RUNTIME: win-x64
   PACKAGE_NAME_NUGET: Reductech.EDR.Connectors.Nuix
-  PACKAGE_NAME_DLL: EDRNuixConnector
-  DEFAULT_PRERELEASE_VERSION: a
-  CONFIG_DEV: Debug
-  CONFIG_RELEASE: Release
-  NUGET_PROJECT_ID_DEV: 18697166
-  NUGET_PROJECT_ID_RELEASE: 21286970
+  PACKAGE_NAME_DLL: Reductech.EDR.Connectors.Nuix
 
-.rule defaults:
-  conditions:
-    - &is_master $CI_COMMIT_BRANCH == 'master'
-    - &is_release $CI_COMMIT_TAG =~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/i
-    - &not_release $CI_COMMIT_TAG !~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/i
-  rules_dev: &rules_dev
-    - if: *is_master
-    - if: *not_release
-  rules_release: &rules_release
-    - if: *is_release
-  rules_manual: &rules_manual
-    - if: *is_master
-    - when: manual
-      allow_failure: true
-  rules_integration: &rules_integration
-    - if: *is_master
-    - if: $CI_PIPELINE_SOURCE == 'schedule'
-    - if: *not_release
-      when: manual
-      allow_failure: true
-
-.script defaults:
-  nuget_add_source: &nuget_add_source
-    - dotnet nuget add source --name reductech --username $NUGET_USERNAME
-      --password $NUGET_TOKEN --store-password-in-clear-text
-      "https://gitlab.com/api/v4/projects/$NUGET_PROJECT_ID/packages/nuget/index.json"
-
-build dev:
-  stage: build
-  variables:
-    CONFIG: $CONFIG_DEV
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
-    NUGET_USERNAME: $NUGET_USER_DEV
-    NUGET_TOKEN: $NUGET_TOKEN_DEV
-  before_script: *nuget_add_source
-  script:
-    - dotnet restore --runtime $BUILD_RUNTIME --packages ./packages
-    - dotnet build --runtime $BUILD_RUNTIME --configuration $CONFIG --no-restore
-  artifacts:
-    paths:
-      - '*/bin'
-      - '*/obj'
-      - packages/
-    expire_in: 60 mins
-  rules: *rules_dev
-
-build release:
-  extends: build dev
-  variables:
-    CONFIG: $CONFIG_RELEASE
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
-    NUGET_USERNAME: $NUGET_USER_PROD
-    NUGET_TOKEN: $NUGET_TOKEN_PROD
-  rules: *rules_release
+.get_coverage:
+  - &get_coverage |
+    $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
+    $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
+    [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
+    $xml = [xml]$report ;
+    $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
+    $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
+    Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
+    Write-Host "Coverage (Line)   : ${lineCoverage}%"
 
 test dev:
-  stage: test
-  variables:
-    CONFIG: $CONFIG_DEV
   script:
-    - dotnet test --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG
-      --filter "Category!=Integration" --collect:"XPlat Code Coverage" --results-directory ./
-    - >-
-      pwsh -Command '$report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
-      $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
-      [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
-      $xml = [xml]$report ;
-      $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
-      $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
-      Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
-      Write-Host "Coverage (Line)   : ${lineCoverage}%"'
-  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
-  artifacts:
-    reports:
-      cobertura: coverage.cobertura.xml
-  rules: *rules_dev
-
-test release:
-  extends: test dev
-  variables:
-    CONFIG: $CONFIG_RELEASE
-  rules: *rules_release
-
-version check dev:
-  stage: test
-  needs: []
-  variables:
-    PROJECT_PATH: ./*/*.csproj
-    PROJECT_FILTER: '*Tests*'
-  script:
-    - >-
-      pwsh -Command 'if ($env:CI_JOB_NAME -eq "version check release") {
-          Write-Host "Tag version : ${env:CI_COMMIT_TAG}"
-      }
-      $projects = Get-ChildItem -Path $env:PROJECT_PATH -Exclude $env:PROJECT_FILTER ;
-      if (@($projects).Count -gt 1) {
-          Write-Warning "More than one project found. The last project version will be used for the PROJECT_VERSION variable."
-      }
-      $projects | ForEach-Object {
-          Write-Host "Checking $($_.BaseName)" ;
-          $csproj = Get-Content $_.FullName -Raw ;
-          $csproj -match "<Version>(.+?)(\$\(VersionSuffix\))?</Version>" | Out-Null ;
-          $version = "v" + $Matches[1] ;
-          Write-Host "Project version    : $version" ;
-          if ($version -match "-(.+)$") {
-              $suffix = ""
-          } else {
-              $suffix = "-" + $env:DEFAULT_PRERELEASE_VERSION
-          }
-          if ($env:CI_COMMIT_BRANCH -eq "master") {
-              $suffix += ".master"
-          } else {
-              $suffix += ".dev"
-          }
-          $timestamp = [DateTimeOffset]::Now.ToUnixTimeSeconds() ;
-          $suffix += ".$timestamp" ;
-          Write-Host "Version timestamp  : $timestamp" ;
-          Write-Host "Version suffix     : $suffix" ;
-          Write-Host "Dev/master version : ${version}${suffix}" ;
-          "PROJECT_VERSION=$version`nVERSION_SUFFIX=$suffix`nVERSION_TIMESTAMP=$timestamp" | Out-File -FilePath ./version.env -Encoding ascii ;
-          if ($env:CI_JOB_NAME -eq "version check release" -and $version -ne $env:CI_COMMIT_TAG) {
-              Write-Error "The project version $version does not match the release tag version ${env:CI_COMMIT_TAG}" ;
-              exit 1
-          }
-      }'
-  artifacts:
-    reports:
-      dotenv: version.env
-  rules: *rules_dev
-
-version check release:
-  extends: version check dev
-  rules: *rules_release
+    - dotnet test --no-build --configuration $CONFIG --filter "Category!=Integration"
+      --collect:"XPlat Code Coverage" --results-directory ./
+    - *get_coverage
 
 integration test:
   stage: integration
+  extends:
+    - .default_before_script
   needs: []
   tags:
     - nuix
@@ -173,175 +51,36 @@ integration test:
     NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
     NUGET_USERNAME: $NUGET_USER_DEV
     NUGET_TOKEN: $NUGET_TOKEN_DEV
-  before_script: *nuget_add_source
   after_script:
     - dotnet nuget remove source reductech
   script:
-    - dotnet restore --runtime $BUILD_RUNTIME --packages ./packages
-    - dotnet test --no-restore --runtime $BUILD_RUNTIME --configuration $CONFIG
+    - dotnet restore --packages ./packages
+    - dotnet test --no-restore --configuration $CONFIG
       --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
       -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=false
-    - >-
-      $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
-      $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
-      $outPath = Join-Path (Get-Location) "coverage.cobertura.xml" ;
-      [System.IO.File]::WriteAllText($outPath, $fixPaths) ;
-      $xml = [xml]$report ;
-      $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
-      $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
-      Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
-      Write-Host "Coverage (Line)   : ${lineCoverage}%"
+    - *get_coverage
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
     reports:
       cobertura: coverage.cobertura.xml
-  rules: *rules_integration
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'master'
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+    - if: &not_release $CI_COMMIT_TAG !~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/i
+      when: manual
+      allow_failure: true
 
 integration test release:
-  extends: integration test
+  extends:
+    - integration test
+    - .rules_release
   variables:
     CONFIG: $CONFIG_RELEASE
     NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
     NUGET_USERNAME: $NUGET_USER_PROD
     NUGET_TOKEN: $NUGET_TOKEN_PROD
-  rules: *rules_release
 
-code_quality:
-  stage: quality
-  rules: *rules_manual
-
-.mutation testing:
-  stage: quality
-  needs: []
-  variables:
-    PROJECT_TO_TEST: $CI_PROJECT_TITLE
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
-    NUGET_USERNAME: $NUGET_USER_DEV
-    NUGET_TOKEN: $NUGET_TOKEN_DEV
-  before_script: *nuget_add_source
-  script:
-    - dotnet tool restore
-    - cd "$PROJECT_TO_TEST.Tests/"
-    - dotnet dotnet-stryker --project-file "$PROJECT_TO_TEST.csproj" --test-runner vstest
-      --reporters "['cleartext','html']" --ignore-methods "['Log*','*Exception.ctor']"
-    - cp ./StrykerOutput/*/reports/mutation-report.html ../
-  artifacts:
-    name: MutationReport
-    expose_as: 'Mutation Report'
-    paths:
-      - mutation-report.html
-    expire_in: never
-  rules: *rules_manual
-
-package NuixConnector nuget dev:
-  stage: package
-  needs:
-    - build dev
-    - test dev
-    - version check dev
-  script:
-    - dotnet pack --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG_DEV
-      --version-suffix $VERSION_SUFFIX --output ./
-  artifacts:
-    name: "$PACKAGE_NAME_NUGET-$PROJECT_VERSION"
-    paths:
-      - '*.nupkg'
-      - LICENSE
-      - README.md
-    expire_in: 3 months
+# Skipping mutation testing as Stryker currently doesn't support filters
+mutation testing:
   rules:
-    - if: *is_master
-      when: never
-    - if: *not_release
-
-package NuixConnector nuget master:
-  extends: package NuixConnector nuget dev
-  artifacts:
-    name: "$PACKAGE_NAME_NUGET-$PROJECT_VERSION"
-    paths:
-      - '*.nupkg'
-      - LICENSE
-      - README.md
-    expire_in: never
-  rules:
-    - if: *is_master
-
-package NuixConnector nuget release:
-  stage: package
-  needs:
-    - build release
-    - test release
-    - version check release
-  script:
-    - dotnet pack --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG_RELEASE --output ./
-  artifacts:
-    name: "$PACKAGE_NAME_NUGET-$PROJECT_VERSION"
-    paths:
-      - '*.nupkg'
-      - LICENSE
-      - README.md
-    expire_in: never
-  rules: *rules_release
-
-package NuixConnector dll:
-  stage: package
-  needs:
-    - build release
-    - test release
-    - version check release
-  variables:
-    PACKAGE_NAME: $PACKAGE_NAME_DLL
-    PACKAGE_PATH: ./Nuix
-  script:
-    - dotnet publish --no-build --runtime $BUILD_RUNTIME --configuration $CONFIG_RELEASE
-      -o "./$PACKAGE_NAME" $PACKAGE_PROPERTIES $PACKAGE_PATH
-    - cp LICENSE "./$PACKAGE_NAME/"
-    - cp README.md "./$PACKAGE_NAME/"
-  artifacts:
-    name: "$PACKAGE_NAME-$PROJECT_VERSION"
-    paths:
-      - $PACKAGE_NAME/
-    expire_in: never
-  rules: *rules_release
-
-push to nuget dev:
-  stage: push
-  needs:
-    - package NuixConnector nuget dev
-  variables:
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
-    NUGET_USERNAME: $NUGET_USER_DEV
-    NUGET_TOKEN: $NUGET_TOKEN_DEV
-  before_script: *nuget_add_source
-  script:
-    - dotnet nuget push --source reductech *.nupkg
-  rules:
-    - if: *is_master
-      when: never
-    - if: *not_release
-      when: manual
-      allow_failure: true
-
-push to nuget master:
-  extends: push to nuget dev
-  needs:
-    - package NuixConnector nuget master
-  rules:
-    - if: *is_master
-
-push to nuget release:
-  extends: push to nuget dev
-  needs:
-    - package NuixConnector nuget release
-  variables:
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
-    NUGET_USERNAME: $NUGET_USER_PROD
-    NUGET_TOKEN: $NUGET_TOKEN_PROD
-  rules: *rules_release
-
-push to nuget-dev release:
-  extends: push to nuget release
-  variables:
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_DEV
-    NUGET_USERNAME: $NUGET_USER_DEV
-    NUGET_TOKEN: $NUGET_TOKEN_DEV
+    - when: never
