@@ -93,12 +93,28 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 var methodHeader = $@"def {function.FunctionName}({string.Join(",", parameters)})";
 
                 stringBuilder.AppendLine(methodHeader);
-                stringBuilder.AppendLine(function.FunctionText);
+                stringBuilder.AppendLine(IndentFunctionText(function.FunctionText));
                 stringBuilder.AppendLine("end");
                 stringBuilder.AppendLine();
             }
 
-            return stringBuilder.ToString();
+            var s = stringBuilder.ToString();
+
+            return s;
+
+
+            static string IndentFunctionText(string functionText)
+            {
+                functionText = functionText.Trim('\n', '\r');
+
+                if (functionText.StartsWith('\t') || functionText.StartsWith(' '))
+                    return functionText;
+
+                var indentedText = string.Join(Environment.NewLine,
+                    functionText.Split(Environment.NewLine).Select(x => '\t' + x));
+
+                return indentedText;
+            }
         }
 
         public static async Task<Result<IReadOnlyCollection<string>, IErrorBuilder>> TryGetTrueArgumentsAsync(string scriptText, INuixSettings nuixSettings, IRubyBlock rubyBlock)
