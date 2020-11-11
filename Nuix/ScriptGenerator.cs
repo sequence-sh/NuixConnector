@@ -160,7 +160,7 @@ namespace Reductech.EDR.Connectors.Nuix
 
         private Task<Result<string>> TryGenerateScript(IRubyScriptStep step, StepFactoryStore factoryStore, CancellationToken cancellationToken)
         {
-            var state = new StateMonad(NullLogger.Instance, _nuixSettings, ExternalProcessRunner.Instance, factoryStore);
+            var state = new StateMonad(NullLogger.Instance, _nuixSettings, ExternalProcessRunner.Instance, FileSystemHelper.Instance, factoryStore );
 
             var result = step.TryCompileScriptAsync(state, cancellationToken).MapError(x=>x.AsString);
             return result;

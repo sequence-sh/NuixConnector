@@ -2,7 +2,6 @@
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.TestHarness;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 
@@ -34,9 +33,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     AddData,
                     new WriteFile
                     {
-                        Text = new NuixCreateIrregularItemsReport
+                        Text = new ToStream
                         {
-                            CasePath = CasePath
+                            Text = new NuixCreateIrregularItemsReport
+                            {
+                                CasePath = CasePath
+                            }
                         },
                         Folder = Constant(OutputFolder),
                         FileName = new Constant<string>("Irregular.txt")

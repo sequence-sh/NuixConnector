@@ -26,7 +26,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             var superSettings = new NuixSettings(true, Constants.NuixSettingsList.First().NuixExeConsolePath, new Version(100, 0), Constants.AllNuixFeatures);
 
             var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
-            var stateMonad = new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance, factoryStore);
+            var stateMonad = new StateMonad(NullLogger.Instance, superSettings, ExternalProcessRunner.Instance, FileSystemHelper.Instance, factoryStore);
             var process = new NuixDoNothing { MyRequiredVersion = new Version(100, 0) };
 
             var result = await process

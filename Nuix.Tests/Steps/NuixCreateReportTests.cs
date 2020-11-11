@@ -35,10 +35,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     AddData,
                     new WriteFile
                     {
-                        Text = new NuixCreateReport
+                        Text = new ToStream
                         {
-                            CasePath = CasePath,
-                        },
+                            Text = new NuixCreateReport
+                            {
+                                CasePath = CasePath,
+                            }
+                        } ,
                         Folder = Constant(OutputFolder),
                         FileName = new Constant<string>("Stats.txt")
                     },
