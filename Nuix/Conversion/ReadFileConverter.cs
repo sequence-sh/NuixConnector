@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Internal;
@@ -23,7 +24,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         public static readonly RubyFunctionParameter FileNameParameter = new RubyFunctionParameter("fileNameArg", nameof(ReadFile.FileName), false, null);
 
         /// <inheritdoc />
-        public override string FunctionText { get; }= "File.read(File.join({FolderParameter.ParameterName}, {FileNameParameter.ParameterName}))";
+        public override string FunctionText { get; }= $"File.read(File.join({FolderParameter.ParameterName}, {FileNameParameter.ParameterName}))";
 
         /// <inheritdoc />
         public override IReadOnlyCollection<RubyFunctionParameter> Arguments { get; } = new []{FolderParameter, FileNameParameter};

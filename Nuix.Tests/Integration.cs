@@ -118,6 +118,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 throw new XunitException("Integration tests do not check the final state");
 
             /// <inheritdoc />
+            public bool IgnoreFinalState { get; set; }
+
+            /// <inheritdoc />
             public ISettings Settings { get; set; } = EmptySettings.Instance;
 
             public Maybe<StepFactoryStore> StepFactoryStoreToUse { get; set; }
