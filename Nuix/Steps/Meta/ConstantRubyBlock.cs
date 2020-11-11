@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using CSharpFunctionalExtensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
+using Entity = Reductech.EDR.Core.Entities.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -88,9 +94,57 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 string s => s,
                 bool b => b.ToString().ToLowerInvariant(),
                 int i => i.ToString(),
+                double d => d.ToString("G"),
                 Enum e => e.GetDisplayName(),
-                _ => o.ToString()!
+                Entity entity => SerializeJson(entity),
+                IEnumerable enumerable => "[" + string.Join(", ", enumerable.Cast<object>().Select(ConvertToString)) + "]",
+            _ => throw new ArgumentException($"Cannot convert '{o.GetType().Name}' to string", nameof(o))
             };
+        }
+
+        private static string SerializeJson(Entity entity)
+        {
+            JObject jObject = new JObject();
+
+            foreach (var (key, value) in entity)
+            {
+                value.Value.Switch(
+                    _=>{},
+                    x=> jObject.Add(key, GetJToken(x)),
+                    x => jObject.Add(key, GetJArray(x)));
+            }
+
+            var s = JsonConvert.SerializeObject(jObject);
+
+            s = "'" + s.Replace("'", "''") + "'";
+
+            return s;
+
+            static JArray GetJArray(IReadOnlyCollection<EntitySingleValue> list)
+            {
+                var array = new JArray();
+
+                foreach (var entitySingleValue in list) array.Add(GetJToken(entitySingleValue));
+
+                return array;
+            }
+
+            static JToken GetJToken(EntitySingleValue esv)
+            {
+                JToken jToken = null!;
+
+
+                 esv.Value.Switch(
+                        a=> jToken = a,
+                        a=> jToken = a,
+                        a=> jToken = a,
+                        a=> jToken = a,
+                        a=> jToken = a,
+                        a=> jToken = a
+                        );
+
+                 return jToken!; //Will be set by the switch statement
+            }
         }
 
     }

@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core.Entities;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
+using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
@@ -10,16 +13,36 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
     public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
     {
         /// <inheritdoc />
-        public NuixAddItemTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-        }
+        public NuixAddItemTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) {}
+
 
         /// <inheritdoc />
-        protected override IEnumerable<DeserializeCase> DeserializeCases
+        protected override IEnumerable<StepCase> StepCases
         {
-            get { yield break; }
+            get
+            {
+                yield return new UnitTest("Add item",
+                    new Sequence
+                    {
+                        Steps = new List<IStep<Unit>>
+                        {
+                            new NuixAddItem
+                            {
+                                CasePath = CasePath,
+                                Custodian = Constant("Mark"),
+                                Path = DataPath,
+                                FolderName = Constant("New Folder"),
+                                ProcessingSettings = Constant( CreateEntity(("Foo", "Bar")))
+                            }
+                        }
+                    }, new List<string>(),new List<(string, string)>()
+                ).WithSettings(UnitTestSettings);
 
+
+            }
         }
+
+
 
         /// <inheritdoc />
         protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases {

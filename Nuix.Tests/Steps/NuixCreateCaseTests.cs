@@ -29,7 +29,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             Constants.CreateCase,
                             Constants.AddData
                         }
-                    }, new List<string>()
+                    }, new List<string>(), new List<(string, string)>()
                 ).WithSettings(UnitTestSettings);
 
 

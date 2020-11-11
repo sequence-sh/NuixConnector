@@ -29,8 +29,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         FolderName = Constant("New Folder"),
                         CasePath = CasePath
                     },
-                    Unit.Default,
-                    new List<string>()).WithSettings(UnitTestSettings);
+                    Unit.Default, new List<string>(),
+                    new List<(string, string)>()).WithSettings(UnitTestSettings);
 
             }
         }
