@@ -43,7 +43,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
             {
                 yield return new DeserializeUnitTest("Add Concordance",
                     @"NuixAddConcordance(CasePath = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase', ConcordanceDateFormat = 'yyyy-MM-dd''T''HH:mm:ss.SSSZ', ConcordanceProfileName = 'IntegrationTestProfile', Custodian = 'Mark', FilePath = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\Concordance\loadfile.dat', FolderName = 'New Folder')",
-                    Unit.Default, new List<string>()).WithSettings(UnitTestSettings);
+                    Unit.Default, new List<string>())
+                    .WithSettings(UnitTestSettings);
             }
         }
 
