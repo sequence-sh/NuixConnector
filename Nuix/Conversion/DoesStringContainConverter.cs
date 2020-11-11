@@ -18,14 +18,15 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         }
 
         /// <inheritdoc />
-        public override string FunctionName => "Does String Contain";
+        public override string FunctionName => "DoesStringContain";
 
         /// <inheritdoc />
-        public override string FunctionText { get; } = $@"if({IgnoreCaseParameter.ParameterName})
-        {SuperStringParameter.ParameterName}.downcase[{SubstringParameter.ParameterName}.downcase]
-    else
-        {SuperStringParameter.ParameterName}[{SubstringParameter.ParameterName}]
-    end";
+        public override string FunctionText { get; } = $@"
+if({IgnoreCaseParameter.ParameterName})
+    {SuperStringParameter.ParameterName}.downcase[{SubstringParameter.ParameterName}.downcase]
+else
+    {SuperStringParameter.ParameterName}[{SubstringParameter.ParameterName}]
+end";
 
         public static readonly RubyFunctionParameter SubstringParameter = new RubyFunctionParameter("substringArg", nameof(DoesStringContain.Substring), false, null);
         public static readonly RubyFunctionParameter SuperStringParameter = new RubyFunctionParameter("superstringArg", nameof(DoesStringContain.Superstring), false, null);
