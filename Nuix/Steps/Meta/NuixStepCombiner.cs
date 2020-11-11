@@ -104,7 +104,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 return settingsResult.ConvertFailure<Unit>();
 
 
-            var r = await RubyBlockRunner.RunAsync(Name, Block, stateMonad, settingsResult.Value).
+            var r = await RubyBlockRunner.RunAsync(Name, Block, stateMonad, settingsResult.Value, cancellationToken).
                 MapError(x=>x.WithLocation(this));
 
             return r;

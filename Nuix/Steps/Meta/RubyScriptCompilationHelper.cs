@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -117,18 +119,46 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             }
         }
 
-        public static async Task<Result<IReadOnlyCollection<string>, IErrorBuilder>> TryGetTrueArgumentsAsync(string scriptText, INuixSettings nuixSettings, IRubyBlock rubyBlock)
+        public static async Task<Result<IReadOnlyCollection<string>, IErrorBuilder>> PrepareScriptAsync(IRubyBlock block, StateMonad stateMonad, INuixSettings settings, CancellationToken cancellationToken)
+        {
+            var blockArgumentsResult = RubyScriptCompilationHelper.GetBlockArguments(block);
+
+            if (blockArgumentsResult.IsFailure) return blockArgumentsResult.ConvertFailure<IReadOnlyCollection<string>>();
+
+            var scriptTextResult = ScriptGenerator.CompileScript(block);
+
+            if (scriptTextResult.IsFailure) return scriptTextResult.ConvertFailure<IReadOnlyCollection<string>>();
+
+            var filePathResult = await RubyScriptCompilationHelper.WriteScriptToFileAsync(scriptTextResult.Value,
+                stateMonad.FileSystemHelper, cancellationToken);
+
+            if (filePathResult.IsFailure) return filePathResult.ConvertFailure<IReadOnlyCollection<string>>();
+
+            var arguments = RubyScriptCompilationHelper.GetAllArguments(blockArgumentsResult.Value, settings, filePathResult.Value);
+
+            return Result.Success<IReadOnlyCollection<string>, IErrorBuilder>(arguments);
+        }
+
+
+        public static async Task<Result<string, IErrorBuilder>> WriteScriptToFileAsync(string scriptText, IFileSystemHelper fileSystemHelper, CancellationToken cancellationToken)
+        {
+            var scriptFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), "NuixScript" + Guid.NewGuid()), "rb");
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(scriptText));
+
+            return await fileSystemHelper.WriteFileAsync(scriptFilePath, stream, cancellationToken).Map(_ => scriptFilePath);
+        }
+
+        public static Result<IReadOnlyCollection<string>, IErrorBuilder> GetBlockArguments(IRubyBlock rubyBlock)
         {
             var suffixer = new Suffixer();
             var blockArguments = rubyBlock.TryGetArguments(suffixer);
 
-            if (blockArguments.IsFailure) return blockArguments;
+            return blockArguments;
+        }
 
-
-            var scriptFilePath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), "NuixScript" + Guid.NewGuid()), "rb");
-
-            await File.WriteAllTextAsync(scriptFilePath, scriptText);
-
+        public static IReadOnlyCollection<string> GetAllArguments(IReadOnlyCollection<string> blockArguments,
+            INuixSettings nuixSettings, string scriptFilePath)
+        {
             var trueArguments = new List<string>(); //note that the arguments will be escaped in the next step
             if (nuixSettings.UseDongle)
             {
@@ -137,7 +167,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 trueArguments.Add("dongle");
             }
             trueArguments.Add(scriptFilePath);
-            trueArguments.AddRange(blockArguments.Value);
+            trueArguments.AddRange(blockArguments);
 
             return trueArguments;
         }

@@ -103,6 +103,19 @@ namespace Reductech.EDR.Connectors.Nuix
 
 
         /// <summary>
+        /// Compiles a ruby script for a ruby block
+        /// </summary>
+        public static Result<string, IErrorBuilder> CompileScript(IRubyBlock block)
+        {
+            return block switch
+            {
+                IUnitRubyBlock unitRubyBlock => CompileScript(unitRubyBlock),
+                ITypedRubyBlock typedRubyBlock => CompileScript(typedRubyBlock),
+                _ => throw new SystemException("Block was not a unit block or a typed block")
+            };
+        }
+
+        /// <summary>
         /// Compiles a ruby script for any number of unit blocks
         /// </summary>
         public static Result<string, IErrorBuilder> CompileScript(IUnitRubyBlock block)
@@ -128,7 +141,7 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Compiles a ruby script for a typed block.
         /// </summary>
-        public static Result<string, IErrorBuilder> CompileScript<T>(ITypedRubyBlock<T> block)
+        public static Result<string, IErrorBuilder> CompileScript(ITypedRubyBlock block)
         {
             var compoundRubyBlock = new TypedCompoundRubyBlock<string>(BinToHexFunction.Instance,
                 new Dictionary<RubyFunctionParameter, ITypedRubyBlock>
