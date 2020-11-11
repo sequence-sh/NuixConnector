@@ -36,11 +36,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         FileName = new Constant<string>("ItemProperties.txt"),
                         Folder = Constant(OutputFolder),
-                        Text = new NuixGetItemProperties
+                        Text = new ToStream
                         {
-                            CasePath = CasePath,
-                            PropertyRegex = Constant("(.+)"),
-                            SearchTerm = Constant("*")
+                            Text = new NuixGetItemProperties
+                            {
+                                CasePath = CasePath,
+                                PropertyRegex = Constant("(.+)"),
+                                SearchTerm = Constant("*")
+                            }
                         }
                     },
                     AssertFileContains(OutputFolder, "ItemProperties.txt",

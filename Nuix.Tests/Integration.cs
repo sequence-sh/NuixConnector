@@ -55,7 +55,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public Sequence Step { get; }
         }
 
-        public class IntegrationTestCase : ICaseThatRuns
+        public class IntegrationTestCase : ICaseThatExecutes
         {
             public IntegrationTestCase(string name, IStep<Unit> steps)
             {
@@ -77,9 +77,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
                 var stateMonad = new StateMonad(logger, Settings, ExternalProcessRunner.Instance,
+                    FileSystemHelper.Instance,
                     StepFactoryStoreToUse.Unwrap(factoryStore));
 
-                var yaml = Steps.Unfreeze().SerializeToYaml();
+                var yaml = await Steps.Unfreeze().SerializeToYamlAsync(CancellationToken.None);
 
                 var deserializedStep = YamlMethods.DeserializeFromYaml(yaml, factoryStore);
 
@@ -104,6 +105,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 throw new XunitException("Integration tests do not mock the external process runner");
 
             /// <inheritdoc />
+            public void AddFileSystemAction(Action<Mock<IFileSystemHelper>> action) =>
+                throw new XunitException("Integration tests do not mock the file system");
+
+            /// <inheritdoc />
             public Dictionary<VariableName, object> InitialState =>
                 throw new XunitException(
                     "Integration tests do not set the initial state"); // { get; } = new Dictionary<VariableName, object>();
@@ -111,6 +116,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             /// <inheritdoc />
             public Dictionary<VariableName, object> ExpectedFinalState =>
                 throw new XunitException("Integration tests do not check the final state");
+
+            /// <inheritdoc />
+            public bool IgnoreFinalState { get; set; }
 
             /// <inheritdoc />
             public ISettings Settings { get; set; } = EmptySettings.Instance;

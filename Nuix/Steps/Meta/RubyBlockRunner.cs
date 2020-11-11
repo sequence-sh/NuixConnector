@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
@@ -11,19 +12,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
     internal static class RubyBlockRunner
     {
-        public static async Task<Result<Unit, IErrorBuilder>> RunAsync(string name, IUnitRubyBlock block, StateMonad stateMonad, INuixSettings settings)
+        public static async Task<Result<Unit, IErrorBuilder>> RunAsync(string name, IUnitRubyBlock block, StateMonad stateMonad, INuixSettings settings, CancellationToken cancellationToken)
         {
-            var argumentsResult = await ScriptGenerator.CompileScript(block)
-                .Bind(st => RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settings, block));
+            var arguments = await RubyScriptCompilationHelper.PrepareScriptAsync(block, stateMonad, settings, cancellationToken);
 
-            if (argumentsResult.IsFailure)
-                return argumentsResult.ConvertFailure<Unit>();
-
+            if (arguments.IsFailure) return arguments.ConvertFailure<Unit>();
 
             var logger = new ScriptStepLogger(stateMonad);
 
             var result = await stateMonad.ExternalProcessRunner
-                .RunExternalProcess(settings.NuixExeConsolePath, logger, NuixErrorHandler.Instance, argumentsResult.Value);
+                .RunExternalProcess(settings.NuixExeConsolePath, logger, NuixErrorHandler.Instance, arguments.Value);
 
             if (result.IsFailure)
                 return result;

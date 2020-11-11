@@ -51,13 +51,19 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             var configuration = Configuration.Combine(p1.Configuration, p2.Configuration);
 
-            var name = $"{p1.Name}; {p2.Name}";
+            var name = $"{GetName(p1)}; {GetName(p2)}";
 
             var requirements = GetRequirements(p1).Concat(GetRequirements(p2)).ToList();
 
             var blockStep = new BlockStep(name, sequenceRubyBlock, configuration, requirements);
 
             return blockStep;
+
+            static string GetName(IStep step)
+            {
+                if (step is ICompoundStep cs) return cs.StepFactory.TypeName;
+                return step.Name;
+            }
         }
 
         private static IEnumerable<Requirement> GetRequirements(IStep step)
@@ -98,7 +104,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 return settingsResult.ConvertFailure<Unit>();
 
 
-            var r = await RubyBlockRunner.RunAsync(Name, Block, stateMonad, settingsResult.Value).
+            var r = await RubyBlockRunner.RunAsync(Name, Block, stateMonad, settingsResult.Value, cancellationToken).
                 MapError(x=>x.WithLocation(this));
 
             return r;

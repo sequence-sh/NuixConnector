@@ -63,12 +63,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             }
 
-            var argumentsResult = await ScriptGenerator.CompileScript(block)
-                    .Bind(st => RubyScriptCompilationHelper.TryGetTrueArgumentsAsync(st, settingsResult.Value, block))
-                    .MapError(x=>x.WithLocation(this));
+            var argumentsResult = await  RubyScriptCompilationHelper.PrepareScriptAsync(block, stateMonad, settingsResult.Value, cancellationToken);
+            if (argumentsResult.IsFailure) return argumentsResult.MapError(x=>x.WithLocation(this)).ConvertFailure<T>();
 
-            if (argumentsResult.IsFailure)
-                return argumentsResult.ConvertFailure<T>();
+            //var argumentsResult = await ScriptGenerator.CompileScript(block)
+            //        .Bind(st => RubyScriptCompilationHelper.WriteScriptToFileAndGetScriptArgumentsAsync(st, settingsResult.Value, block))
+            //        .MapError(x=>x.WithLocation(this));
+
+            //if (argumentsResult.IsFailure)
+            //    return argumentsResult.ConvertFailure<T>();
 
             var scriptProcessLogger = new ScriptStepLogger(stateMonad, GetMaybe);
 

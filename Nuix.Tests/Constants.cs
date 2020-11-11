@@ -72,14 +72,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         public static IStep<Unit> AssertFileContains(string folderName, string fileName, string expectedContents)
         {
-            var path = Constant(Path.Combine(folderName, fileName));
-
             return new AssertTrue
             {
-                Test = new DoesFileContain
+                Test = new DoesStringContain
                 {
-                    Text = new Constant<string>(expectedContents),
-                    Path = path
+                    IgnoreCase = Constant(true),
+                    Substring = Constant(expectedContents),
+                    Superstring = new FromStream
+                    {
+                        Stream = new ReadFile
+                        {
+                            FileName = Constant(fileName),
+                            Folder = Constant(folderName)
+                        }
+                    }
                 }
             };
         }

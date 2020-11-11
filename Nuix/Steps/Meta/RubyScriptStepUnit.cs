@@ -63,7 +63,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             }
 
-            var r = await RubyBlockRunner.RunAsync(FunctionName, block, stateMonad, settingsResult.Value)
+            var r = await RubyBlockRunner.RunAsync(FunctionName, block, stateMonad, settingsResult.Value, cancellationToken)
                 .MapError(x=>x.WithLocation(this));
 
             return r;

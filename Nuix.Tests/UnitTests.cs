@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -31,6 +33,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             private void SetupRunner(IEnumerable<string> valuesToLog)
             {
+                AddFileSystemAction(x => x.Setup(y => y.WriteFileAsync(
+                     It.IsRegex(@".*\.rb"),
+                     It.IsAny<MemoryStream>(),
+                     It.IsAny<CancellationToken>()
+                 )).ReturnsAsync(Unit.Default));
+
+
                 AddExternalProcessRunnerAction(externalProcessRunner =>
                     externalProcessRunner.Setup(y => y.RunExternalProcess(It.IsAny<string>(),
                         It.IsAny<ILogger>(),

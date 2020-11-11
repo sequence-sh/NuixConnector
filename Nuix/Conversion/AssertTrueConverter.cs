@@ -18,11 +18,10 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
         /// <inheritdoc />
         public override string FunctionText { get; } = $@"
-
 puts ""Assert #{{{TestParameter.ParameterName}}}""
 if !{TestParameter.ParameterName}
     raise 'Assertion failed'
-    end";
+end";
 
         private static readonly RubyFunctionParameter TestParameter
             = new RubyFunctionParameter("testArg", nameof(AssertTrue.Test),  false, null);
