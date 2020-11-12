@@ -31,13 +31,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         }
                     }, new List<string>(), new List<(string, string)>()
                     {
-                        ("pathArg1a", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase"),
+                        ("pathArg1a", @"IntegrationTest\TestCase"),
                         ("nameArg1b", "Integration Test Case"),
                         ("investigatorArg1d", "Mark"),
-                        ("pathArg2a", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase"),
+                        ("pathArg2a", @"IntegrationTest\TestCase"),
                         ("folderNameArg2b", "New Folder"),
                         ("folderCustodianArg2d", "Mark"),
-                        ("filePathArg2e", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data")
+                        ("filePathArg2e", @"AllData\data")
                     }
                 ).WithSettings(UnitTestSettings);
 

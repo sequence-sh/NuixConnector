@@ -41,7 +41,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 SetupRunner(valuesToLog, expectedExtraArgs.ToList());
             }
 
-            private void SetupRunner(IEnumerable<string> valuesToLog, IEnumerable<(string key, string value)> expectedArgPairs)
+            private void SetupRunner(IEnumerable<string> valuesToLog, IReadOnlyList<(string key, string value)> expectedArgPairs)
             {
                 AddFileSystemAction(x => x.Setup(y => y.WriteFileAsync(
                      It.IsRegex(@".*\.rb"),
@@ -82,17 +82,31 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 return true;
             }
 
-            private static bool AreExternalArgumentsCorrect(IEnumerable<string> externalProcessArgs, IEnumerable<(string key, string value)> expectedArgPairs)
+            private static bool AreExternalArgumentsCorrect(IEnumerable<string> externalProcessArgs, IReadOnlyList<(string key, string value)> expectedArgPairs)
             {
                 var list = externalProcessArgs.ToList();
-                var extraArgs = list.Skip(3);
+                var extraArgs = list.Skip(3).ToList();
                 list[0].Should().Be("-licencesourcetype");
                 list[1].Should().Be("dongle");
                 list[2].Should().Match("*.rb");
 
-                var expectedExtraArgs = expectedArgPairs.SelectMany(x => new[] {$"--{x.key}", x.value});
+                var realArgPairs = new List<(string key, string value)>();
 
-                extraArgs.Should().BeEquivalentTo(expectedExtraArgs);
+                for (var i = 0; i < extraArgs.Count() - 1; i+=2)
+                {
+                    var key = extraArgs[i];
+                    var value = extraArgs[i + 1];
+
+                    realArgPairs.Add((key, value));
+                }
+
+                realArgPairs.Select(x => x.key).Should().BeEquivalentTo(expectedArgPairs.Select(x => "--" + x.key));
+
+                foreach (var ((key, realValue), (_, expectedValue)) in realArgPairs.Zip(expectedArgPairs))
+                {
+                    realValue.Should().Contain(expectedValue, $"values of '{key}' should match");
+                }
+
 
                 return true;
             }

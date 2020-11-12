@@ -37,10 +37,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     }, new List<string>(),
                     new List<(string, string)>()
                     {
-                        ("pathArg1a", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase"),
+                        ("pathArg1a", @"IntegrationTest\TestCase"),
                         ("folderNameArg1b", "New Folder"),
                         ("folderCustodianArg1d", "Mark"),
-                        ("filePathArg1e", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data"),
+                        ("filePathArg1e", @"AllData\data"),
                         ("processingSettingsArg1h", "'{\"Foo\":\"Bar\"}'")
                     }
                 ).WithSettings(UnitTestSettings);

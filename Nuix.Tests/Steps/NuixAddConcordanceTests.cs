@@ -32,10 +32,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     Unit.Default, new List<string>(),
                     new List<(string, string)>()
                     {
-                        ("pathArg1a", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase"),
+                        ("pathArg1a", @"IntegrationTest\TestCase"),
                         ("folderNameArg1b", "New Folder"),
                         ("folderCustodianArg1d", "Mark"),
-                        ("filePathArg1e", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\Concordance\loadfile.dat"),
+                        ("filePathArg1e", @"Concordance\loadfile.dat"),
                         ("dateFormatArg1f", "yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
                         ("profileNameArg1g", "IntegrationTestProfile")
                     }
