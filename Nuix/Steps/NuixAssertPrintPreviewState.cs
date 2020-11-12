@@ -65,7 +65,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Checks the print preview state of the production set.
     /// </summary>
-    public sealed class NuixAssertPrintPreviewState : RubyScriptStepUnit
+    public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAssertPrintPreviewStateStepFactory.Instance;

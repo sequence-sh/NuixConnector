@@ -67,7 +67,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Removes particular items from a Nuix production set.
     /// </summary>
-    public sealed class NuixRemoveFromProductionSet : RubyScriptStepUnit
+    public sealed class NuixRemoveFromProductionSet : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>

@@ -57,7 +57,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Generates print previews for items in a production set.
     /// </summary>
-    public sealed class NuixGeneratePrintPreviews : RubyScriptStepUnit
+    public sealed class NuixGeneratePrintPreviews : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixGeneratePrintPreviewsStepFactory.Instance;

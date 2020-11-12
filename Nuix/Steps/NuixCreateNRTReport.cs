@@ -61,7 +61,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Creates a report using an NRT file.
     /// </summary>
-    public sealed class NuixCreateNRTReport : RubyScriptStepUnit
+    public sealed class NuixCreateNRTReport : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixCreateNRTReportStepFactory.Instance;

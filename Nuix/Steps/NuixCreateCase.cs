@@ -46,7 +46,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Creates a new case.
     /// </summary>
-    public sealed class NuixCreateCase : RubyScriptStepUnit
+    public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixCreateCaseStepFactory.Instance;

@@ -59,7 +59,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Reorders and renumbers the items in a production set.
     /// </summary>
-    public sealed class NuixReorderProductionSet : RubyScriptStepUnit
+    public sealed class NuixReorderProductionSet : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixReorderProductionSetStepFactory.Instance;

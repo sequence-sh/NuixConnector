@@ -93,7 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// Searches a case with a particular search string and adds all items it finds to a production set.
     /// Will create a new production set if one with the given name does not already exist.
     /// </summary>
-    public sealed class NuixAddToProductionSet : RubyScriptStepUnit
+    public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddToProductionSetStepFactory.Instance;

@@ -82,7 +82,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Extract Entities from a Nuix Case.
     /// </summary>
-    public sealed class NuixExtractEntities : RubyScriptStepUnit
+    public sealed class NuixExtractEntities : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixExtractEntitiesStepFactory.Instance;

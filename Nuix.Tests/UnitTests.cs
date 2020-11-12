@@ -68,7 +68,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                             logger.LogInformation(val);
                         }
 
-                        logger.LogInformation(ScriptGenerator.UnitSuccessToken);
                     })
                     .ReturnsAsync(Unit.Default));
             }

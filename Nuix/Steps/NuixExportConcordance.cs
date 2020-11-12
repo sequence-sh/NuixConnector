@@ -61,7 +61,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Exports Concordance for a particular production set.
     /// </summary>
-    public sealed class NuixExportConcordance : RubyScriptStepUnit
+    public sealed class NuixExportConcordance : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixExportConcordanceStepFactory.Instance;

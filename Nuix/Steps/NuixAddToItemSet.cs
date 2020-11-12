@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// Searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
-    public sealed class NuixAddToItemSet : RubyScriptStepUnit
+    public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddToItemSetStepFactory.Instance;

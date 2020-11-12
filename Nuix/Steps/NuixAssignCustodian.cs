@@ -60,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
     /// </summary>
-    public sealed class NuixAssignCustodian : RubyScriptStepUnit
+    public sealed class NuixAssignCustodian : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAssignCustodianFactory.Instance;

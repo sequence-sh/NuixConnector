@@ -58,7 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Annotates a document ID list to add production set names to it.
     /// </summary>
-    public class NuixAnnotateDocumentIdList : RubyScriptStepUnit
+    public class NuixAnnotateDocumentIdList : RubyScriptStepBase<Unit>
     {
 
         /// <inheritdoc />

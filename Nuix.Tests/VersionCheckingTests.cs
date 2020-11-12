@@ -40,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         }
 
 
-        internal class NuixDoNothing : RubyScriptStepUnit
+        internal class NuixDoNothing : RubyScriptStepBase<Unit>
         {
             /// <inheritdoc />
             public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => new DoNothingStepFactory(MyRequiredVersion, MyRequiredFeatures);

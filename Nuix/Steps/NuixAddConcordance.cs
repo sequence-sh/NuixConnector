@@ -63,7 +63,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Adds data from a Concordance file to a NUIX case.
     /// </summary>
-    public sealed class NuixAddConcordance : RubyScriptStepUnit
+    public sealed class NuixAddConcordance : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddConcordanceFactory.Instance;

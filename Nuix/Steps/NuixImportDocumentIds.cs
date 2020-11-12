@@ -66,7 +66,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
     /// </summary>
-    public sealed class NuixImportDocumentIds : RubyScriptStepUnit
+    public sealed class NuixImportDocumentIds : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixImportDocumentIdsStepFactory.Instance;

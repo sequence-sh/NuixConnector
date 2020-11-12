@@ -112,7 +112,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixCreateReport : RubyScriptStepTyped<string>
+    public sealed class NuixCreateReport : RubyScriptStepBase<string>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<string> RubyScriptStepFactory => NuixCreateReportStepFactory.Instance;
@@ -126,13 +126,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
-
-
-        /// <inheritdoc />
-        public override bool TryParse(string s, out string result)
-        {
-            result = s;
-            return true;
-        }
     }
 }

@@ -41,7 +41,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Returns the number of items matching a particular search term
     /// </summary>
-    public sealed class NuixCountItems : RubyScriptStepTyped<int>
+    public sealed class NuixCountItems : RubyScriptStepBase<int>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<int> RubyScriptStepFactory => NuixCountItemsStepFactory.Instance;
@@ -63,8 +63,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty]
         [RubyArgument("searchArg", 2)]
         public IStep<string> SearchTerm { get; set; } = null!;
-
-        /// <inheritdoc />
-        public override bool TryParse(string s, out int result) => int.TryParse(s, out result);
     }
 }

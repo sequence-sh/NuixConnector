@@ -140,12 +140,12 @@ namespace Reductech.EDR.Connectors.Nuix
 
 
         private static readonly Regex NuixFeatureRegex =
-            new Regex(@$"\A{RubyScriptStepUnit.NuixRequirementName}(?<feature>.+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            new Regex(@$"\A{RubyScriptStepBase<Unit>.NuixRequirementName}(?<feature>.+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <inheritdoc />
         public Result<Unit, IErrorBuilder> CheckRequirement(Requirement requirement)
         {
-            if (requirement.Name == RubyScriptStepUnit.NuixRequirementName)
+            if (requirement.Name == RubyScriptStepBase<Unit>.NuixRequirementName)
             {
                 if(requirement.MinVersion != null && requirement.MinVersion > NuixVersion)
                     return new ErrorBuilder($"Required Nuix Version >= {requirement.MinVersion} but had {NuixVersion}",ErrorCode.RequirementsNotMet);

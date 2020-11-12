@@ -58,7 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// The report is in CSV format. The headers are 'Term' and 'Count'
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixCreateTermList : RubyScriptStepTyped<string>
+    public sealed class NuixCreateTermList : RubyScriptStepBase<string>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<string> RubyScriptStepFactory => NuixCreateTermListStepFactory.Instance;
@@ -71,13 +71,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
-
-
-        /// <inheritdoc />
-        public override bool TryParse(string s, out string result)
-        {
-            result = s;
-            return true;
-        }
     }
 }

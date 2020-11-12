@@ -90,7 +90,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Adds a file or directory to a Nuix Case.
     /// </summary>
-    public sealed class NuixAddItem : RubyScriptStepUnit
+    public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddItemStepFactory.Instance;

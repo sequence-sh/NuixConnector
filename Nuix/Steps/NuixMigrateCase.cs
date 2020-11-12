@@ -43,7 +43,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Migrates a case to the latest version if necessary.
     /// </summary>
-    public sealed class NuixMigrateCase : RubyScriptStepUnit
+    public sealed class NuixMigrateCase : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixMigrateCaseStepFactory.Instance;

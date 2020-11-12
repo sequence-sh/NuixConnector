@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Performs optical character recognition on files in a NUIX case.
     /// </summary>
-    public sealed class NuixPerformOCR : RubyScriptStepUnit
+    public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixPerformOCRStepFactory.Instance;

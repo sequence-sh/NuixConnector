@@ -58,7 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Searches a NUIX case with a particular search string and tags all files it finds.
     /// </summary>
-    public sealed class NuixSearchAndTag : RubyScriptStepUnit
+    public sealed class NuixSearchAndTag : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixSearchAndTagStepFactory.Instance;
