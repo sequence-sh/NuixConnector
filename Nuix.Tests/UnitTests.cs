@@ -45,7 +45,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 AddFileSystemAction(x => x.Setup(y => y.WriteFileAsync(
                      It.IsRegex(@".*\.rb"),
-                     It.Is<Stream>(s=> ValidateRubyScript(s)),
+                     It.Is<Stream>(s=> ValidateRubyScript(s, expectedArgPairs)),
                      It.IsAny<CancellationToken>()
                  )).ReturnsAsync(Unit.Default));
 
@@ -66,12 +66,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     .ReturnsAsync(Unit.Default));
             }
 
-            private static bool ValidateRubyScript(Stream stream)
+            private static bool ValidateRubyScript(Stream stream, IEnumerable<(string key, string value)> expectedArgPairs)
             {
                 var reader = new StreamReader(stream);
                 var text = reader.ReadToEnd();
                 text.Should().NotBeNull();
+
                 text.Should().Contain("require 'optparse'"); //very shallow testing that this is actually a ruby script
+
+                foreach (var expectedArgPair in expectedArgPairs)
+                {
+                    text.Should().Contain(expectedArgPair.key);
+                }
 
                 return true;
             }
@@ -84,7 +90,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 list[1].Should().Be("dongle");
                 list[2].Should().Match("*.rb");
 
-                var expectedExtraArgs = expectedArgPairs.SelectMany(x => new[] {$"-{x.key}", x.value});
+                var expectedExtraArgs = expectedArgPairs.SelectMany(x => new[] {$"--{x.key}", x.value});
 
                 extraArgs.Should().BeEquivalentTo(expectedExtraArgs);
 

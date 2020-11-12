@@ -38,7 +38,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             foreach (var unitRubyBlock in Blocks)
             {
-                var r = unitRubyBlock.TryGetArguments(suffixer.GetNextChild());
+                var r = unitRubyBlock.TryGetArguments(suffixer);
                 if (r.IsFailure) return r;
 
                 arguments.AddRange(r.Value);
@@ -60,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             foreach (var block in Blocks)
             {
-                var r = block.TryWriteBlockLines(suffixer.GetNextChild(), stringBuilder);
+                var r = block.TryWriteBlockLines(suffixer, stringBuilder);
 
                 if (r.IsFailure) return r;
             }

@@ -46,11 +46,13 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             List<string> args;
 
+            var index = suffixer.GetNext();
+
             if(Value.HasValue)
             {
                 args = new List<string>
                         {
-                            $"--{ParameterName}" + suffixer.CurrentSuffix,
+                            $"--{ParameterName}" + index,
                             ConvertToString(Value.Value!)
                         };
             }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
@@ -35,14 +34,44 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                                 ProcessingSettings = Constant( CreateEntity(("Foo", "Bar")))
                             }
                         }
-                    }, new List<string>(),new List<(string, string)>()
+                    }, new List<string>(),
+                    new List<(string, string)>()
+                    {
+                        ("pathArg1a", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase"),
+                        ("folderNameArg1b", "New Folder"),
+                        ("folderCustodianArg1d", "Mark"),
+                        ("filePathArg1e", @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data"),
+                        ("processingSettingsArg1h", "'{\"Foo\":\"Bar\"}'")
+                    }
                 ).WithSettings(UnitTestSettings);
 
 
             }
         }
 
+        /// <inheritdoc />
+        protected override IEnumerable<SerializeCase> SerializeCases
+        {
+            get
+            {
+                var (step, _) = CreateStepWithDefaultOrArbitraryValues();
 
+                yield return new SerializeCase("default",
+                    step,
+                    @"Do: NuixAddItem
+CasePath: 'Bar0'
+FolderName: 'Bar3'
+Description: 'Bar2'
+Custodian: 'Bar1'
+Path: 'Bar5'
+ProcessingProfileName: 'Bar6'
+ProcessingProfilePath: 'Bar7'
+ProcessingSettings: (Prop1 = 'Val8',Prop2 = 'Val9')
+PasswordFilePath: 'Bar4'"
+
+                    );
+            }
+        }
 
         /// <inheritdoc />
         protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases {
