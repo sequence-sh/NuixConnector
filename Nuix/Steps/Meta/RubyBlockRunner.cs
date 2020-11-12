@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -21,7 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             var logger = new ScriptStepLogger(stateMonad);
 
             var result = await stateMonad.ExternalProcessRunner
-                .RunExternalProcess(settings.NuixExeConsolePath, logger, NuixErrorHandler.Instance, arguments.Value);
+                .RunExternalProcess(settings.NuixExeConsolePath, logger, NuixErrorHandler.Instance, arguments.Value, Encoding.UTF8);
 
             if (result.IsFailure)
                 return result;

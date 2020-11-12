@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging.Xunit;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Serialization;
 using Reductech.EDR.Core.Steps;

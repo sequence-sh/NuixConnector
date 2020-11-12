@@ -149,7 +149,7 @@ PasswordFilePath: 'Bar4'"
                     AssertCaseDoesNotExist,
                     CreateCase,
                     AssertCount(0, "*.txt"),
-                    new Conditional()
+                    new Conditional
                     {
                         Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
                         ThenStep = AddData

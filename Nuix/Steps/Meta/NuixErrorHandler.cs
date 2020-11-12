@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.ExternalProcesses;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
