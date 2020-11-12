@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;

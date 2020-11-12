@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Util;
 
@@ -51,10 +53,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
 
                 AddExternalProcessRunnerAction(externalProcessRunner =>
-                    externalProcessRunner.Setup(y => y.RunExternalProcess(It.IsAny<string>(),
+                    externalProcessRunner
+                        .Setup(y => y
+                                .RunExternalProcess(
+                        It.IsAny<string>(),
                         It.IsAny<ILogger>(),
-                        It.IsAny<IErrorHandler>(), It.Is<IEnumerable<string>>(ie=> AreExternalArgumentsCorrect(ie, expectedArgPairs))))
-                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>>((s, logger, arg3, arg4) =>
+                        It.IsAny<IErrorHandler>(),
+                        It.Is<IEnumerable<string>>(ie => AreExternalArgumentsCorrect(ie, expectedArgPairs)),
+                        Encoding.UTF8))
+                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>, Encoding>((s, logger, arg3, arg4, e) =>
                     {
                         foreach (var val in valuesToLog)
                         {
@@ -74,9 +81,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 text.Should().Contain("require 'optparse'"); //very shallow testing that this is actually a ruby script
 
-                foreach (var expectedArgPair in expectedArgPairs)
+                foreach (var (key, _) in expectedArgPairs)
                 {
-                    text.Should().Contain(expectedArgPair.key);
+                    text.Should().Contain(key);
                 }
 
                 return true;

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.EDR.Core;
+using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -33,8 +34,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 AddExternalProcessRunnerAction(externalProcessRunner =>
                     externalProcessRunner.Setup(y => y.RunExternalProcess(It.IsAny<string>(),
                         It.IsAny<ILogger>(),
-                        It.IsAny<IErrorHandler>(), It.IsAny<IEnumerable<string>>()))
-                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>>((s, logger, arg3, arg4) =>
+                        It.IsAny<IErrorHandler>(),
+                        It.IsAny<IEnumerable<string>>(),
+                        Encoding.UTF8))
+                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>, Encoding>((s, logger, arg3, arg4, e) =>
                     {
                         foreach (var val in valuesToLog)
                         {

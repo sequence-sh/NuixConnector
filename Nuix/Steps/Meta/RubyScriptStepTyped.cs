@@ -66,18 +66,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             var argumentsResult = await  RubyScriptCompilationHelper.PrepareScriptAsync(block, stateMonad, settingsResult.Value, cancellationToken);
             if (argumentsResult.IsFailure) return argumentsResult.MapError(x=>x.WithLocation(this)).ConvertFailure<T>();
 
-            //var argumentsResult = await ScriptGenerator.CompileScript(block)
-            //        .Bind(st => RubyScriptCompilationHelper.WriteScriptToFileAndGetScriptArgumentsAsync(st, settingsResult.Value, block))
-            //        .MapError(x=>x.WithLocation(this));
-
-            //if (argumentsResult.IsFailure)
-            //    return argumentsResult.ConvertFailure<T>();
-
             var scriptProcessLogger = new ScriptStepLogger(stateMonad, GetMaybe);
 
 
             var result = await stateMonad.ExternalProcessRunner.RunExternalProcess(settingsResult.Value.NuixExeConsolePath,
-                scriptProcessLogger, NuixErrorHandler.Instance, argumentsResult.Value)
+                scriptProcessLogger, NuixErrorHandler.Instance, argumentsResult.Value, Encoding.UTF8)
                     .MapError(x=>x.WithLocation(this));
 
             if (result.IsFailure)
@@ -88,9 +81,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             return new SingleError("No value was returned from nuix function", ErrorCode.ExternalProcessMissingOutput, new StepErrorLocation(this));
         }
-
-
-
 
         /// <summary>
         /// Convert a string into a result of the desired type.
@@ -162,7 +152,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 if (hexString.StartsWith("0x"))
                 {
-                    hexString = hexString.Substring(2);//ignore the 0x
+                    hexString = hexString[2..];//ignore the 0x
 
                     var bytes = new byte[hexString.Length / 2];
                     try
