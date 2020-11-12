@@ -10,10 +10,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Create a new suffixer starting with 1.
         /// </summary>
-        public Suffixer() : this(string.Empty, Numbering.Number)
-        {
-
-        }
+        public Suffixer() : this(string.Empty, Numbering.Number) {}
 
         private Suffixer(string prefix, Numbering myNumbering)
         {
@@ -29,7 +26,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             var prefix = GetNext();
             var newNumbering = GetNextNumbering(MyNumbering);
-
             var child = new Suffixer(prefix, newNumbering);
 
             return child;
@@ -43,15 +39,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             var v =  CurrentSuffix;
             CurrentValue++;
-
             return v;
-
         }
 
         /// <summary>
         /// Gets the current string. Using this will not increment the suffixer.
         /// </summary>
         public string CurrentSuffix => Prefix + ConvertToString(MyNumbering, CurrentValue);
+
+        /// <inheritdoc />
+        public override string ToString() => CurrentSuffix;
 
         /// <summary>
         /// The prefix of this numberer.

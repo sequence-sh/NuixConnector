@@ -20,7 +20,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
             get
             {
                 yield return new UnitTest("Add Concordance Test",
-                    new NuixAddConcordance()
+                    new NuixAddConcordance
                     {
                         ConcordanceProfileName = Constant("IntegrationTestProfile"),
                         ConcordanceDateFormat = Constant("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
@@ -29,8 +29,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         FolderName = Constant("New Folder"),
                         CasePath = CasePath
                     },
-                    Unit.Default,
-                    new List<string>()).WithSettings(UnitTestSettings);
+                    Unit.Default, new List<string>(),
+                    new List<(string, string)>()
+                    {
+                        ("pathArg1a", @"IntegrationTest\TestCase"),
+                        ("folderNameArg1b", "New Folder"),
+                        ("folderCustodianArg1d", "Mark"),
+                        ("filePathArg1e", @"Concordance\loadfile.dat"),
+                        ("dateFormatArg1f", "yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
+                        ("profileNameArg1g", "IntegrationTestProfile")
+                    }
+                    )
+                    .WithSettings(UnitTestSettings);
 
             }
         }

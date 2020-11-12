@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
             /// <inheritdoc />
             public Result<Unit, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
             {
-                var ifResult = IfBlock.TryWriteBlockLines(suffixer.GetNextChild(), stringBuilder);
+                var ifResult = IfBlock.TryWriteBlockLines(suffixer, stringBuilder);
 
                 if (ifResult.IsFailure)
                     return ifResult.ConvertFailure<Unit>();
@@ -78,7 +78,7 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
                 stringBuilder.AppendLine($"if {ifResult.Value}");
 
-                var thenResult = ThenBlock.TryWriteBlockLines(suffixer.GetNextChild(), stringBuilder.Indent());
+                var thenResult = ThenBlock.TryWriteBlockLines(suffixer, stringBuilder.Indent());
 
                 if (thenResult.IsFailure)
                     return thenResult;
@@ -111,21 +111,21 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
             /// <inheritdoc />
             public Result<Unit, IErrorBuilder> TryWriteBlockLines(Suffixer suffixer, IIndentationStringBuilder stringBuilder)
             {
-                var ifResult = IfBlock.TryWriteBlockLines(suffixer.GetNextChild(), stringBuilder);
+                var ifResult = IfBlock.TryWriteBlockLines(suffixer, stringBuilder);
 
                 if (ifResult.IsFailure)
                     return ifResult.ConvertFailure<Unit>();
 
                 stringBuilder.AppendLine($"if {ifResult.Value}");
 
-                var thenResult = ThenBlock.TryWriteBlockLines(suffixer.GetNextChild(), stringBuilder.Indent());
+                var thenResult = ThenBlock.TryWriteBlockLines(suffixer, stringBuilder.Indent());
 
                 if (thenResult.IsFailure)
                     return thenResult;
 
                 stringBuilder.AppendLine("else");
 
-                var elseResult = ElseBlock.TryWriteBlockLines(suffixer.GetNextChild(), stringBuilder.Indent());
+                var elseResult = ElseBlock.TryWriteBlockLines(suffixer, stringBuilder.Indent());
 
                 if (elseResult.IsFailure)
                     return elseResult;

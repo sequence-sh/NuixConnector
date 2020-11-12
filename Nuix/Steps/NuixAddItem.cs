@@ -54,6 +54,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         processor.setProcessingProfileObject(profile)
     end
 
+    if processingSettingsArg != nil
+        processing_settings = JSON.parse(processingSettingsArg)
+        processor.setProcessingSettings(processing_settings)
+    end
+
 
 #This only works in 7.2 or later
     if passwordFilePathArg != nil
@@ -157,6 +162,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [RubyArgument("processingProfilePathArg", 7)]
         public IStep<string>? ProcessingProfilePath { get; set; }
 
+        /// <summary>
+        /// Sets the processing settings to use.
+        /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
+        /// </summary>
+        [StepProperty]
+        [DefaultValueExplanation("Processing settings will not be changed")]
+        [RubyArgument("processingSettingsArg", 8)]
+        public IStep<Core.Entities.Entity>? ProcessingSettings { get; set; }
+
 
         /// <summary>
         /// The path of a file containing passwords to use for decryption.
@@ -164,7 +178,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [RequiredVersion("Nuix", "7.6")]
         [StepProperty]
         [Example("C:/Data/Passwords.txt")]
-        [RubyArgument("passwordFilePathArg", 8)]
+        [RubyArgument("passwordFilePathArg", 9)]
         [DefaultValueExplanation("Do not attempt decryption")]
         public IStep<string>? PasswordFilePath { get; set; }
 

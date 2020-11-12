@@ -36,9 +36,11 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
 
             foreach (var block in OrderedBlocks)
             {
-                var childSuffixer = suffixer.GetNextChild();
+                //var childSuffixer = suffixer.GetNextChild();
 
-                var r = block.TryGetArguments(childSuffixer);
+
+
+                var r = block.TryGetArguments(suffixer);
 
                 if(r.IsSuccess)
                     arguments.AddRange(r.Value);
@@ -56,10 +58,10 @@ namespace Reductech.EDR.Connectors.Nuix.Conversion
         /// <inheritdoc />
         public void WriteOptParseLines(string hashSetName, IIndentationStringBuilder sb, Suffixer suffixer)
         {
+            //var childSuffixer = suffixer.GetNextChild();
             foreach (var block in OrderedBlocks)
             {
-                var childSuffixer = suffixer.GetNextChild();
-                block.WriteOptParseLines(hashSetName, sb, childSuffixer);
+                block.WriteOptParseLines(hashSetName, sb, suffixer);
             }
         }
 

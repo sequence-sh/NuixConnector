@@ -47,9 +47,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             var resultsStrings = new List<string>();
             var errors = new List<IErrorBuilder>();
 
+            var childSuffixer = suffixer.GetNextChild();
+
             foreach (var rubyFunctionArgument in Function.Arguments)
             {
-                var childSuffixer = suffixer.GetNextChild();
+
                 if (Arguments.TryGetValue(rubyFunctionArgument, out var block))
                 {
                     var childResult = block.TryGetArguments(childSuffixer);
@@ -59,11 +61,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     else
                         errors.Add(childResult.Error);
                 }
-                else if (!rubyFunctionArgument.IsOptional)
-                    errors.Add(ErrorHelper.MissingParameterError(rubyFunctionArgument.ParameterName,
-                        Function.FunctionName));
+                else
+                {
+                    childSuffixer.GetNext();
+                    if (!rubyFunctionArgument.IsOptional)
+                        errors.Add(ErrorHelper.MissingParameterError(rubyFunctionArgument.ParameterName,
+                            Function.FunctionName));
 
-                //else do nothing, though note that the suffixer is incremented
+                    //else do nothing, though note that the suffixer is incremented
+                }
             }
 
             if (errors.Any())
@@ -75,10 +81,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public void WriteOptParseLines(string hashSetName, IIndentationStringBuilder sb, Suffixer suffixer)
         {
-
+            var childSuffixer = suffixer.GetNextChild();
             foreach (var rubyFunctionArgument in Function.Arguments)
             {
-                var childSuffixer = suffixer.GetNextChild();
                 if (Arguments.TryGetValue(rubyFunctionArgument, out var block))
                     block.WriteOptParseLines(hashSetName, sb, childSuffixer);
                 //else assume the argument was optional, it will be nil later

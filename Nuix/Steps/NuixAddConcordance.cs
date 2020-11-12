@@ -13,9 +13,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// </summary>
     public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddConcordance, Unit>
     {
-        private NuixAddConcordanceFactory()
-        {
-        }
+        private NuixAddConcordanceFactory() {}
 
         /// <summary>
         /// The instance.

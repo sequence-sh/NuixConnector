@@ -36,9 +36,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             if (Function.RequireUtilities)
                 arguments.Add(RubyScriptCompilationHelper.UtilitiesParameterName);
 
+            var childSuffixer = suffixer.GetNextChild();
+
             foreach (var rubyFunctionArgument in Function.Arguments)
             {
-                var childSuffixer = suffixer.GetNextChild();
+
                 if (Arguments.TryGetValue(rubyFunctionArgument, out var block))
                 {
                     var argumentResult = block.TryWriteBlockLines(childSuffixer, stringBuilder);
@@ -48,9 +50,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     else
                         errors.Add(argumentResult.Error);
                 }
-                else if (!rubyFunctionArgument.IsOptional)
-                    errors.Add(ErrorHelper.MissingParameterError(rubyFunctionArgument.ParameterName,
-                        Function.FunctionName));
+                else
+                {
+                    childSuffixer.GetNext();//increment sudffixer anyway
+                    if (!rubyFunctionArgument.IsOptional)
+                    {
+                        errors.Add(ErrorHelper.MissingParameterError(rubyFunctionArgument.ParameterName,
+                            Function.FunctionName));
+                    }
+                }
             }
 
             if (errors.Any())

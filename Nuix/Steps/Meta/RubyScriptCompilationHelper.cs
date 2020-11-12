@@ -121,7 +121,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
         public static async Task<Result<IReadOnlyCollection<string>, IErrorBuilder>> PrepareScriptAsync(IRubyBlock block, StateMonad stateMonad, INuixSettings settings, CancellationToken cancellationToken)
         {
-            var blockArgumentsResult = RubyScriptCompilationHelper.GetBlockArguments(block);
+            var blockArgumentsResult = GetBlockArguments(block);
 
             if (blockArgumentsResult.IsFailure) return blockArgumentsResult.ConvertFailure<IReadOnlyCollection<string>>();
 
@@ -129,12 +129,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             if (scriptTextResult.IsFailure) return scriptTextResult.ConvertFailure<IReadOnlyCollection<string>>();
 
-            var filePathResult = await RubyScriptCompilationHelper.WriteScriptToFileAsync(scriptTextResult.Value,
+            var filePathResult = await WriteScriptToFileAsync(scriptTextResult.Value,
                 stateMonad.FileSystemHelper, cancellationToken);
 
             if (filePathResult.IsFailure) return filePathResult.ConvertFailure<IReadOnlyCollection<string>>();
 
-            var arguments = RubyScriptCompilationHelper.GetAllArguments(blockArgumentsResult.Value, settings, filePathResult.Value);
+            var arguments = GetAllArguments(blockArgumentsResult.Value, settings, filePathResult.Value);
 
             return Result.Success<IReadOnlyCollection<string>, IErrorBuilder>(arguments);
         }
