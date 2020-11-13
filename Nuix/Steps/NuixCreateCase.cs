@@ -33,12 +33,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    puts 'Creating Case'
+    log 'Creating Case'
     the_case = utilities.case_factory.create(pathArg,
     :name => nameArg,
     :description => descriptionArg,
     :investigator => investigatorArg)
-    puts 'Case Created'
+    log 'Case Created'
     the_case.close";
 
     }

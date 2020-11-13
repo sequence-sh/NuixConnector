@@ -80,9 +80,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     folder.add_file(filePathArg)
     folder.save
 
-    puts 'Adding items'
+    log 'Adding items'
     processor.process
-    puts 'Items added'
+    log 'Items added'
     the_case.close";
 
     }
