@@ -35,7 +35,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public override string RubyFunctionText { get; } =
 //language=RUBY
             @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case =$utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
     processor.processing_settings = { :create_thumbnails       => false,
                                     :additional_digests      => [ 'SHA-1' ] }
@@ -52,9 +52,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     folder.setMetadataImportProfileName(profileNameArg)
     folder.save
 
-    puts 'Starting processing.'
+    log 'Starting processing.'
     processor.process
-    puts 'Processing complete.'
+    log 'Processing complete.'
     the_case.close";
     }
 

@@ -34,13 +34,13 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(casePathArg)
+    the_case = $utilities.case_factory.open(casePathArg)
 
-    puts ""Generating Report:""
+    log ""Generating Report:""
     caseStatistics = the_case.getStatistics()
     termStatistics = caseStatistics.getTermStatistics("""", {""sort"" => ""on"", ""deduplicate"" => ""md5""}) #for some reason this takes strings rather than symbols
     #todo terms per custodian
-    puts ""#{termStatistics.length} terms""
+    log ""#{termStatistics.length} terms""
 
     text = ""Term\tCount""
 

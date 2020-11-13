@@ -30,11 +30,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
     searchOptions = {}
     count = the_case.count(searchArg, searchOptions)
     the_case.close
-    puts ""#{count} found matching '#{searchArg}'""
+    log ""#{count} found matching '#{searchArg}'""
     return count";
     }
 

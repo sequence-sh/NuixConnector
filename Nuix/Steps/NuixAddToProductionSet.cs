@@ -40,15 +40,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string RubyFunctionText =>
             @"
-    the_case = utilities.case_factory.open(pathArg)
-    puts ""Searching""
+    the_case = $utilities.case_factory.open(pathArg)
+    log ""Searching""
 
     searchOptions = {}
     searchOptions[:order] = orderArg if orderArg != nil
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
 
     items = the_case.search(searchArg, searchOptions)
-    puts ""#{items.length} items found""
+    log ""#{items.length} items found""
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
     if(productionSet == nil)
@@ -59,30 +59,30 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         if productionProfileNameArg != nil
             productionSet.setProductionProfile(productionProfileNameArg)
         elsif productionProfilePathArg != nil
-            profileBuilder = utilities.getProductionProfileBuilder()
+            profileBuilder = $utilities.getProductionProfileBuilder()
             profile = profileBuilder.load(productionProfilePathArg)
 
             if profile == nil
-                puts ""Could not find processing profile at #{productionProfilePathArg}""
+                log ""Could not find processing profile at #{productionProfilePathArg}""
                 exit
             end
 
             productionSet.setProductionProfileObject(profile)
         else
-            puts 'No production profile set'
+            log 'No production profile set'
             exit
         end
 
-        puts ""Production Set Created""
+        log ""Production Set Created""
     else
-        puts ""Production Set Found""
+        log ""Production Set Found""
     end
 
     if items.length > 0
         productionSet.addItems(items)
-        puts ""Items added to production set""
+        log ""Items added to production set""
     else
-        puts ""No items to add to production Set""
+        log ""No items to add to production Set""
     end
 
     the_case.close";

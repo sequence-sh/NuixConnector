@@ -32,11 +32,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    puts ""Opening Case, migrating if necessary""
+    log ""Opening Case, migrating if necessary""
 
     options = {migrate: true}
 
-    the_case = utilities.case_factory.open(pathArg, options)";
+    the_case = $utilities.case_factory.open(pathArg, options)";
     }
 
 

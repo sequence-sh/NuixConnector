@@ -10,11 +10,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     public static class ScriptCompiler
     {
         /// <summary>
-        /// The name of the nuix utilities class
-        /// </summary>
-        public const string UtilitiesParameterName = "utilities";
-
-        /// <summary>
         /// Compiles the text of a function
         /// </summary>
         public static string CompileFunctionText(this IRubyFunction function)
@@ -23,12 +18,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
             var methodHeader = $@"def {function.FunctionName}(args)";
-            foreach (var parameter in function.Arguments)
-            {
-                stringBuilder.AppendLine($"parameter = args[\"{parameter}\"]");
-            }
+            
 
             stringBuilder.AppendLine(methodHeader);
+
+            foreach (var parameter in function.Arguments)
+            {
+                stringBuilder.AppendLine($"{parameter.ParameterName} = args['{parameter.ParameterName}']");
+            }
+
             stringBuilder.AppendLine(IndentFunctionText(function.FunctionText));
             stringBuilder.AppendLine("end");
             stringBuilder.AppendLine();

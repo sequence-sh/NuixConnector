@@ -37,32 +37,32 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
 
     searchTerm = searchTermArg
     items = the_case.searchUnsorted(searchTerm).to_a
 
-    puts ""Running OCR on #{items.length} items""
+    log ""Running OCR on #{items.length} items""
 
-    processor = utilities.createOcrProcessor() #since Nuix 7.0 but seems to work with earlier versions anyway
+    processor = $utilities.createOcrProcessor() #since Nuix 7.0 but seems to work with earlier versions anyway
 
     if ocrProfileArg != nil
         ocrOptions = {:ocrProfileName => ocrProfileArg}
         processor.process(items, ocrOptions)
-        puts ""Items Processed""
+        log ""Items Processed""
     elsif ocrProfilePathArg != nil
-        profileBuilder = utilities.getOcrProfileBuilder()
+        profileBuilder = $utilities.getOcrProfileBuilder()
         profile = profileBuilder.load(ocrProfilePathArg)
 
         if profile == nil
-            puts ""Could not find processing profile at #{ocrProfilePathArg}""
+            log ""Could not find processing profile at #{ocrProfilePathArg}""
             exit
         end
 
         processor.setOcrProfileObject(profile)
     else
         processor.process(items)
-        puts ""Items Processed""
+        log ""Items Processed""
     end
     the_case.close";
     }

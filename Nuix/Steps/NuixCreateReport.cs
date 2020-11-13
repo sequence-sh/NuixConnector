@@ -38,9 +38,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string RubyFunctionText =>
             @"
-    the_case = utilities.case_factory.open(casePathArg)
+    the_case = $utilities.case_factory.open(casePathArg)
 
-    puts ""Generating Report:""
+    log ""Generating Report:""
     allItems = the_case.searchUnsorted("""")
     results = Hash.new { |h, k| h[k] = Hash.new { |hh, kk| hh[kk] = Hash.new{0} } }
 
@@ -86,14 +86,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         end
     end
 
-    puts ""Created results for #{allItems.length} items""
+    log ""Created results for #{allItems.length} items""
 
     text = ""Custodian\tType\tValue\tCount""
 
-    puts ""#{results.length - 1} custodians""
+    log ""#{results.length - 1} custodians""
     results.each do |custodian, hash1|
         hash1.each do |type, hash2|
-            puts ""#{custodian} has #{hash2.length} #{type}s"" if custodian != ""*""
+            log ""#{custodian} has #{hash2.length} #{type}s"" if custodian != ""*""
             hash2.sort_by{|value, count| -count}.each do |value, count|
                 text <<  ""\n#{custodian}\t#{type}\t#{value}\t#{count}""
             end

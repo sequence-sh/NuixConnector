@@ -35,14 +35,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
 
 #This only works in 7.6 or later
     if processingProfileNameArg != nil
         processor.setProcessingProfile(processingProfileNameArg)
     elsif processingProfilePathArg != nil
-        profileBuilder = utilities.getProcessingProfileBuilder()
+        profileBuilder = $utilities.getProcessingProfileBuilder()
         profileBuilder.load(processingProfilePathArg)
         profile = profileBuilder.build()
 

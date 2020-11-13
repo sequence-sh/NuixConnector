@@ -34,9 +34,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         //TODO change how this works - at the moment it creates multiple files
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(casePathArg)
+    the_case = $utilities.case_factory.open(casePathArg)
 
-    puts ""Generating Report:""
+    log ""Generating Report:""
     fields = {
         encrypted: ""flag:encrypted"",
         NonSearchablePDF: ""mime-type:application/pdf AND NOT content:*"",

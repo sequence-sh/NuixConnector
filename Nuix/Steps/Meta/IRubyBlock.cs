@@ -19,13 +19,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         string FunctionText { get; }
 
 
-        /// <summary>
-        /// Whether this function requires the utilities argument.
-        /// </summary>
-        bool RequireUtilities { get; }
 
         /// <summary>
-        /// Arguments other than utilities.
+        /// Arguments to the function
         /// </summary>
         IReadOnlyCollection<RubyFunctionParameter> Arguments { get; }
 
@@ -54,11 +50,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Create a new RubyFunction
         /// </summary>
-        public RubyFunction(string functionName, string functionText, bool requireUtilities, IReadOnlyCollection<RubyFunctionParameter> arguments)
+        public RubyFunction(string functionName, string functionText, IReadOnlyCollection<RubyFunctionParameter> arguments)
         {
             FunctionName = functionName;
             FunctionText = functionText;
-            RequireUtilities = requireUtilities;
             Arguments = arguments;
         }
 
@@ -67,9 +62,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
         /// <inheritdoc />
         public string FunctionText { get; }
-
-        /// <inheritdoc />
-        public bool RequireUtilities { get; }
 
         /// <inheritdoc />
         public IReadOnlyCollection<RubyFunctionParameter> Arguments { get; }
