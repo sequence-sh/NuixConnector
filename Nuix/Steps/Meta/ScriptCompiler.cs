@@ -28,7 +28,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 parameters = parameters.Prepend(UtilitiesParameterName);
 
 
-            var methodHeader = $@"def {function.FunctionName}({string.Join(",", parameters)})";
+            var methodHeader = $@"def {function.FunctionName}(args)";
+
+            //{string.Join(",", parameters)}
+            foreach (var parameter in function.Arguments)
+            {
+                stringBuilder.AppendLine($"parameter = args[\"{parameter}\"]");
+            }
+
 
             stringBuilder.AppendLine(methodHeader);
             stringBuilder.AppendLine(IndentFunctionText(function.FunctionText));

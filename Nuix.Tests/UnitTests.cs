@@ -2,18 +2,86 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Util;
+using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
+
+    internal class ExternalProcessMock : IExternalProcessRunner
+    {
+        public ExternalProcessMock(int expectedTimesStarted)
+        {
+            ExpectedTimesStarted = expectedTimesStarted;
+        }
+
+        public int ExpectedTimesStarted { get; }
+
+        public int TimesStarted { get; private set; } = 0;
+
+        /// <inheritdoc />
+        public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(string processPath, ILogger logger, IErrorHandler errorHandler, IEnumerable<string> arguments,
+            Encoding encoding)
+        {
+            await Task.CompletedTask;
+
+            throw new XunitException("nuix processes should not RunExternalProcess");
+        }
+
+        /// <inheritdoc />
+        public Result<IExternalProcessReference, IErrorBuilder> StartExternalProcess(string processPath, IEnumerable<string> arguments, Encoding encoding)
+        {
+            TimesStarted++;
+            if(TimesStarted > ExpectedTimesStarted)
+                throw new XunitException($"Should only start external process {ExpectedTimesStarted} times");
+
+            processPath.Should().Contain("nuix_console.exe");
+
+            encoding.Should().Be(Encoding.UTF8);
+
+            arguments.Should().BeEquivalentTo(ExpectedArguments);
+
+            return new ProcessReferenceMock();
+        }
+
+        private static readonly List<string> ExpectedArguments = new List<string>()
+        {
+            "--licenseSourceType",
+            "useDongle",
+            "C:/Script"
+        };
+
+        private class ProcessReferenceMock : IExternalProcessReference
+        {
+            /// <inheritdoc />
+            public void Dispose()
+            {
+            }
+
+            /// <inheritdoc />
+            public void WaitForExit(int? milliseconds)
+            {
+                throw new XunitException("Should not wait for exit");
+            }
+
+            /// <inheritdoc />
+            public IStreamReader<(string line, StreamSource source)> OutputStream { get; }
+
+            /// <inheritdoc />
+            public StreamWriter InputStream { get; }
+        }
+    }
+
+
     public abstract partial class NuixStepTestBase<TStep, TOutput>
     {
         /// <inheritdoc />
@@ -45,11 +113,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             private void SetupRunner(IEnumerable<string> valuesToLog, IReadOnlyList<(string key, string value)> expectedArgPairs)
             {
-                AddFileSystemAction(x => x.Setup(y => y.WriteFileAsync(
-                     It.IsRegex(@".*\.rb"),
-                     It.Is<Stream>(s=> ValidateRubyScript(s, expectedArgPairs)),
-                     It.IsAny<CancellationToken>()
-                 )).ReturnsAsync(Unit.Default));
+                //AddFileSystemAction(x => x.Setup(y => y.WriteFileAsync(
+                //     It.IsRegex(@".*\.rb"),
+                //     It.Is<Stream>(s=> ValidateRubyScript(s, expectedArgPairs)),
+                //     It.IsAny<CancellationToken>()
+                // )).ReturnsAsync(Unit.Default));
 
 
                 AddExternalProcessRunnerAction(externalProcessRunner =>
