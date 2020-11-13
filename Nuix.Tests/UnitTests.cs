@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -62,15 +63,37 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private class ProcessReferenceMock : IExternalProcessReference
         {
+            public ProcessReferenceMock()
+            {
+                InputStream = new StreamWriter(InnerInputStream);
+
+                Run();
+            }
+
+
+
             /// <inheritdoc />
             public void Dispose()
             {
+                IsDisposed = true;
             }
 
+            public bool IsDisposed { get; private set; }
+
             /// <inheritdoc />
-            public void WaitForExit(int? milliseconds)
+            public void WaitForExit(int? milliseconds) => throw new XunitException("Should not wait for exit");
+
+            public async Task Run()
             {
-                throw new XunitException("Should not wait for exit");
+                var streamReader = new StreamReader(InnerInputStream);
+
+                while (true)
+                {
+                    var line = await streamReader.ReadLineAsync();
+
+                    if(IsDisposed)
+                        throw new ObjectDisposedException("Process Reference is disposed");
+                }
             }
 
             /// <inheritdoc />
@@ -78,6 +101,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             /// <inheritdoc />
             public StreamWriter InputStream { get; }
+
+            private Stream InnerInputStream { get; } = new MemoryStream();
         }
     }
 
