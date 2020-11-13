@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Xsl;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -22,7 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     /// </summary>
     public static class NuixConnectionHelper
     {
-        private const string NuixGeneralScriptPath = "c:/Script.rb";
+        private const string NuixGeneralScriptName = "edr-nuix-connector.rb";
 
         private static readonly VariableName NuixVariableName = new VariableName("NuixConnection");
 
@@ -48,7 +51,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 arguments.Add("-licencesourcetype");
                 arguments.Add("dongle");
             }
-            arguments.Add(NuixGeneralScriptPath);
+
+            var scriptPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
+                NuixGeneralScriptName);
+
+            arguments.Add(scriptPath);
 
 
             var r = stateMonad.ExternalProcessRunner.StartExternalProcess(nuixSettingsResult.Value.NuixExeConsolePath, arguments,
