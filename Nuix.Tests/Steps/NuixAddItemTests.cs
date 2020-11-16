@@ -20,7 +20,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
             get
             {
-                yield return new UnitTest("Add item",
+                yield return new NuixStepCase("Add item",
                     new NuixAddItem
                     {
                         CasePath = CasePath,

@@ -23,7 +23,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
             get
             {
-                yield return new UnitTest("Create Case then add item",
+                yield return new NuixStepCase("Create Case then add item",
                     new Sequence
                     {
                         Steps = new List<IStep<Unit>>
@@ -98,11 +98,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
             get
             {
-                yield return new DeserializeUnitTest("Create Case then add item",
+                yield return new NuixDeserializeTest("Create Case then add item",
                     @"- NuixCreateCase(CaseName = 'Integration Test Case', CasePath = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase', Investigator = 'Mark')
 - NuixAddItem(CasePath = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase', Custodian = 'Mark', FolderName = 'New Folder', Path = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data')",
                     Unit.Default,
-                    new List<string>()).WithSettings(UnitTestSettings);
+                    new List<ExternalProcessAction>()
+                    {
+                        new ExternalProcessAction(new ConnectionCommand())
+                    }
+
+                    ).WithSettings(UnitTestSettings);
             }
         }
 

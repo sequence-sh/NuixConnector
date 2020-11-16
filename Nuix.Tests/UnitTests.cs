@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CSharpFunctionalExtensions;
+using JetBrains.Annotations;
 using Moq;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Steps;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -12,10 +14,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         /// <inheritdoc />
         protected override IEnumerable<StepCase> StepCases { get { yield break; } }
 
-        public class UnitTest : StepCase
+
+
+        public class NuixStepCase : StepCase
         {
 
-            public UnitTest(string name,
+            public NuixStepCase(string name,
                 Sequence sequence,
                 IReadOnlyCollection<ExternalProcessAction> externalProcessActions,
                 params string[] expectedLogValues)
@@ -25,7 +29,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 IgnoreFinalState = true;
             }
 
-            public UnitTest(string name,
+            public NuixStepCase(string name,
                 TStep step,
                 TOutput expectedOutput,
                 IReadOnlyCollection<ExternalProcessAction> externalProcessActions, params string[] expectedLogValues)
@@ -36,8 +40,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             }
 
             public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }
-
-
 
             /// <inheritdoc />
             public override IExternalProcessRunner GetExternalProcessRunner(MockRepository mockRepository) => new ExternalProcessMock(1, ExternalProcessActions.ToArray());
