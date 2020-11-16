@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
@@ -61,11 +63,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             "C:/Script"
         };
 
-        private class ProcessReferenceMock : IExternalProcessReference
+        private class ProcessReferenceMock : IExternalProcessReference, IStreamReader<(string line, StreamSource source)>
         {
             public ProcessReferenceMock()
             {
                 InputStream = new StreamWriter(InnerInputStream);
+
+                OutputStream = new StreamReader();
+
 
                 Run();
             }
@@ -73,10 +78,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
 
             /// <inheritdoc />
-            public void Dispose()
-            {
-                IsDisposed = true;
-            }
+            public void Dispose() => IsDisposed = true;
 
             public bool IsDisposed { get; private set; }
 
@@ -93,16 +95,33 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                     if(IsDisposed)
                         throw new ObjectDisposedException("Process Reference is disposed");
+
+                    (this as IStreamReader<(string line, StreamSource source)>).
                 }
             }
 
             /// <inheritdoc />
-            public IStreamReader<(string line, StreamSource source)> OutputStream { get; }
+            public IStreamReader<(string line, StreamSource source)> OutputStream => this;
 
             /// <inheritdoc />
             public StreamWriter InputStream { get; }
 
             private Stream InnerInputStream { get; } = new MemoryStream();
+
+            private Channel<(string line, StreamSource source)> InnerOutputStream { get; }
+
+            /// <inheritdoc />
+            public async Task<(string line, StreamSource source)?> ReadLineAsync()
+            {
+                var pipeReader = PipeReader
+
+
+                var streamReader = new StreamReader(InnerOutputStream);
+
+                InnerOutputStream.Reader.ReadAsync(CancellationToken.None);
+
+                InnerInputStream.on
+            }
         }
     }
 

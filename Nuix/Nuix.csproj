@@ -30,8 +30,8 @@
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.12.2" />
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0-a.master.2011131632" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0-a.master.2011161234" />
     <PackageReference Include="Superpower" Version="2.3.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
     <PackageReference Include="YamlDotNet" Version="8.1.2" />

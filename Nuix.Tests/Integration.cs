@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Xunit;
-using Moq;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Serialization;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
@@ -19,7 +12,6 @@ using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -56,34 +48,25 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public Sequence Step { get; }
         }
 
-        public class IntegrationTestCase : ICaseThatExecutes
+        public class IntegrationTestCase : CaseThatExecutes
         {
-            public IntegrationTestCase(string name, IStep<Unit> steps)
+            public IntegrationTestCase(string name, IStep<Unit> steps) : base(new List<object>())
             {
                 Name = name;
                 Steps = steps;
+                IgnoreFinalState = true;
             }
 
-            public string Name { get; }
+            public override string Name { get; }
 
             public IStep<Unit> Steps { get; }
 
-
             /// <inheritdoc />
-            public async Task RunCaseAsync(ITestOutputHelper testOutputHelper, string? extraArgument)
+            public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper, string? extraArgument)
             {
-                var loggerFactory = new LoggerFactory(new[] { new XunitLoggerProvider(testOutputHelper) });
-
-                var logger = loggerFactory.CreateLogger(Name);
-                var factoryStore = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
-
-                var stateMonad = new StateMonad(logger, Settings, ExternalProcessRunner.Instance,
-                    FileSystemHelper.Instance,
-                    StepFactoryStoreToUse.Unwrap(factoryStore));
-
                 var yaml = await Steps.Unfreeze().SerializeToYamlAsync(CancellationToken.None);
 
-                var deserializedStep = YamlMethods.DeserializeFromYaml(yaml, factoryStore);
+                var deserializedStep = YamlMethods.DeserializeFromYaml(yaml,  StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(TStep)));
 
                 deserializedStep.ShouldBeSuccessful(x => x.AsString);
 
@@ -91,40 +74,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 unfrozenStep.ShouldBeSuccessful(x => x.AsString);
 
-                var sw = Stopwatch.StartNew();
-
-                var result = await unfrozenStep.Value.Run(stateMonad, CancellationToken.None);
-                sw.Stop();
-
-                testOutputHelper.WriteLine($"Elapsed: {sw.ElapsedMilliseconds}ms");
-
-                result.ShouldBeSuccessful(x => x.AsString);
+                return unfrozenStep.Value;
             }
 
             /// <inheritdoc />
-            public void AddExternalProcessRunnerAction(Action<Mock<IExternalProcessRunner>> action) =>
-                throw new XunitException("Integration tests do not mock the external process runner");
+            public override void CheckUnitResult(Result<Unit, IError> result)
+            {
+                result.ShouldBeSuccessful(x=>x.AsString);
+            }
 
             /// <inheritdoc />
-            public void AddFileSystemAction(Action<Mock<IFileSystemHelper>> action) =>
-                throw new XunitException("Integration tests do not mock the file system");
-
-            /// <inheritdoc />
-            public Dictionary<VariableName, object> InitialState =>
-                throw new XunitException(
-                    "Integration tests do not set the initial state"); // { get; } = new Dictionary<VariableName, object>();
-
-            /// <inheritdoc />
-            public Dictionary<VariableName, object> ExpectedFinalState =>
-                throw new XunitException("Integration tests do not check the final state");
-
-            /// <inheritdoc />
-            public bool IgnoreFinalState { get; set; }
-
-            /// <inheritdoc />
-            public ISettings Settings { get; set; } = EmptySettings.Instance;
-
-            public Maybe<StepFactoryStore> StepFactoryStoreToUse { get; set; }
+            public override void CheckOutputResult(Result<TOutput, IError> result)
+            {
+                result.ShouldBeSuccessful(x=>x.AsString);
+            }
         }
     }
 }
