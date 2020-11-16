@@ -175,8 +175,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 if (output == null)
                     return new ErrorBuilder("Nuix process missing output", ErrorCode.ExternalProcessMissingOutput);
 
-                if (output.Value.source == StreamSource.Error)
-                    return new ErrorBuilder(output.Value.line, ErrorCode.ExternalProcessError);
+                //if (output.Value.source == StreamSource.Error)
+                //    return new ErrorBuilder(output.Value.line, ErrorCode.ExternalProcessError);
 
                 var jsonString = output.Value.line;
 
@@ -195,6 +195,37 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 if (connectorOutput.Error != null)
                     return new ErrorBuilder(connectorOutput.Error.Message, ErrorCode.ExternalProcessError);
 
+                if(connectorOutput.Log != null)
+                {
+                    var severity = TryGetSeverity(connectorOutput.Log.Severity);
+
+                    if (severity.IsFailure) return severity.ConvertFailure<T>();
+
+                    switch (severity.Value)
+                    {
+                        case LogSeverity.Trace:
+                            logger.LogTrace(connectorOutput.Log.Message);
+                            break;
+                        case LogSeverity.Information:
+                            logger.LogInformation(connectorOutput.Log.Message);
+                            break;
+                        case LogSeverity.Warning:
+                            logger.LogWarning(connectorOutput.Log.Message);
+                            break;
+                        case LogSeverity.Error:
+                            logger.LogError(connectorOutput.Log.Message);
+                            break;
+                        case LogSeverity.Critical:
+                            logger.LogCritical(connectorOutput.Log.Message);
+                            break;
+                        case LogSeverity.Debug:
+                            logger.LogDebug(connectorOutput.Log.Message);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+
                 if (connectorOutput.Result != null)
                 {
                     if (Unit.Default is T u)
@@ -203,29 +234,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     if (connectorOutput.Result.Data is T t)
                         return t;
 
+                    var convertedResult = Convert.ChangeType(connectorOutput.Result.Data, typeof(T));
+                    if (convertedResult is T tConverted)
+                        return tConverted;
+
                     return new ErrorBuilder($"Could not deserialize '{connectorOutput.Result.Data}' to {typeof(T).Name}", ErrorCode.CouldNotDeserialize);
+                  
                 }
 
-                if (connectorOutput.Log != null)
-                {
-                    switch (connectorOutput.Log.Severity)
-                    {
-                        case LogSeverity.Trace: logger.LogTrace(connectorOutput.Log.Message);
-                            break;
-                        case LogSeverity.Information: logger.LogInformation(connectorOutput.Log.Message);
-                            break;
-                        case LogSeverity.Warning: logger.LogWarning(connectorOutput.Log.Message);
-                            break;
-                        case LogSeverity.Error: logger.LogError(connectorOutput.Log.Message);
-                            break;
-                        case LogSeverity.Critical: logger.LogCritical(connectorOutput.Log.Message);
-                            break;
-                        case LogSeverity.Debug: logger.LogDebug(connectorOutput.Log.Message);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
             }
 
             return new ErrorBuilder("Process was cancelled", ErrorCode.ExternalProcessError);
@@ -251,24 +267,44 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         private class ConnectorOutputLog
         {
             [JsonProperty("severity")]
-            public LogSeverity Severity { get; set; }
+            public string Severity { get; set; } = null!;
 
             [JsonProperty("message")]
             public string Message { get; set; } = null!;
 
+            [JsonProperty("time")]
+            public string Time { get; set; } = null!;
+
+            [JsonProperty("stackTrace")]
+            public string StackTrace { get; set; } = null!;
+
+        }
+
+        private static Result<LogSeverity, IErrorBuilder> TryGetSeverity(string s)
+        {
+            return (s.ToLowerInvariant()) switch
+            {
+                "trace" => LogSeverity.Trace,
+                "info" => LogSeverity.Information,
+                "warn" => LogSeverity.Warning,
+                "error" => LogSeverity.Error,
+                "fatal" => LogSeverity.Critical,
+                "debug" => LogSeverity.Debug,
+                _ => new ErrorBuilder($"Could not parse {s}", ErrorCode.CouldNotParse),
+            };
         }
 
         private enum LogSeverity
         {
             [JsonProperty("trace")]
             Trace,
-            [JsonProperty("information")]
+            [JsonProperty("info")]
             Information,
-            [JsonProperty("warning")]
+            [JsonProperty("warn")]
             Warning,
             [JsonProperty("error")]
             Error,
-            [JsonProperty("critical")]
+            [JsonProperty("fatal")]
             Critical,
             [JsonProperty("debug")]
             Debug

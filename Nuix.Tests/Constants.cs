@@ -26,10 +26,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             new List<INuixSettings>
             {
                 new NuixSettings(true, Path.Join(Nuix8Path,NuixConsoleExe ), new Version(8, 8), AllNuixFeatures),
-                new NuixSettings(true, Path.Join(Nuix7Path, NuixConsoleExe), new Version(7, 8),
-                    AllNuixFeatures),
-                new NuixSettings(true, Path.Join(Nuix6Path, NuixConsoleExe), new Version(6, 2),
-                    AllNuixFeatures),
+                //new NuixSettings(true, Path.Join(Nuix7Path, NuixConsoleExe), new Version(7, 8), //TODO redo these
+                //    AllNuixFeatures),
+                //new NuixSettings(true, Path.Join(Nuix6Path, NuixConsoleExe), new Version(6, 2),
+                //    AllNuixFeatures),
             };
 
 

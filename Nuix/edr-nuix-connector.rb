@@ -1,15 +1,15 @@
 require 'json'
 require 'thread'
 
-END_CMD = 'done'
-ENCODING = 'UTF-8'
+END_CMD       = 'done'
+ENCODING      = 'UTF-8'
+LOG_SEVERITY  = :info
+INJECT_UTILS  = true
+WAIT_TIMEOUT  = 90
 
-LOG_SEVERITY = :info
-
-INJECT_UTILS = true
-
-#STDOUT.sync = true
-#STDERR.sync = true
+#STDIN.sync   = true
+#STDOUT.sync  = true
+#STDERR.sync  = true
 
 ################################################################################
 
@@ -31,6 +31,27 @@ def log(message, severity = :info, timestamp = Time.now, stack = '')
     :stackTrace => stack
   }}
   puts JSON.generate(body)
+end
+
+def return_result(result)
+    body = { :result => { :data => result } }
+    puts JSON.generate(body)
+end
+
+def write_error(message, timestamp = Time.now, location = '', stack = '')
+  body = { :error => {
+    :message => message,
+    :time => timestamp,
+    :location => location,
+    :stackTrace => stack
+  }}
+  log(message, severity = :error, timestamp = timestamp, stack = stack)
+  STDERR.puts JSON.generate(body)
+end
+
+def return_entity(props)
+    body = { :entity => props }
+    puts JSON.generate(body)
 end
 
 ################################################################################
@@ -68,7 +89,17 @@ reader = Thread.new do
 
     log("reader: waiting for input", severity = :debug)
 
-    input = STDIN.gets(chomp: true, encoding: ENCODING)
+    inputWait = Thread.new { STDIN.gets(chomp: true, encoding: ENCODING) }
+
+    input = nil
+  
+    if inputWait.join(WAIT_TIMEOUT).nil?
+      write_error "Timed out waiting for input from STDIN"
+      inputWait.kill
+      input = "{\"cmd\":\"#{END_CMD}\"}\r\n"
+    else
+      input = inputWait.value
+    end
 
     log("reader: received input", severity = :debug)
 
@@ -88,7 +119,7 @@ reader = Thread.new do
       begin
         json = JSON.parse(input)
       rescue JSON::ParserError
-        log("Could not parse input: #{input}", severity: 'error')
+        log("Could not parse input: #{input}", severity = :error)
         next
       end
 
@@ -154,7 +185,9 @@ loop do
     raise err_msg
   end
 
-  send functions[cmd][:fdef], args
+  # TODO: rescue
+  result = send functions[cmd][:fdef], args
+  return_result(result)
 
 end
 

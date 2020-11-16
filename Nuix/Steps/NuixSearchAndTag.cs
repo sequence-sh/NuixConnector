@@ -35,12 +35,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
-    puts ""Searching for '#{searchArg}'""
+    the_case = $utilities.case_factory.open(pathArg)
+    log ""Searching for '#{searchArg}'""
 
     searchOptions = {}
     items = the_case.search(searchArg, searchOptions)
-    puts ""#{items.length} found""
+    log ""#{items.length} found""
 
     j = 0
 
@@ -49,7 +49,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
        j += 1 if added
     }
 
-    puts ""#{j} items tagged with #{tagArg}""
+    log ""#{j} items tagged with #{tagArg}""
     the_case.close";
     }
 

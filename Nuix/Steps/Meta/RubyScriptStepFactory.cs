@@ -37,8 +37,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         protected RubyScriptStepFactory()
         {
             _lazyRubyFunction
-            = new Lazy<IRubyFunction<TOutput>>(() => new RubyFunction<TOutput>(FunctionName, RubyFunctionText, true,
-                RubyFunctionParameter.GetRubyFunctionParameters<TStep>())
+            = new Lazy<IRubyFunction<TOutput>>(() => new RubyFunction<TOutput>(FunctionName, RubyFunctionText, RubyFunctionParameter.GetRubyFunctionParameters<TStep>())
             {
                 RequiredNuixVersion = RequiredNuixVersion,
                 RequiredNuixFeatures = RequiredFeatures

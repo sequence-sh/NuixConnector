@@ -39,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string RubyFunctionText =>
         @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
@@ -52,7 +52,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         the_case.close
 
         if r.downcase == expectedStateArg.downcase
-            puts ""Print preview state was #{r}, as expected.""
+            log ""Print preview state was #{r}, as expected.""
         else
             raise ""Print preview state was #{r}, but expected #{expectedStateArg}""
             exit

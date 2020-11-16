@@ -32,11 +32,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(casePathArg)
+    the_case = $utilities.case_factory.open(casePathArg)
 
-    puts ""Finding Entities""
+    log ""Finding Entities""
     items = the_case.search(searchArg, {})
-    puts ""#{items.length} items found""
+    log ""#{items.length} items found""
     propertyRegex = Regexp.new(propertyRegexArg)
     valueRegex = nil
     valueRegex = Regexp.new(valueRegexArg) if valueRegexArg != nil
