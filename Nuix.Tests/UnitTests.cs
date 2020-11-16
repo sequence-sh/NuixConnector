@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
@@ -30,7 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         /// <inheritdoc />
         public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(string processPath, ILogger logger, IErrorHandler errorHandler, IEnumerable<string> arguments,
-            Encoding encoding)
+            Encoding encoding, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
 
@@ -62,6 +64,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         private class ProcessReferenceMock : IExternalProcessReference
         {
+            public ChannelReader<(string line, StreamSource source)> OutputChannel => throw new System.NotImplementedException();
+
+            public ChannelWriter<string> InputChannel => throw new System.NotImplementedException();
+
             /// <inheritdoc />
             public void Dispose()
             {
@@ -72,12 +78,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 throw new XunitException("Should not wait for exit");
             }
-
-            /// <inheritdoc />
-            public IStreamReader<(string line, StreamSource source)> OutputStream { get; }
-
-            /// <inheritdoc />
-            public StreamWriter InputStream { get; }
         }
     }
 
@@ -128,8 +128,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         It.IsAny<ILogger>(),
                         It.IsAny<IErrorHandler>(),
                         It.Is<IEnumerable<string>>(ie => AreExternalArgumentsCorrect(ie, expectedArgPairs)),
-                        Encoding.UTF8))
-                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>, Encoding>((s, logger, arg3, arg4, e) =>
+                        Encoding.UTF8,
+                        It.IsAny<CancellationToken>()
+                        ))
+                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>, Encoding, CancellationToken>((s, logger, arg3, arg4, e, ct) =>
                     {
                         foreach (var val in valuesToLog)
                         {
