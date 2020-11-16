@@ -36,8 +36,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         It.IsAny<ILogger>(),
                         It.IsAny<IErrorHandler>(),
                         It.IsAny<IEnumerable<string>>(),
-                        Encoding.UTF8))
-                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>, Encoding>((s, logger, arg3, arg4, e) =>
+                        Encoding.UTF8,
+                        It.IsAny<CancellationToken>()
+                        
+                        
+                        ))
+                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>, Encoding,CancellationToken>((s, logger, arg3, arg4, e, ct) =>
                     {
                         foreach (var val in valuesToLog)
                         {

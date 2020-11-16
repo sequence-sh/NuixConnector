@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Xml.Xsl;
 using CSharpFunctionalExtensions;
@@ -57,7 +58,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 NuixGeneralScriptName);
 
             arguments.Add(scriptPath);
-
 
             var r = stateMonad.ExternalProcessRunner.StartExternalProcess(nuixSettingsResult.Value.NuixExeConsolePath, arguments,
                 Encoding.UTF8);
@@ -153,7 +153,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 // ReSharper disable once MethodHasAsyncOverload
                 var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance);
 
-                await ExternalProcess.InputStream.WriteLineAsync(commandJson);
+                await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellationToken);
 
                 var result = await GetOutputTyped<T>(logger, cancellationToken);
 
@@ -170,16 +170,21 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var output = await ExternalProcess.OutputStream.ReadLineAsync();
+                //var canRead = await ExternalProcess.OutputChannel.WaitToReadAsync(cancellationToken);
 
-                if (output == null)
-                    return new ErrorBuilder("Nuix process missing output", ErrorCode.ExternalProcessMissingOutput);
+                //if (canRead == false)
+                //    return new ErrorBuilder("Nuix process was closed prematurely", ErrorCode.ExternalProcessMissingOutput);
+                string jsonString;
+                StreamSource source;
 
-                //if (output.Value.source == StreamSource.Error)
-                //    return new ErrorBuilder(output.Value.line, ErrorCode.ExternalProcessError);
-
-                var jsonString = output.Value.line;
-
+                try
+                {
+                    (jsonString, source) = await ExternalProcess.OutputChannel.ReadAsync(cancellationToken);
+                }
+                catch (ChannelClosedException e)
+                {
+                    return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
+                }
 
                 ConnectorOutput connectorOutput;
 
@@ -197,6 +202,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 if(connectorOutput.Log != null)
                 {
+                    if (source == StreamSource.Error)
+                        return new ErrorBuilder(connectorOutput.Log.Message, ErrorCode.ExternalProcessError);
+
                     var severity = TryGetSeverity(connectorOutput.Log.Severity);
 
                     if (severity.IsFailure) return severity.ConvertFailure<T>();
