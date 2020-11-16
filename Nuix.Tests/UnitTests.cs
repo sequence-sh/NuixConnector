@@ -1,113 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR.Core.ExternalProcesses;
-using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.Util;
-using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
-
-    public class ExternalProcessExpectation
-    {
-
-
-    }
-
-
-    internal class ExternalProcessMock : IExternalProcessRunner
-    {
-        public ExternalProcessMock(int expectedTimesStarted)
-        {
-            ExpectedTimesStarted = expectedTimesStarted;
-        }
-
-        public int ExpectedTimesStarted { get; }
-
-        public int TimesStarted { get; private set; } = 0;
-
-        /// <inheritdoc />
-        public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(string processPath, ILogger logger, IErrorHandler errorHandler, IEnumerable<string> arguments,
-            Encoding encoding, CancellationToken cancellationToken)
-        {
-            await Task.CompletedTask;
-
-            throw new XunitException("nuix processes should not RunExternalProcess");
-        }
-
-        /// <inheritdoc />
-        public Result<IExternalProcessReference, IErrorBuilder> StartExternalProcess(string processPath, IEnumerable<string> arguments, Encoding encoding)
-        {
-            TimesStarted++;
-            if(TimesStarted > ExpectedTimesStarted)
-                throw new XunitException($"Should only start external process {ExpectedTimesStarted} times");
-
-            processPath.Should().Contain("nuix_console.exe");
-
-            encoding.Should().Be(Encoding.UTF8);
-
-            arguments.Should().BeEquivalentTo(ExpectedArguments);
-
-            return new ProcessReferenceMock();
-        }
-
-        private static readonly List<string> ExpectedArguments = new List<string>()
-        {
-            "--licenseSourceType",
-            "useDongle",
-            "C:/Script"
-        };
-
-
-
-        private class ProcessReferenceMock : IExternalProcessReference
-        {
-            public ProcessReferenceMock()
-            {
-                var iChannel = Channel.CreateUnbounded<string>();
-                var oChannel = Channel.CreateUnbounded<(string line, StreamSource source)>();
-
-                InputChannel = iChannel.Writer;
-                OutputChannel = oChannel.Reader;
-
-
-            }
-
-
-            /// <inheritdoc />
-            public void Dispose()
-            {
-                _disposed = true;
-            }
-
-            private bool _disposed = false;
-
-            /// <inheritdoc />
-            public void WaitForExit(int? milliseconds)
-            {
-            }
-
-            /// <inheritdoc />
-            public ChannelReader<(string line, StreamSource source)> OutputChannel { get; }
-
-            /// <inheritdoc />
-            public ChannelWriter<string> InputChannel { get; }
-        }
-    }
-
-
     public abstract partial class NuixStepTestBase<TStep, TOutput>
     {
         /// <inheritdoc />
@@ -118,100 +17,30 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
             public UnitTest(string name,
                 Sequence sequence,
-                IReadOnlyCollection<string> valuesToLog,
-                IEnumerable<(string key, string value)> expectedExtraArgs,
+                IReadOnlyCollection<ExternalProcessAction> externalProcessActions,
                 params string[] expectedLogValues)
                 : base(name, sequence, Maybe<TOutput>.None, expectedLogValues)
             {
-                SetupRunner(valuesToLog, expectedExtraArgs.ToList());
+                ExternalProcessActions = externalProcessActions;
+                IgnoreFinalState = true;
             }
 
             public UnitTest(string name,
                 TStep step,
                 TOutput expectedOutput,
-                IReadOnlyCollection<string> valuesToLog,
-                IEnumerable<(string key, string value)> expectedExtraArgs,
-                params string[] expectedLogValues)
+                IReadOnlyCollection<ExternalProcessAction> externalProcessActions, params string[] expectedLogValues)
                 : base(name, step, expectedOutput, expectedLogValues)
             {
-                SetupRunner(valuesToLog, expectedExtraArgs.ToList());
+                ExternalProcessActions = externalProcessActions;
+                IgnoreFinalState = true;
             }
 
-            private void SetupRunner(IEnumerable<string> valuesToLog, IReadOnlyList<(string key, string value)> expectedArgPairs)
-            {
-                //AddFileSystemAction(x => x.Setup(y => y.WriteFileAsync(
-                //     It.IsRegex(@".*\.rb"),
-                //     It.Is<Stream>(s=> ValidateRubyScript(s, expectedArgPairs)),
-                //     It.IsAny<CancellationToken>()
-                // )).ReturnsAsync(Unit.Default));
+            public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }
 
 
-                AddExternalProcessRunnerAction(externalProcessRunner =>
-                    externalProcessRunner
-                        .Setup(y => y
-                                .RunExternalProcess(
-                        It.IsAny<string>(),
-                        It.IsAny<ILogger>(),
-                        It.IsAny<IErrorHandler>(),
-                        It.Is<IEnumerable<string>>(ie => AreExternalArgumentsCorrect(ie, expectedArgPairs)),
-                        Encoding.UTF8,
-                        It.IsAny<CancellationToken>()
-                        ))
-                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>, Encoding, CancellationToken>((s, logger, arg3, arg4, e, ct) =>
-                    {
-                        foreach (var val in valuesToLog)
-                        {
-                            logger.LogInformation(val);
-                        }
 
-                    })
-                    .ReturnsAsync(Unit.Default));
-            }
-
-            private static bool ValidateRubyScript(Stream stream, IEnumerable<(string key, string value)> expectedArgPairs)
-            {
-                var reader = new StreamReader(stream);
-                var text = reader.ReadToEnd();
-                text.Should().NotBeNull();
-
-                text.Should().Contain("require 'optparse'"); //very shallow testing that this is actually a ruby script
-
-                foreach (var (key, _) in expectedArgPairs)
-                {
-                    text.Should().Contain(key);
-                }
-
-                return true;
-            }
-
-            private static bool AreExternalArgumentsCorrect(IEnumerable<string> externalProcessArgs, IReadOnlyList<(string key, string value)> expectedArgPairs)
-            {
-                var list = externalProcessArgs.ToList();
-                var extraArgs = list.Skip(3).ToList();
-                list[0].Should().Be("-licencesourcetype");
-                list[1].Should().Be("dongle");
-                list[2].Should().Match("*.rb");
-
-                var realArgPairs = new List<(string key, string value)>();
-
-                for (var i = 0; i < extraArgs.Count() - 1; i+=2)
-                {
-                    var key = extraArgs[i];
-                    var value = extraArgs[i + 1];
-
-                    realArgPairs.Add((key, value));
-                }
-
-                realArgPairs.Select(x => x.key).Should().BeEquivalentTo(expectedArgPairs.Select(x => "--" + x.key));
-
-                foreach (var ((key, realValue), (_, expectedValue)) in realArgPairs.Zip(expectedArgPairs))
-                {
-                    realValue.Should().Contain(expectedValue, $"values of '{key}' should match");
-                }
-
-
-                return true;
-            }
+            /// <inheritdoc />
+            public override IExternalProcessRunner GetExternalProcessRunner(MockRepository mockRepository) => new ExternalProcessMock(1, ExternalProcessActions.ToArray());
         }
     }
 }

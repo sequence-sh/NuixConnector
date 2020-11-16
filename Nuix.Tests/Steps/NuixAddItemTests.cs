@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
@@ -21,27 +21,33 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
             get
             {
                 yield return new UnitTest("Add item",
-                    new Sequence
+                    new NuixAddItem
                     {
-                        Steps = new List<IStep<Unit>>
+                        CasePath = CasePath,
+                        Custodian = Constant("Mark"),
+                        Path = DataPath,
+                        FolderName = Constant("New Folder"),
+                        ProcessingSettings = Constant(CreateEntity(("Foo", "Bar")))
+                    },
+                    Unit.Default,
+                    new List<ExternalProcessAction>
+                    {
+                        new ExternalProcessAction(new ConnectionCommand
                         {
-                            new NuixAddItem
+                            Command = "AddToCase",
+                            Arguments = new Dictionary<string, object>
                             {
-                                CasePath = CasePath,
-                                Custodian = Constant("Mark"),
-                                Path = DataPath,
-                                FolderName = Constant("New Folder"),
-                                ProcessingSettings = Constant( CreateEntity(("Foo", "Bar")))
-                            }
-                        }
-                    }, new List<string>(),
-                    new List<(string, string)>()
-                    {
-                        ("pathArg1a", @"IntegrationTest\TestCase"),
-                        ("folderNameArg1b", "New Folder"),
-                        ("folderCustodianArg1d", "Mark"),
-                        ("filePathArg1e", @"AllData\data"),
-                        ("processingSettingsArg1h", "'{\"Foo\":\"Bar\"}'")
+                                {"pathArg", CasePathString},
+                                {"folderNameArg", "New Folder"},
+                                {"folderCustodianArg", "Mark"},
+                                {"filePathArg", DataPathString},
+                                {"processingSettingsArg", CreateEntity(("Foo", "Bar"))}
+                            },
+                            FunctionDefinition = ""
+                        }, new ConnectionOutput
+                        {
+                            Result = new ConnectionOutputResult{Data = null}
+                        })
                     }
                 ).WithSettings(UnitTestSettings);
 

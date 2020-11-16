@@ -42,7 +42,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     log 'Case Created'
     the_case.close
     log 'Case Closed'";
-    
     }
 
     /// <summary>

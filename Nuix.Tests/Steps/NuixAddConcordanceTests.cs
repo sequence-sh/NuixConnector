@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
@@ -27,20 +28,33 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         FilePath = ConcordancePath,
                         Custodian = Constant("Mark"),
                         FolderName = Constant("New Folder"),
-                        CasePath = CasePath
+                        CasePath = CasePath,
                     },
-                    Unit.Default, new List<string>(),
-                    new List<(string, string)>()
+                    Unit.Default,
+                    new List<ExternalProcessAction>
                     {
-                        ("pathArg1a", @"IntegrationTest\TestCase"),
-                        ("folderNameArg1b", "New Folder"),
-                        ("folderCustodianArg1d", "Mark"),
-                        ("filePathArg1e", @"Concordance\loadfile.dat"),
-                        ("dateFormatArg1f", "yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
-                        ("profileNameArg1g", "IntegrationTestProfile")
-                    }
-                    )
-                    .WithSettings(UnitTestSettings);
+                        new ExternalProcessAction(
+                            new ConnectionCommand
+                            {
+                                Command = "AddConcordanceToCase",
+                                FunctionDefinition = "",
+                                Arguments = new Dictionary<string, object>()
+                                {
+                                            {"pathArg", CasePathString},
+                        {"folderNameArg", "New Folder"},
+                        {"folderCustodianArg", "Mark"},
+                        {"filePathArg", ConcordancePathString},
+                        {"dateFormatArg", "yyyy-MM-dd'T'HH:mm:ss.SSSZ"},
+                        {"profileNameArg", "IntegrationTestProfile"}
+                                }
+
+                            },
+                            new ConnectionOutput
+                            {
+                                Result = new ConnectionOutputResult(){Data = null}
+                            }
+                        )
+                    }).WithSettings(UnitTestSettings);
 
             }
         }

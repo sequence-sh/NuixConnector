@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
+using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -26,18 +28,43 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         Steps = new List<IStep<Unit>>
                         {
-                            Constants.CreateCase,
-                            Constants.AddData
+                            CreateCase,
+                            AddData
                         }
-                    }, new List<string>(), new List<(string, string)>()
+                    },
+                    new List<ExternalProcessAction>
                     {
-                        ("pathArg1a", @"IntegrationTest\TestCase"),
-                        ("nameArg1b", "Integration Test Case"),
-                        ("investigatorArg1d", "Mark"),
-                        ("pathArg2a", @"IntegrationTest\TestCase"),
-                        ("folderNameArg2b", "New Folder"),
-                        ("folderCustodianArg2d", "Mark"),
-                        ("filePathArg2e", @"AllData\data")
+                        new ExternalProcessAction(new ConnectionCommand
+                        {
+                            Command = "CreateCase",
+                            FunctionDefinition = "",
+                            Arguments = new Dictionary<string, object>
+                            {
+                                {"pathArg", CasePathString},
+                                {"nameArg", "Integration Test Case"},
+                                {"investigatorArg", "Mark"}
+                            }
+                        },
+                        new ConnectionOutput
+                        {
+                            Result = new ConnectionOutputResult{Data = null}
+                        }),
+                        new ExternalProcessAction(new ConnectionCommand
+                        {
+                            Command = "AddToCase",
+                            FunctionDefinition = "",
+                            Arguments = new Dictionary<string, object>
+                            {
+                                {"pathArg", CasePathString},
+                                {"folderNameArg", "New Folder"},
+                                {"folderCustodianArg", "Mark"},
+                                {"filePathArg", DataPathString}
+                            }
+                        },
+                        new ConnectionOutput
+                        {
+                            Result = new ConnectionOutputResult{Data = null}
+                        })
                     }
                 ).WithSettings(UnitTestSettings);
 

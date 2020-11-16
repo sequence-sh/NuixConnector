@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using System.Xml.Xsl;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -103,7 +103,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     /// <summary>
     /// An open connection to our general script running in Nuix
     /// </summary>
-    public class NuixConnection : IDisposable
+    public sealed class NuixConnection : IDisposable
     {
         /// <summary>
         /// Create a new NuixConnection
@@ -130,7 +130,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             try
             {
-                var command = new ConnectorCommand
+                var command = new ConnectionCommand
                 {
                     Command = function.FunctionName
                 };
@@ -148,6 +148,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         //TODO special case for stream / entity stream
                     }
                 }
+
                 command.Arguments = commandArguments;
 
                 // ReSharper disable once MethodHasAsyncOverload
@@ -159,6 +160,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 return result;
             }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception e)
+            {
+                return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
             finally
             {
                 _semaphore.Release();
@@ -170,10 +177,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                //var canRead = await ExternalProcess.OutputChannel.WaitToReadAsync(cancellationToken);
-
-                //if (canRead == false)
-                //    return new ErrorBuilder("Nuix process was closed prematurely", ErrorCode.ExternalProcessMissingOutput);
                 string jsonString;
                 StreamSource source;
 
@@ -186,68 +189,71 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
                 }
 
-                ConnectorOutput connectorOutput;
+                ConnectionOutput connectionOutput;
 
                 try
                 {
-                    connectorOutput= JsonConvert.DeserializeObject<ConnectorOutput>(jsonString);
+
+                    connectionOutput= JsonConvert.DeserializeObject<ConnectionOutput>(jsonString, EntityJsonConverter.Instance)!;
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
                 {
                     return new ErrorBuilder(e, ErrorCode.CouldNotDeserialize);
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
 
-                if (connectorOutput.Error != null)
-                    return new ErrorBuilder(connectorOutput.Error.Message, ErrorCode.ExternalProcessError);
+                if (connectionOutput.Error != null)
+                    return new ErrorBuilder(connectionOutput.Error.Message, ErrorCode.ExternalProcessError);
 
-                if(connectorOutput.Log != null)
+                if(connectionOutput.Log != null)
                 {
                     if (source == StreamSource.Error)
-                        return new ErrorBuilder(connectorOutput.Log.Message, ErrorCode.ExternalProcessError);
+                        return new ErrorBuilder(connectionOutput.Log.Message, ErrorCode.ExternalProcessError);
 
-                    var severity = TryGetSeverity(connectorOutput.Log.Severity);
+                    var severity = connectionOutput.Log.TryGetSeverity();
 
                     if (severity.IsFailure) return severity.ConvertFailure<T>();
 
                     switch (severity.Value)
                     {
                         case LogSeverity.Trace:
-                            logger.LogTrace(connectorOutput.Log.Message);
+                            logger.LogTrace(connectionOutput.Log.Message);
                             break;
                         case LogSeverity.Information:
-                            logger.LogInformation(connectorOutput.Log.Message);
+                            logger.LogInformation(connectionOutput.Log.Message);
                             break;
                         case LogSeverity.Warning:
-                            logger.LogWarning(connectorOutput.Log.Message);
+                            logger.LogWarning(connectionOutput.Log.Message);
                             break;
                         case LogSeverity.Error:
-                            logger.LogError(connectorOutput.Log.Message);
+                            logger.LogError(connectionOutput.Log.Message);
                             break;
                         case LogSeverity.Critical:
-                            logger.LogCritical(connectorOutput.Log.Message);
+                            logger.LogCritical(connectionOutput.Log.Message);
                             break;
                         case LogSeverity.Debug:
-                            logger.LogDebug(connectorOutput.Log.Message);
+                            logger.LogDebug(connectionOutput.Log.Message);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
                 }
 
-                if (connectorOutput.Result != null)
+                if (connectionOutput.Result != null)
                 {
                     if (Unit.Default is T u)
                         return u; //:)
 
-                    if (connectorOutput.Result.Data is T t)
+                    if (connectionOutput.Result.Data is T t)
                         return t;
 
-                    var convertedResult = Convert.ChangeType(connectorOutput.Result.Data, typeof(T));
+                    var convertedResult = Convert.ChangeType(connectionOutput.Result.Data, typeof(T));
                     if (convertedResult is T tConverted)
                         return tConverted;
 
-                    return new ErrorBuilder($"Could not deserialize '{connectorOutput.Result.Data}' to {typeof(T).Name}", ErrorCode.CouldNotDeserialize);
-                  
+                    return new ErrorBuilder($"Could not deserialize '{connectionOutput.Result.Data}' to {typeof(T).Name}", ErrorCode.CouldNotDeserialize);
+
                 }
 
             }
@@ -259,155 +265,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
         /// <inheritdoc />
         public void Dispose() => ExternalProcess.Dispose();
-
-        private class ConnectorOutput
-        {
-            [JsonProperty("result")]
-            public ConnectorOutputResult? Result { get; set; }
-
-            [JsonProperty("log")]
-            public ConnectorOutputLog? Log { get; set; }
-
-            [JsonProperty("error")]
-            public ConnectorOutputError? Error { get; set; }
-        }
-
-        private class ConnectorOutputLog
-        {
-            [JsonProperty("severity")]
-            public string Severity { get; set; } = null!;
-
-            [JsonProperty("message")]
-            public string Message { get; set; } = null!;
-
-            [JsonProperty("time")]
-            public string Time { get; set; } = null!;
-
-            [JsonProperty("stackTrace")]
-            public string StackTrace { get; set; } = null!;
-
-        }
-
-        private static Result<LogSeverity, IErrorBuilder> TryGetSeverity(string s)
-        {
-            return (s.ToLowerInvariant()) switch
-            {
-                "trace" => LogSeverity.Trace,
-                "info" => LogSeverity.Information,
-                "warn" => LogSeverity.Warning,
-                "error" => LogSeverity.Error,
-                "fatal" => LogSeverity.Critical,
-                "debug" => LogSeverity.Debug,
-                _ => new ErrorBuilder($"Could not parse {s}", ErrorCode.CouldNotParse),
-            };
-        }
-
-        private enum LogSeverity
-        {
-            [JsonProperty("trace")]
-            Trace,
-            [JsonProperty("info")]
-            Information,
-            [JsonProperty("warn")]
-            Warning,
-            [JsonProperty("error")]
-            Error,
-            [JsonProperty("fatal")]
-            Critical,
-            [JsonProperty("debug")]
-            Debug
-        }
-
-
-        private class ConnectorOutputError
-        {
-            [JsonProperty("message")]
-            public string Message { get; set; } = null!;
-        }
-
-        private class ConnectorOutputResult
-        {
-            [JsonProperty("data")]
-            public object Data { get; set; } = null!;
-        }
-
-
-        private class ConnectorCommand
-        {
-            /// <summary>
-            /// The command to send
-            /// </summary>
-            [JsonProperty("cmd")]
-            public string Command { get; set; } = null!;
-
-            [JsonProperty("def")]
-            public string? FunctionDefinition { get; set; }
-
-            [JsonProperty("args")]
-            public Dictionary<string, object>? Arguments { get; set; }
-
-            // ReSharper disable once StringLiteralTypo
-            [JsonProperty("isstream")]
-            public bool? IsStream { get; set; }
-        }
-
-        private class EntityJsonConverter : JsonConverter
-        {
-            private EntityJsonConverter() {}
-
-            public static JsonConverter Instance { get; } = new EntityJsonConverter();
-
-            /// <inheritdoc />
-            public override void WriteJson(JsonWriter writer, object entityObject, JsonSerializer serializer)
-            {
-                if (!(entityObject is Reductech.EDR.Core.Entities.Entity entity))
-                    return;
-
-                var dictionary = new Dictionary<string, object?>();
-
-                foreach (var (key, value) in entity)
-                {
-                    value.Value.Switch(
-                        _ => { dictionary.Add(key, null); },
-                        x => dictionary.Add(key, GetObject(x)),
-                        x => dictionary.Add(key, GetList(x)));
-                }
-
-                serializer.Serialize(writer, dictionary);
-
-                static List<object?> GetList(IEnumerable<EntitySingleValue> source)
-                {
-                    var r = source.Select(GetObject).ToList();
-                    return r;
-                }
-
-                static object? GetObject(EntitySingleValue esv)
-                {
-                    object? o = null;
-
-                    esv.Value.Switch(
-                           a=> o= a,
-                           a=> o= a,
-                           a=> o= a,
-                           a=> o= a,
-                           a=> o= a,
-                           a=> o= a
-                           );
-
-                    return o;
-                }
-
-
-            }
-
-            /// <inheritdoc />
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
-            }
-
-            /// <inheritdoc />
-            public override bool CanConvert(Type objectType) => objectType == typeof(Entity);
-        }
     }
 }
