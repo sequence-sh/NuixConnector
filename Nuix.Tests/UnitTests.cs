@@ -20,6 +20,13 @@ using Xunit.Sdk;
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
 
+    public class ExternalProcessExpectation
+    {
+
+
+    }
+
+
     internal class ExternalProcessMock : IExternalProcessRunner
     {
         public ExternalProcessMock(int expectedTimesStarted)
@@ -33,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         /// <inheritdoc />
         public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(string processPath, ILogger logger, IErrorHandler errorHandler, IEnumerable<string> arguments,
-            Encoding encoding)
+            Encoding encoding, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
 
@@ -63,65 +70,40 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             "C:/Script"
         };
 
-        private class ProcessReferenceMock : IExternalProcessReference, IStreamReader<(string line, StreamSource source)>
+
+
+        private class ProcessReferenceMock : IExternalProcessReference
         {
             public ProcessReferenceMock()
             {
-                InputStream = new StreamWriter(InnerInputStream);
+                var iChannel = Channel.CreateUnbounded<string>();
+                var oChannel = Channel.CreateUnbounded<(string line, StreamSource source)>();
 
-                OutputStream = new StreamReader();
+                InputChannel = iChannel.Writer;
+                OutputChannel = oChannel.Reader;
 
 
-                Run();
             }
 
 
-
             /// <inheritdoc />
-            public void Dispose() => IsDisposed = true;
-
-            public bool IsDisposed { get; private set; }
-
-            /// <inheritdoc />
-            public void WaitForExit(int? milliseconds) => throw new XunitException("Should not wait for exit");
-
-            public async Task Run()
+            public void Dispose()
             {
-                var streamReader = new StreamReader(InnerInputStream);
-
-                while (true)
-                {
-                    var line = await streamReader.ReadLineAsync();
-
-                    if(IsDisposed)
-                        throw new ObjectDisposedException("Process Reference is disposed");
-
-                    (this as IStreamReader<(string line, StreamSource source)>).
-                }
+                _disposed = true;
             }
 
-            /// <inheritdoc />
-            public IStreamReader<(string line, StreamSource source)> OutputStream => this;
+            private bool _disposed = false;
 
             /// <inheritdoc />
-            public StreamWriter InputStream { get; }
-
-            private Stream InnerInputStream { get; } = new MemoryStream();
-
-            private Channel<(string line, StreamSource source)> InnerOutputStream { get; }
-
-            /// <inheritdoc />
-            public async Task<(string line, StreamSource source)?> ReadLineAsync()
+            public void WaitForExit(int? milliseconds)
             {
-                var pipeReader = PipeReader
-
-
-                var streamReader = new StreamReader(InnerOutputStream);
-
-                InnerOutputStream.Reader.ReadAsync(CancellationToken.None);
-
-                InnerInputStream.on
             }
+
+            /// <inheritdoc />
+            public ChannelReader<(string line, StreamSource source)> OutputChannel { get; }
+
+            /// <inheritdoc />
+            public ChannelWriter<string> InputChannel { get; }
         }
     }
 
