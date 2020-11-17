@@ -55,13 +55,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     end
 
     if processingSettingsArg != nil
-        processing_settings = JSON.parse(processingSettingsArg)
-        processor.setProcessingSettings(processing_settings)
+        processor.setProcessingSettings(processingSettingsArg)
     end
 
     if parallelProcessingSettingsArg != nil
-        p_processing_settings = JSON.parse(parallelProcessingSettingsArg)
-        processor.setParallelProcessingSettings(p_processing_settings)
+        processor.setParallelProcessingSettings(parallelProcessingSettingsArg)
     end
 
 
@@ -82,7 +80,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     folder.description = folderDescriptionArg if folderDescriptionArg != nil
     folder.initial_custodian = folderCustodianArg
 
-    folder.add_file(filePathArg)
+    filePathsArgs.each do |path|
+        folder.add_file(path)
+        log ""Added Evidence from Path: #{path} to Container: #{folderNameArg}""
+    end
+
+    
     folder.save
 
     log 'Adding items'
@@ -143,8 +146,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty]
         [Example("C:/Data/File.txt")]
-        [RubyArgument("filePathArg", 5)]
-        public IStep<string> Path { get; set; } = null!;
+        [RubyArgument("filePathsArgs", 5)]
+        public IStep<List<string>> Paths { get; set; } = null!;
 
         /// <summary>
         /// The name of the Processing profile to use.

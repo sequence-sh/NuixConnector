@@ -48,8 +48,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static readonly string DataPathString = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data");
 
         public static readonly IStep<string> DataPath = Constant(DataPathString);
+        public static readonly IStep<List<string>> DataPaths = Constant(new List<string>{ DataPathString });
 
-        public static readonly IStep<string> EncryptedDataPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData"));
+        public static readonly IStep<List<string>> EncryptedDataPaths = Constant(new List<string>{ Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData") });
 
         public static readonly IStep<string> PasswordFilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt"));
 
@@ -57,7 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static readonly IStep<string> DefaultProcessingProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml"));
         public static readonly IStep<string> TestProductionProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml"));
 
-        public static readonly IStep<string> PoemTextImagePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png"));
+        public static readonly IStep<List<string>> PoemTextImagePaths = Constant(new List<string>{ Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png") });
         public static readonly string ConcordancePathString = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat");
         public static readonly IStep<string> ConcordancePath = Constant(ConcordancePathString);
         public static readonly IStep<string> MigrationPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip"));
@@ -119,7 +120,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             CasePath = CasePath,
             Custodian = Constant("Mark"),
-            Path = DataPath,
+            Paths = DataPaths,
             FolderName = Constant("New Folder")
         };
 

@@ -58,7 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                                 {nameof(NuixAddItem.CasePath), CasePathString},
                                 {nameof(NuixAddItem.FolderName), "New Folder"},
                                 {nameof(NuixAddItem.Custodian), "Mark"},
-                                {nameof(NuixAddItem.Path), DataPathString}
+                                {nameof(NuixAddItem.Paths), new List<string>{DataPathString}}
                             }
                         },
                         new ConnectionOutput
@@ -134,7 +134,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                                 {nameof(NuixAddItem.CasePath), CasePathString},
                                 {nameof(NuixAddItem.Custodian),custodian},
                                 {nameof(NuixAddItem.FolderName), folderName},
-                                {nameof(NuixAddItem.Path), dataPath},
+                                {nameof(NuixAddItem.Paths), new List<string>{ dataPath } },
                             }
                         }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}}
 

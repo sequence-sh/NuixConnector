@@ -36,7 +36,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         CasePath = CasePath,
                         Custodian = Constant("Mark"),
-                        Path = DataPath,
+                        Paths = DataPaths,
                         FolderName = Constant("New Folder"),
                         ProcessingProfileName = Constant("ExtractEntities")
                     },
