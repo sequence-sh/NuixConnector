@@ -41,8 +41,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             Tag = Constant("item")
                         }
                     }, //This should fail because we can't open the case
+                    new NuixCloseConnection(), //Not necessary
                     new NuixMigrateCase {CasePath = Constants.MigrationTestCaseFolder},
                     Constants.AssertCount(1, "jellyfish.txt", Constants.MigrationTestCaseFolder),
+                    new NuixCloseConnection(),
                     new DeleteItem {Path = Constants.MigrationTestCaseFolder}
                 );
             } }

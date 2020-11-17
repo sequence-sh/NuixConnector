@@ -40,15 +40,19 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 if (reopen)
                 {
-                    currentConnection.Value.ExternalProcess.WaitForExit(1000);
-                    currentConnection.Value.Dispose(); //Get rid of this connection and open a new one
+                    try
+                    {
+                        currentConnection.Value.ExternalProcess.WaitForExit(1000);
+                        currentConnection.Value.Dispose(); //Get rid of this connection and open a new one
+                    }
+                    catch (InvalidOperationException) //Thrown if already disposed
+                    {
+                    }
                 }
                     
                 else
                     return currentConnection.Value;
             }
-                
-
 
             var nuixSettingsResult = stateMonad.GetSettings<INuixSettings>();
 
@@ -88,7 +92,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Close the nuix connection if it is open.
         /// </summary>
-        public static Result<Unit, IErrorBuilder> CloseNuixConnection(this StateMonad stateMonad)
+        public static async Task<Result<Unit, IErrorBuilder>> CloseNuixConnectionAsync(this StateMonad stateMonad, CancellationToken cancellationToken)
         {
             var currentConnection = stateMonad.GetVariable<NuixConnection>(NuixVariableName);
 
@@ -97,12 +101,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             try
             {
+                await currentConnection.Value.SendDoneCommand(cancellationToken);
+
+                currentConnection.Value.ExternalProcess.WaitForExit(1000);
                 currentConnection.Value.Dispose();
             }
             catch (Exception e)
             {
                 return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
             }
+
+            //TODO remove connection variable
 
             return Unit.Default;
         }
@@ -124,6 +133,22 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public IExternalProcessReference ExternalProcess { get; }
 
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+
+        /// <summary>
+        /// Sends the 'Done' command
+        /// </summary>
+        public async Task SendDoneCommand(CancellationToken cancellation)
+        {
+            var command = new ConnectionCommand()
+            {
+                Command = "done"
+            };
+
+            // ReSharper disable once MethodHasAsyncOverload
+            var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
+
+            await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
+        }
 
         /// <summary>
         /// Run a nuix function on this connection
@@ -265,6 +290,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         private readonly HashSet<string> _evaluatedFunctions = new HashSet<string>();
 
         /// <inheritdoc />
-        public void Dispose() => ExternalProcess.Dispose();
+        public void Dispose()
+        {
+            try
+            {
+                ExternalProcess.Dispose();
+            }
+            catch (InvalidOperationException) //Thrown if the process was already disposed
+            {
+            }
+        }
     }
 }
