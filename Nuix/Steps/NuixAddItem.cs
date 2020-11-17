@@ -59,6 +59,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         processor.setProcessingSettings(processing_settings)
     end
 
+    if parallelProcessingSettingsArg != nil
+        p_processing_settings = JSON.parse(parallelProcessingSettingsArg)
+        processor.setParallelProcessingSettings(p_processing_settings)
+    end
+
 
 #This only works in 7.2 or later
     if passwordFilePathArg != nil
@@ -170,6 +175,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [DefaultValueExplanation("Processing settings will not be changed")]
         [RubyArgument("processingSettingsArg", 8)]
         public IStep<Core.Entities.Entity>? ProcessingSettings { get; set; }
+
+        /// <summary>
+        /// Sets the parallel processing settings to use.
+        /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
+        /// </summary>
+        [StepProperty]
+        [DefaultValueExplanation("Parallel processing settings will not be changed")]
+        [RubyArgument("parallelProcessingSettingsArg", 8)]
+        public IStep<Core.Entities.Entity>? ParallelProcessingSettings { get; set; }
 
 
         /// <summary>
