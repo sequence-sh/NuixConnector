@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FluentAssertions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -9,6 +10,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             Command = command;
             DesiredOutput = desiredOutput;
+
+            DesiredOutput.Should().NotBeEmpty("If output is empty then the test will hang forever");
         }
 
         public ConnectionCommand Command { get; }

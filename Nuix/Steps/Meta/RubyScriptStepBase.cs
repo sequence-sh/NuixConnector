@@ -31,13 +31,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// </summary>
         protected async Task<Result<T, IError>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken)
         {
-            var nuixConnection = stateMonad.GetOrCreateNuixConnection();
-
-            if (nuixConnection.IsFailure) return nuixConnection.ConvertFailure<T>().MapError(x=>x.WithLocation(this));
-
             var methodParameters = await TryGetMethodParameters(stateMonad, cancellationToken);
-
             if (methodParameters.IsFailure) return methodParameters.ConvertFailure<T>();
+
+            var nuixConnection = stateMonad.GetOrCreateNuixConnection();
+            if (nuixConnection.IsFailure) return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));
 
             var runResult = await nuixConnection.Value.RunFunctionAsync(stateMonad.Logger, RubyScriptStepFactory.RubyFunction,
                 methodParameters.Value, cancellationToken);
@@ -84,6 +82,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             var dict = new Dictionary<RubyFunctionParameter, object>();
 
+            var errors = new List<IError>();
+
             var argumentValues = GetArgumentValues();
 
             foreach (var argument in RubyScriptStepFactory.RubyFunction.Arguments)
@@ -93,18 +93,24 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 if (process is null)
                 {
                     if (!argument.IsOptional)
-                        return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>(
-                            ErrorHelper.MissingParameterError(argument.ParameterName, Name).WithLocation(this));
+                        errors.Add(ErrorHelper.MissingParameterError(argument.PropertyName, Name).WithLocation(this));
                 }
                 else
                 {
+                    if(errors.Any())
+                        return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>( ErrorList.Combine(errors));
+                    //Don't try to evaluate argument if there are already errors
+
                     var r = await process.Run<object>(stateMonad, cancellationToken);
                     if (r.IsFailure)
-                        return r.ConvertFailure<IReadOnlyDictionary<RubyFunctionParameter, object>>();
-
-                    dict.Add(argument, r.Value);
+                        errors.Add(r.Error);
+                    else
+                        dict.Add(argument, r.Value);
                 }
             }
+
+            if (errors.Any())
+                return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>( ErrorList.Combine(errors));
 
             return dict;
         }

@@ -86,7 +86,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         }))
                     .WithSettings(UnitTestSettings);
 
-                yield return new ErrorCase("Missing Settings", new NuixCreateCase(),
+                yield return new ErrorCase("Missing Settings", new NuixCreateCase()
+                    {
+                        CasePath = CasePath,
+                        CaseName = Constant("Error Case"),
+                        Investigator = Constant("investigator")
+                    },
                     new ErrorBuilder("Could not cast 'Reductech.EDR.Core.EmptySettings' to INuixSettings", ErrorCode.MissingStepSettings)
                     );
             }
@@ -98,13 +103,41 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
             get
             {
+                var caseName = @"Integration Test Case";
+                var investigator = @"Mark";
+                var custodian = @"Mark";
+                var folderName = @"New Folder";
+                var dataPath = @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data";
                 yield return new NuixDeserializeTest("Create Case then add item",
-                    @"- NuixCreateCase(CaseName = 'Integration Test Case', CasePath = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase', Investigator = 'Mark')
-- NuixAddItem(CasePath = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase', Custodian = 'Mark', FolderName = 'New Folder', Path = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data')",
+                    $@"- NuixCreateCase(CaseName = '{caseName}', CasePath = '{CasePathString}', Investigator = '{investigator}')
+- NuixAddItem(CasePath = '{CasePathString}', Custodian = '{custodian}', FolderName = '{folderName}', Path = '{dataPath}')",
                     Unit.Default,
-                    new List<ExternalProcessAction>()
+                    new List<ExternalProcessAction>
                     {
-                        new ExternalProcessAction(new ConnectionCommand())
+                        new ExternalProcessAction(new ConnectionCommand
+                        {
+                            Command = "CreateCase",
+                            Arguments = new Dictionary<string, object>
+                            {
+                                {"pathArg", CasePathString},
+                                {"nameArg", caseName},
+                                {"investigatorArg", investigator}
+                            }
+                        }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}}),
+
+                        new ExternalProcessAction(new ConnectionCommand
+                        {
+                            Command = "AddToCase",
+                            Arguments = new Dictionary<string, object>
+                            {
+                                {"pathArg", CasePathString},
+                                {"folderCustodianArg", custodian},
+                                {"folderNameArg", folderName},
+                                {"filePathArg", dataPath},
+                            }
+                        }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}}
+
+                        )
                     }
 
                     ).WithSettings(UnitTestSettings);
@@ -118,18 +151,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
             get
             {
                 yield return new NuixIntegrationTestCase("Create Case",
-                    Constants.DeleteCaseFolder,
-                    Constants.AssertCaseDoesNotExist,
-                    Constants.CreateCase,
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
 
                     new AssertTrue
                     {
                         Test = new NuixDoesCaseExist
                         {
-                            CasePath = Constants.CasePath
+                            CasePath = CasePath
                         }
                     },
-                    Constants.DeleteCaseFolder);
+                    DeleteCaseFolder);
 
 
             }

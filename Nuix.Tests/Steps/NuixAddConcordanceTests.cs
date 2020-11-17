@@ -78,7 +78,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         new ExternalProcessAction(new ConnectionCommand
                         {
                             Command = "AddConcordanceToCase",
-                            Arguments = new Dictionary<string, object>()
+                            Arguments = new Dictionary<string, object>
                             {
                                 {"pathArg", CasePathString},
                                 {"folderNameArg", newFolder},
@@ -87,7 +87,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                                 {"dateFormatArg", concordanceDateFormat.Replace("''","'")},
                                 {"profileNameArg", integrationTestProfile}
                             }
-                        }, new ConnectionOutput{Result = new ConnectionOutputResult(){Data = null}})
+                        }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}})
                     }
                     )
                     .WithSettings(UnitTestSettings);
