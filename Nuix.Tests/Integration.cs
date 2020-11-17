@@ -58,6 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 Name = name;
                 Steps = steps;
                 IgnoreFinalState = true;
+                IgnoreLoggedValues = true;
             }
 
             public override string Name { get; }

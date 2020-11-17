@@ -149,29 +149,6 @@ PasswordFilePath: 'Bar4'"
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                 );
-
-                yield return new NuixIntegrationTestCase("Conditionally Add file to case",
-                    DeleteCaseFolder,
-                    AssertCaseDoesNotExist,
-                    CreateCase,
-                    AssertCount(0, "*.txt"),
-                    new Conditional
-                    {
-                        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                        ThenStep = AddData
-                    },
-                    AssertCount(2, "*.txt"),
-                    new Conditional
-                    {
-                        Condition = CompareItemsCount(0, CompareOperator.LessThanOrEqual, "*.txt", CasePath),
-                        ThenStep = new AssertError {Test = AddData},
-                        ElseStep = AssertCount(2, "*.txt")
-                    },
-                    AssertCount(2, "*.txt"),
-                    DeleteCaseFolder
-                );
-
-
             } }
     }
 }

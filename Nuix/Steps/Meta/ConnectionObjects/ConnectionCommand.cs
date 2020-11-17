@@ -8,6 +8,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
     /// </summary>
     public class ConnectionCommand
     {
+        /// <inheritdoc />
+        public override string ToString() => Command;
+
+
         /// <summary>
         /// The name of the command to send.
         /// </summary>

@@ -32,7 +32,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public override string RubyFunctionText =>
             @"
     begin
-        the_case = $utilities.case_factory.open(args['pathArg'])
+        log ""Trying to open case""
+        the_case = $utilities.case_factory.open(pathArg)
         the_case.close()
         return true
     rescue => ex

@@ -40,8 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     :description => descriptionArg,
     :investigator => investigatorArg)
     log 'Case Created'
-    the_case.close
-    log 'Case Closed'";
+    the_case.close";
     }
 
     /// <summary>
