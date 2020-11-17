@@ -32,12 +32,23 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Gets or creates a connection to nuix.
         /// </summary>
-        public static Result<NuixConnection, IErrorBuilder> GetOrCreateNuixConnection(this StateMonad stateMonad)
+        public static Result<NuixConnection, IErrorBuilder> GetOrCreateNuixConnection(this StateMonad stateMonad, bool reopen)
         {
             var currentConnection = stateMonad.GetVariable<NuixConnection>(NuixVariableName);
 
             if (currentConnection.IsSuccess)
-                return currentConnection.Value;
+            {
+                if (reopen)
+                {
+                    currentConnection.Value.ExternalProcess.WaitForExit(1000);
+                    currentConnection.Value.Dispose(); //Get rid of this connection and open a new one
+                }
+                    
+                else
+                    return currentConnection.Value;
+            }
+                
+
 
             var nuixSettingsResult = stateMonad.GetSettings<INuixSettings>();
 

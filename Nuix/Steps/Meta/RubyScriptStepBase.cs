@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
@@ -34,11 +35,23 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             var methodParameters = await TryGetMethodParameters(stateMonad, cancellationToken);
             if (methodParameters.IsFailure) return methodParameters.ConvertFailure<T>();
 
-            var nuixConnection = stateMonad.GetOrCreateNuixConnection();
+            var nuixConnection = stateMonad.GetOrCreateNuixConnection(false);
             if (nuixConnection.IsFailure) return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));
 
             var runResult = await nuixConnection.Value.RunFunctionAsync(stateMonad.Logger, RubyScriptStepFactory.RubyFunction,
                 methodParameters.Value, cancellationToken);
+
+            if (runResult.IsFailure &&
+                runResult.Error.GetErrorBuilders().Any(x => x.Exception is ChannelClosedException))
+            {
+                //The channel has closed on us. Try reopening it and rerunning the function
+
+                nuixConnection = stateMonad.GetOrCreateNuixConnection(true);
+                if (nuixConnection.IsFailure) return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));
+
+                runResult = await nuixConnection.Value.RunFunctionAsync(stateMonad.Logger, RubyScriptStepFactory.RubyFunction,
+                    methodParameters.Value, cancellationToken);
+            }
 
             return runResult.MapError(x => x.WithLocation(this));
         }

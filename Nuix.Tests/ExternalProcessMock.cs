@@ -107,7 +107,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                             await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                         }
                     }
-#pragma warning disable CA1031 // Do not catch general exception types
                     catch (Exception e)
                     {
                         var exception = e;
@@ -119,7 +118,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                         await output.WriteAsync((errorJson, StreamSource.Error), cancellationToken);
                     }
-#pragma warning restore CA1031 // Do not catch general exception types
                 }
             }
 
