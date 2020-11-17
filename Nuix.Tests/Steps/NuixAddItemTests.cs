@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.EDR.Core.Entities;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
@@ -24,7 +26,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         CasePath = CasePath,
                         Custodian = Constant("Mark"),
-                        Path = DataPath,
+                        Paths = DataPaths,
                         FolderName = Constant("New Folder"),
                         ProcessingSettings = Constant(CreateEntity(("Foo", "Bar")))
                     },
@@ -39,7 +41,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                                 {nameof(NuixAddItem.CasePath),  CasePathString},
                                 {nameof(NuixAddItem.FolderName), "New Folder"},
                                 {nameof(NuixAddItem.Custodian), "Mark"},
-                                {nameof(NuixAddItem.Path), DataPathString},
+                                {nameof(NuixAddItem.Paths), new List<string>{DataPathString}},
                                 {nameof(NuixAddItem.ProcessingSettings), CreateEntity(("Foo", "Bar"))}
                             },
                             FunctionDefinition = ""
@@ -68,11 +70,19 @@ CasePath: 'Bar0'
 FolderName: 'Bar3'
 Description: 'Bar2'
 Custodian: 'Bar1'
-Path: 'Bar5'
-ProcessingProfileName: 'Bar6'
-ProcessingProfilePath: 'Bar7'
-ProcessingSettings: (Prop1 = 'Val8',Prop2 = 'Val9')
-PasswordFilePath: 'Bar4'"
+Paths:
+- 'Foo13'
+- 'Foo14'
+- 'Foo15'
+ProcessingProfileName: 'Bar16'
+ProcessingProfilePath: 'Bar17'
+ProcessingSettings: (Prop1 = 'Val18',Prop2 = 'Val19')
+ParallelProcessingSettings: (Prop1 = 'Val10',Prop2 = 'Val11')
+PasswordFilePath: 'Bar12'
+MimeTypeSettings:
+- (Prop1 = 'Val4',Prop2 = 'Val5')
+- (Prop1 = 'Val6',Prop2 = 'Val7')
+- (Prop1 = 'Val8',Prop2 = 'Val9')"
 
                     );
             }
@@ -91,7 +101,7 @@ PasswordFilePath: 'Bar4'"
                     {
                         CasePath = (CasePath),
                         Custodian = Constant("Mark"),
-                        Path = (DataPath),
+                        Paths = DataPaths,
                         FolderName = Constant("New Folder")
                     },
                     AssertCount(2, "*.txt"),
@@ -107,7 +117,7 @@ PasswordFilePath: 'Bar4'"
                     {
                         CasePath = (CasePath),
                         Custodian = Constant("Mark"),
-                        Path = (EncryptedDataPath),
+                        Paths = EncryptedDataPaths,
                         FolderName = Constant("New Folder"),
                         PasswordFilePath = (PasswordFilePath)
                     },
@@ -124,7 +134,7 @@ PasswordFilePath: 'Bar4'"
                     {
                         CasePath = CasePath,
                         Custodian = Constant("Mark"),
-                        Path = DataPath,
+                        Paths = DataPaths,
                         FolderName = Constant("New Folder"),
                         ProcessingProfileName = Constant("Default")
                     },
@@ -141,13 +151,70 @@ PasswordFilePath: 'Bar4'"
                     {
                         CasePath = CasePath,
                         Custodian = Constant("Mark"),
-                        Path = DataPath,
+                        Paths = DataPaths,
                         FolderName = Constant("New Folder"),
                         ProcessingProfilePath = DefaultProcessingProfilePath
                     },
                     AssertCount(2, "*.txt"),
+                    DeleteCaseFolder);
+
+
+                yield return new NuixIntegrationTestCase("Add file to case with processing settings entity",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new NuixAddItem
+                    {
+                        CasePath = CasePath,
+                        Custodian = Constant("Mark"),
+                        Paths = DataPaths,
+                        FolderName = Constant("New Folder"),
+                        ProcessingSettings = new Constant<Entity>(new Entity(new KeyValuePair<string, EntityValue>("processText", EntityValue.Create(true.ToString()))))
+                    },
+                    AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                 );
+
+                yield return new NuixIntegrationTestCase("Add file to case with parallel processing settings entity",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new NuixAddItem
+                    {
+                        CasePath = CasePath,
+                        Custodian = Constant("Mark"),
+                        Paths = DataPaths,
+                        FolderName = Constant("New Folder"),
+                        ParallelProcessingSettings = new Constant<Entity>(new Entity(new KeyValuePair<string, EntityValue>("workerCount", EntityValue.Create(1.ToString()))))
+                    },
+                    AssertCount(2, "*.txt"),
+                    DeleteCaseFolder
+                );
+
+                yield return new NuixIntegrationTestCase("Add file to case with mime type settings",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new NuixAddItem
+                    {
+                        CasePath = CasePath,
+                        Custodian = Constant("Mark"),
+                        Paths = DataPaths,
+                        FolderName = Constant("New Folder"),
+                        MimeTypeSettings = Constant(EntityStream.Create(
+                            CreateEntity(("mime_tye", "text/plain"), ("enabled", "true")), //These don't really do anything, just tests that it works
+                            CreateEntity(("mime_tye", "application/pdf"), ("enabled", "true"))
+                            ))
+                    },
+                    AssertCount(2, "*.txt"),
+                    DeleteCaseFolder
+
+
+                    );
+
             } }
     }
 }

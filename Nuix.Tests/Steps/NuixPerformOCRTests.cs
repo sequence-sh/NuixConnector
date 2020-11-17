@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
@@ -34,7 +33,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         CasePath = CasePath,
                         Custodian = Constant("Mark"),
-                        Path = PoemTextImagePath,
+                        Paths = PoemTextImagePaths,
                         FolderName = Constant("New Folder")
                     },
                     new NuixPerformOCR {CasePath = CasePath, SearchTerm = Constant("*.png")},
@@ -51,7 +50,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         CasePath = CasePath,
                         Custodian = Constant("Mark"),
-                        Path = PoemTextImagePath,
+                        Paths = PoemTextImagePaths,
                         FolderName = Constant("New Folder")
                     },
                     new NuixPerformOCR

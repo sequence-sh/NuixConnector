@@ -112,7 +112,7 @@ loop do
     op = functions.key?(cmd) ? 'Replacing' : 'Adding new'
     log("#{op} function for '#{cmd}'", severity: :debug)
     functions[cmd] = {
-      :accepts_stream => fdef.include?('.pop'),
+      :accepts_stream => true,
       :fdef => eval(fdef)
     }
   end

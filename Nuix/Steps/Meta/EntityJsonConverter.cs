@@ -29,17 +29,22 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 var command1 = JsonConvert .DeserializeObject<ConnectionCommand>(json)!;
 
-                if (command1.Arguments == null || !command1.Arguments.Any(x => x.Value is JObject))
+                if (command1.Arguments == null)
                     return command1;
 
                 var newArguments = new Dictionary<string, object>();
 
                 foreach (var (key, value) in command1.Arguments)
                 {
-                    if (value is JObject)
+                    if (value is JObject jObject)
                     {
-                        var entity = JsonConvert.DeserializeObject<Entity>(value.ToString()!, Instance);
+                        var entity = JsonConvert.DeserializeObject<Entity>(jObject.ToString()!, Instance);
                         newArguments.Add(key, entity!);
+                    }
+                    else if (!(value is string) && value is IEnumerable enumerable)
+                    {
+                        var newValue = enumerable.OfType<object>().Select(x => x.ToString()).ToList();
+                        newArguments.Add(key, newValue);
                     }
                     else
                         newArguments.Add(key, value);
