@@ -82,27 +82,26 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 var argumentAttribute = p.GetCustomAttribute<RubyArgumentAttribute>();
 
-                if (argumentAttribute != null)
-                {
-                    var (isRunnableProcess, isNullable) = CheckType(p);
+                if (argumentAttribute == null) continue;
 
-                    if (isRunnableProcess)
-                    {
-                        var version = p.GetCustomAttributes<RequiredVersionAttribute>()
-                        .Where(x => x.SoftwareName.Equals("Nuix", StringComparison.OrdinalIgnoreCase))
-                        .Select(x => x.RequiredVersion)
-                        .FirstOrDefault();
+                var (isRunnableProcess, isNullable) = CheckType(p);
 
-                        var parameter = new RubyFunctionParameter(argumentAttribute.RubyName, p.Name, isNullable, version);
+                if (!isRunnableProcess) continue;
 
-                        var value = p.GetValue(process);
 
-                        if (value is IStep rp)
-                            dict.Add(parameter, rp);
-                        else
-                            dict.Add(parameter, null);
-                    }
-                }
+                var version = p.GetCustomAttributes<RequiredVersionAttribute>()
+                    .Where(x => x.SoftwareName.Equals("Nuix", StringComparison.OrdinalIgnoreCase))
+                    .Select(x => x.RequiredVersion)
+                    .FirstOrDefault();
+
+                var parameter = new RubyFunctionParameter(argumentAttribute.RubyName, p.Name, isNullable, version);
+
+                var value = p.GetValue(process);
+
+                if (value is IStep rp)
+                    dict.Add(parameter, rp);
+                else
+                    dict.Add(parameter, null);
             }
 
             return dict;
@@ -138,13 +137,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         throw new ApplicationException($"{p.Name} in {typeof(TStep).Name} is not assignable to IStep");
                 }
                 else if (isRunnableProcess)
-                {
-                    throw new ApplicationException($"{p.Name} in {typeof(TStep).Name} is missing RubyArgumentAttribute");
-                }
+                    throw new ApplicationException(
+                        $"{p.Name} in {typeof(TStep).Name} is missing RubyArgumentAttribute");
             }
 
             return list.OrderBy(x => x.order).Select(x => x.argument).ToList();
-
         }
 
         private static (bool isRunnableProcess, bool isOptional) CheckType(PropertyInfo propertyInfo)

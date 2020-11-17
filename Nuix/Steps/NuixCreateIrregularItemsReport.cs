@@ -34,9 +34,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         //TODO change how this works - at the moment it creates multiple files
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(casePathArg)
+    the_case = $utilities.case_factory.open(casePathArg)
 
-    puts ""Generating Report:""
+    log ""Generating Report:""
     fields = {
         encrypted: ""flag:encrypted"",
         NonSearchablePDF: ""mime-type:application/pdf AND NOT content:*"",
@@ -75,7 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixCreateIrregularItemsReport : RubyScriptStepTyped<string>
+    public sealed class NuixCreateIrregularItemsReport : RubyScriptStepBase<string>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<string> RubyScriptStepFactory => NuixCreateIrregularItemsReportStepFactory.Instance;
@@ -89,12 +89,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
-
-        /// <inheritdoc />
-        public override bool TryParse(string s, out string result)
-        {
-            result = s;
-            return true;
-        }
     }
 }

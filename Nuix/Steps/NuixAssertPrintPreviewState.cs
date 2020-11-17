@@ -39,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string RubyFunctionText =>
         @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
@@ -51,8 +51,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         r = productionSet.getPrintPreviewState()
         the_case.close
 
-        if r.downcase == expectedStateArg.downcase
-            puts ""Print preview state was #{r}, as expected.""
+        if r.to_s.downcase == expectedStateArg.to_s.downcase
+            log ""Print preview state was #{r}, as expected.""
         else
             raise ""Print preview state was #{r}, but expected #{expectedStateArg}""
             exit
@@ -65,7 +65,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Checks the print preview state of the production set.
     /// </summary>
-    public sealed class NuixAssertPrintPreviewState : RubyScriptStepUnit
+    public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAssertPrintPreviewStateStepFactory.Instance;

@@ -35,12 +35,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
-    puts ""Searching for '#{searchArg}'""
+    the_case = $utilities.case_factory.open(pathArg)
+    log ""Searching for '#{searchArg}'""
 
     searchOptions = {}
     items = the_case.search(searchArg, searchOptions)
-    puts ""#{items.length} found""
+    log ""#{items.length} found""
 
     j = 0
 
@@ -49,7 +49,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
        j += 1 if added
     }
 
-    puts ""#{j} items tagged with #{tagArg}""
+    log ""#{j} items tagged with #{tagArg}""
     the_case.close";
     }
 
@@ -58,7 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Searches a NUIX case with a particular search string and tags all files it finds.
     /// </summary>
-    public sealed class NuixSearchAndTag : RubyScriptStepUnit
+    public sealed class NuixSearchAndTag : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixSearchAndTagStepFactory.Instance;

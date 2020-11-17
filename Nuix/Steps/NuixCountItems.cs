@@ -30,18 +30,18 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
     searchOptions = {}
     count = the_case.count(searchArg, searchOptions)
     the_case.close
-    puts ""#{count} found matching '#{searchArg}'""
+    log ""#{count} found matching '#{searchArg}'""
     return count";
     }
 
     /// <summary>
     /// Returns the number of items matching a particular search term
     /// </summary>
-    public sealed class NuixCountItems : RubyScriptStepTyped<int>
+    public sealed class NuixCountItems : RubyScriptStepBase<int>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<int> RubyScriptStepFactory => NuixCountItemsStepFactory.Instance;
@@ -63,8 +63,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty]
         [RubyArgument("searchArg", 2)]
         public IStep<string> SearchTerm { get; set; } = null!;
-
-        /// <inheritdoc />
-        public override bool TryParse(string s, out int result) => int.TryParse(s, out result);
     }
 }

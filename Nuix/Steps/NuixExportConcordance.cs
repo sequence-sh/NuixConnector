@@ -36,21 +36,21 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string RubyFunctionText =>
             @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
     if productionSet == nil
-        puts ""Could not find production set with name '#{productionSetNameArg.to_s}'""
+        log ""Could not find production set with name '#{productionSetNameArg.to_s}'""
     elsif productionSet.getProductionProfile == nil
-        puts ""Production set '#{productionSetNameArg.to_s}' did not have a production profile set.""
+        log ""Production set '#{productionSetNameArg.to_s}' did not have a production profile set.""
     else
-        batchExporter = utilities.createBatchExporter(exportPathArg)
+        batchExporter = $utilities.createBatchExporter(exportPathArg)
 
 
-        puts 'Starting export.'
+        log 'Starting export.'
         batchExporter.exportItems(productionSet)
-        puts 'Export complete.'
+        log 'Export complete.'
 
     end
 
@@ -61,7 +61,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Exports Concordance for a particular production set.
     /// </summary>
-    public sealed class NuixExportConcordance : RubyScriptStepUnit
+    public sealed class NuixExportConcordance : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixExportConcordanceStepFactory.Instance;

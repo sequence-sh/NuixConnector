@@ -19,14 +19,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 yield return new Requirement
                 {
-                    Name = RubyScriptStepUnit.NuixRequirementName,
+                    Name = RubyScriptStepBase<TStep>.NuixRequirementName,
                     MinVersion = NuixVersionHelper.DefaultRequiredVersion > RubyFunction.RequiredNuixVersion ? NuixVersionHelper.DefaultRequiredVersion : RubyFunction.RequiredNuixVersion
                 };
 
                 foreach (var feature in RubyFunction.RequiredNuixFeatures)
                     yield return new Requirement
                     {
-                        Name = RubyScriptStepUnit.NuixRequirementName + feature
+                        Name = RubyScriptStepBase<TStep>.NuixRequirementName + feature
                     };
             }
         }
@@ -37,8 +37,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         protected RubyScriptStepFactory()
         {
             _lazyRubyFunction
-            = new Lazy<IRubyFunction<TOutput>>(() => new RubyFunction<TOutput>(FunctionName, RubyFunctionText, true,
-                RubyFunctionParameter.GetRubyFunctionParameters<TStep>())
+            = new Lazy<IRubyFunction<TOutput>>(() => new RubyFunction<TOutput>(FunctionName, RubyFunctionText, RubyFunctionParameter.GetRubyFunctionParameters<TStep>())
             {
                 RequiredNuixVersion = RequiredNuixVersion,
                 RequiredNuixFeatures = RequiredFeatures
@@ -51,8 +50,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// The ruby function to run.
         /// </summary>
-        public IRubyFunction<TOutput> RubyFunction => _lazyRubyFunction.Value ;
-
+        public IRubyFunction<TOutput> RubyFunction => _lazyRubyFunction.Value;
 
         /// <summary>
         /// The Name of the Ruby Function.
@@ -63,7 +61,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// The text of the ruby function. Not Including the header.
         /// </summary>
         public abstract string RubyFunctionText { get; }
-
 
         /// <summary>
         /// The Required Nuix version
@@ -78,9 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public override IStepNameBuilder StepNameBuilder => new StepNameBuilderFromTemplate(FunctionName);
 
-
-
         /// <inheritdoc />
-        public override Maybe<IStepCombiner> StepCombiner { get; } = Maybe<IStepCombiner>.From(NuixStepCombiner.Instance);
+        public override Maybe<IStepCombiner> StepCombiner { get; } = Maybe<IStepCombiner>.None;
     }
 }

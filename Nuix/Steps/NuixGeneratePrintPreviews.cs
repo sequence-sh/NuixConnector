@@ -35,20 +35,20 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
-        puts ""Production Set Not Found""
+        log ""Production Set Not Found""
     else
-        puts ""Production Set Found""
+        log ""Production Set Found""
 
         options = {}
 
         resultMap = productionSet.generatePrintPreviews(options)
 
-        puts ""Print previews generated""
+        log ""Print previews generated""
     end
 
     the_case.close";
@@ -57,7 +57,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Generates print previews for items in a production set.
     /// </summary>
-    public sealed class NuixGeneratePrintPreviews : RubyScriptStepUnit
+    public sealed class NuixGeneratePrintPreviews : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixGeneratePrintPreviewsStepFactory.Instance;

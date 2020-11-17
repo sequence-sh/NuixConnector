@@ -35,14 +35,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string RubyFunctionText => @"
 
-    the_case = utilities.case_factory.open(pathArg)
+    the_case = $utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
-        puts ""Production Set Not Found""
+        log ""Production Set Not Found""
     else
-        puts ""Production Set Found""
+        log ""Production Set Found""
 
         options =
         {
@@ -53,9 +53,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         failedItemsCount = productionSet.importDocumentIds(options)
 
         if failedItemsCount == 0
-            puts ""All document ids imported successfully""
+            log ""All document ids imported successfully""
         else
-            puts ""#{failedItemsCount} items failed to import""
+            log ""#{failedItemsCount} items failed to import""
 
     end
 
@@ -66,7 +66,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
     /// </summary>
-    public sealed class NuixImportDocumentIds : RubyScriptStepUnit
+    public sealed class NuixImportDocumentIds : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixImportDocumentIdsStepFactory.Instance;

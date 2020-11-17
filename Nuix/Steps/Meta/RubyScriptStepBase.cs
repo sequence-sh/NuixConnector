@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Conversion;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -26,15 +25,36 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public string FunctionName => RubyScriptStepFactory.RubyFunction.FunctionName;
 
         /// <inheritdoc />
-        public abstract Task<Result<string, IError>> TryCompileScriptAsync(StateMonad stateMonad, CancellationToken cancellationToken);
-
-        /// <inheritdoc />
         public override Task<Result<T, IError>> Run(StateMonad stateMonad, CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
 
         /// <summary>
         /// Runs this step asynchronously.
         /// </summary>
-        protected abstract Task<Result<T, IError>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken);
+        protected async Task<Result<T, IError>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken)
+        {
+            var methodParameters = await TryGetMethodParameters(stateMonad, cancellationToken);
+            if (methodParameters.IsFailure) return methodParameters.ConvertFailure<T>();
+
+            var nuixConnection = stateMonad.GetOrCreateNuixConnection(false);
+            if (nuixConnection.IsFailure) return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));
+
+            var runResult = await nuixConnection.Value.RunFunctionAsync(stateMonad.Logger, RubyScriptStepFactory.RubyFunction,
+                methodParameters.Value, cancellationToken);
+
+            if (runResult.IsFailure &&
+                runResult.Error.GetErrorBuilders().Any(x => x.Exception is ChannelClosedException))
+            {
+                //The channel has closed on us. Try reopening it and rerunning the function
+
+                nuixConnection = stateMonad.GetOrCreateNuixConnection(true);
+                if (nuixConnection.IsFailure) return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));
+
+                runResult = await nuixConnection.Value.RunFunctionAsync(stateMonad.Logger, RubyScriptStepFactory.RubyFunction,
+                    methodParameters.Value, cancellationToken);
+            }
+
+            return runResult.MapError(x => x.WithLocation(this));
+        }
 
         /// <inheritdoc />
         public abstract IRubyScriptStepFactory<T> RubyScriptStepFactory { get; }
@@ -67,85 +87,45 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         internal IReadOnlyDictionary<RubyFunctionParameter, IStep?> GetArgumentValues() =>
             RubyFunctionParameter.GetRubyFunctionArguments(this);
 
-        /// <inheritdoc />
-        public abstract Result<IRubyBlock> TryConvert();
 
 
-        internal Result<IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock>> TryGetArgumentsAsFunctions()
-        {
-            var dictionary = new Dictionary<RubyFunctionParameter, ITypedRubyBlock>();
 
-            var values = GetArgumentValues();
-
-            foreach (var rubyFunctionArgument in RubyScriptStepFactory.RubyFunction.Arguments)
-            {
-                if (values.TryGetValue(rubyFunctionArgument, out var rp) && rp != null)
-                {
-                    var br = RubyBlockConversion.TryConvert(rp, rubyFunctionArgument.ParameterName);
-
-                    if (br.IsFailure)
-                        return br.ConvertFailure<IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock>>(); //We can't convert this block - give up
-
-                    if(br.Value is ITypedRubyBlock typedRubyBlock)
-                        dictionary.Add(rubyFunctionArgument, typedRubyBlock);
-                    else
-                        return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock>>("Block was not typed"); //This will manifest as a proper error later
-
-                }
-                else if(rubyFunctionArgument.IsOptional)
-                {
-                    dictionary.Add(rubyFunctionArgument, new ConstantRubyBlock<string>(rubyFunctionArgument.ParameterName));
-                }
-            }
-
-            return dictionary;
-        }
-
-
-        internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, string>, IError>>
+        internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>>
             TryGetMethodParameters(StateMonad stateMonad, CancellationToken cancellationToken)
         {
-            var dict = new Dictionary<RubyFunctionParameter, string>();
+            var dict = new Dictionary<RubyFunctionParameter, object>();
+
+            var errors = new List<IError>();
 
             var argumentValues = GetArgumentValues();
 
             foreach (var argument in RubyScriptStepFactory.RubyFunction.Arguments)
             {
-                if (argumentValues.TryGetValue(argument, out var process))
+                if (!argumentValues.TryGetValue(argument, out var process)) continue;
+
+                if (process is null)
                 {
-                    if (process is null)
-                    {
-                        if (!argument.IsOptional)
-                            return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, string>, IError>(
-                                    ErrorHelper.MissingParameterError(argument.ParameterName, Name).WithLocation(this));
-                    }
+                    if (!argument.IsOptional)
+                        errors.Add(ErrorHelper.MissingParameterError(argument.PropertyName, Name).WithLocation(this));
+                }
+                else
+                {
+                    if(errors.Any())
+                        return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>( ErrorList.Combine(errors));
+                    //Don't try to evaluate argument if there are already errors
+
+                    var r = await process.Run<object>(stateMonad, cancellationToken);
+                    if (r.IsFailure)
+                        errors.Add(r.Error);
                     else
-                    {
-                        var r = await process.Run<object>(stateMonad, cancellationToken);
-                        if (r.IsFailure)
-                            return r.ConvertFailure<IReadOnlyDictionary<RubyFunctionParameter, string>>();
-
-                        var s = ConvertToString(r.Value);
-
-                        dict.Add(argument, s);
-                    }
+                        dict.Add(argument, r.Value);
                 }
             }
 
+            if (errors.Any())
+                return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>( ErrorList.Combine(errors));
+
             return dict;
-        }
-
-        private static string ConvertToString(object o)
-        {
-            if (o is int i)
-                return i.ToString();
-            if (o is bool b)
-                return b.ToString().ToLower();
-            if (o is Enum e)
-                e.GetDescription();
-
-            return o.ToString()!;
-
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
@@ -19,7 +20,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
             get
             {
-                yield return new UnitTest("Add Concordance Test",
+                yield return new NuixStepCase("Add Concordance Test",
                     new NuixAddConcordance
                     {
                         ConcordanceProfileName = Constant("IntegrationTestProfile"),
@@ -27,20 +28,33 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         FilePath = ConcordancePath,
                         Custodian = Constant("Mark"),
                         FolderName = Constant("New Folder"),
-                        CasePath = CasePath
+                        CasePath = CasePath,
                     },
-                    Unit.Default, new List<string>(),
-                    new List<(string, string)>()
+                    Unit.Default,
+                    new List<ExternalProcessAction>
                     {
-                        ("pathArg1a", @"IntegrationTest\TestCase"),
-                        ("folderNameArg1b", "New Folder"),
-                        ("folderCustodianArg1d", "Mark"),
-                        ("filePathArg1e", @"Concordance\loadfile.dat"),
-                        ("dateFormatArg1f", "yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
-                        ("profileNameArg1g", "IntegrationTestProfile")
-                    }
-                    )
-                    .WithSettings(UnitTestSettings);
+                        new ExternalProcessAction(
+                            new ConnectionCommand
+                            {
+                                Command = "AddConcordanceToCase",
+                                FunctionDefinition = "",
+                                Arguments = new Dictionary<string, object>
+                                {
+                        {nameof(NuixAddConcordance.CasePath), CasePathString},
+                        {nameof(NuixAddConcordance.FolderName), "New Folder"},
+                        {nameof(NuixAddConcordance.Custodian), "Mark"},
+                        {nameof(NuixAddConcordance.FilePath), ConcordancePathString},
+                        {nameof(NuixAddConcordance.ConcordanceDateFormat), "yyyy-MM-dd'T'HH:mm:ss.SSSZ"},
+                        {nameof(NuixAddConcordance.ConcordanceProfileName), "IntegrationTestProfile"}
+                                }
+
+                            },
+                            new ConnectionOutput
+                            {
+                                Result = new ConnectionOutputResult(){Data = null}
+                            }
+                        )
+                    }).WithSettings(UnitTestSettings);
 
             }
         }
@@ -51,9 +65,31 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
             get
             {
-                yield return new DeserializeUnitTest("Add Concordance",
-                    @"NuixAddConcordance(CasePath = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\IntegrationTest\TestCase', ConcordanceDateFormat = 'yyyy-MM-dd''T''HH:mm:ss.SSSZ', ConcordanceProfileName = 'IntegrationTestProfile', Custodian = 'Mark', FilePath = 'C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\Concordance\loadfile.dat', FolderName = 'New Folder')",
-                    Unit.Default, new List<string>())
+                string concordanceDateFormat =  "yyyy-MM-dd''T''HH:mm:ss.SSSZ";
+
+                var integrationTestProfile = @"IntegrationTestProfile";
+                var custodian = @"Mark";
+                var newFolder = @"New Folder";
+                yield return new NuixDeserializeTest("Add Concordance",
+                    $@"NuixAddConcordance(CasePath = '{CasePathString}', ConcordanceDateFormat = '{concordanceDateFormat}', ConcordanceProfileName = '{integrationTestProfile}', Custodian = '{custodian}', FilePath = '{ConcordancePathString}', FolderName = '{newFolder}')",
+                    Unit.Default,
+                    new List<ExternalProcessAction>
+                    {
+                        new ExternalProcessAction(new ConnectionCommand
+                        {
+                            Command = "AddConcordanceToCase",
+                            Arguments = new Dictionary<string, object>
+                            {
+                                {nameof(NuixAddConcordance.CasePath), CasePathString},
+                                {nameof(NuixAddConcordance.FolderName), newFolder},
+                                {nameof(NuixAddConcordance.Custodian), custodian},
+                                {nameof(NuixAddConcordance.FilePath), ConcordancePathString},
+                                {nameof(NuixAddConcordance.ConcordanceDateFormat), concordanceDateFormat.Replace("''","'")},
+                                {nameof(NuixAddConcordance.ConcordanceProfileName),  integrationTestProfile}
+                            }
+                        }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}})
+                    }
+                    )
                     .WithSettings(UnitTestSettings);
             }
         }

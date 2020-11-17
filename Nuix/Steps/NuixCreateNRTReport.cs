@@ -33,10 +33,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string RubyFunctionText =>
             @"
-    the_case = utilities.case_factory.open(pathArg)
-    puts 'Generating NRT Report:'
+    the_case = $utilities.case_factory.open(pathArg)
+    log 'Generating NRT Report:'
 
-    reportGenerator = utilities.getReportGenerator();
+    reportGenerator =$utilities.getReportGenerator();
     reportContext = {
     'NUIX_USER' => 'Mark',
     'NUIX_APP_NAME' => 'AppName',
@@ -61,7 +61,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Creates a report using an NRT file.
     /// </summary>
-    public sealed class NuixCreateNRTReport : RubyScriptStepUnit
+    public sealed class NuixCreateNRTReport : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixCreateNRTReportStepFactory.Instance;

@@ -32,11 +32,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(casePathArg)
+    the_case = $utilities.case_factory.open(casePathArg)
 
-    puts ""Finding Entities""
+    log ""Finding Entities""
     items = the_case.search(searchArg, {})
-    puts ""#{items.length} items found""
+    log ""#{items.length} items found""
     propertyRegex = Regexp.new(propertyRegexArg)
     valueRegex = nil
     valueRegex = Regexp.new(valueRegexArg) if valueRegexArg != nil
@@ -72,7 +72,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixGetItemProperties : RubyScriptStepTyped<string>
+    public sealed class NuixGetItemProperties : RubyScriptStepBase<string>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<string> RubyScriptStepFactory => NuixGetItemPropertiesStepFactory.Instance;
@@ -115,13 +115,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [RubyArgument("valueRegexArg", 4)]
         [DefaultValueExplanation("All values will be returned")]
         public IStep<string>? ValueRegex { get; set; }
-
-
-        /// <inheritdoc />
-        public override bool TryParse(string s, out string result)
-        {
-            result = s;
-            return true;
-        }
     }
 }

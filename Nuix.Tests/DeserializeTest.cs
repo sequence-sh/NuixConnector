@@ -1,50 +1,47 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using Microsoft.Extensions.Logging;
+using System.Linq;
 using Moq;
-using Reductech.EDR.Core;
+using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     public abstract partial class NuixStepTestBase<TStep, TOutput>
     {
-        public class DeserializeUnitTest : DeserializeCase
+        public class NuixDeserializeTest : DeserializeCase
         {
             /// <inheritdoc />
-            public DeserializeUnitTest(string name, string yaml, TOutput expectedOutput, IReadOnlyCollection<string> valuesToLog, params string[] expectedLoggedValues) :
-                base(name, yaml, expectedOutput, expectedLoggedValues) => SetupRunner(valuesToLog);
+            public NuixDeserializeTest(string name,
+                string yaml,
+                TOutput expectedOutput,
+                IReadOnlyCollection<ExternalProcessAction> externalProcessActions,
+                params string[] expectedLoggedValues) : base(name,
+                yaml,
+                expectedOutput,
+                expectedLoggedValues)
+            {
+                ExternalProcessActions = externalProcessActions;
+                IgnoreFinalState = true;
+            }
 
             /// <inheritdoc />
-            public DeserializeUnitTest(string name, string yaml, Unit _, IReadOnlyCollection<string> valuesToLog, params string[] expectedLoggedValues) :
-                base(name, yaml, _, expectedLoggedValues) =>
-                SetupRunner(valuesToLog);
-
-            private void SetupRunner(IEnumerable<string> valuesToLog)
+            public NuixDeserializeTest(string name,
+                string yaml,
+                Unit _,
+                IReadOnlyCollection<ExternalProcessAction> externalProcessActions,
+                params string[] expectedLoggedValues) : base(name,
+                yaml,
+                _,
+                expectedLoggedValues)
             {
-                AddFileSystemAction(x => x.Setup(y => y.WriteFileAsync(
-                     It.IsRegex(@".*\.rb"),
-                     It.IsAny<MemoryStream>(),
-                     It.IsAny<CancellationToken>()
-                 )).ReturnsAsync(Unit.Default));
-
-
-                AddExternalProcessRunnerAction(externalProcessRunner =>
-                    externalProcessRunner.Setup(y => y.RunExternalProcess(It.IsAny<string>(),
-                        It.IsAny<ILogger>(),
-                        It.IsAny<IErrorHandler>(), It.IsAny<IEnumerable<string>>()))
-                    .Callback<string, ILogger, IErrorHandler, IEnumerable<string>>((s, logger, arg3, arg4) =>
-                    {
-                        foreach (var val in valuesToLog)
-                        {
-                            logger.LogInformation(val);
-                        }
-
-                        logger.LogInformation(ScriptGenerator.UnitSuccessToken);
-                    })
-                    .ReturnsAsync(Unit.Default));
+                ExternalProcessActions = externalProcessActions;
+                IgnoreFinalState = true;
             }
+
+            public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }
+
+            /// <inheritdoc />
+            public override IExternalProcessRunner GetExternalProcessRunner(MockRepository mockRepository) => new ExternalProcessMock(1, ExternalProcessActions.ToArray());
         }
     }
 }

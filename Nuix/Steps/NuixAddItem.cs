@@ -5,6 +5,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
+using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
@@ -35,14 +36,47 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
+
+    ds = args[""datastream""]
+
+    the_case = $utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
 
-#This only works in 7.6 or later
+    #Read special mime type settings from data stream
+    if ds != nil
+        
+        log ""Mime Type Data stream reading started""
+        mimeTypes = []
+
+        while !ds.closed? or !ds.empty?
+            data = ds.pop
+            break if ds.closed? and data.nil?
+            mimeTypes << data
+        end
+        log ""Mime Type Data stream reading finished (#{mimeTypes.count} elements)""
+
+
+        version_mimes = []
+		$utilities.getItemTypeUtility().getAllTypes().each do |mime|
+			version_mimes << mime.to_s
+		end
+
+
+        mimeTypes.each do |mime_type|
+            mimeTypeString = mime_type[""mimeType""].to_s
+            if (version_mimes.include?(mimeTypeString) == true)
+                mime_type.delete(""mimeType"") #remove this value from the hash as it isn't part of the settings
+                nuix_processor.setMimeTypeProcessingSettings(mimeTypeString, mime_type)
+            end        
+        end
+    end
+
+
+    #This only works in 7.6 or later
     if processingProfileNameArg != nil
         processor.setProcessingProfile(processingProfileNameArg)
     elsif processingProfilePathArg != nil
-        profileBuilder = utilities.getProcessingProfileBuilder()
+        profileBuilder = $utilities.getProcessingProfileBuilder()
         profileBuilder.load(processingProfilePathArg)
         profile = profileBuilder.build()
 
@@ -55,8 +89,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     end
 
     if processingSettingsArg != nil
-        processing_settings = JSON.parse(processingSettingsArg)
-        processor.setProcessingSettings(processing_settings)
+        processor.setProcessingSettings(processingSettingsArg)
+    end
+
+    if parallelProcessingSettingsArg != nil
+        processor.setParallelProcessingSettings(parallelProcessingSettingsArg)
     end
 
 
@@ -77,12 +114,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     folder.description = folderDescriptionArg if folderDescriptionArg != nil
     folder.initial_custodian = folderCustodianArg
 
-    folder.add_file(filePathArg)
+    filePathsArgs.each do |path|
+        folder.add_file(path)
+        log ""Added Evidence from Path: #{path} to Container: #{folderNameArg}""
+    end
+
+    
     folder.save
 
-    puts 'Adding items'
+    log 'Adding items'
     processor.process
-    puts 'Items added'
+    log 'Items added'
     the_case.close";
 
     }
@@ -90,7 +132,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Adds a file or directory to a Nuix Case.
     /// </summary>
-    public sealed class NuixAddItem : RubyScriptStepUnit
+    public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddItemStepFactory.Instance;
@@ -138,8 +180,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty]
         [Example("C:/Data/File.txt")]
-        [RubyArgument("filePathArg", 5)]
-        public IStep<string> Path { get; set; } = null!;
+        [RubyArgument("filePathsArgs", 5)]
+        public IStep<List<string>> Paths { get; set; } = null!;
 
         /// <summary>
         /// The name of the Processing profile to use.
@@ -171,6 +213,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [RubyArgument("processingSettingsArg", 8)]
         public IStep<Core.Entities.Entity>? ProcessingSettings { get; set; }
 
+        /// <summary>
+        /// Sets the parallel processing settings to use.
+        /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
+        /// </summary>
+        [StepProperty]
+        [DefaultValueExplanation("Parallel processing settings will not be changed")]
+        [RubyArgument("parallelProcessingSettingsArg", 8)]
+        public IStep<Core.Entities.Entity>? ParallelProcessingSettings { get; set; }
+
 
         /// <summary>
         /// The path of a file containing passwords to use for decryption.
@@ -182,6 +233,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [DefaultValueExplanation("Do not attempt decryption")]
         public IStep<string>? PasswordFilePath { get; set; }
 
+
+        /// <summary>
+        /// Special settings for individual mime types.
+        /// Should have a 'mime_type' property and then any other special properties.
+        /// </summary>
+        [RequiredVersion("Nuix", "8.2")]
+        [StepProperty]
+        [RubyArgument("mimeTypeDataStreamArg", 10)]
+        [DefaultValueExplanation("Use default settings for all MIME types")]
+        public IStep<EntityStream>? MimeTypeSettings { get; set; }
 
         /// <inheritdoc />
         public override Result<Unit, IError> VerifyThis(ISettings settings)

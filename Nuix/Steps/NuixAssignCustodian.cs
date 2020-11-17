@@ -36,12 +36,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(pathArg)
-    puts ""Searching for '#{searchArg}'""
+    the_case = $utilities.case_factory.open(pathArg)
+    log ""Searching for '#{searchArg}'""
 
     searchOptions = {}
     items = the_case.search(searchArg, searchOptions)
-    puts ""#{items.length} found""
+    log ""#{items.length} found""
 
     j = 0
 
@@ -52,7 +52,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         end
     }
 
-    puts ""#{j} items assigned to custodian #{custodianArg}""
+    log ""#{j} items assigned to custodian #{custodianArg}""
     the_case.close";
     }
 
@@ -60,7 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
     /// </summary>
-    public sealed class NuixAssignCustodian : RubyScriptStepUnit
+    public sealed class NuixAssignCustodian : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAssignCustodianFactory.Instance;

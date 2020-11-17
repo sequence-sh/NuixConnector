@@ -32,10 +32,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public override string RubyFunctionText =>
             @"
     begin
-        the_case = utilities.case_factory.open(pathArg)
+        log ""Trying to open case""
+        the_case = $utilities.case_factory.open(pathArg)
         the_case.close()
         return true
-    rescue #Case does not exist
+    rescue => ex
+        log(""Case does not exist: #{ex}"")
         return false
     end
 ";
@@ -45,7 +47,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Returns whether or not a case exists.
     /// </summary>
-    public sealed class NuixDoesCaseExist : RubyScriptStepTyped<bool>
+    public sealed class NuixDoesCaseExist : RubyScriptStepBase<bool>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<bool> RubyScriptStepFactory => NuixDoesCaseExistStepFactory.Instance;
@@ -58,9 +60,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
-
-
-        /// <inheritdoc />
-        public override bool TryParse(string s, out bool result) => bool.TryParse(s, out result);
     }
 }

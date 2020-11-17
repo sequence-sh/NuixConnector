@@ -34,13 +34,13 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(casePathArg)
+    the_case = $utilities.case_factory.open(casePathArg)
 
-    puts ""Generating Report:""
+    log ""Generating Report:""
     caseStatistics = the_case.getStatistics()
     termStatistics = caseStatistics.getTermStatistics("""", {""sort"" => ""on"", ""deduplicate"" => ""md5""}) #for some reason this takes strings rather than symbols
     #todo terms per custodian
-    puts ""#{termStatistics.length} terms""
+    log ""#{termStatistics.length} terms""
 
     text = ""Term\tCount""
 
@@ -58,7 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// The report is in CSV format. The headers are 'Term' and 'Count'
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixCreateTermList : RubyScriptStepTyped<string>
+    public sealed class NuixCreateTermList : RubyScriptStepBase<string>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<string> RubyScriptStepFactory => NuixCreateTermListStepFactory.Instance;
@@ -71,13 +71,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
-
-
-        /// <inheritdoc />
-        public override bool TryParse(string s, out string result)
-        {
-            result = s;
-            return true;
-        }
     }
 }

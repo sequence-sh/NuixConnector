@@ -39,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override string RubyFunctionText =>
             @"
-    the_case = utilities.case_factory.open(pathArg)
+    the_case =$utilities.case_factory.open(pathArg)
     itemSet = the_case.findItemSetByName(itemSetNameArg)
     if(itemSet == nil)
         itemSetOptions = {}
@@ -49,19 +49,19 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         itemSetOptions[:custodianRanking] = custodianRankingArg.split("","") if custodianRankingArg != nil
         itemSet = the_case.createItemSet(itemSetNameArg, itemSetOptions)
 
-        puts ""Item Set Created""
+        log ""Item Set Created""
     else
-        puts ""Item Set Found""
+        log ""Item Set Found""
     end
 
-    puts ""Searching""
+    log ""Searching""
     searchOptions = {}
     searchOptions[:order] = orderArg if orderArg != nil
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
     items = the_case.search(searchArg, searchOptions)
-    puts ""#{items.length} found""
+    log ""#{items.length} found""
     itemSet.addItems(items)
-    puts ""items added""
+    log ""items added""
     the_case.close";
     }
 
@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// Searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
-    public sealed class NuixAddToItemSet : RubyScriptStepUnit
+    public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddToItemSetStepFactory.Instance;

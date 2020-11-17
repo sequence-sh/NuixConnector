@@ -32,18 +32,18 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    puts ""Opening Case, migrating if necessary""
+    log ""Opening Case, migrating if necessary""
 
     options = {migrate: true}
 
-    the_case = utilities.case_factory.open(pathArg, options)";
+    the_case = $utilities.case_factory.open(pathArg, options)";
     }
 
 
     /// <summary>
     /// Migrates a case to the latest version if necessary.
     /// </summary>
-    public sealed class NuixMigrateCase : RubyScriptStepUnit
+    public sealed class NuixMigrateCase : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixMigrateCaseStepFactory.Instance;

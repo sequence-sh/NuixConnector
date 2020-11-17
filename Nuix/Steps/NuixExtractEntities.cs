@@ -31,9 +31,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
-    the_case = utilities.case_factory.open(casePathArg)
+    the_case = $utilities.case_factory.open(casePathArg)
 
-    puts ""Extracting Entities:""
+    log ""Extracting Entities:""
 
     entityTypes = the_case.getAllEntityTypes()
 
@@ -53,7 +53,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
             end
         end
 
-        puts ""Found entities for #{allItems.length} items""
+        log ""Found entities for #{allItems.length} items""
 
         results.each do |et, values|
             totalCount = values.map{|x,y| y.length}.reduce(:+)
@@ -68,7 +68,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
             File.write(File.join(outputFolderPathArg, et + '.txt'), currentText)
         end
     else
-        puts ""Case has no entities""
+        log ""Case has no entities""
     end
 
     File.write(File.join(outputFolderPathArg, 'Entities.txt'), entitiesText) #For consistency, file is written even if there are no entities
@@ -82,7 +82,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Extract Entities from a Nuix Case.
     /// </summary>
-    public sealed class NuixExtractEntities : RubyScriptStepUnit
+    public sealed class NuixExtractEntities : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixExtractEntitiesStepFactory.Instance;
