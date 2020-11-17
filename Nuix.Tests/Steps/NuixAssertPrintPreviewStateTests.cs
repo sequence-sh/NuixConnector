@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
+using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -13,13 +16,36 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
         }
 
-
-        /// <inheritdoc />
-        protected override IEnumerable<DeserializeCase> DeserializeCases
+        protected override IEnumerable<StepCase> StepCases
         {
-            get { yield break; }
+            get
+            {
+                yield return new NuixStepCase("Check State All",
+                    new NuixAssertPrintPreviewState
+                    {
+                        CasePath = CasePath,
+                        ProductionSetName = Constant("Production Set"),
+                        ExpectedState = Constant(PrintPreviewState.All)
+                    },
+                    Unit.Default,
+                    new List<ExternalProcessAction>
+                    {
+                        new ExternalProcessAction(new ConnectionCommand
+                        {
+                            Command = "GetPrintPreviewState",
+                            Arguments = new Dictionary<string, object>
+                            {
+                                {nameof(NuixAssertPrintPreviewState.CasePath), CasePathString},
+                                {nameof(NuixAssertPrintPreviewState.ProductionSetName), "Production Set"},
+                                {nameof(NuixAssertPrintPreviewState.ExpectedState), PrintPreviewState.All.ToString()}
+                            }
+                        }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}})
+                    }
 
+                ).WithSettings(UnitTestSettings);
+            }
         }
+
 
         /// <inheritdoc />
         protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases { get{yield break;} }

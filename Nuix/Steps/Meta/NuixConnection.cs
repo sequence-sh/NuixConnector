@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
@@ -87,12 +88,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 currentConnection.Value.Dispose();
             }
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
             {
                 return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
 
             return Unit.Default;
         }
@@ -148,7 +147,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 command.Arguments = commandArguments;
 
                 // ReSharper disable once MethodHasAsyncOverload
-                var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance);
+                var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
 
                 await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellationToken);
 
@@ -156,12 +155,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 return result;
             }
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
             {
                 return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
             finally
             {
                 _semaphore.Release();
@@ -191,12 +188,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 {
                     connectionOutput= JsonConvert.DeserializeObject<ConnectionOutput>(jsonString, EntityJsonConverter.Instance)!;
                 }
-#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception e)
                 {
                     return new ErrorBuilder(e, ErrorCode.CouldNotDeserialize);
                 }
-#pragma warning restore CA1031 // Do not catch general exception types
 
                 if (connectionOutput.Error != null)
                     return new ErrorBuilder(connectionOutput.Error.Message, ErrorCode.ExternalProcessError);

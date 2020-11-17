@@ -18,6 +18,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     /// </summary>
     public class EntityJsonConverter : JsonConverter
     {
+        /// <summary>
+        /// Deserialize a json string into a ConnectionCommand
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public static Result<ConnectionCommand, IErrorBuilder> DeserializeConnectionCommand(string json)
         {
             try
@@ -34,7 +39,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     if (value is JObject)
                     {
                         var entity = JsonConvert.DeserializeObject<Entity>(value.ToString()!, Instance);
-                        newArguments.Add(key, entity);
+                        newArguments.Add(key, entity!);
                     }
                     else
                         newArguments.Add(key, value);
@@ -55,9 +60,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
             }
-
-
-
         }
 
 

@@ -110,7 +110,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 #pragma warning disable CA1031 // Do not catch general exception types
                     catch (Exception e)
                     {
-                        var error = new ConnectionOutput{Error = new ConnectionOutputError{Message = e.Message}};
+                        var exception = e;
+                        while (exception.InnerException != null) exception = exception.InnerException;
+
+                        var error = new ConnectionOutput{Error = new ConnectionOutputError{Message = exception.Message}};
                         var errorJson = JsonConvert.SerializeObject(error);
 
 

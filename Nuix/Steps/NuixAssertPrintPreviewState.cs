@@ -51,7 +51,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         r = productionSet.getPrintPreviewState()
         the_case.close
 
-        if r.downcase == expectedStateArg.downcase
+        if r.to_s.downcase == expectedStateArg.to_s.downcase
             log ""Print preview state was #{r}, as expected.""
         else
             raise ""Print preview state was #{r}, but expected #{expectedStateArg}""
