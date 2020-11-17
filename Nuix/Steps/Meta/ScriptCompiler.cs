@@ -18,13 +18,13 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
             var methodHeader = $@"def {function.FunctionName}(args)";
-            
+
 
             stringBuilder.AppendLine(methodHeader);
 
             foreach (var parameter in function.Arguments)
             {
-                stringBuilder.AppendLine($"{parameter.ParameterName} = args['{parameter.ParameterName}']");
+                stringBuilder.AppendLine($"{parameter.ParameterName} = args['{parameter.PropertyName}']");
             }
 
             stringBuilder.AppendLine(IndentFunctionText(function.FunctionText));

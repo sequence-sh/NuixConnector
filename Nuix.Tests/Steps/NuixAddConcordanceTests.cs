@@ -40,12 +40,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                                 FunctionDefinition = "",
                                 Arguments = new Dictionary<string, object>
                                 {
-                        {"pathArg", CasePathString},
-                        {"folderNameArg", "New Folder"},
-                        {"folderCustodianArg", "Mark"},
-                        {"filePathArg", ConcordancePathString},
-                        {"dateFormatArg", "yyyy-MM-dd'T'HH:mm:ss.SSSZ"},
-                        {"profileNameArg", "IntegrationTestProfile"}
+                        {nameof(NuixAddConcordance.CasePath), CasePathString},
+                        {nameof(NuixAddConcordance.FolderName), "New Folder"},
+                        {nameof(NuixAddConcordance.Custodian), "Mark"},
+                        {nameof(NuixAddConcordance.FilePath), ConcordancePathString},
+                        {nameof(NuixAddConcordance.ConcordanceDateFormat), "yyyy-MM-dd'T'HH:mm:ss.SSSZ"},
+                        {nameof(NuixAddConcordance.ConcordanceProfileName), "IntegrationTestProfile"}
                                 }
 
                             },
@@ -80,12 +80,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             Command = "AddConcordanceToCase",
                             Arguments = new Dictionary<string, object>
                             {
-                                {"pathArg", CasePathString},
-                                {"folderNameArg", newFolder},
-                                {"folderCustodianArg", custodian},
-                                {"filePathArg", ConcordancePathString},
-                                {"dateFormatArg", concordanceDateFormat.Replace("''","'")},
-                                {"profileNameArg", integrationTestProfile}
+                                {nameof(NuixAddConcordance.CasePath), CasePathString},
+                                {nameof(NuixAddConcordance.FolderName), newFolder},
+                                {nameof(NuixAddConcordance.Custodian), custodian},
+                                {nameof(NuixAddConcordance.FilePath), ConcordancePathString},
+                                {nameof(NuixAddConcordance.ConcordanceDateFormat), concordanceDateFormat.Replace("''","'")},
+                                {nameof(NuixAddConcordance.ConcordanceProfileName),  integrationTestProfile}
                             }
                         }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}})
                     }

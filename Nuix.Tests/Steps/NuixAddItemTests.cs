@@ -37,11 +37,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             Command = "AddToCase",
                             Arguments = new Dictionary<string, object>
                             {
-                                {"pathArg", CasePathString},
-                                {"folderNameArg", "New Folder"},
-                                {"folderCustodianArg", "Mark"},
-                                {"filePathArg", DataPathString},
-                                {"processingSettingsArg", CreateEntity(("Foo", "Bar"))}
+                                {nameof(NuixAddItem.CasePath),  CasePathString},
+                                {nameof(NuixAddItem.FolderName), "New Folder"},
+                                {nameof(NuixAddItem.Custodian), "Mark"},
+                                {nameof(NuixAddItem.Path), DataPathString},
+                                {nameof(NuixAddItem.ProcessingSettings), CreateEntity(("Foo", "Bar"))}
                             },
                             FunctionDefinition = ""
                         }, new ConnectionOutput

@@ -40,9 +40,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             FunctionDefinition = "",
                             Arguments = new Dictionary<string, object>
                             {
-                                {"pathArg", CasePathString},
-                                {"nameArg", "Integration Test Case"},
-                                {"investigatorArg", "Mark"}
+                                {nameof(NuixCreateCase.CasePath), CasePathString},
+                                {nameof(NuixCreateCase.CaseName), "Integration Test Case"},
+                                {nameof(NuixCreateCase.Investigator), "Mark"}
                             }
                         },
                         new ConnectionOutput
@@ -55,10 +55,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             FunctionDefinition = "",
                             Arguments = new Dictionary<string, object>
                             {
-                                {"pathArg", CasePathString},
-                                {"folderNameArg", "New Folder"},
-                                {"folderCustodianArg", "Mark"},
-                                {"filePathArg", DataPathString}
+                                {nameof(NuixAddItem.CasePath), CasePathString},
+                                {nameof(NuixAddItem.FolderName), "New Folder"},
+                                {nameof(NuixAddItem.Custodian), "Mark"},
+                                {nameof(NuixAddItem.Path), DataPathString}
                             }
                         },
                         new ConnectionOutput
@@ -119,9 +119,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             Command = "CreateCase",
                             Arguments = new Dictionary<string, object>
                             {
-                                {"pathArg", CasePathString},
-                                {"nameArg", caseName},
-                                {"investigatorArg", investigator}
+
+                                {nameof(NuixCreateCase.CasePath), CasePathString},
+                                {nameof(NuixCreateCase.CaseName), caseName},
+                                {nameof(NuixCreateCase.Investigator), investigator}
                             }
                         }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}}),
 
@@ -130,10 +131,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             Command = "AddToCase",
                             Arguments = new Dictionary<string, object>
                             {
-                                {"pathArg", CasePathString},
-                                {"folderCustodianArg", custodian},
-                                {"folderNameArg", folderName},
-                                {"filePathArg", dataPath},
+                                {nameof(NuixAddItem.CasePath), CasePathString},
+                                {nameof(NuixAddItem.Custodian),custodian},
+                                {nameof(NuixAddItem.FolderName), folderName},
+                                {nameof(NuixAddItem.Path), dataPath},
                             }
                         }, new ConnectionOutput{Result = new ConnectionOutputResult{Data = null}}
 

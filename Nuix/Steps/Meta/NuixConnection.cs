@@ -141,10 +141,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 foreach (var argument in function.Arguments)
                 {
                     if (parameters.TryGetValue(argument, out var value))
-                    {
-                        commandArguments.Add(argument.ParameterName, value);
-                        //TODO special case for stream / entity stream
-                    }
+                        commandArguments.Add(argument.PropertyName, value);
+                    //TODO special case for stream / entity stream
                 }
 
                 command.Arguments = commandArguments;
