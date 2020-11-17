@@ -70,12 +70,19 @@ CasePath: 'Bar0'
 FolderName: 'Bar3'
 Description: 'Bar2'
 Custodian: 'Bar1'
-Path: 'Bar5'
-ProcessingProfileName: 'Bar6'
-ProcessingProfilePath: 'Bar7'
-ProcessingSettings: (Prop1 = 'Val8',Prop2 = 'Val9')
-ParallelProcessingSettings: (Prop1 = 'Val10',Prop2 = 'Val1')
-PasswordFilePath: 'Bar4'"
+Paths:
+- 'Foo13'
+- 'Foo14'
+- 'Foo15'
+ProcessingProfileName: 'Bar16'
+ProcessingProfilePath: 'Bar17'
+ProcessingSettings: (Prop1 = 'Val18',Prop2 = 'Val19')
+ParallelProcessingSettings: (Prop1 = 'Val10',Prop2 = 'Val11')
+PasswordFilePath: 'Bar12'
+MimeTypeSettings:
+- (Prop1 = 'Val4',Prop2 = 'Val5')
+- (Prop1 = 'Val6',Prop2 = 'Val7')
+- (Prop1 = 'Val8',Prop2 = 'Val9')"
 
                     );
             }

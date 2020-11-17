@@ -110,7 +110,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 var dataPath = @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data";
                 yield return new NuixDeserializeTest("Create Case then add item",
                     $@"- NuixCreateCase(CaseName = '{caseName}', CasePath = '{CasePathString}', Investigator = '{investigator}')
-- NuixAddItem(CasePath = '{CasePathString}', Custodian = '{custodian}', FolderName = '{folderName}', Path = '{dataPath}')",
+- NuixAddItem(CasePath = '{CasePathString}', Custodian = '{custodian}', FolderName = '{folderName}', Paths = ['{dataPath}'])",
                     Unit.Default,
                     new List<ExternalProcessAction>
                     {
