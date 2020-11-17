@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using Moq;
+using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Serialization;
@@ -48,6 +50,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public Sequence Step { get; }
         }
 
+
         public class IntegrationTestCase : CaseThatExecutes
         {
             public IntegrationTestCase(string name, IStep<Unit> steps) : base(new List<object>())
@@ -88,6 +91,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 result.ShouldBeSuccessful(x=>x.AsString);
             }
+
+            /// <inheritdoc />
+            public override IFileSystemHelper GetFileSystemHelper(MockRepository mockRepository) => FileSystemHelper.Instance;
+
+            /// <inheritdoc />
+            public override IExternalProcessRunner GetExternalProcessRunner(MockRepository mockRepository) => ExternalProcessRunner.Instance;
         }
     }
 }
