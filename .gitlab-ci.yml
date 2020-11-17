@@ -8,6 +8,7 @@ stages:
   - integration
   - quality
   - package
+  - sign
   - push
 
 workflow:
