@@ -185,6 +185,29 @@ PasswordFilePath: 'Bar4'"
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
                 );
+
+                yield return new NuixIntegrationTestCase("Add file to case with mime type settings",
+                    DeleteCaseFolder,
+                    AssertCaseDoesNotExist,
+                    CreateCase,
+                    AssertCount(0, "*.txt"),
+                    new NuixAddItem
+                    {
+                        CasePath = CasePath,
+                        Custodian = Constant("Mark"),
+                        Paths = DataPaths,
+                        FolderName = Constant("New Folder"),
+                        MimeTypeSettings = Constant(EntityStream.Create(
+                            CreateEntity(("mime_tye", "text/plain"), ("enabled", "true")), //These don't really do anything, just tests that it works
+                            CreateEntity(("mime_tye", "application/pdf"), ("enabled", "true"))
+                            ))
+                    },
+                    AssertCount(2, "*.txt"),
+                    DeleteCaseFolder
+
+
+                    );
+
             } }
     }
 }

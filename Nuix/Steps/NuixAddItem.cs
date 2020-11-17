@@ -5,6 +5,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
+using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
@@ -35,10 +36,43 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
+
+    ds = args[""datastream""]
+
     the_case = $utilities.case_factory.open(pathArg)
     processor = the_case.create_processor
 
-#This only works in 7.6 or later
+    #Read special mime type settings from data stream
+    if ds != nil
+        
+        log ""Mime Type Data stream reading started""
+        mimeTypes = []
+
+        while !ds.closed? or !ds.empty?
+            data = ds.pop
+            break if ds.closed? and data.nil?
+            mimeTypes << data
+        end
+        log ""Mime Type Data stream reading finished (#{mimeTypes.count} elements)""
+
+
+        version_mimes = []
+		$utilities.getItemTypeUtility().getAllTypes().each do |mime|
+			version_mimes << mime.to_s
+		end
+
+
+        mimeTypes.each do |mime_type|
+            mimeTypeString = mime_type[""mimeType""].to_s
+            if (version_mimes.include?(mimeTypeString) == true)
+                mime_type.delete(""mimeType"") #remove this value from the hash as it isn't part of the settings
+                nuix_processor.setMimeTypeProcessingSettings(mimeTypeString, mime_type)
+            end        
+        end
+    end
+
+
+    #This only works in 7.6 or later
     if processingProfileNameArg != nil
         processor.setProcessingProfile(processingProfileNameArg)
     elsif processingProfilePathArg != nil
@@ -199,6 +233,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [DefaultValueExplanation("Do not attempt decryption")]
         public IStep<string>? PasswordFilePath { get; set; }
 
+
+        /// <summary>
+        /// Special settings for individual mime types.
+        /// Should have a 'mime_type' property and then any other special properties.
+        /// </summary>
+        [RequiredVersion("Nuix", "8.2")]
+        [StepProperty]
+        [RubyArgument("mimeTypeDataStreamArg", 10)]
+        [DefaultValueExplanation("Use default settings for all MIME types")]
+        public IStep<EntityStream>? MimeTypeSettings { get; set; }
 
         /// <inheritdoc />
         public override Result<Unit, IError> VerifyThis(ISettings settings)

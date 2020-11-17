@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -173,11 +174,23 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 var commandArguments = new Dictionary<string, object>();
 
+                EntityStream? entityStream = null;
+
                 foreach (var argument in function.Arguments)
                 {
                     if (parameters.TryGetValue(argument, out var value))
-                        commandArguments.Add(argument.PropertyName, value);
-                    //TODO special case for stream / entity stream
+                    {
+                        if (value is EntityStream sStream)
+                        {
+                            if(entityStream != null)
+                                return new ErrorBuilder("Cannot have two entity stream parameters to a nuix function", ErrorCode.ExternalProcessError);
+
+                            entityStream = sStream;
+                            command.IsStream = true;
+                        }
+                        else
+                            commandArguments.Add(argument.PropertyName, value);
+                    }
                 }
 
                 command.Arguments = commandArguments;
@@ -186,6 +199,26 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
 
                 await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellationToken);
+
+                if (entityStream != null)
+                {
+                    var key = "--Stream--" + Guid.NewGuid();//random key as the stream opening / closing token
+                    await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);
+                    var entities = await entityStream.TryGetResultsAsync(cancellationToken);
+                    if (entities.IsFailure)
+                    {
+                        await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);
+                        return entities.ConvertFailure<T>().MapError(x=> new ErrorBuilder(x, ErrorCode.ExternalProcessError) as IErrorBuilder);
+                    }
+
+                    foreach (var entity in entities.Value)
+                    {
+                        var entityJson = JsonConvert.SerializeObject(entity, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
+
+                        await ExternalProcess.InputChannel.WriteAsync(entityJson, cancellationToken);
+                    }
+                    await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);
+                }
 
                 var result = await GetOutputTyped<T>(logger, cancellationToken);
 
