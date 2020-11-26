@@ -28,12 +28,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     {
         private const string NuixGeneralScriptName = "edr-nuix-connector.rb";
 
-        private static readonly VariableName NuixVariableName = new VariableName("NuixConnection");
+        private static readonly VariableName NuixVariableName = new VariableName("ReductechNuixConnection");
 
         /// <summary>
         /// Gets or creates a connection to nuix.
         /// </summary>
-        public static Result<NuixConnection, IErrorBuilder> GetOrCreateNuixConnection(this StateMonad stateMonad, bool reopen)
+        public static Result<NuixConnection, IErrorBuilder> GetOrCreateNuixConnection(this IStateMonad stateMonad, bool reopen)
         {
             var currentConnection = stateMonad.GetVariable<NuixConnection>(NuixVariableName);
 
@@ -50,7 +50,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     {
                     }
                 }
-                    
+
                 else
                     return currentConnection.Value;
             }
@@ -93,7 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Close the nuix connection if it is open.
         /// </summary>
-        public static async Task<Result<Unit, IErrorBuilder>> CloseNuixConnectionAsync(this StateMonad stateMonad, CancellationToken cancellationToken)
+        public static async Task<Result<Unit, IErrorBuilder>> CloseNuixConnectionAsync(this IStateMonad stateMonad, CancellationToken cancellationToken)
         {
             var currentConnection = stateMonad.GetVariable<NuixConnection>(NuixVariableName);
 
@@ -111,6 +111,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
             }
+
+            stateMonad.RemoveVariable(NuixVariableName, false);
 
             //TODO remove connection variable
 
@@ -208,7 +210,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     if (entities.IsFailure)
                     {
                         await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);
-                        return entities.ConvertFailure<T>().MapError(x=> new ErrorBuilder(x, ErrorCode.ExternalProcessError) as IErrorBuilder);
+                        return entities.ConvertFailure<T>().MapError(x=> new ErrorBuilder(x.AsString, ErrorCode.ExternalProcessError) as IErrorBuilder);
                     }
 
                     foreach (var entity in entities.Value)

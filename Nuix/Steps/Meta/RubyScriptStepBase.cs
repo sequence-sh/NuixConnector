@@ -25,12 +25,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public string FunctionName => RubyScriptStepFactory.RubyFunction.FunctionName;
 
         /// <inheritdoc />
-        public override Task<Result<T, IError>> Run(StateMonad stateMonad, CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
+        public override Task<Result<T, IError>> Run(IStateMonad stateMonad, CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
 
         /// <summary>
         /// Runs this step asynchronously.
         /// </summary>
-        protected async Task<Result<T, IError>> RunAsync(StateMonad stateMonad, CancellationToken cancellationToken)
+        protected async Task<Result<T, IError>> RunAsync(IStateMonad stateMonad, CancellationToken cancellationToken)
         {
             var methodParameters = await TryGetMethodParameters(stateMonad, cancellationToken);
             if (methodParameters.IsFailure) return methodParameters.ConvertFailure<T>();
@@ -90,8 +90,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
 
-        internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>>
-            TryGetMethodParameters(StateMonad stateMonad, CancellationToken cancellationToken)
+        internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>> TryGetMethodParameters(
+            IStateMonad stateMonad, CancellationToken cancellationToken)
         {
             var dict = new Dictionary<RubyFunctionParameter, object>();
 
