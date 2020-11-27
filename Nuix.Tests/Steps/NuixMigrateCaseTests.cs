@@ -28,14 +28,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
             {
                 yield return new NuixIntegrationTestCase("Migrate Case",
                     new DeleteItem {Path = Constants.MigrationTestCaseFolder},
-                    new Unzip
+                    new FileExtract
                     {
                         ArchiveFilePath = Constants.MigrationPath,
-                        DestinationDirectory = Constant(Constants.GeneralDataFolder)
+                        Destination = Constant(Constants.GeneralDataFolder)
                     },
                     new AssertError
                     {
-                        Test = new NuixSearchAndTag
+                        Step = new NuixSearchAndTag
                         {
                             CasePath = Constants.MigrationTestCaseFolder, SearchTerm = Constant("*"),
                             Tag = Constant("item")

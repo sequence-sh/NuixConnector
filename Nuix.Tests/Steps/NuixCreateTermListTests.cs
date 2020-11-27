@@ -32,17 +32,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new WriteFile
+                    new FileWrite
                     {
-                        Text = new ToStream
+                        Stream = new StringToStream
                         {
-                            Text = new NuixCreateTermList
+                            String = new NuixCreateTermList
                             {
                                 CasePath = CasePath,
                             }
                         } ,
-                        Folder = Constant(OutputFolder),
-                        FileName = new Constant<string>("Terms.txt")
+                        Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>(){OutputFolder,"Terms.txt"})}
                     }
                     ,
                     AssertFileContains(OutputFolder, "Terms.txt", "yellow	2"),

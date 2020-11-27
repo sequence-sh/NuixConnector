@@ -32,13 +32,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new WriteFile
+                    new FileWrite
                     {
-                        FileName = new Constant<string>("ItemProperties.txt"),
-                        Folder = Constant(OutputFolder),
-                        Text = new ToStream
+                        Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>(){OutputFolder,"ItemProperties.txt"})},
+                        Stream = new StringToStream
                         {
-                            Text = new NuixGetItemProperties
+                            String = new NuixGetItemProperties
                             {
                                 CasePath = CasePath,
                                 PropertyRegex = Constant("(.+)"),

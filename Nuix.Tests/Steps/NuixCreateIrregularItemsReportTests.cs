@@ -31,17 +31,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     CreateOutputFolder,
                     CreateCase,
                     AddData,
-                    new WriteFile
+                    new FileWrite
                     {
-                        Text = new ToStream
+                        Stream = new StringToStream
                         {
-                            Text = new NuixCreateIrregularItemsReport
+                            String = new NuixCreateIrregularItemsReport
                             {
                                 CasePath = CasePath
                             }
                         },
-                        Folder = Constant(OutputFolder),
-                        FileName = new Constant<string>("Irregular.txt")
+                        Path = new PathCombine(){Paths = new Constant<List<string>>(new List<string>(){OutputFolder,"Irregular.txt"})}
                     },
                     AssertFileContains(OutputFolder, "Irregular.txt",
                         "Unrecognised\tNew Folder/data/Theme in Yellow.txt"),
