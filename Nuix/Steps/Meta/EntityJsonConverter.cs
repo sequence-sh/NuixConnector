@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
@@ -122,7 +123,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            var evDict = new Dictionary<string, EntityValue>();
+            var evDict = ImmutableList<KeyValuePair<string, EntityValue>>.Empty.ToBuilder();
 
             var objectDict = serializer.Deserialize<Dictionary<string, object>>(reader);
 
@@ -138,10 +139,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 else
                     ev = EntityValue.Create(value.ToString());
 
-                evDict.Add(key, ev);
+                evDict.Add(new KeyValuePair<string, EntityValue>(key, ev));
             }
 
-            var entity = new Entity(evDict);
+            var entity = new Entity(evDict.ToImmutable());
 
             return entity;
         }

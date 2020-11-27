@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
 
