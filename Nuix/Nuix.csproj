@@ -18,7 +18,7 @@
 
     <PackageProjectUrl>https://gitlab.com/reductech/edr/connectors/nuix</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/reductech/edr/connectors/nuix</RepositoryUrl>
-    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/connectors/nuix/-/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>https://gitlab.com/reductech/edr/connectors/nuix/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageTags>ediscovery;forensics;nuix;automation;orchestration;edrm</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
