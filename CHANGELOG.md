@@ -1,3 +1,23 @@
+## v0.3.0 (2020-11-27)
+
+The way the connector interacts with Nuix has been rewritten - functions
+and data are now streamed to Nuix so there is no longer a requirement
+for script composition.
+
+**Breaking Change**: this version currently only supports Nuix 8.
+
+### New Features
+
+- Stream functions and data instead of script composition #102
+- Support Entity arguments for Nuix scripts, to allow Technicians to customise processing #99
+
+### Maintenance
+
+- Update to latest version of Core and use new property names #109
+- Update to latest version of core to take advantage of Streams, Entities, and EntityStreams #100
+- Add Release issue template #98
+- Use template ci config, so that it's easier to maintain #97
+
 ## v0.2.1 (2020-11-03)
 
 ### New Features

@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
     <AssemblyName>Reductech.EDR.Connectors.Nuix</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.2.1$(VersionSuffix)</Version>
+    <Version>0.3.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,7 +18,7 @@
 
     <PackageProjectUrl>https://gitlab.com/reductech/edr/connectors/nuix</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/reductech/edr/connectors/nuix</RepositoryUrl>
-    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/connectors/nuix/-/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>https://gitlab.com/reductech/edr/connectors/nuix/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageTags>ediscovery;forensics;nuix;automation;orchestration;edrm</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
@@ -31,7 +31,7 @@
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.13.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0-a.master.2011261617" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0" />
     <PackageReference Include="Superpower" Version="2.3.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
