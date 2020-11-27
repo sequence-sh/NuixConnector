@@ -158,7 +158,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
                     new AssertTrue
                     {
-                        Test = new NuixDoesCaseExist
+                        Boolean = new NuixDoesCaseExist
                         {
                             CasePath = CasePath
                         }

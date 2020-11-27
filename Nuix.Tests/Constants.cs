@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core.Enums;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Util;
@@ -66,7 +67,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static readonly IStep<Unit> DeleteCaseFolder = new DeleteItem { Path = CasePath };
         public static readonly IStep<Unit> DeleteOutputFolder = new DeleteItem { Path = Constant(OutputFolder) };
         public static readonly IStep<Unit> CreateOutputFolder = new CreateDirectory { Path = Constant(OutputFolder) };
-        public static readonly IStep<Unit> AssertCaseDoesNotExist = new AssertTrue { Test = new Not { Boolean = new NuixDoesCaseExist { CasePath = CasePath } } };
+        public static readonly IStep<Unit> AssertCaseDoesNotExist = new AssertTrue { Boolean = new Not { Boolean = new NuixDoesCaseExist { CasePath = CasePath } } };
         public static readonly IStep<Unit> CreateCase = new NuixCreateCase
         {
             CaseName = Constant("Integration Test Case"),
@@ -78,16 +79,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             return new AssertTrue
             {
-                Test = new DoesStringContain
+                Boolean = new StringContains
                 {
                     IgnoreCase = Constant(true),
                     Substring = Constant(expectedContents),
-                    Superstring = new FromStream
+                    String = new StringFromStream()
                     {
                         Stream = new ReadFile
                         {
-                            FileName = Constant(fileName),
-                            Folder = Constant(folderName)
+                            Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>{ folderName, fileName})}
                         }
                     }
                 }
@@ -99,7 +99,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static IStep<Unit> AssertCount(int expected, string searchTerm, IStep<string>? casePath = null) =>
             new AssertTrue
             {
-                Test = CompareItemsCount(expected, CompareOperator.Equals, searchTerm, casePath)
+                Boolean = CompareItemsCount(expected, CompareOperator.Equals, searchTerm, casePath)
             };
 
         public static IStep<bool> CompareItemsCount(int right, CompareOperator op, string searchTerm, IStep<string>? casePath)
