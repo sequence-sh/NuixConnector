@@ -87,7 +87,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                     {
                         Stream = new ReadFile
                         {
-                            Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>{fileName, folderName})}
+                            Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>{ folderName, fileName})}
                         }
                     }
                 }
