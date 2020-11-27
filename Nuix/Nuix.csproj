@@ -31,7 +31,7 @@
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.13.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0-a.master.2011261617" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0" />
     <PackageReference Include="Superpower" Version="2.3.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
