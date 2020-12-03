@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -27,9 +28,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     /// </summary>
     public static class NuixConnectionHelper
     {
-        private const string NuixGeneralScriptName = "edr-nuix-connector.rb";
+        internal const string NuixGeneralScriptName = "edr-nuix-connector.rb";
 
-        private static readonly VariableName NuixVariableName = new VariableName("ReductechNuixConnection");
+        internal static readonly VariableName NuixVariableName = new VariableName("ReductechNuixConnection");
 
         /// <summary>
         /// Gets or creates a connection to nuix.
