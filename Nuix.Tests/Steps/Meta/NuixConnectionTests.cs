@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
@@ -118,6 +119,25 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 
             Assert.True(createConnection.IsSuccess);
             Assert.True(processRef!.IsDisposed);
+        }
+        
+        [Fact]
+        public void GetOrCreateNuixConnection_WhenConnectionAlreadyDisposed_LogsMessage()
+        {
+            var state = GetStateMonadWithConnection();
+
+            var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
+            
+            originalConnection.Value.Dispose();
+
+            var createConnection = state.GetOrCreateNuixConnection(true);
+
+            Assert.True(originalConnection.IsSuccess);
+            Assert.True(createConnection.IsSuccess);
+            
+            var logger = state.Logger as TestLogger;
+            logger!.LoggedValues.Should().Contain(s =>
+                s.ToString()!.Equals("Connection already disposed."));
         }
 
     }
