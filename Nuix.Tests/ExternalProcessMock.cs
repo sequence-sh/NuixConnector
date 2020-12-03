@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
@@ -32,6 +33,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         };
         
         public Encoding ProcessEncoding { get; set; } = Encoding.UTF8;
+
+        public bool ValidateArguments { get; set; } = true;
             
         public ExternalProcessMock(int expectedTimesStarted, params ExternalProcessAction[] externalProcessActions)
         {
@@ -62,13 +65,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             if(TimesStarted > ExpectedTimesStarted)
                 throw new XunitException($"Should only start external process {ExpectedTimesStarted} times");
 
-            processPath.Should().Be(ProcessPath);
 
-            encoding.Should().Be(ProcessEncoding);
-
-            args[0].Should().Be(ProcessArgs[0]);
-            args[1].Should().Be(ProcessArgs[1]);
-            args[2].Should().EndWith(ProcessArgs[2]);
+            if (ValidateArguments)
+            {
+                processPath.Should().Be(ProcessPath);
+                encoding.Should().Be(ProcessEncoding);
+                args[0].Should().Be(ProcessArgs[0]);
+                args[1].Should().Be(ProcessArgs[1]);
+                args[2].Should().EndWith(ProcessArgs[2]);
+            }
+            else
+            {
+                if (!processPath.Equals(ProcessPath))
+                    return new ErrorBuilder($"Could not start '{processPath}'", ErrorCode.ExternalProcessError);
+            }
 
             return new ProcessReferenceMock(ExternalProcessActions);
         }
