@@ -41,6 +41,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             if (currentConnection.IsSuccess)
             {
+                // TODO: What happens if the connection is closed/disposed?
                 if (reopen)
                 {
                     try
@@ -50,6 +51,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     }
                     catch (InvalidOperationException) //Thrown if already disposed
                     {
+                        stateMonad.Logger.LogDebug("Connection already disposed.");
                     }
                 }
 
@@ -330,15 +332,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         private readonly HashSet<string> _evaluatedFunctions = new HashSet<string>();
 
         /// <inheritdoc />
-        public void Dispose()
-        {
-            try
-            {
-                ExternalProcess.Dispose();
-            }
-            catch (InvalidOperationException) //Thrown if the process was already disposed
-            {
-            }
-        }
+        public void Dispose() => ExternalProcess.Dispose();
+        
     }
 }
