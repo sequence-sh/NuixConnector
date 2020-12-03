@@ -21,6 +21,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     internal class ExternalProcessMock : IExternalProcessRunner
     {
+        
+        public string ProcessPath { get; set; }= "TestPath";
+        
+        public List<string> ProcessArgs { get; set; } = new List<string>
+        {
+            "-licencesourcetype",
+            "dongle",
+            NuixConnectionHelper.NuixGeneralScriptName
+        };
+        
+        public Encoding ProcessEncoding { get; set; } = Encoding.UTF8;
+            
         public ExternalProcessMock(int expectedTimesStarted, params ExternalProcessAction[] externalProcessActions)
         {
             ExpectedTimesStarted = expectedTimesStarted;
@@ -50,18 +62,18 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             if(TimesStarted > ExpectedTimesStarted)
                 throw new XunitException($"Should only start external process {ExpectedTimesStarted} times");
 
-            processPath.Should().Be("TestPath");
+            processPath.Should().Be(ProcessPath);
 
-            encoding.Should().Be(Encoding.UTF8);
+            encoding.Should().Be(ProcessEncoding);
 
-            args[0].Should().Be("-licencesourcetype");
-            args[1].Should().Be("dongle");
-            args[2].Should().EndWith("edr-nuix-connector.rb");
+            args[0].Should().Be(ProcessArgs[0]);
+            args[1].Should().Be(ProcessArgs[1]);
+            args[2].Should().EndWith(ProcessArgs[2]);
 
             return new ProcessReferenceMock(ExternalProcessActions);
         }
 
-        private class ProcessReferenceMock : IExternalProcessReference
+        internal class ProcessReferenceMock : IExternalProcessReference
         {
 
             public ProcessReferenceMock(params ExternalProcessAction[] externalProcessActions)
@@ -124,16 +136,22 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             private readonly CancellationTokenSource _cancellationTokenSource;
 
             private Stack<ExternalProcessAction>  RemainingExternalProcessActions { get; }
+
+            internal bool IsDisposed { get; private set; } = false;
+            
             /// <inheritdoc />
             public void Dispose()
             {
+                if (IsDisposed)
+                    throw new InvalidOperationException("Already disposed.");
+                IsDisposed = true;
                 _cancellationTokenSource.Cancel();
             }
 
             /// <inheritdoc />
             public void WaitForExit(int? milliseconds)
             {
-                throw new NotImplementedException();
+                Thread.Sleep(new Random().Next(100));
             }
 
             /// <inheritdoc />
