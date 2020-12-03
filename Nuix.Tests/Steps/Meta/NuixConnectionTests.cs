@@ -16,12 +16,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 {
     public class NuixConnectionHelperTests
     {
-        private readonly NuixSettings _nuixSettings = new NuixSettings(true,
-            Constants.NuixSettingsList.First().NuixExeConsolePath,
-            new Version(8, 8),
-            Constants.AllNuixFeatures);
-
-        //private Result<NuixConnection, IErrorBuilder> GetConnection()
         private static StateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner)
         {
             var nuixSettings = new NuixSettings(
@@ -138,6 +132,23 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var logger = state.Logger as TestLogger;
             logger!.LoggedValues.Should().Contain(s =>
                 s.ToString()!.Equals("Connection already disposed."));
+        }
+
+        [Fact]
+        public void GetOrCreateNuixConnection_OnStartExternalProcessFailure_ReturnsError()
+        {
+            var fakeExternalProcess = new ExternalProcessMock(1, GetCreateCaseAction())
+            {
+                ProcessPath = "WrongPath",
+                ValidateArguments = false
+            };
+            
+            IStateMonad state = GetStateMonad(fakeExternalProcess);
+            
+            var createConnection = state.GetOrCreateNuixConnection(true);
+
+            Assert.True(createConnection.IsFailure);
+            Assert.Equal($"Could not start '{Constants.NuixSettingsList.First().NuixExeConsolePath}'", createConnection.Error.AsString);
         }
 
     }
