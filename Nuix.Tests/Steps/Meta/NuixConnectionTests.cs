@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -9,6 +11,7 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
+using Reductech.EDR.Core.Util;
 using Xunit;
 using Xunit.Sdk;
 
@@ -149,6 +152,51 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 
             Assert.True(createConnection.IsFailure);
             Assert.Equal($"Could not start '{Constants.NuixSettingsList.First().NuixExeConsolePath}'", createConnection.Error.AsString);
+        }
+
+        [Fact]
+        public async Task CloseNuixConnectionAsync_WhenNoConnectionExists_DoesNothing()
+        {
+            var fakeExternalProcess = new ExternalProcessMock(1, GetCreateCaseAction());
+
+            IStateMonad state = GetStateMonad(fakeExternalProcess);
+            
+            var ct = new CancellationToken();
+
+            var actual = await state.CloseNuixConnectionAsync(ct);
+
+            Assert.True(actual.IsSuccess);
+            Assert.Equal(Unit.Default, actual);
+        }
+
+        [Fact]
+        public async Task CloseNuixConnectionAsync_WhenConnectionExists_ClosesConnection()
+        {
+            var state = GetStateMonadWithConnection();
+            var ct = new CancellationToken();
+            
+            var actual = await state.CloseNuixConnectionAsync(ct);
+            var connection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
+
+            Assert.True(actual.IsSuccess);
+            Assert.Equal(Unit.Default, actual);
+            Assert.True(connection.IsFailure);
+        }
+        
+        [Fact]
+        public async Task CloseNuixConnectionAsync_ErrorOnClose_ReturnsError()
+        {
+            var state = GetStateMonadWithConnection();
+            var ct = new CancellationToken();
+            
+            var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
+            Assert.True(originalConnection.IsSuccess);
+            originalConnection.Value.Dispose();
+            
+            var actual = await state.CloseNuixConnectionAsync(ct);
+
+            Assert.True(actual.IsFailure);
+            Assert.Equal("Already disposed.", actual.Error.AsString);
         }
 
     }
