@@ -17,9 +17,9 @@ using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 {
-    public class NuixConnectionHelperTests
+    public static class NuixConnectionTestsHelper
     {
-        private static StateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner)
+        public static StateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner)
         {
             var nuixSettings = new NuixSettings(
                 true,
@@ -41,7 +41,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             return monad;
         }
 
-        private static IStateMonad GetStateMonadWithConnection()
+        public static IStateMonad GetStateMonadWithConnection()
         {
             var fakeExternalProcess = new ExternalProcessMock(2, GetCreateCaseAction());
             
@@ -70,7 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             return state;
         }
 
-        private static ExternalProcessAction GetCreateCaseAction()
+        public static ExternalProcessAction GetCreateCaseAction()
         {
             return new ExternalProcessAction(new ConnectionCommand
                 {
@@ -89,11 +89,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                 }
             );
         }
+    }
 
+    public class NuixConnectionHelperTests
+    {
         [Fact]
         public void GetOrCreateNuixConnection_WhenConnectionExists_ReturnsConnection()
         {
-            var state = GetStateMonadWithConnection();
+            var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
             
             var expected = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
@@ -106,7 +109,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         [Fact]
         public void GetOrCreateNuixConnection_WhenReopenIsSet_DisposesOldConnection()
         {
-            var state = GetStateMonadWithConnection();
+            var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
             
             var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
@@ -121,7 +124,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         [Fact]
         public void GetOrCreateNuixConnection_WhenConnectionAlreadyDisposed_LogsMessage()
         {
-            var state = GetStateMonadWithConnection();
+            var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
 
             var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
             
@@ -140,13 +143,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         [Fact]
         public void GetOrCreateNuixConnection_OnStartExternalProcessFailure_ReturnsError()
         {
-            var fakeExternalProcess = new ExternalProcessMock(1, GetCreateCaseAction())
+            var fakeExternalProcess = new ExternalProcessMock(1, NuixConnectionTestsHelper.GetCreateCaseAction())
             {
                 ProcessPath = "WrongPath",
                 ValidateArguments = false
             };
             
-            IStateMonad state = GetStateMonad(fakeExternalProcess);
+            IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess);
             
             var createConnection = state.GetOrCreateNuixConnection(true);
 
@@ -157,9 +160,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         [Fact]
         public async Task CloseNuixConnectionAsync_WhenNoConnectionExists_DoesNothing()
         {
-            var fakeExternalProcess = new ExternalProcessMock(1, GetCreateCaseAction());
+            var fakeExternalProcess = new ExternalProcessMock(1, NuixConnectionTestsHelper.GetCreateCaseAction());
 
-            IStateMonad state = GetStateMonad(fakeExternalProcess);
+            IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess);
             
             var ct = new CancellationToken();
 
@@ -172,7 +175,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         [Fact]
         public async Task CloseNuixConnectionAsync_WhenConnectionExists_ClosesConnection()
         {
-            var state = GetStateMonadWithConnection();
+            var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
             var ct = new CancellationToken();
             
             var actual = await state.CloseNuixConnectionAsync(ct);
@@ -186,7 +189,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         [Fact]
         public async Task CloseNuixConnectionAsync_ErrorOnClose_ReturnsError()
         {
-            var state = GetStateMonadWithConnection();
+            var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
             var ct = new CancellationToken();
             
             var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
