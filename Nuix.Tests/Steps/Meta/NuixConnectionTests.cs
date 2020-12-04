@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
@@ -270,5 +272,46 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var logger = state.Logger as TestLogger;
             logger!.LoggedValues.Should().Contain(s => s.ToString()!.Equals("Finished"));
         }
+
+        [Fact]
+        public async Task RunFunctionAsync_WhenDisposed_Throws()
+        {
+            var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(null);
+            
+            var logger = new TestLogger();
+            var ct = new CancellationToken();
+            
+            nuixConnection.Dispose();
+
+            await Assert.ThrowsAsync<ObjectDisposedException>(() =>
+                nuixConnection.RunFunctionAsync<Unit>(logger, null, null, ct));
+        }
+        
+        [Fact]
+        public async Task RunFunctionAsync_WithTwoEntityStreamParameters_ReturnsError()
+        {
+            var action = NuixConnectionTestsHelper.GetDoneAction();
+            var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
+            var logger = new TestLogger();
+            var ct = new CancellationToken();
+
+            var stream1 = new EntityStream(new List<Entity>().ToAsyncEnumerable());
+            var stream2 = new EntityStream(new List<Entity>().ToAsyncEnumerable());
+            
+            var dict = new Dictionary<RubyFunctionParameter, object>()
+            {
+                { new RubyFunctionParameter("stream1Arg", "Stream1", false, null), stream1 },
+                { new RubyFunctionParameter("stream2Arg", "Stream2", false, null), stream2 }
+            };
+            var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
+
+            var step = new FakeNuixTwoStreamFunction();
+            var result = await nuixConnection.RunFunctionAsync<Unit>(
+                logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
+            
+            Assert.True(result.IsFailure);
+            Assert.Equal("Cannot have two entity stream parameters to a nuix function", result.Error.AsString);
+        }
+        
     }
 }
