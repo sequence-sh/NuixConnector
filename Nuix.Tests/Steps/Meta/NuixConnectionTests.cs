@@ -19,7 +19,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 {
     public static class NuixConnectionTestsHelper
     {
-        public static StateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner)
+        public static IStateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner)
         {
             var nuixSettings = new NuixSettings(
                 true,
@@ -41,9 +41,33 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             return monad;
         }
 
-        public static IStateMonad GetStateMonadWithConnection()
+        public static NuixConnection GetNuixConnection(ExternalProcessAction action, int expectedTimesStarted = 1)
         {
-            var fakeExternalProcess = new ExternalProcessMock(2, GetCreateCaseAction());
+            var fakeExternalProcess = new ExternalProcessMock(expectedTimesStarted, action)
+            {
+                ProcessPath = Constants.NuixSettingsList.First().NuixExeConsolePath
+            };
+            
+            var process = fakeExternalProcess.StartExternalProcess(
+                fakeExternalProcess.ProcessPath,
+                fakeExternalProcess.ProcessArgs,
+                fakeExternalProcess.ProcessEncoding
+            );
+            
+            if (process.IsFailure)
+                throw new XunitException("Failed to create a mock Nuix process");
+
+            var connection = new NuixConnection(process.Value);
+
+            return connection;
+        }
+
+        public static IStateMonad GetStateMonadWithConnection() =>
+            GetStateMonadWithConnection(GetCreateCaseAction());
+        
+        public static IStateMonad GetStateMonadWithConnection(params ExternalProcessAction[] actions)
+        {
+            var fakeExternalProcess = new ExternalProcessMock(2, actions);
             
             IStateMonad state = GetStateMonad(fakeExternalProcess);
             
@@ -72,7 +96,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 
         public static ExternalProcessAction GetCreateCaseAction()
         {
-            return new ExternalProcessAction(new ConnectionCommand
+            return new ExternalProcessAction(
+                new ConnectionCommand
                 {
                     Command = "CreateCase",
                     FunctionDefinition = "",
@@ -86,6 +111,25 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                 new ConnectionOutput
                 {
                     Result = new ConnectionOutputResult {Data = null}
+                }
+            );
+        }
+
+        public static ExternalProcessAction GetDoneAction()
+        {
+            return new ExternalProcessAction(new ConnectionCommand
+                {
+                    Command = "done"
+                },
+                new ConnectionOutput
+                {
+                    Log = new ConnectionOutputLog()
+                    {
+                        Message = "Finished",
+                        Severity = "info",
+                        Time = DateTime.Now.ToString(),
+                        StackTrace = ""
+                    }
                 }
             );
         }
@@ -185,22 +229,46 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             Assert.Equal(Unit.Default, actual);
             Assert.True(connection.IsFailure);
         }
-        
+
         [Fact]
         public async Task CloseNuixConnectionAsync_ErrorOnClose_ReturnsError()
         {
-            var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
-            var ct = new CancellationToken();
+            var state = NuixConnectionTestsHelper.GetStateMonadWithConnection(
+                NuixConnectionTestsHelper.GetDoneAction()
+            );
             
+            var ct = new CancellationToken();
+
             var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
             Assert.True(originalConnection.IsSuccess);
             originalConnection.Value.Dispose();
-            
+
             var actual = await state.CloseNuixConnectionAsync(ct);
 
             Assert.True(actual.IsFailure);
-            Assert.Equal("Already disposed.", actual.Error.AsString);
+            Assert.Matches($"Cannot access a disposed object\\.\\s+Object name: '{nameof(NuixConnection)}'", actual.Error.AsString);
         }
+    }
 
+    public class NuixConnectionTests
+    {
+        [Fact]
+        public async Task SendDoneCommand_WritesDoneToExternalProcess()
+        {
+            var action = NuixConnectionTestsHelper.GetDoneAction();
+            var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
+            
+            var fakeExternalProcess = new ExternalProcessMock(
+                1,
+                NuixConnectionTestsHelper.GetCreateCaseAction()
+            );
+            var state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess);
+            var ct = new CancellationToken();
+
+            await nuixConnection.SendDoneCommand(state, ct);
+            
+            var logger = state.Logger as TestLogger;
+            logger!.LoggedValues.Should().Contain(s => s.ToString()!.Equals("Finished"));
+        }
     }
 }
