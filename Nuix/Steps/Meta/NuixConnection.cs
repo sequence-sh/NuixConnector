@@ -44,14 +44,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 // TODO: What happens if the connection is closed/disposed?
                 if (reopen)
                 {
-                    try
-                    {
-                        currentConnection.Value.ExternalProcess.WaitForExit(1000);
-                        currentConnection.Value.Dispose(); //Get rid of this connection and open a new one
-                    }
-                    catch (InvalidOperationException) //Thrown if already disposed
+                    if (currentConnection.Value.IsDisposed)
                     {
                         stateMonad.Logger.LogDebug("Connection already disposed.");
+                    }
+                    else
+                    {
+                        currentConnection.Value.ExternalProcess.WaitForExit(1000);
+                        currentConnection.Value.Dispose(); //Get rid of this connection and open a new one    
                     }
                 }
 
@@ -106,7 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             try
             {
-                await currentConnection.Value.SendDoneCommand(cancellationToken);
+                await currentConnection.Value.SendDoneCommand(stateMonad, cancellationToken);
 
                 currentConnection.Value.ExternalProcess.WaitForExit(1000);
                 currentConnection.Value.Dispose();
@@ -132,20 +132,29 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Create a new NuixConnection
         /// </summary>
-        public NuixConnection(IExternalProcessReference externalProcess) => ExternalProcess = externalProcess;
+        public NuixConnection(IExternalProcessReference externalProcess) =>
+            ExternalProcess = externalProcess;
 
         /// <summary>
         /// The nuix process.
         /// </summary>
         public IExternalProcessReference ExternalProcess { get; }
+        
+        /// <summary>
+        /// Returns true if the underlying connection has been disposed.
+        /// </summary>
+        public bool IsDisposed { get; private set; } = false;
 
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
         /// <summary>
         /// Sends the 'Done' command
         /// </summary>
-        public async Task SendDoneCommand(CancellationToken cancellation)
+        public async Task SendDoneCommand(IStateMonad state, CancellationToken cancellation)
         {
+            if (IsDisposed)
+                throw new ObjectDisposedException(nameof(NuixConnection));
+            
             var command = new ConnectionCommand()
             {
                 Command = "done"
@@ -155,6 +164,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
 
             await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
+            
+            // Log the ack
+            await GetOutputTyped<Unit>(state.Logger, cancellation, true);
         }
 
         /// <summary>
@@ -166,6 +178,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             IReadOnlyDictionary<RubyFunctionParameter, object> parameters,
             CancellationToken cancellationToken)
         {
+            if (IsDisposed)
+                throw new ObjectDisposedException(nameof(NuixConnection));
+            
             await _semaphore.WaitAsync(cancellationToken);
 
             try
@@ -241,7 +256,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         }
 
 
-        private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(ILogger logger, CancellationToken cancellationToken)
+        private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(ILogger logger,
+            CancellationToken cancellationToken, bool returnOnLog = false)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -306,6 +322,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         default:
                             throw new InvalidEnumArgumentException();
                     }
+
+                    if (returnOnLog)
+                        return new Result<T, IErrorBuilder>();
                 }
 
                 if (connectionOutput.Result != null)
@@ -332,7 +351,13 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         private readonly HashSet<string> _evaluatedFunctions = new HashSet<string>();
 
         /// <inheritdoc />
-        public void Dispose() => ExternalProcess.Dispose();
-        
+        public void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                ExternalProcess.Dispose();
+                IsDisposed = true;
+            }
+        }
     }
 }
