@@ -22,10 +22,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public override async Task<Result<string, IError>> Run(IStateMonad stateMonad, CancellationToken cancellationToken)
         {
-            var isAdmin = IsCurrentProcessAdmin();
-            var isLinux = IsLinux;
-            if(isAdmin &&!isLinux)
-                return new SingleError("You cannot run arbitrary Nuix Scripts as Administrator", ErrorCode.ExternalProcessError, new StepErrorLocation(this));
+            //var isAdmin = IsCurrentProcessAdmin();
+            //var isLinux = IsLinux;
+            //if(isAdmin &&!isLinux)
+            //    return new SingleError("You cannot run arbitrary Nuix Scripts as Administrator", ErrorCode.ExternalProcessError, new StepErrorLocation(this));
 
             var functionName = await FunctionName.Run(stateMonad, cancellationToken);
             if (functionName.IsFailure) return functionName.ConvertFailure<string>();
@@ -146,21 +146,21 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         public IStep<EntityStream>? EntityStreamParameter { get;set; }= null!;
 
 
-        private static bool IsCurrentProcessAdmin()
-        {
-            using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-            var principal = new System.Security.Principal.WindowsPrincipal(identity);
-            return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
-        }
+        //private static bool IsCurrentProcessAdmin()
+        //{
+        //    using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+        //    var principal = new System.Security.Principal.WindowsPrincipal(identity);
+        //    return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+        //}
 
-        public static bool IsLinux
-        {
-            get
-            {
-                var p = (int)Environment.OSVersion.Platform;
-                return (p == 4) || (p == 6) || (p == 128);
-            }
-        }
+        //public static bool IsLinux
+        //{
+        //    get
+        //    {
+        //        var p = (int)Environment.OSVersion.Platform;
+        //        return (p == 4) || (p == 6) || (p == 128);
+        //    }
+        //}
 
 
         /// <inheritdoc />
