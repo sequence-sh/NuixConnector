@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CSharpFunctionalExtensions;
-using JetBrains.Annotations;
 using Moq;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {

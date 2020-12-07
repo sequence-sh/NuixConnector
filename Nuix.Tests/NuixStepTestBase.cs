@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
-using Microsoft.Extensions.Logging;
-using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
-using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
