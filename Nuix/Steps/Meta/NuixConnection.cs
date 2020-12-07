@@ -261,7 +261,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 }
                 catch (Exception e)
                 {
-                    return new ErrorBuilder(e, ErrorCode.CouldNotDeserialize);
+                    var parentException = new Exception($"Could not deserialize '{jsonString}'", e);
+
+
+                    return new ErrorBuilder(parentException, ErrorCode.CouldNotDeserialize);
                 }
 
                 if (connectionOutput.Error != null)

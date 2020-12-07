@@ -48,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         new ExternalProcessAction(new ConnectionCommand()
                         {
-                            Command = "Test Script",
+                            Command = "Test_Script",
                             FunctionDefinition = "Lorem Ipsum",
                             Arguments = new Dictionary<string, object>()
                             {
@@ -81,7 +81,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         new ExternalProcessAction(new ConnectionCommand()
                         {
-                            Command = "Test Script",
+                            Command = "Test_Script",
                             FunctionDefinition = "Lorem Ipsum",
                             Arguments = new Dictionary<string, object>()
                             {
@@ -128,41 +128,47 @@ EntityStreamParameter:
         [Fact]
 
         [Trait("Category", "Integration")]
-        public async Task TestScriptWithNoStream_Integration()
+        public async Task TestScriptWithStream_Integration()
         {
-            var stepCase = new IntegrationTestCase("Case with no stream",
+            var stepCase = new IntegrationTestCase("Case with stream",
                 new NuixRunScript
                 {
-                    FunctionName = Constant("Test Script"),
-                    ScriptText = Constant("puts Param1\r\nreturn Param2"),
+                    FunctionName = Constant("test_Script2"),
+                    ScriptText = Constant("log param1\r\nlog datastream.pop\r\nlog datastream.pop\r\nreturn param2"),
                     EntityStreamParameter = new Constant<EntityStream>(new EntityStream(new List<Entity>()
                         {
                             CreateEntity(("Foo", "a")),
                             CreateEntity(("Foo", "b")),
                         }.ToAsyncEnumerable())),
-                    Parameters = new Constant<Entity>(CreateEntity(("Param1", "ABC"), ("Param2", "DEF")))
+                    Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
 
                 },
                 "DEF",
-                "ABC").WithSettings(Constants.NuixSettingsList.OrderByDescending(x=>x.NuixVersion).First());
+                "Starting",
+                "ABC",
+                "{\"Foo\":\"a\"}",
+                "{\"Foo\":\"b\"}"
+                
+                ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x=>x.NuixVersion).First());
 
             await stepCase.RunCaseAsync(TestOutputHelper, null);
         }
 
         [Fact]
         [Trait("Category", "Integration")]
-        public async Task TestScriptWithStream_Integration()
+        public async Task TestScriptWithNoStream_Integration()
         {
-            var stepCase = new IntegrationTestCase("Case with stream",
+            var stepCase = new IntegrationTestCase("Case without stream",
                 new NuixRunScript
                 {
-                    FunctionName = Constant("Test Script"),
-                    ScriptText = Constant("puts Param1\r\nreturn Param2"),
+                    FunctionName = Constant("test_Script"),
+                    ScriptText = Constant("log param1\r\nreturn param2"),
                     EntityStreamParameter = null,
-                    Parameters = new Constant<Entity>(CreateEntity(("Param1", "ABC"), ("Param2", "DEF")))
+                    Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
 
                 },
                 "DEF",
+                "Starting",
                 "ABC").WithSettings(Constants.NuixSettingsList.OrderByDescending(x=>x.NuixVersion).First());;
 
             await stepCase.RunCaseAsync(TestOutputHelper, null);
