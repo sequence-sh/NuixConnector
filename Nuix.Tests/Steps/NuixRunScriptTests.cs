@@ -40,7 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         FunctionName= Constant("Test Script"),
                         ScriptText = Constant("Lorem Ipsum"),
                         EntityStreamParameter = null,
-                        Parameters = new Constant<Entity>(CreateEntity(("Param1", "ABC")))
+                        Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC")))
 
                     },
                     "Hello World",
@@ -48,11 +48,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         new ExternalProcessAction(new ConnectionCommand()
                         {
-                            Command = "Test_Script",
+                            Command = "test_Script",
                             FunctionDefinition = "Lorem Ipsum",
                             Arguments = new Dictionary<string, object>()
                             {
-                                {"Param1","ABC"}
+                                {"param1","ABC"}
                             },IsStream = null
                         }, new ConnectionOutput()
                         {
@@ -66,14 +66,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 yield return new RunScriptStepCase("Run Script with entity Stream",
                     new NuixRunScript
                     {
-                        FunctionName = Constant("Test Script"),
+                        FunctionName = Constant("test_Script"),
                         ScriptText = Constant("Lorem Ipsum"),
                         EntityStreamParameter = new Constant<EntityStream>(new EntityStream(new List<Entity>()
                         {
                             CreateEntity(("Foo", "a")),
                             CreateEntity(("Foo", "b")),
                         }.ToAsyncEnumerable())),
-                        Parameters = new Constant<Entity>(CreateEntity(("Param1", "ABC")))
+                        Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC")))
 
                     },
                     "Hello World",
@@ -81,11 +81,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         new ExternalProcessAction(new ConnectionCommand()
                         {
-                            Command = "Test_Script",
+                            Command = "test_Script",
                             FunctionDefinition = "Lorem Ipsum",
                             Arguments = new Dictionary<string, object>()
                             {
-                                {"Param1","ABC"}
+                                {"param1","ABC"}
                             },IsStream = true
                         }, new ConnectionOutput()
                         {
