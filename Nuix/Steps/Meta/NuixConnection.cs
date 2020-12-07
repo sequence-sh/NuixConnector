@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -300,7 +301,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                             logger.LogDebug(connectionOutput.Log.Message);
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException();
+                            throw new InvalidEnumArgumentException();
                     }
                 }
 

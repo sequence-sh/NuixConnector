@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
@@ -28,10 +28,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="2.13.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.13.1" />
+    <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.3.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.4.0-a.master.2012071439" />
     <PackageReference Include="Superpower" Version="2.3.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />

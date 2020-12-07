@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public override void WriteJson(JsonWriter writer, object? entityObject, JsonSerializer serializer)
         {
-            if (!(entityObject is Entity entity))
+            if (entityObject is not Entity entity)
                 return;
 
             var dictionary = new Dictionary<string, object?>();
