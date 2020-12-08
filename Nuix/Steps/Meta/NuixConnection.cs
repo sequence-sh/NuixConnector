@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -90,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             if (setResult.IsFailure)
                 return setResult.ConvertFailure<NuixConnection>()
-                    .MapError(e=> ErrorBuilderList.Combine(e.GetAllErrors().Select(x=>new ErrorBuilder(x.Message, x.ErrorCode))));
+                    .MapError(e => ErrorBuilderList.Combine(e.GetAllErrors().Select(x => new ErrorBuilder(x.Message, x.ErrorCode))));
 
             return connection;
         }
@@ -139,7 +138,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// The nuix process.
         /// </summary>
         public IExternalProcessReference ExternalProcess { get; }
-        
+
         /// <summary>
         /// Returns true if the underlying connection has been disposed.
         /// </summary>
@@ -154,7 +153,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             if (IsDisposed)
                 throw new ObjectDisposedException(nameof(NuixConnection));
-            
+
             var command = new ConnectionCommand()
             {
                 Command = "done"
@@ -164,7 +163,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
 
             await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
-            
+
             // Log the ack
             await GetOutputTyped<Unit>(state.Logger, cancellation, true);
         }
@@ -180,7 +179,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         {
             if (IsDisposed)
                 throw new ObjectDisposedException(nameof(NuixConnection));
-            
+
             await _semaphore.WaitAsync(cancellationToken);
 
             try
@@ -203,7 +202,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     {
                         if (value is EntityStream sStream)
                         {
-                            if(entityStream != null)
+                            if (entityStream != null)
                                 return new ErrorBuilder("Cannot have two entity stream parameters to a nuix function", ErrorCode.ExternalProcessError);
 
                             entityStream = sStream;
@@ -229,7 +228,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     if (entities.IsFailure)
                     {
                         await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);
-                        return entities.ConvertFailure<T>().MapError(x=> new ErrorBuilder(x.AsString, ErrorCode.ExternalProcessError) as IErrorBuilder);
+                        return entities.ConvertFailure<T>().MapError(x => new ErrorBuilder(x.AsString, ErrorCode.ExternalProcessError) as IErrorBuilder);
                     }
 
                     foreach (var entity in entities.Value)
@@ -277,7 +276,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 try
                 {
-                    connectionOutput= JsonConvert.DeserializeObject<ConnectionOutput>(jsonString, EntityJsonConverter.Instance)!;
+                    connectionOutput = JsonConvert.DeserializeObject<ConnectionOutput>(jsonString, EntityJsonConverter.Instance)!;
                 }
                 catch (Exception e)
                 {
@@ -290,7 +289,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 if (connectionOutput.Error != null)
                     return new ErrorBuilder(connectionOutput.Error.Message, ErrorCode.ExternalProcessError);
 
-                if(connectionOutput.Log != null)
+                if (connectionOutput.Log != null)
                 {
                     if (source == StreamSource.Error)
                         return new ErrorBuilder(connectionOutput.Log.Message, ErrorCode.ExternalProcessError);
@@ -325,6 +324,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                     if (returnOnLog)
                         return new Result<T, IErrorBuilder>();
+                    
+                    continue;
                 }
 
                 if (connectionOutput.Result != null)
@@ -339,10 +340,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     if (convertedResult is T tConverted)
                         return tConverted;
 
-                    return new ErrorBuilder($"Could not deserialize '{connectionOutput.Result.Data}' to {typeof(T).Name}", ErrorCode.CouldNotDeserialize);
-
+                    return new ErrorBuilder(
+                        $"Could not deserialize '{connectionOutput.Result.Data}' to {typeof(T).Name}",
+                        ErrorCode.CouldNotDeserialize);
                 }
 
+                return new ErrorBuilder(
+                    $"{nameof(ConnectionOutput)} did not have one of Error, Log or Result properties.",
+                    ErrorCode.ExternalProcessMissingOutput);
             }
 
             return new ErrorBuilder("Process was cancelled", ErrorCode.ExternalProcessError);

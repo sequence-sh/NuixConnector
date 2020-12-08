@@ -357,5 +357,46 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             Assert.Equal(@"[{""Property1"":""Value1""},{""Property2"":""Value2""}]", result.Value);
         }
 
+        [Fact]
+        public async Task RunFunctionAsync_WhenConnectionOutputPropertiesAreNull_ReturnsError()
+        {
+            var casePath = @"d:\case";
+
+            var action = new ExternalProcessAction(
+                new ConnectionCommand
+                {
+                    Command = "MigrateCase",
+                    FunctionDefinition = "",
+                    Arguments = new Dictionary<string, object>
+                    {
+                        {nameof(NuixMigrateCase.CasePath), casePath}
+                    }
+                },
+                new ConnectionOutput
+                {
+                    Result = null
+                }
+            );
+
+            var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
+            var logger = new TestLogger();
+            var ct = new CancellationToken();
+
+            var dict = new Dictionary<RubyFunctionParameter, object>()
+            {
+                { new RubyFunctionParameter("pathArg", nameof(NuixMigrateCase.CasePath), false, null), casePath }
+            };
+            var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
+
+            var step = new NuixMigrateCase();
+
+            var result = await nuixConnection.RunFunctionAsync(
+                logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
+
+            Assert.True(result.IsFailure);
+            Assert.Equal($"{nameof(ConnectionOutput)} did not have one of Error, Log or Result properties.",
+                result.Error.AsString);
+        }
+
     }
 }
