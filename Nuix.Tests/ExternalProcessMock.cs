@@ -85,7 +85,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         internal class ProcessReferenceMock : IExternalProcessReference
         {
-
             public ProcessReferenceMock(params ExternalProcessAction[] externalProcessActions)
             {
                 RemainingExternalProcessActions = new Stack<ExternalProcessAction>(externalProcessActions.Reverse());
@@ -98,34 +97,68 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 //This method will run in another thread.
                 _ = ReadInput(iChannel.Reader, oChannel.Writer, RemainingExternalProcessActions, _cancellationTokenSource.Token);
-
             }
 
-            private static async Task ReadInput(ChannelReader<string> commandChannel,
+            private static async Task ReadInput(ChannelReader<string> inputChannel,
                 ChannelWriter<(string line, StreamSource source)> output,
                 Stack<ExternalProcessAction> externalProcessActions,
                 CancellationToken cancellationToken)
             {
-                await foreach (var commandJson in commandChannel.ReadAllAsync(cancellationToken))
+                var isStream = false;
+                string? streamEndToken = null;
+                var entityStream = new List<string>();
+                
+                await foreach (var inputJson in inputChannel.ReadAllAsync(cancellationToken))
                 {
                     try
                     {
-                        if (!externalProcessActions.TryPop(out var expectedAction))
-                            throw new XunitException($"Unexpected: '{commandJson}'");
+                        if (isStream)
+                        {
+                            if (streamEndToken is null)
+                            {
+                                streamEndToken = inputJson;
+                            }
+                            else if (streamEndToken.Equals(inputJson))
+                            {
+                                isStream = false;
+                                streamEndToken = null;
+                                var data = new ConnectionOutput()
+                                {
+                                    Result = new ConnectionOutputResult()
+                                    {
+                                        Data = $"[{string.Join(',',entityStream)}]"
+                                    }
+                                };
+                                var json = JsonConvert.SerializeObject(data);
+                                await output.WriteAsync((json, StreamSource.Output), cancellationToken);
+                            }
+                            else
+                            {
+                                entityStream.Add(inputJson);
+                            }
+                            continue;
+                        }
 
-                        var commandResult = EntityJsonConverter.DeserializeConnectionCommand(commandJson);
+                        if (!externalProcessActions.TryPop(out var expectedAction))
+                            throw new XunitException($"Unexpected: '{inputJson}'");
+
+                        var commandResult = EntityJsonConverter.DeserializeConnectionCommand(inputJson);
                         commandResult.ShouldBeSuccessful(x=>x.AsString);
 
                         commandResult.Value.Should().BeEquivalentTo(expectedAction.Command,
-                            option=>
+                            option =>
                                 option.Excluding(su => su.FunctionDefinition)
                         );
 
-
+                        if (commandResult.Value.IsStream != null && commandResult.Value.IsStream.Value)
+                        {
+                            isStream = true;
+                            continue;
+                        }
+                        
                         foreach (var connectionOutput in expectedAction.DesiredOutput)
                         {
                             var json = JsonConvert.SerializeObject(connectionOutput);
-
                             await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                         }
                     }
@@ -136,8 +169,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                         var error = new ConnectionOutput{Error = new ConnectionOutputError{Message = exception.Message}};
                         var errorJson = JsonConvert.SerializeObject(error);
-
-
+                        
                         await output.WriteAsync((errorJson, StreamSource.Error), cancellationToken);
                     }
                 }

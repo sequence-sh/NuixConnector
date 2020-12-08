@@ -29,11 +29,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                 new Version(8, 8),
                 Constants.AllNuixFeatures
             );
-            
+
             var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
             var monad = new StateMonad(
-                new TestLogger(), 
+                new TestLogger(),
                 nuixSettings,
                 externalProcessRunner,
                 FileSystemHelper.Instance,
@@ -49,13 +49,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             {
                 ProcessPath = Constants.NuixSettingsList.First().NuixExeConsolePath
             };
-            
+
             var process = fakeExternalProcess.StartExternalProcess(
                 fakeExternalProcess.ProcessPath,
                 fakeExternalProcess.ProcessArgs,
                 fakeExternalProcess.ProcessEncoding
             );
-            
+
             if (process.IsFailure)
                 throw new XunitException("Failed to create a mock Nuix process");
 
@@ -66,13 +66,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 
         public static IStateMonad GetStateMonadWithConnection() =>
             GetStateMonadWithConnection(GetCreateCaseAction());
-        
+
         public static IStateMonad GetStateMonadWithConnection(params ExternalProcessAction[] actions)
         {
             var fakeExternalProcess = new ExternalProcessMock(2, actions);
-            
+
             IStateMonad state = GetStateMonad(fakeExternalProcess);
-            
+
             var nuixSettings = state.GetSettings<INuixSettings>();
 
             fakeExternalProcess.ProcessPath = nuixSettings.Value.NuixExeConsolePath;
@@ -82,14 +82,14 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                 fakeExternalProcess.ProcessArgs,
                 fakeExternalProcess.ProcessEncoding
             );
-            
+
             if (process.IsFailure)
                 throw new XunitException("Failed to create a mock Nuix process");
 
             var connection = new NuixConnection(process.Value);
 
             var setResult = state.SetVariable(NuixConnectionHelper.NuixVariableName, connection);
-            
+
             if (setResult.IsFailure)
                 throw new XunitException("Could not set existing connection on state monad.");
 
@@ -112,7 +112,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                 },
                 new ConnectionOutput
                 {
-                    Result = new ConnectionOutputResult {Data = null}
+                    Result = new ConnectionOutputResult { Data = null }
                 }
             );
         }
@@ -120,9 +120,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         public static ExternalProcessAction GetDoneAction()
         {
             return new ExternalProcessAction(new ConnectionCommand
-                {
-                    Command = "done"
-                },
+            {
+                Command = "done"
+            },
                 new ConnectionOutput
                 {
                     Log = new ConnectionOutputLog()
@@ -143,7 +143,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         public void GetOrCreateNuixConnection_WhenConnectionExists_ReturnsConnection()
         {
             var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
-            
+
             var expected = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
             var createConnection = state.GetOrCreateNuixConnection(false);
@@ -156,7 +156,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         public void GetOrCreateNuixConnection_WhenReopenIsSet_DisposesOldConnection()
         {
             var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
-            
+
             var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
             var createConnection = state.GetOrCreateNuixConnection(true);
@@ -166,21 +166,21 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             Assert.True(createConnection.IsSuccess);
             Assert.True(processRef!.IsDisposed);
         }
-        
+
         [Fact]
         public void GetOrCreateNuixConnection_WhenConnectionAlreadyDisposed_LogsMessage()
         {
             var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
 
             var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
-            
+
             originalConnection.Value.Dispose();
 
             var createConnection = state.GetOrCreateNuixConnection(true);
 
             Assert.True(originalConnection.IsSuccess);
             Assert.True(createConnection.IsSuccess);
-            
+
             var logger = state.Logger as TestLogger;
             logger!.LoggedValues.Should().Contain(s =>
                 s.ToString()!.Equals("Connection already disposed."));
@@ -194,9 +194,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                 ProcessPath = "WrongPath",
                 ValidateArguments = false
             };
-            
+
             IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess);
-            
+
             var createConnection = state.GetOrCreateNuixConnection(true);
 
             Assert.True(createConnection.IsFailure);
@@ -209,7 +209,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var fakeExternalProcess = new ExternalProcessMock(1, NuixConnectionTestsHelper.GetCreateCaseAction());
 
             IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess);
-            
+
             var ct = new CancellationToken();
 
             var actual = await state.CloseNuixConnectionAsync(ct);
@@ -223,7 +223,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         {
             var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
             var ct = new CancellationToken();
-            
+
             var actual = await state.CloseNuixConnectionAsync(ct);
             var connection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
@@ -238,7 +238,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var state = NuixConnectionTestsHelper.GetStateMonadWithConnection(
                 NuixConnectionTestsHelper.GetDoneAction()
             );
-            
+
             var ct = new CancellationToken();
 
             var originalConnection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
@@ -259,7 +259,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         {
             var action = NuixConnectionTestsHelper.GetDoneAction();
             var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-            
+
             var fakeExternalProcess = new ExternalProcessMock(
                 1,
                 NuixConnectionTestsHelper.GetCreateCaseAction()
@@ -268,7 +268,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var ct = new CancellationToken();
 
             await nuixConnection.SendDoneCommand(state, ct);
-            
+
             var logger = state.Logger as TestLogger;
             logger!.LoggedValues.Should().Contain(s => s.ToString()!.Equals("Finished"));
         }
@@ -277,16 +277,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         public async Task RunFunctionAsync_WhenDisposed_Throws()
         {
             var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(null);
-            
+
             var logger = new TestLogger();
             var ct = new CancellationToken();
-            
+
             nuixConnection.Dispose();
 
             await Assert.ThrowsAsync<ObjectDisposedException>(() =>
                 nuixConnection.RunFunctionAsync<Unit>(logger, null, null, ct));
         }
-        
+
         [Fact]
         public async Task RunFunctionAsync_WithTwoEntityStreamParameters_ReturnsError()
         {
@@ -297,7 +297,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 
             var stream1 = new EntityStream(new List<Entity>().ToAsyncEnumerable());
             var stream2 = new EntityStream(new List<Entity>().ToAsyncEnumerable());
-            
+
             var dict = new Dictionary<RubyFunctionParameter, object>()
             {
                 { new RubyFunctionParameter("stream1Arg", "Stream1", false, null), stream1 },
@@ -308,10 +308,54 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var step = new FakeNuixTwoStreamFunction();
             var result = await nuixConnection.RunFunctionAsync<Unit>(
                 logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
-            
+
             Assert.True(result.IsFailure);
             Assert.Equal("Cannot have two entity stream parameters to a nuix function", result.Error.AsString);
         }
-        
+
+        [Fact]
+        public async Task RunFunctionAsync_WhenFunctionHasEntityStream_ProcessStream()
+        {
+            var action = new ExternalProcessAction(
+                new ConnectionCommand
+                {
+                    Command = "EntityStream",
+                    FunctionDefinition = "doesn't matter",
+                    Arguments = new Dictionary<string, object>(),
+                    IsStream = true
+                },
+                new ConnectionOutput
+                {
+                    Result = new ConnectionOutputResult() { Data = "json" }
+                }
+            );
+
+            var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
+            var logger = new TestLogger();
+            var ct = new CancellationToken();
+
+            var entities = new List<Entity>()
+            {
+                new Entity(new KeyValuePair<string, EntityValue>("Property1", EntityValue.Create("Value1"))),
+                new Entity(new KeyValuePair<string, EntityValue>("Property2", EntityValue.Create("Value2")))
+            };
+
+            var stream1 = new EntityStream(entities.ToAsyncEnumerable());
+
+            var dict = new Dictionary<RubyFunctionParameter, object>()
+            {
+                { new RubyFunctionParameter("entityStream", "EntityStream", false, null), stream1 }
+            };
+            var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
+
+            var step = new FakeNuixStreamFunction();
+
+            var result = await nuixConnection.RunFunctionAsync(
+                logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
+
+            Assert.True(result.IsSuccess);
+            Assert.Equal(@"[{""Property1"":""Value1""},{""Property2"":""Value2""}]", result.Value);
+        }
+
     }
 }
