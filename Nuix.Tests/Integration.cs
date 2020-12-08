@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Moq;
+using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -43,7 +44,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public NuixIntegrationTestCase(string name, params IStep<Unit>[] steps)
             {
                 Name = name;
-                Step = new Sequence { Steps = steps };
+                Step = new Sequence { Steps = steps.Append(new NuixCloseConnection()).ToList() };
             }
 
             public string Name { get; }

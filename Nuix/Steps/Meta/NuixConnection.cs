@@ -251,7 +251,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 }
                 catch (ChannelClosedException e)
                 {
-                    return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
+                    return new ErrorBuilder($"{e.Message} - there may have been an authentication error.", ErrorCode.ExternalProcessError);
                 }
 
                 ConnectionOutput connectionOutput;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Moq;
+using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.Entities;
@@ -13,6 +14,7 @@ using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Serialization;
+using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
@@ -22,6 +24,7 @@ using Entity = Reductech.EDR.Core.Entities.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
+    [Collection("RequiresNuixLicense")]
     public class NuixRunScriptTests : StepTestBase<NuixRunScript, string>
     {
         /// <inheritdoc />
@@ -169,7 +172,7 @@ EntityStreamParameter:
                 },
                 "DEF",
                 "Starting",
-                "ABC").WithSettings(Constants.NuixSettingsList.OrderByDescending(x=>x.NuixVersion).First());;
+                "ABC").WithSettings(Constants.NuixSettingsList.OrderByDescending(x=>x.NuixVersion).First());
 
             await stepCase.RunCaseAsync(TestOutputHelper, null);
         }
@@ -199,19 +202,35 @@ EntityStreamParameter:
         public class IntegrationTestCase : CaseThatExecutes
         {
             public IntegrationTestCase(string name, NuixRunScript step, string expectedOutput, params string[] expectedLoggedValues)
-                : base(expectedLoggedValues)
+                : base(expectedLoggedValues.Append(expectedOutput).ToArray())
             {
                 Name = name;
-                Step = step;
+
+                var sequence = new Sequence()
+                {
+                    Steps = new List<IStep<Unit>>()
+                    {
+                        new SetVariable<string>()
+                        {
+                            Variable = new VariableName("Output"),
+                            Value = step
+                        },
+                        new NuixCloseConnection(),
+                        new Print<string>()
+                        {
+                            Value =GetVariable<string>(new VariableName("Output"))
+                        }
+                    }
+
+                };
+
+                Step = sequence;
                 IgnoreFinalState = true;
-                ExpectedOutput = expectedOutput;
             }
 
             public override string Name { get; }
 
-            public NuixRunScript Step { get; }
-
-            public string ExpectedOutput { get; }
+            public Sequence Step { get; }
 
             /// <inheritdoc />
             public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper, string? extraArgument)
@@ -240,8 +259,9 @@ EntityStreamParameter:
             {
                 result.ShouldBeSuccessful(x => x.AsString);
 
-                result.Value.Should().Be(ExpectedOutput);
+                (result.Value as object) .Should().Be(Unit.Default);
             }
+
 
             /// <inheritdoc />
             public override IFileSystemHelper GetFileSystemHelper(MockRepository mockRepository) => FileSystemHelper.Instance;
