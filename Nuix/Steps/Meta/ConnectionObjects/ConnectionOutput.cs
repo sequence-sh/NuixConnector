@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using CSharpFunctionalExtensions;
+using Newtonsoft.Json;
+using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
 {
@@ -24,5 +27,20 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
         /// </summary>
         [JsonProperty("error")]
         public ConnectionOutputError? Error { get; set; }
+
+        public Result<bool, IErrorBuilder> Validate()
+        {
+            var count = 0;
+            if (Result != null) count++;
+            if (Log != null) count++;
+            if (Error != null) count++;
+
+            if (count == 1)
+                return true;
+            if (count > 1)
+                return new ErrorBuilder($"{nameof(ConnectionOutput)} can only have one property set", ErrorCode.ExternalProcessError);
+            
+            return new ErrorBuilder($"{nameof(ConnectionOutput)} must have at least one property set", ErrorCode.ExternalProcessMissingOutput);
+        }
     }
 }
