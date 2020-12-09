@@ -28,6 +28,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
         [JsonProperty("error")]
         public ConnectionOutputError? Error { get; set; }
 
+        /// <summary>
+        /// A function to ensure that only one of Result, Log, or Error are set
+        /// </summary>
+        /// <returns>true if ConnectionOutput is valid, ErrorBuilder if not</returns>
         public Result<bool, IErrorBuilder> Validate()
         {
             var count = 0;
