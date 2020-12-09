@@ -323,10 +323,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                     FunctionDefinition = "doesn't matter",
                     Arguments = new Dictionary<string, object>(),
                     IsStream = true
-                },
-                new ConnectionOutput
-                {
-                    Result = new ConnectionOutputResult() { Data = "json" }
                 }
             );
 
@@ -394,7 +390,49 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                 logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
 
             Assert.True(result.IsFailure);
-            Assert.Equal($"{nameof(ConnectionOutput)} did not have one of Error, Log or Result properties.",
+            Assert.Equal($"{nameof(ConnectionOutput)} must have at least one property set",
+                result.Error.AsString);
+        }
+        
+        [Fact]
+        public async Task RunFunctionAsync_WhenConnectionOutputIsNotValid_ReturnsError()
+        {
+            var casePath = @"d:\case";
+
+            var action = new ExternalProcessAction(
+                new ConnectionCommand
+                {
+                    Command = "MigrateCase",
+                    FunctionDefinition = "",
+                    Arguments = new Dictionary<string, object>
+                    {
+                        {nameof(NuixMigrateCase.CasePath), casePath}
+                    }
+                },
+                new ConnectionOutput
+                {
+                    Log = new ConnectionOutputLog(),
+                    Result = new ConnectionOutputResult()
+                }
+            );
+
+            var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
+            var logger = new TestLogger();
+            var ct = new CancellationToken();
+
+            var dict = new Dictionary<RubyFunctionParameter, object>()
+            {
+                { new RubyFunctionParameter("pathArg", nameof(NuixMigrateCase.CasePath), false, null), casePath }
+            };
+            var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
+
+            var step = new NuixMigrateCase();
+
+            var result = await nuixConnection.RunFunctionAsync(
+                logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
+
+            Assert.True(result.IsFailure);
+            Assert.Equal($"{nameof(ConnectionOutput)} can only have one property set",
                 result.Error.AsString);
         }
 
