@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
@@ -21,7 +22,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 {
     public static class NuixConnectionTestsHelper
     {
-        public static IStateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner)
+        public static IStateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner) =>
+            GetStateMonad(externalProcessRunner, FileSystemHelper.Instance);
+        
+        public static IStateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner,
+            IFileSystemHelper fileSystemHelper)
         {
             var nuixSettings = new NuixSettings(
                 true,
@@ -32,13 +37,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 
             var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
-            var monad = new StateMonad(
-                new TestLogger(),
-                nuixSettings,
-                externalProcessRunner,
-                FileSystemHelper.Instance,
-                sfs
-            );
+            var monad = new StateMonad(new TestLogger(), nuixSettings, externalProcessRunner,
+                fileSystemHelper, sfs);
 
             return monad;
         }
@@ -249,6 +249,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 
             Assert.True(actual.IsFailure);
             Assert.Matches($"Cannot access a disposed object\\.\\s+Object name: '{nameof(NuixConnection)}'", actual.Error.AsString);
+        }
+        
+        [Fact]
+        public void GetOrCreateNuixConnection_WhenScriptFileDoesNotExist_ReturnsError()
+        {
+            var fakeExternalProcess = new ExternalProcessMock(1, NuixConnectionTestsHelper.GetCreateCaseAction());
+            var fakeFileSystemHelper = Mock.Of<IFileSystemHelper>(f => f.DoesFileExist(It.IsAny<string>()) == false);
+
+            IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess, fakeFileSystemHelper);
+
+            var connection = state.GetOrCreateNuixConnection(false);
+
+            Assert.True(connection.IsFailure);
+            Assert.Matches("Missing NUIX connector script", connection.Error.AsString);
         }
     }
 
