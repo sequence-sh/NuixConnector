@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -71,9 +70,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 arguments.Add("dongle");
             }
 
-            var scriptPath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-                NuixGeneralScriptName);
+            // TODO: Make this configurable
+            var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
+
+            if (!stateMonad.FileSystemHelper.DoesFileExist(scriptPath))
+                return new ErrorBuilder($"Missing NUIX connector script {scriptPath}", ErrorCode.ExternalProcessNotFound);
 
             arguments.Add(scriptPath);
 
@@ -93,6 +94,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             return connection;
         }
+
         /// <summary>
         /// Close the nuix connection if it is open.
         /// </summary>
@@ -326,7 +328,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                     if (returnOnLog)
                         return new Result<T, IErrorBuilder>();
-                    
+
                     continue;
                 }
 
@@ -346,7 +348,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         $"Could not deserialize '{connectionOutput.Result.Data}' to {typeof(T).Name}",
                         ErrorCode.CouldNotDeserialize);
                 }
-                
+
             }
 
             return new ErrorBuilder("Process was cancelled", ErrorCode.ExternalProcessError);
