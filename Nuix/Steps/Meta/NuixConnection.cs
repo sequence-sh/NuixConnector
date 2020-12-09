@@ -281,10 +281,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 catch (Exception e)
                 {
                     var parentException = new Exception($"Could not deserialize '{jsonString}'", e);
-
-
                     return new ErrorBuilder(parentException, ErrorCode.CouldNotDeserialize);
                 }
+
+                var valid = connectionOutput.Validate();
+                if (valid.IsFailure)
+                    return valid.ConvertFailure<T>();
 
                 if (connectionOutput.Error != null)
                     return new ErrorBuilder(connectionOutput.Error.Message, ErrorCode.ExternalProcessError);
@@ -344,10 +346,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         $"Could not deserialize '{connectionOutput.Result.Data}' to {typeof(T).Name}",
                         ErrorCode.CouldNotDeserialize);
                 }
-
-                return new ErrorBuilder(
-                    $"{nameof(ConnectionOutput)} did not have one of Error, Log or Result properties.",
-                    ErrorCode.ExternalProcessMissingOutput);
+                
             }
 
             return new ErrorBuilder("Process was cancelled", ErrorCode.ExternalProcessError);
