@@ -153,11 +153,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         if (commandResult.Value.IsStream != null && commandResult.Value.IsStream.Value)
                         {
                             isStream = true;
-                            continue;
                         }
                         
                         foreach (var connectionOutput in expectedAction.DesiredOutput)
                         {
+                            if (isStream && !(connectionOutput.Result is null))
+                                throw new XunitException("Stream functions cannot have 'Result' set in ConnectionOutput");
                             var json = JsonConvert.SerializeObject(connectionOutput);
                             await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                         }
