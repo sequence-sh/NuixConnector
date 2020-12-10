@@ -152,9 +152,9 @@ EntityStreamParameter:
                 "Starting",
                 "ABC",
                 "{\"Foo\":\"a\"}",
-                "{\"Foo\":\"b\"}"
-
-                ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x => x.NuixVersion).First());
+                "{\"Foo\":\"b\"}",
+                "Finished"
+            ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x => x.NuixVersion).First());
 
             await stepCase.RunCaseAsync(TestOutputHelper, null);
         }
@@ -174,11 +174,11 @@ EntityStreamParameter:
                 },
                 "DEF",
                 "Starting",
-                "ABC").WithSettings(Constants.NuixSettingsList.OrderByDescending(x => x.NuixVersion).First());
-
+                "ABC",
+                "Finished"
+            ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x => x.NuixVersion).First());
             await stepCase.RunCaseAsync(TestOutputHelper, null);
         }
-
 
         public class RunScriptStepCase : StepCase
         {
