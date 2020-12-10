@@ -25,6 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 ExternalProcessActions = externalProcessActions;
                 IgnoreFinalState = true;
+                AddFileSystemAction(x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true));
             }
 
             public NuixStepCase(string name,
@@ -35,6 +36,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             {
                 ExternalProcessActions = externalProcessActions;
                 IgnoreFinalState = true;
+                AddFileSystemAction(x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true));
             }
 
             public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }

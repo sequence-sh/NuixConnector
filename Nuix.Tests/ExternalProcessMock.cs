@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
@@ -21,6 +22,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     internal class ExternalProcessMock : IExternalProcessRunner
     {
+        
+        public string ProcessPath { get; set; }= "TestPath";
+        
+        public List<string> ProcessArgs { get; set; } = new List<string>
+        {
+            "-licencesourcetype",
+            "dongle",
+            NuixConnectionHelper.NuixGeneralScriptName
+        };
+        
+        public Encoding ProcessEncoding { get; set; } = Encoding.UTF8;
+
+        public bool ValidateArguments { get; set; } = true;
+            
         public ExternalProcessMock(int expectedTimesStarted, params ExternalProcessAction[] externalProcessActions)
         {
             ExpectedTimesStarted = expectedTimesStarted;
@@ -50,20 +65,26 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             if(TimesStarted > ExpectedTimesStarted)
                 throw new XunitException($"Should only start external process {ExpectedTimesStarted} times");
 
-            processPath.Should().Be("TestPath");
 
-            encoding.Should().Be(Encoding.UTF8);
-
-            args[0].Should().Be("-licencesourcetype");
-            args[1].Should().Be("dongle");
-            args[2].Should().EndWith("edr-nuix-connector.rb");
+            if (ValidateArguments)
+            {
+                processPath.Should().Be(ProcessPath);
+                encoding.Should().Be(ProcessEncoding);
+                args[0].Should().Be(ProcessArgs[0]);
+                args[1].Should().Be(ProcessArgs[1]);
+                args[2].Should().EndWith(ProcessArgs[2]);
+            }
+            else
+            {
+                if (!processPath.Equals(ProcessPath))
+                    return new ErrorBuilder($"Could not start '{processPath}'", ErrorCode.ExternalProcessError);
+            }
 
             return new ProcessReferenceMock(ExternalProcessActions);
         }
 
-        private class ProcessReferenceMock : IExternalProcessReference
+        internal class ProcessReferenceMock : IExternalProcessReference
         {
-
             public ProcessReferenceMock(params ExternalProcessAction[] externalProcessActions)
             {
                 RemainingExternalProcessActions = new Stack<ExternalProcessAction>(externalProcessActions.Reverse());
@@ -76,34 +97,69 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                 //This method will run in another thread.
                 _ = ReadInput(iChannel.Reader, oChannel.Writer, RemainingExternalProcessActions, _cancellationTokenSource.Token);
-
             }
 
-            private static async Task ReadInput(ChannelReader<string> commandChannel,
+            private static async Task ReadInput(ChannelReader<string> inputChannel,
                 ChannelWriter<(string line, StreamSource source)> output,
                 Stack<ExternalProcessAction> externalProcessActions,
                 CancellationToken cancellationToken)
             {
-                await foreach (var commandJson in commandChannel.ReadAllAsync(cancellationToken))
+                var isStream = false;
+                string? streamEndToken = null;
+                var entityStream = new List<string>();
+                
+                await foreach (var inputJson in inputChannel.ReadAllAsync(cancellationToken))
                 {
                     try
                     {
-                        if (!externalProcessActions.TryPop(out var expectedAction))
-                            throw new XunitException($"Unexpected: '{commandJson}'");
+                        if (isStream)
+                        {
+                            if (streamEndToken is null)
+                            {
+                                streamEndToken = inputJson;
+                            }
+                            else if (streamEndToken.Equals(inputJson))
+                            {
+                                isStream = false;
+                                streamEndToken = null;
+                                var data = new ConnectionOutput()
+                                {
+                                    Result = new ConnectionOutputResult()
+                                    {
+                                        Data = $"[{string.Join(',',entityStream)}]"
+                                    }
+                                };
+                                var json = JsonConvert.SerializeObject(data);
+                                await output.WriteAsync((json, StreamSource.Output), cancellationToken);
+                            }
+                            else
+                            {
+                                entityStream.Add(inputJson);
+                            }
+                            continue;
+                        }
 
-                        var commandResult = EntityJsonConverter.DeserializeConnectionCommand(commandJson);
+                        if (!externalProcessActions.TryPop(out var expectedAction))
+                            throw new XunitException($"Unexpected: '{inputJson}'");
+
+                        var commandResult = EntityJsonConverter.DeserializeConnectionCommand(inputJson);
                         commandResult.ShouldBeSuccessful(x=>x.AsString);
 
                         commandResult.Value.Should().BeEquivalentTo(expectedAction.Command,
-                            option=>
+                            option =>
                                 option.Excluding(su => su.FunctionDefinition)
                         );
 
-
+                        if (commandResult.Value.IsStream != null && commandResult.Value.IsStream.Value)
+                        {
+                            isStream = true;
+                        }
+                        
                         foreach (var connectionOutput in expectedAction.DesiredOutput)
                         {
+                            if (isStream && !(connectionOutput.Result is null))
+                                throw new XunitException("Stream functions cannot have 'Result' set in ConnectionOutput");
                             var json = JsonConvert.SerializeObject(connectionOutput);
-
                             await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                         }
                     }
@@ -114,8 +170,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                         var error = new ConnectionOutput{Error = new ConnectionOutputError{Message = exception.Message}};
                         var errorJson = JsonConvert.SerializeObject(error);
-
-
+                        
                         await output.WriteAsync((errorJson, StreamSource.Error), cancellationToken);
                     }
                 }
@@ -124,16 +179,22 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             private readonly CancellationTokenSource _cancellationTokenSource;
 
             private Stack<ExternalProcessAction>  RemainingExternalProcessActions { get; }
+
+            internal bool IsDisposed { get; private set; } = false;
+            
             /// <inheritdoc />
             public void Dispose()
             {
+                if (IsDisposed)
+                    throw new InvalidOperationException("Already disposed.");
+                IsDisposed = true;
                 _cancellationTokenSource.Cancel();
             }
 
             /// <inheritdoc />
             public void WaitForExit(int? milliseconds)
             {
-                throw new NotImplementedException();
+                Thread.Sleep(new Random().Next(100));
             }
 
             /// <inheritdoc />

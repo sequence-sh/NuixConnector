@@ -36,11 +36,11 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <None Update="edr-nuix-connector.rb">
+    <Content Include="edr-nuix-connector.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 
 </Project>

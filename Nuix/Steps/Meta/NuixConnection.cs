@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -27,9 +26,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     /// </summary>
     public static class NuixConnectionHelper
     {
-        private const string NuixGeneralScriptName = "edr-nuix-connector.rb";
+        internal const string NuixGeneralScriptName = "edr-nuix-connector.rb";
 
-        private static readonly VariableName NuixVariableName = new VariableName("ReductechNuixConnection");
+        internal static readonly VariableName NuixVariableName = new VariableName("ReductechNuixConnection");
 
         /// <summary>
         /// Gets or creates a connection to nuix.
@@ -40,15 +39,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             if (currentConnection.IsSuccess)
             {
+                // TODO: What happens if the connection is closed/disposed?
                 if (reopen)
                 {
-                    try
+                    if (currentConnection.Value.IsDisposed)
+                    {
+                        stateMonad.Logger.LogDebug("Connection already disposed.");
+                    }
+                    else
                     {
                         currentConnection.Value.ExternalProcess.WaitForExit(1000);
-                        currentConnection.Value.Dispose(); //Get rid of this connection and open a new one
-                    }
-                    catch (InvalidOperationException) //Thrown if already disposed
-                    {
+                        currentConnection.Value.Dispose(); //Get rid of this connection and open a new one    
                     }
                 }
 
@@ -69,9 +70,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 arguments.Add("dongle");
             }
 
-            var scriptPath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-                NuixGeneralScriptName);
+            // TODO: Make this configurable
+            var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
+
+            if (!stateMonad.FileSystemHelper.DoesFileExist(scriptPath))
+                return new ErrorBuilder($"Missing NUIX connector script {scriptPath}", ErrorCode.ExternalProcessNotFound);
 
             arguments.Add(scriptPath);
 
@@ -87,10 +90,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             if (setResult.IsFailure)
                 return setResult.ConvertFailure<NuixConnection>()
-                    .MapError(e=> ErrorBuilderList.Combine(e.GetAllErrors().Select(x=>new ErrorBuilder(x.Message, x.ErrorCode))));
+                    .MapError(e => ErrorBuilderList.Combine(e.GetAllErrors().Select(x => new ErrorBuilder(x.Message, x.ErrorCode))));
 
             return connection;
         }
+
         /// <summary>
         /// Close the nuix connection if it is open.
         /// </summary>
@@ -103,7 +107,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             try
             {
-                await currentConnection.Value.SendDoneCommand(cancellationToken);
+                await currentConnection.Value.SendDoneCommand(stateMonad, cancellationToken);
 
                 currentConnection.Value.ExternalProcess.WaitForExit(1000);
                 currentConnection.Value.Dispose();
@@ -129,20 +133,29 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <summary>
         /// Create a new NuixConnection
         /// </summary>
-        public NuixConnection(IExternalProcessReference externalProcess) => ExternalProcess = externalProcess;
+        public NuixConnection(IExternalProcessReference externalProcess) =>
+            ExternalProcess = externalProcess;
 
         /// <summary>
         /// The nuix process.
         /// </summary>
         public IExternalProcessReference ExternalProcess { get; }
 
+        /// <summary>
+        /// Returns true if the underlying connection has been disposed.
+        /// </summary>
+        public bool IsDisposed { get; private set; } = false;
+
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
         /// <summary>
         /// Sends the 'Done' command
         /// </summary>
-        public async Task SendDoneCommand(CancellationToken cancellation)
+        public async Task SendDoneCommand(IStateMonad state, CancellationToken cancellation)
         {
+            if (IsDisposed)
+                throw new ObjectDisposedException(nameof(NuixConnection));
+
             var command = new ConnectionCommand()
             {
                 Command = "done"
@@ -152,6 +165,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
 
             await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
+
+            // Log the ack
+            await GetOutputTyped<Unit>(state.Logger, cancellation, true);
         }
 
         /// <summary>
@@ -163,6 +179,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             IReadOnlyDictionary<RubyFunctionParameter, object> parameters,
             CancellationToken cancellationToken)
         {
+            if (IsDisposed)
+                throw new ObjectDisposedException(nameof(NuixConnection));
+
             await _semaphore.WaitAsync(cancellationToken);
 
             try
@@ -185,7 +204,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     {
                         if (value is EntityStream sStream)
                         {
-                            if(entityStream != null)
+                            if (entityStream != null)
                                 return new ErrorBuilder("Cannot have two entity stream parameters to a nuix function", ErrorCode.ExternalProcessError);
 
                             entityStream = sStream;
@@ -211,7 +230,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     if (entities.IsFailure)
                     {
                         await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);
-                        return entities.ConvertFailure<T>().MapError(x=> new ErrorBuilder(x.AsString, ErrorCode.ExternalProcessError) as IErrorBuilder);
+                        return entities.ConvertFailure<T>().MapError(x => new ErrorBuilder(x.AsString, ErrorCode.ExternalProcessError) as IErrorBuilder);
                     }
 
                     foreach (var entity in entities.Value)
@@ -238,7 +257,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         }
 
 
-        private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(ILogger logger, CancellationToken cancellationToken)
+        private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(ILogger logger,
+            CancellationToken cancellationToken, bool returnOnLog = false)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -258,20 +278,22 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 try
                 {
-                    connectionOutput= JsonConvert.DeserializeObject<ConnectionOutput>(jsonString, EntityJsonConverter.Instance)!;
+                    connectionOutput = JsonConvert.DeserializeObject<ConnectionOutput>(jsonString, EntityJsonConverter.Instance)!;
                 }
                 catch (Exception e)
                 {
                     var parentException = new Exception($"Could not deserialize '{jsonString}'", e);
-
-
                     return new ErrorBuilder(parentException, ErrorCode.CouldNotDeserialize);
                 }
+
+                var valid = connectionOutput.Validate();
+                if (valid.IsFailure)
+                    return valid.ConvertFailure<T>();
 
                 if (connectionOutput.Error != null)
                     return new ErrorBuilder(connectionOutput.Error.Message, ErrorCode.ExternalProcessError);
 
-                if(connectionOutput.Log != null)
+                if (connectionOutput.Log != null)
                 {
                     if (source == StreamSource.Error)
                         return new ErrorBuilder(connectionOutput.Log.Message, ErrorCode.ExternalProcessError);
@@ -303,6 +325,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         default:
                             throw new InvalidEnumArgumentException();
                     }
+
+                    if (returnOnLog)
+                        return new Result<T, IErrorBuilder>();
+
+                    continue;
                 }
 
                 if (connectionOutput.Result != null)
@@ -317,8 +344,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     if (convertedResult is T tConverted)
                         return tConverted;
 
-                    return new ErrorBuilder($"Could not deserialize '{connectionOutput.Result.Data}' to {typeof(T).Name}", ErrorCode.CouldNotDeserialize);
-
+                    return new ErrorBuilder(
+                        $"Could not deserialize '{connectionOutput.Result.Data}' to {typeof(T).Name}",
+                        ErrorCode.CouldNotDeserialize);
                 }
 
             }
@@ -331,12 +359,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public void Dispose()
         {
-            try
+            if (!IsDisposed)
             {
                 ExternalProcess.Dispose();
-            }
-            catch (InvalidOperationException) //Thrown if the process was already disposed
-            {
+                IsDisposed = true;
             }
         }
     }

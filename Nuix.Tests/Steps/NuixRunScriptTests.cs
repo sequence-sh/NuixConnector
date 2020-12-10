@@ -40,11 +40,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 yield return new RunScriptStepCase("Run Script, no entity Stream",
                     new NuixRunScript
                     {
-                        FunctionName= Constant("Test Script"),
+                        FunctionName = Constant("Test Script"),
                         ScriptText = Constant("Lorem Ipsum"),
                         EntityStreamParameter = null,
                         Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC")))
-
                     },
                     "Hello World",
                     new List<ExternalProcessAction>()
@@ -56,15 +55,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             Arguments = new Dictionary<string, object>()
                             {
                                 {"param1","ABC"}
-                            },IsStream = null
-                        }, new ConnectionOutput()
+                            }
+                        },
+                        new ConnectionOutput()
                         {
-                            Log = new ConnectionOutputLog(){Message = "Log Message", Severity = "info"},
-                            Result = new ConnectionOutputResult(){Data = "Hello World"}
+                            Log = new ConnectionOutputLog() { Message = "Log Message", Severity = "info" }
+                        },
+                        new ConnectionOutput()
+                        {
+                            Result = new ConnectionOutputResult() { Data = "Hello World" }
                         })
                     },
                     "Log Message"
-                ).WithSettings(UnitTestSettings);
+                ).WithSettings(UnitTestSettings)
+                .WithFileSystemAction(x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true));
 
                 yield return new RunScriptStepCase("Run Script with entity Stream",
                     new NuixRunScript
@@ -77,9 +81,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             CreateEntity(("Foo", "b")),
                         }.ToAsyncEnumerable())),
                         Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC")))
-
                     },
-                    "Hello World",
+                    @"[{""Foo"":""a""},{""Foo"":""b""}]",
                     new List<ExternalProcessAction>()
                     {
                         new ExternalProcessAction(new ConnectionCommand()
@@ -89,22 +92,22 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             Arguments = new Dictionary<string, object>()
                             {
                                 {"param1","ABC"}
-                            },IsStream = true
+                            },
+                            IsStream = true
                         }, new ConnectionOutput()
                         {
-                            Log = new ConnectionOutputLog(){Message = "Log Message", Severity = "info"},
-                            Result = new ConnectionOutputResult(){Data = "Hello World"}
+                            Log = new ConnectionOutputLog(){Message = "Log Message", Severity = "info"}
                         })
                     },
                     "Log Message"
-                ).WithSettings(UnitTestSettings);
-
+                ).WithSettings(UnitTestSettings)
+                .WithFileSystemAction(x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true));
             }
         }
 
         public const string TestNuixPath = "TestPath";
 
-        public NuixSettings UnitTestSettings => new NuixSettings(true, TestNuixPath, new Version(8,2),new List<NuixFeature>());
+        public NuixSettings UnitTestSettings => new NuixSettings(true, TestNuixPath, new Version(8, 2), new List<NuixFeature>());
 
         /// <inheritdoc />
         protected override IEnumerable<SerializeCase> SerializeCases
@@ -129,7 +132,6 @@ EntityStreamParameter:
         }
 
         [Fact]
-
         [Trait("Category", "Integration")]
         public async Task TestScriptWithStream_Integration()
         {
@@ -150,9 +152,9 @@ EntityStreamParameter:
                 "Starting",
                 "ABC",
                 "{\"Foo\":\"a\"}",
-                "{\"Foo\":\"b\"}"
-                
-                ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x=>x.NuixVersion).First());
+                "{\"Foo\":\"b\"}",
+                "Finished"
+            ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x => x.NuixVersion).First());
 
             await stepCase.RunCaseAsync(TestOutputHelper, null);
         }
@@ -172,11 +174,11 @@ EntityStreamParameter:
                 },
                 "DEF",
                 "Starting",
-                "ABC").WithSettings(Constants.NuixSettingsList.OrderByDescending(x=>x.NuixVersion).First());
-
+                "ABC",
+                "Finished"
+            ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x => x.NuixVersion).First());
             await stepCase.RunCaseAsync(TestOutputHelper, null);
         }
-
 
         public class RunScriptStepCase : StepCase
         {
@@ -258,8 +260,7 @@ EntityStreamParameter:
             public override void CheckOutputResult(Result<string, IError> result)
             {
                 result.ShouldBeSuccessful(x => x.AsString);
-
-                (result.Value as object) .Should().Be(Unit.Default);
+                (result.Value as object).Should().Be(Unit.Default);
             }
 
 

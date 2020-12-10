@@ -11,7 +11,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             Command = command;
             DesiredOutput = desiredOutput;
 
-            DesiredOutput.Should().NotBeEmpty("If output is empty then the test will hang forever");
+            if (command.IsStream == null || command.IsStream.Value == false)
+                DesiredOutput.Should().NotBeEmpty("If output is empty then the test will hang forever");
         }
 
         public ConnectionCommand Command { get; }

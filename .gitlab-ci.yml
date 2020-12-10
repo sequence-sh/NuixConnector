@@ -57,7 +57,7 @@ integration test:
   script:
     - dotnet restore --packages ./packages
     - dotnet test --no-restore --configuration $CONFIG
-      --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
+      --collect:"XPlat Code Coverage" --results-directory ./
       -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=false
     - *get_coverage
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
@@ -80,6 +80,15 @@ integration test release:
     NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
     NUGET_USERNAME: $NUGET_USER_PROD
     NUGET_TOKEN: $NUGET_TOKEN_PROD
+
+push to nuget dev:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+      when: never
+    - if: $CI_COMMIT_BRANCH == 'master'
+    - if: *not_release
+      when: manual
+      allow_failure: true
 
 # Skipping mutation testing as Stryker currently doesn't support filters
 mutation testing:

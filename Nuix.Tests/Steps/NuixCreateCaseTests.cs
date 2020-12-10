@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.Internal;
@@ -67,8 +68,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         })
                     }
                 ).WithSettings(UnitTestSettings);
-
-
             }
         }
 
@@ -87,13 +86,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     .WithSettings(UnitTestSettings);
 
                 yield return new ErrorCase("Missing Settings", new NuixCreateCase()
-                    {
-                        CasePath = CasePath,
-                        CaseName = Constant("Error Case"),
-                        Investigator = Constant("investigator")
-                    },
-                    new ErrorBuilder("Could not cast 'Reductech.EDR.Core.EmptySettings' to INuixSettings", ErrorCode.MissingStepSettings)
-                    );
+                {
+                    CasePath = CasePath,
+                    CaseName = Constant("Error Case"),
+                    Investigator = Constant("investigator")
+                },
+                new ErrorBuilder("Could not cast 'Reductech.EDR.Core.EmptySettings' to INuixSettings", ErrorCode.MissingStepSettings)
+                );
             }
         }
 
@@ -140,8 +139,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
                         )
                     }
-
-                    ).WithSettings(UnitTestSettings);
+                ).WithSettings(UnitTestSettings)
+                .WithFileSystemAction(x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true));
             }
         }
 
@@ -163,9 +162,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             CasePath = CasePath
                         }
                     },
-                    DeleteCaseFolder);
-
-
+                    DeleteCaseFolder
+                );
             }
         }
 
