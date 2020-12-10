@@ -57,7 +57,7 @@ integration test:
   script:
     - dotnet restore --packages ./packages
     - dotnet test --no-restore --configuration $CONFIG
-      --filter Category=Integration --collect:"XPlat Code Coverage" --results-directory ./
+      --collect:"XPlat Code Coverage" --results-directory ./
       -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=false
     - *get_coverage
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
