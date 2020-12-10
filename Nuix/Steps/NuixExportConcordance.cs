@@ -71,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
 
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// Where to export the Concordance to.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("exportPathArg", 2)]
         public IStep<string> ExportPath { get; set; }= null!;
 
@@ -88,7 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The name of the production set to export.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(3)]
         [RubyArgument("productionSetNameArg", 3)]
         public IStep<string> ProductionSetName { get; set; }= null!;
 

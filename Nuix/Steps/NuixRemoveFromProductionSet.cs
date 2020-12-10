@@ -78,28 +78,31 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
 
-        /// <summary>
-        /// The search term to use for choosing which items to remove.
-        /// </summary>
-        [StepProperty]
-        [DefaultValueExplanation("All items will be removed.")]
-        [Example("Tag:sushi")]
-        [RubyArgument("searchArg", 2)]
-        public IStep<string>? SearchTerm { get; set; }
 
         /// <summary>
         /// The production set to remove results from.
         /// </summary>
         [Required]
-        [StepProperty]
-        [RubyArgument("productionSetNameArg", 3)]
+        [StepProperty(2)]
+        [RubyArgument("productionSetNameArg", 2)]
 
-        public IStep<string> ProductionSetName { get; set; }= null!;
+        public IStep<string> ProductionSetName { get; set; } = null!;
+
+        /// <summary>
+        /// The search term to use for choosing which items to remove.
+        /// </summary>
+        [StepProperty(3)]
+        [DefaultValueExplanation("All items will be removed.")]
+        [Example("Tag:sushi")]
+        [RubyArgument("searchArg", 3)]
+        public IStep<string>? SearchTerm { get; set; }
+
+
 
     }
 }

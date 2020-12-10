@@ -10,6 +10,7 @@ using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -91,8 +92,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         x => x,
                         x => x,
                         x => x,
-                        x => x as object
-                        //TODO handle entity
+                        x => x as object,
+                        x => x
+
                     );
                 }
 
@@ -118,14 +120,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// What to call this function.
         /// This will have spaces replaced with underscores and the first character will be made lowercase
         /// </summary>
-        [StepProperty(Order = 1)]
+        [StepProperty(1)]
         [Required]
         public IStep<string> FunctionName { get; set; } = null!;
 
         /// <summary>
         /// The text of the script to run
         /// </summary>
-        [StepProperty(Order = 2)]
+        [StepProperty( 2)]
         [Required]
         public IStep<string> ScriptText { get;set; } = null!;
 
@@ -133,15 +135,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// Parameters to send to the script.
         /// You can access these by name (with spaces replaced by underscores and the first character lowercase).
         /// </summary>
-        [StepProperty(Order = 3)]
+        [StepProperty( 3)]
         [Required]
-        public IStep<Core.Entities.Entity> Parameters { get;set; }= null!;
+        public IStep<Entity> Parameters { get;set; }= null!;
 
         /// <summary>
         /// Entities to stream to the script.
         /// The parameter name is 'entityStream'
         /// </summary>
-        [StepProperty(Order = 4)]
+        [StepProperty( 4)]
         [DefaultValueExplanation("Do not stream entities")]
         public IStep<EntityStream>? EntityStreamParameter { get;set; }= null!;
 

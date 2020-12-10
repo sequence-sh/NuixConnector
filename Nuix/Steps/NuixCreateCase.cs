@@ -55,7 +55,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the folder to create the case in.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -64,25 +64,24 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The name of the case to create.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("nameArg", 2)]
         public IStep<string> CaseName { get; set; }= null!;
-
-
-        /// <summary>
-        /// Description of the case.
-        /// </summary>
-        [StepProperty]
-        [RubyArgument("descriptionArg", 3)]
-        [DefaultValueExplanation("No Description")]
-        public IStep<string>? Description { get; set; }
 
         /// <summary>
         /// Name of the investigator.
         /// </summary>
         [Required]
-        [StepProperty]
-        [RubyArgument("investigatorArg", 4)]
+        [StepProperty(3)]
+        [RubyArgument("investigatorArg", 3)]
         public IStep<string> Investigator { get; set; }= null!;
+
+        /// <summary>
+        /// Description of the case.
+        /// </summary>
+        [StepProperty(4)]
+        [RubyArgument("descriptionArg", 4)]
+        [DefaultValueExplanation("No Description")]
+        public IStep<string>? Description { get; set; }
     }
 }

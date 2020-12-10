@@ -69,7 +69,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -79,7 +79,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The term to search for.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [Example("*.txt")]
         [RubyArgument("searchArg", 2)]
         public IStep<string> SearchTerm { get; set; } = null!;
@@ -88,7 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The custodian to assign to found results.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(3)]
         [RubyArgument("custodianArg", 3)]
         public IStep<string> Custodian { get; set; } = null!;
     }

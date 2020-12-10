@@ -74,7 +74,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case to import into.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -83,14 +83,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The name of the folder to create.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("folderNameArg", 2)]
         public IStep<string> FolderName { get; set; } = null!;
 
         /// <summary>
         /// A description to add to the folder.
         /// </summary>
-        [StepProperty]
+        [StepProperty(3)]
         [RubyArgument("folderDescriptionArg", 3)]
         [DefaultValueExplanation("No description")]
         public IStep<string>? Description { get; set; }
@@ -99,7 +99,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The name of the custodian to assign the folder to.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(4)]
         [RubyArgument("folderCustodianArg", 4)]
         public IStep<string> Custodian { get; set; } = null!;
 
@@ -107,7 +107,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path of the concordance file to import.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(5)]
         [Example("C:/MyConcordance.dat")]
         [RubyArgument("filePathArg", 5)]
         public IStep<string> FilePath { get; set; } = null!;
@@ -116,7 +116,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The concordance date format to use.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(6)]
         [Example("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
         [RubyArgument("dateFormatArg", 6)]
         public IStep<string> ConcordanceDateFormat { get; set; } = null!;
@@ -125,7 +125,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The name of the concordance profile to use.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(7)]
         [Example("MyProfile")]
         [RubyArgument("profileNameArg", 7)]
         public IStep<string> ConcordanceProfileName { get; set; } = null!;

@@ -82,7 +82,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -92,7 +92,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [Required]
         [Example("*.txt")]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("searchArg", 2)]
         public IStep<string> SearchTerm { get; set; }= null!;
 
@@ -102,7 +102,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [Example("Date")]
         [Required]
-        [StepProperty]
+        [StepProperty(3)]
         [RubyArgument("propertyRegexArg", 3)]
         public IStep<string> PropertyRegex { get; set; }= null!;
 
@@ -111,7 +111,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// If this is set, only values which match this regex will be returned, and only the contents of the first capture group.
         /// </summary>
         [Example(@"(199\d)")]
-        [StepProperty]
+        [StepProperty(4)]
         [RubyArgument("valueRegexArg", 4)]
         [DefaultValueExplanation("All values will be returned")]
         public IStep<string>? ValueRegex { get; set; }

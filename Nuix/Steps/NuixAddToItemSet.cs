@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path of the case to search.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -89,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The term to search for.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("searchArg", 2)]
         public IStep<string> SearchTerm { get; set; }= null!;
 
@@ -98,14 +98,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
 
         [Required]
-        [StepProperty]
+        [StepProperty(3)]
         [RubyArgument("itemSetNameArg", 3)]
         public IStep<string> ItemSetName { get; set; }= null!;
 
         /// <summary>
         /// The means of deduplicating items by key and prioritizing originals in a tie-break.
         /// </summary>
-        [StepProperty]
+        [StepProperty(4)]
         [RubyArgument("deduplicationArg", 4)]
         [DefaultValueExplanation("No deduplication")]
         public IStep<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
@@ -114,7 +114,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The description of the item set.
         /// </summary>
 
-        [StepProperty]
+        [StepProperty(5)]
         [RubyArgument("descriptionArg", 5)]
         [DefaultValueExplanation("No description")]
         public IStep<string>? ItemSetDescription { get; set; }
@@ -123,7 +123,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// Whether to deduplicate as a family or individual.
         /// </summary>
 
-        [StepProperty]
+        [StepProperty(6)]
         [RubyArgument("deduplicateByArg", 6)]
         [DefaultValueExplanation("Neither")]
         public IStep<DeduplicateBy>? DeduplicateBy { get; set; }
@@ -133,7 +133,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
         /// </summary>
 
-        [StepProperty]
+        [StepProperty(7)]
         [RubyArgument("custodianRankingArg", 7)]
         [DefaultValueExplanation("Do not rank custodians")]
         public IStep<List<string>>? CustodianRanking { get; set; }
@@ -142,7 +142,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// How to order the items to be added to the item set.
         /// </summary>
-        [StepProperty]
+        [StepProperty(8)]
         [Example("name ASC, item-date DESC")]
         [RubyArgument("orderArg", 8)]
         [DefaultValueExplanation("Do not reorder")]
@@ -151,7 +151,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The maximum number of items to add to the item set.
         /// </summary>
-        [StepProperty]
+        [StepProperty(9)]
         [RubyArgument("limitArg", 9)]
         [DefaultValueExplanation("No limit")]
         public IStep<int>? Limit { get; set; }

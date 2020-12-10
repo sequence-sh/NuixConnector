@@ -71,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -80,7 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The NRT file path.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("nrtPathArg", 2)]
         public IStep<string> NRTPath { get; set; } = null!;
 
@@ -89,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [Required]
         [Example("PDF")]
-        [StepProperty]
+        [StepProperty(3)]
         [RubyArgument("outputFormatArg", 3)]
         public IStep<string> OutputFormat { get; set; } = null!;
 
@@ -98,7 +98,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [Required]
         [Example("C:/Temp/report.pdf")]
-        [StepProperty]
+        [StepProperty(4)]
         [RubyArgument("outputPathArg", 4)]
         public IStep<string> OutputPath { get; set; } = null!;
 
@@ -108,7 +108,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [Required]
         [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
-        [StepProperty]
+        [StepProperty(5)]
         [RubyArgument("localResourcesUrlArg", 5)]
         public IStep<string> LocalResourcesURL { get; set; } = null!;
     }

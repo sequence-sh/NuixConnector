@@ -104,7 +104,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
 
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -113,7 +113,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The term to search for
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("searchArg", 2)]
         public IStep<string> SearchTerm { get; set; } = null!;
 
@@ -121,14 +121,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The production set to add results to. Will be created if it doesn't already exist
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(3)]
         [RubyArgument("productionSetNameArg", 3)]
         public IStep<string> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// Description of the production set.
         /// </summary>
-        [StepProperty]
+        [StepProperty(4)]
         [RubyArgument("descriptionArg", 4)]
         [DefaultValueExplanation("No description")]
         public IStep<string>? Description { get; set; }
@@ -139,7 +139,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
 
         [RequiredVersion("Nuix", "7.2")]
-        [StepProperty]
+        [StepProperty(5)]
         [Example("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("productionProfileNameArg", 5)]
@@ -150,7 +150,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// Either this or the ProductionProfileName must be set.
         /// </summary>
         [RequiredVersion("Nuix", "7.6")]
-        [StepProperty]
+        [StepProperty(6)]
         [Example("C:/Profiles/MyProcessingProfile.xml")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("productionProfilePathArg", 6)]
@@ -159,7 +159,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// How to order the items to be added to the production set.
         /// </summary>
-        [StepProperty]
+        [StepProperty(7)]
         [Example("name ASC, item-date DESC")]
         [RubyArgument("orderArg", 7)]
         [DefaultValueExplanation("Default order")]
@@ -168,7 +168,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The maximum number of items to add to the production set.
         /// </summary>
-        [StepProperty]
+        [StepProperty(8)]
         [RubyArgument("limitArg", 8)]
         [DefaultValueExplanation("No limit")]
         public IStep<int>? Limit { get; set; }

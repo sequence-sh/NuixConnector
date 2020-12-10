@@ -10,7 +10,7 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Entity = Reductech.EDR.Core.Entities.Entity;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -80,44 +80,43 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public override void WriteJson(JsonWriter writer, object? entityObject, JsonSerializer serializer)
         {
-            if (entityObject is not Entity entity)
-                return;
-
-            var dictionary = new Dictionary<string, object?>();
-
-            foreach (var (key, value) in entity)
+            if (entityObject is Entity entity)
             {
-                value.Value.Switch(
-                    _ => { dictionary.Add(key, null); },
-                    x => dictionary.Add(key, GetObject(x)),
-                    x => dictionary.Add(key, GetList(x)));
+                var dictionary = new Dictionary<string, object?>();
+
+                foreach (var (key, value) in entity)
+                {
+                    value.Value.Switch(
+                        _ => { dictionary.Add(key, null); },
+                        x => dictionary.Add(key, GetObject(x)),
+                        x => dictionary.Add(key, GetList(x)));
+                }
+
+                serializer.Serialize(writer, dictionary);
+
+                static List<object?> GetList(IEnumerable<EntitySingleValue> source)
+                {
+                    var r = source.Select(GetObject).ToList();
+                    return r;
+                }
+
+                static object? GetObject(EntitySingleValue esv)
+                {
+                    object? o = null;
+
+                    esv.Value.Switch(
+                        a => o = a,
+                        a => o = a,
+                        a => o = a,
+                        a => o = a,
+                        a => o = a,
+                        a => o = a,
+                        e => o = e
+                    );
+
+                    return o;
+                }
             }
-
-            serializer.Serialize(writer, dictionary);
-
-            static List<object?> GetList(IEnumerable<EntitySingleValue> source)
-            {
-                var r = source.Select(GetObject).ToList();
-                return r;
-            }
-
-            static object? GetObject(EntitySingleValue esv)
-            {
-                object? o = null;
-
-                esv.Value.Switch(
-                    a => o = a,
-                    a => o = a,
-                    a => o = a,
-                    a => o = a,
-                    a => o = a,
-                    a => o = a
-                );
-
-                return o;
-            }
-
-
         }
 
         /// <inheritdoc />

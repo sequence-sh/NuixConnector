@@ -20,7 +20,7 @@ using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
-using Entity = Reductech.EDR.Core.Entities.Entity;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {

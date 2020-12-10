@@ -31,9 +31,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         };
 
         /// <inheritdoc />
-        public override IEnumerable<Type> EnumTypes { get; } = new[] {typeof(PrintPreviewState)};
-
-        /// <inheritdoc />
         public override string FunctionName => "GetPrintPreviewState";
 
         /// <inheritdoc />
@@ -74,7 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -83,17 +80,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The production set to reorder.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
         public IStep<string> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// The expected print preview state of the production set;
         /// </summary>
-        [StepProperty]
+        [StepProperty(3)]
         [DefaultValueExplanation(nameof(PrintPreviewState.All))]
         [RubyArgument("expectedStateArg", 3)]
 
-        public IStep<PrintPreviewState> ExpectedState { get; set; } = new Constant<PrintPreviewState>(PrintPreviewState.All);
+        public IStep<PrintPreviewState> ExpectedState { get; set; } = new EnumConstant<PrintPreviewState>(PrintPreviewState.All);
     }
 }

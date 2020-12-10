@@ -68,7 +68,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -77,17 +77,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The production set to reorder.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
         public IStep<string> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// The method of sorting items during the renumbering.
         /// </summary>
-        [StepProperty]
+        [StepProperty(3)]
         [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
         [RubyArgument("sortOrderArg", 3)]
-        public IStep<ProductionSetSortOrder> SortOrder { get; set; } = new Constant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);
+        public IStep<ProductionSetSortOrder> SortOrder { get; set; } = new EnumConstant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);
 
     }
 

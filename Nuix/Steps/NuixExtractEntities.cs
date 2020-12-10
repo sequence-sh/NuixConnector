@@ -91,7 +91,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
         public IStep<string> CasePath { get; set; } = null!;
@@ -101,7 +101,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [Required]
         [Example("C:/Output")]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("outputFolderPathArg", 2)]
         public IStep<string> OutputFolder { get; set; } = null!;
     }
