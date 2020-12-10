@@ -60,14 +60,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         new ConnectionOutput()
                         {
                             Log = new ConnectionOutputLog() { Message = "Log Message", Severity = "info" }
-                        },    
+                        },
                         new ConnectionOutput()
                         {
                             Result = new ConnectionOutputResult() { Data = "Hello World" }
                         })
                     },
                     "Log Message"
-                ).WithSettings(UnitTestSettings);
+                ).WithSettings(UnitTestSettings)
+                .WithFileSystemAction(x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true));
 
                 yield return new RunScriptStepCase("Run Script with entity Stream",
                     new NuixRunScript
@@ -99,8 +100,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         })
                     },
                     "Log Message"
-                ).WithSettings(UnitTestSettings);
-
+                ).WithSettings(UnitTestSettings)
+                .WithFileSystemAction(x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true));
             }
         }
 
