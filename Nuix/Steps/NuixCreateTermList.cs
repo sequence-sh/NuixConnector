@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
@@ -12,14 +13,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// The report is in CSV format. The headers are 'Term' and 'Count'
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixCreateTermListStepFactory : RubyScriptStepFactory<NuixCreateTermList, string>
+    public sealed class NuixCreateTermListStepFactory : RubyScriptStepFactory<NuixCreateTermList, StringStream>
     {
         private NuixCreateTermListStepFactory() { }
 
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixCreateTermList, string> Instance { get; } = new NuixCreateTermListStepFactory();
+        public static RubyScriptStepFactory<NuixCreateTermList, StringStream> Instance { get; } = new NuixCreateTermListStepFactory();
 
         /// <inheritdoc />
         public override Version RequiredNuixVersion { get; } = new Version(4, 2);
@@ -58,10 +59,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// The report is in CSV format. The headers are 'Term' and 'Count'
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixCreateTermList : RubyScriptStepBase<string>
+    public sealed class NuixCreateTermList : RubyScriptStepBase<StringStream>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<string> RubyScriptStepFactory => NuixCreateTermListStepFactory.Instance;
+        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory => NuixCreateTermListStepFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -70,6 +71,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
     }
 }

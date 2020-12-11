@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
@@ -13,14 +14,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixCreateIrregularItemsReportStepFactory : RubyScriptStepFactory<NuixCreateIrregularItemsReport, string>
+    public sealed class NuixCreateIrregularItemsReportStepFactory : RubyScriptStepFactory<NuixCreateIrregularItemsReport, StringStream>
     {
         private NuixCreateIrregularItemsReportStepFactory() { }
 
         /// <summary>
         /// The instance
         /// </summary>
-        public static RubyScriptStepFactory<NuixCreateIrregularItemsReport, string> Instance { get; } = new NuixCreateIrregularItemsReportStepFactory();
+        public static RubyScriptStepFactory<NuixCreateIrregularItemsReport, StringStream> Instance { get; } = new NuixCreateIrregularItemsReportStepFactory();
 
         /// <inheritdoc />
         public override Version RequiredNuixVersion { get; } = new Version(2, 16);
@@ -75,10 +76,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
     /// Use this inside a WriteFile step to write it to a file.
     /// </summary>
-    public sealed class NuixCreateIrregularItemsReport : RubyScriptStepBase<string>
+    public sealed class NuixCreateIrregularItemsReport : RubyScriptStepBase<StringStream>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<string> RubyScriptStepFactory => NuixCreateIrregularItemsReportStepFactory.Instance;
+        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory => NuixCreateIrregularItemsReportStepFactory.Instance;
 
 
         /// <summary>
@@ -88,6 +89,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
     }
 }

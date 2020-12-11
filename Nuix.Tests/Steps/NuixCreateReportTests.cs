@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Steps;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixCreateReportTests : NuixStepTestBase<NuixCreateReport, string>
+    public class NuixCreateReportTests : NuixStepTestBase<NuixCreateReport, StringStream>
     {
         /// <inheritdoc />
         public NuixCreateReportTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -34,14 +35,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     AddData,
                     new FileWrite
                     {
-                        Stream = new StringToStream
+                        Stream = new NuixCreateReport
                         {
-                            String = new NuixCreateReport
-                            {
-                                CasePath = CasePath,
-                            }
-                        } ,
-                        Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>(){OutputFolder,"Stats.txt" })}
+                            CasePath = CasePath,
+                        },
+                        Path = new PathCombine{Paths = Array(OutputFolder,"Stats.txt" )}
                     },
                     AssertFileContains(OutputFolder, "Stats.txt", "Mark	type	text/plain	2"),
 

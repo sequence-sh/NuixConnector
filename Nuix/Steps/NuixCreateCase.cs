@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -58,7 +59,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The name of the case to create.
@@ -66,7 +67,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("nameArg", 2)]
-        public IStep<string> CaseName { get; set; }= null!;
+        public IStep<StringStream> CaseName { get; set; }= null!;
 
         /// <summary>
         /// Name of the investigator.
@@ -74,7 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("investigatorArg", 3)]
-        public IStep<string> Investigator { get; set; }= null!;
+        public IStep<StringStream> Investigator { get; set; }= null!;
 
         /// <summary>
         /// Description of the case.
@@ -82,6 +83,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(4)]
         [RubyArgument("descriptionArg", 4)]
         [DefaultValueExplanation("No Description")]
-        public IStep<string>? Description { get; set; }
+        public IStep<StringStream>? Description { get; set; }
     }
 }

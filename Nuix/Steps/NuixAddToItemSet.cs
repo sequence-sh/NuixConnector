@@ -5,6 +5,7 @@ using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -83,7 +84,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The term to search for.
@@ -91,7 +92,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("searchArg", 2)]
-        public IStep<string> SearchTerm { get; set; }= null!;
+        public IStep<StringStream> SearchTerm { get; set; }= null!;
 
         /// <summary>
         /// The item set to add results to. Will be created if it doesn't already exist.
@@ -100,7 +101,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("itemSetNameArg", 3)]
-        public IStep<string> ItemSetName { get; set; }= null!;
+        public IStep<StringStream> ItemSetName { get; set; }= null!;
 
         /// <summary>
         /// The means of deduplicating items by key and prioritizing originals in a tie-break.
@@ -117,7 +118,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(5)]
         [RubyArgument("descriptionArg", 5)]
         [DefaultValueExplanation("No description")]
-        public IStep<string>? ItemSetDescription { get; set; }
+        public IStep<StringStream>? ItemSetDescription { get; set; }
 
         /// <summary>
         /// Whether to deduplicate as a family or individual.
@@ -136,7 +137,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(7)]
         [RubyArgument("custodianRankingArg", 7)]
         [DefaultValueExplanation("Do not rank custodians")]
-        public IStep<List<string>>? CustodianRanking { get; set; }
+        public IStep<List<StringStream>>? CustodianRanking { get; set; }
 
 
         /// <summary>
@@ -146,7 +147,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("name ASC, item-date DESC")]
         [RubyArgument("orderArg", 8)]
         [DefaultValueExplanation("Do not reorder")]
-        public IStep<string>? Order { get; set; }
+        public IStep<StringStream>? Order { get; set; }
 
         /// <summary>
         /// The maximum number of items to add to the item set.

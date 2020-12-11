@@ -10,6 +10,7 @@ using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Parser;
 using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -18,27 +19,31 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     /// Run an arbitrary ruby script in nuix.
     /// It should return a string.
     /// </summary>
-    public class NuixRunScript : CompoundStep<string>
+    public class NuixRunScript : CompoundStep<StringStream>
     {
         /// <inheritdoc />
-        public override async Task<Result<string, IError>> Run(IStateMonad stateMonad, CancellationToken cancellationToken)
+        public override async Task<Result<StringStream, IError>> Run(IStateMonad stateMonad, CancellationToken cancellationToken)
         {
             //var isAdmin = IsCurrentProcessAdmin();
             //var isLinux = IsLinux;
             //if(isAdmin &&!isLinux)
             //    return new SingleError("You cannot run arbitrary Nuix Scripts as Administrator", ErrorCode.ExternalProcessError, new StepErrorLocation(this));
 
-            var functionName = await FunctionName.Run(stateMonad, cancellationToken);
-            if (functionName.IsFailure) return functionName.ConvertFailure<string>();
+            var functionName = await FunctionName.Run(stateMonad, cancellationToken)
+                    .Map(x=>x.GetStringAsync())
+                ;
+            if (functionName.IsFailure) return functionName.ConvertFailure<StringStream>();
 
-            var scriptText = await ScriptText.Run(stateMonad, cancellationToken);
-            if (scriptText.IsFailure) return scriptText.ConvertFailure<string>();
+            var scriptText = await ScriptText.Run(stateMonad, cancellationToken)
+                .Map(x => x.GetStringAsync());
+
+            if (scriptText.IsFailure) return scriptText.ConvertFailure<StringStream>();
 
             var parameters = await Parameters.Run(stateMonad, cancellationToken);
-            if (parameters.IsFailure) return parameters.ConvertFailure<string>();
+            if (parameters.IsFailure) return parameters.ConvertFailure<StringStream>();
 
             var nuixConnection = stateMonad.GetOrCreateNuixConnection(false);
-            if (nuixConnection.IsFailure) return nuixConnection.ConvertFailure<string>().MapError(x => x.WithLocation(this));
+            if (nuixConnection.IsFailure) return nuixConnection.ConvertFailure<StringStream>().MapError(x => x.WithLocation(this));
 
 
 
@@ -56,7 +61,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             if (EntityStreamParameter != null)
             {
                 var streamResult = await EntityStreamParameter.Run(stateMonad, cancellationToken);
-                if (streamResult.IsFailure) return streamResult.ConvertFailure<string>();
+                if (streamResult.IsFailure) return streamResult.ConvertFailure<StringStream>();
 
                 const string streamParameter = "datastream";
 
@@ -68,10 +73,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             }
             var function = new RubyFunction<string>(ConvertString(functionName.Value), scriptText.Value, rubyFunctionParameters);
 
-            var runResult = await nuixConnection.Value.RunFunctionAsync(stateMonad.Logger, function, parameterDict, cancellationToken);
+            var runResult = await nuixConnection.Value.RunFunctionAsync(stateMonad.Logger, function, parameterDict, cancellationToken)
+                .Map(x=> new StringStream(x));
 
             if (runResult.IsFailure)
-                return runResult.MapError(x=>x.WithLocation(this)).ConvertFailure<string>();
+                return runResult.MapError(x=>x.WithLocation(this)).ConvertFailure<StringStream>();
 
 
             return runResult.Value;
@@ -122,14 +128,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// </summary>
         [StepProperty(1)]
         [Required]
-        public IStep<string> FunctionName { get; set; } = null!;
+        public IStep<StringStream> FunctionName { get; set; } = null!;
 
         /// <summary>
         /// The text of the script to run
         /// </summary>
         [StepProperty( 2)]
         [Required]
-        public IStep<string> ScriptText { get;set; } = null!;
+        public IStep<StringStream> ScriptText { get;set; } = null!;
 
         /// <summary>
         /// Parameters to send to the script.
@@ -173,14 +179,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     /// Run an arbitrary ruby script in nuix.
     /// It should return a string.
     /// </summary>
-    public class NuixRunScriptStepFactory : SimpleStepFactory<NuixRunScript, string>
+    public class NuixRunScriptStepFactory : SimpleStepFactory<NuixRunScript, StringStream>
     {
         private NuixRunScriptStepFactory() {}
 
         /// <summary>
         /// The instance.
         /// </summary>
-        public static SimpleStepFactory<NuixRunScript, string> Instance { get; } = new NuixRunScriptStepFactory();
+        public static SimpleStepFactory<NuixRunScript, StringStream> Instance { get; } = new NuixRunScriptStepFactory();
 
         /// <inheritdoc />
         public override IEnumerable<Requirement> Requirements

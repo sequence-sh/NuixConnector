@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.TestHarness;
 using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps

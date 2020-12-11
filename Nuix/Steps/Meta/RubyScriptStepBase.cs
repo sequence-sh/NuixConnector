@@ -7,6 +7,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -117,7 +118,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     if (r.IsFailure)
                         errors.Add(r.Error);
                     else
-                        dict.Add(argument, r.Value);
+                    {
+                        object v = r.Value;
+                        dict.Add(argument, v);
+                    }
                 }
             }
 

@@ -8,6 +8,7 @@ using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -146,7 +147,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The name of the folder to create.
@@ -154,7 +155,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("folderNameArg", 2)]
-        public IStep<string> FolderName { get; set; } = null!;
+        public IStep<StringStream> FolderName { get; set; } = null!;
 
 
 
@@ -164,7 +165,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("folderCustodianArg", 3)]
-        public IStep<string> Custodian { get; set; } = null!;
+        public IStep<StringStream> Custodian { get; set; } = null!;
 
 
 
@@ -175,7 +176,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(4)]
         [Example("C:/Data/File.txt")]
         [RubyArgument("filePathsArgs", 4)]
-        public IStep<List<string>> Paths { get; set; } = null!;
+        public IStep<List<StringStream>> Paths { get; set; } = null!;
 
         /// <summary>
         /// The description of the new folder.
@@ -183,7 +184,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(5)]
         [RubyArgument("folderDescriptionArg", 5)]
         [DefaultValueExplanation("No Description")]
-        public IStep<string>? Description { get; set; }
+        public IStep<StringStream>? Description { get; set; }
 
         /// <summary>
         /// The name of the Processing profile to use.
@@ -194,7 +195,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("processingProfileNameArg", 6)]
-        public IStep<string>? ProcessingProfileName { get; set; }
+        public IStep<StringStream>? ProcessingProfileName { get; set; }
 
         /// <summary>
         /// The path to the Processing profile to use
@@ -204,7 +205,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Profiles/MyProcessingProfile.xml")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("processingProfilePathArg", 7)]
-        public IStep<string>? ProcessingProfilePath { get; set; }
+        public IStep<StringStream>? ProcessingProfilePath { get; set; }
 
         /// <summary>
         /// Sets the processing settings to use.
@@ -233,7 +234,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Data/Passwords.txt")]
         [RubyArgument("passwordFilePathArg", 10)]
         [DefaultValueExplanation("Do not attempt decryption")]
-        public IStep<string>? PasswordFilePath { get; set; }
+        public IStep<StringStream>? PasswordFilePath { get; set; }
 
 
         /// <summary>

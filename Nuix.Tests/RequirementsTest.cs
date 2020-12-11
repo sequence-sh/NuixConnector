@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core.Internal;
 using Reductech.Utilities.Testing;
 using Xunit;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -32,7 +32,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [MemberData(nameof(TestCases))]
         public void TestRequirements((string? expectedError, NuixSettings settings) args)
         {
-            var process = new NuixSearchAndTag{SearchTerm = new Constant<string>("a") , CasePath = new Constant<string>("b") , Tag = new Constant<string>("c") };
+            var process = new NuixSearchAndTag{SearchTerm = Constant("a") , CasePath = Constant("b") , Tag = Constant("c") };
 
             var result = process.Verify(args.settings);
 

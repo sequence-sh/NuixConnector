@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -74,7 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The NRT file path.
@@ -82,7 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("nrtPathArg", 2)]
-        public IStep<string> NRTPath { get; set; } = null!;
+        public IStep<StringStream> NRTPath { get; set; } = null!;
 
         /// <summary>
         /// The format of the report file that will be created.
@@ -91,7 +92,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("PDF")]
         [StepProperty(3)]
         [RubyArgument("outputFormatArg", 3)]
-        public IStep<string> OutputFormat { get; set; } = null!;
+        public IStep<StringStream> OutputFormat { get; set; } = null!;
 
         /// <summary>
         /// The path to output the file at.
@@ -100,7 +101,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Temp/report.pdf")]
         [StepProperty(4)]
         [RubyArgument("outputPathArg", 4)]
-        public IStep<string> OutputPath { get; set; } = null!;
+        public IStep<StringStream> OutputPath { get; set; } = null!;
 
         /// <summary>
         /// The path to the local resources folder.
@@ -110,6 +111,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
         [StepProperty(5)]
         [RubyArgument("localResourcesUrlArg", 5)]
-        public IStep<string> LocalResourcesURL { get; set; } = null!;
+        public IStep<StringStream> LocalResourcesURL { get; set; } = null!;
     }
 }

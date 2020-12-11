@@ -17,6 +17,7 @@ using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -49,7 +50,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                     else
                     {
                         currentConnection.Value.ExternalProcess.WaitForExit(1000);
-                        currentConnection.Value.Dispose(); //Get rid of this connection and open a new one    
+                        currentConnection.Value.Dispose(); //Get rid of this connection and open a new one
                     }
                 }
 
@@ -162,7 +163,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             };
 
             // ReSharper disable once MethodHasAsyncOverload
-            var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
+            var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, StringStreamJsonConverter.Instance, new StringEnumConverter());
 
             await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
 
@@ -218,7 +219,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 command.Arguments = commandArguments;
 
                 // ReSharper disable once MethodHasAsyncOverload
-                var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
+                var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, StringStreamJsonConverter.Instance,  new StringEnumConverter());
 
                 await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellationToken);
 
@@ -339,6 +340,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                     if (connectionOutput.Result.Data is T t)
                         return t;
+
+                    if (typeof(T) == typeof(StringStream))
+                    {
+                        var ss = new StringStream(connectionOutput.Result.Data?.ToString()!);
+
+                        if(ss is T typedStringStream) //Should always be true
+                            return typedStringStream;
+                    }
 
                     var convertedResult = Convert.ChangeType(connectionOutput.Result.Data, typeof(T));
                     if (convertedResult is T tConverted)

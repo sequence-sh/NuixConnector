@@ -10,10 +10,47 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Parser;
 using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
+    /// <summary>
+    /// Convert StringStreams to Json
+    /// </summary>
+    public class StringStreamJsonConverter : JsonConverter
+    {
+        private StringStreamJsonConverter() {}
+
+        /// <summary>
+        /// The instance
+        /// </summary>
+        public static StringStreamJsonConverter Instance { get; } = new StringStreamJsonConverter();
+
+        /// <inheritdoc />
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        {
+            if (value is StringStream ss)
+            {
+                var s = ss.GetString();
+                serializer.Serialize(writer, s);
+            }
+        }
+
+        /// <inheritdoc />
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(StringStream);
+        }
+    }
+
+
     /// <summary>
     /// Converts Entities to Json
     /// </summary>

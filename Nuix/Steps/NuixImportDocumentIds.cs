@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -78,7 +79,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The production set to add results to.
@@ -86,7 +87,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
-        public IStep<string> ProductionSetName { get; set; } = null!;
+        public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// Specifies the file path of the document ID list.
@@ -94,7 +95,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("dataPathArg", 3)]
-        public IStep<string> DataPath { get; set; } = null!;
+        public IStep<StringStream> DataPath { get; set; } = null!;
 
         /// <summary>
         /// Specifies that the source production set name(s) are contained in the document ID list.

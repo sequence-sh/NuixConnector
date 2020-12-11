@@ -13,7 +13,7 @@ using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Serialization;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
@@ -21,11 +21,12 @@ using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
 using Entity = Reductech.EDR.Core.Entity;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
     [Collection("RequiresNuixLicense")]
-    public class NuixRunScriptTests : StepTestBase<NuixRunScript, string>
+    public class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStream>
     {
         /// <inheritdoc />
         public NuixRunScriptTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -43,7 +44,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         FunctionName = Constant("Test Script"),
                         ScriptText = Constant("Lorem Ipsum"),
                         EntityStreamParameter = null,
-                        Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC")))
+                        Parameters = Constant(CreateEntity(("param1", "ABC")))
                     },
                     "Hello World",
                     new List<ExternalProcessAction>()
@@ -75,12 +76,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         FunctionName = Constant("test_Script"),
                         ScriptText = Constant("Lorem Ipsum"),
-                        EntityStreamParameter = new Constant<EntityStream>(new EntityStream(new List<Entity>()
+                        EntityStreamParameter = Constant(new EntityStream(new List<Entity>()
                         {
                             CreateEntity(("Foo", "a")),
                             CreateEntity(("Foo", "b")),
                         }.ToAsyncEnumerable())),
-                        Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC")))
+                        Parameters = Constant(CreateEntity(("param1", "ABC")))
                     },
                     @"[{""Foo"":""a""},{""Foo"":""b""}]",
                     new List<ExternalProcessAction>()
@@ -109,28 +110,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
         public NuixSettings UnitTestSettings => new NuixSettings(true, TestNuixPath, new Version(8, 2), new List<NuixFeature>());
 
-        /// <inheritdoc />
-        protected override IEnumerable<SerializeCase> SerializeCases
-        {
-            get
-
-            {
-                var step = CreateStepWithDefaultOrArbitraryValues();
-                yield return new SerializeCase("Default", step.step,
-                    @"Do: NuixRunScript
-FunctionName: 'Bar6'
-ScriptText: 'Bar9'
-Parameters: (Prop1 = 'Val7',Prop2 = 'Val8')
-EntityStreamParameter:
-- (Prop1 = 'Val0',Prop2 = 'Val1')
-- (Prop1 = 'Val2',Prop2 = 'Val3')
-- (Prop1 = 'Val4',Prop2 = 'Val5')"
-
-                    );
-
-            }
-        }
-
         [Fact]
         [Trait("Category", "Integration")]
         public async Task TestScriptWithStream_Integration()
@@ -140,12 +119,12 @@ EntityStreamParameter:
                 {
                     FunctionName = Constant("test_Script2"),
                     ScriptText = Constant("log param1\r\nlog datastream.pop\r\nlog datastream.pop\r\nreturn param2"),
-                    EntityStreamParameter = new Constant<EntityStream>(new EntityStream(new List<Entity>()
+                    EntityStreamParameter = Constant(new EntityStream(new List<Entity>()
                         {
                             CreateEntity(("Foo", "a")),
                             CreateEntity(("Foo", "b")),
                         }.ToAsyncEnumerable())),
-                    Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
+                    Parameters = Constant(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
 
                 },
                 "DEF",
@@ -169,7 +148,7 @@ EntityStreamParameter:
                     FunctionName = Constant("test_Script"),
                     ScriptText = Constant("log param1\r\nreturn param2"),
                     EntityStreamParameter = null,
-                    Parameters = new Constant<Entity>(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
+                    Parameters =  Constant(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
 
                 },
                 "DEF",
@@ -204,46 +183,49 @@ EntityStreamParameter:
         public class IntegrationTestCase : CaseThatExecutes
         {
             public IntegrationTestCase(string name, NuixRunScript step, string expectedOutput, params string[] expectedLoggedValues)
-                : base(expectedLoggedValues.Append(expectedOutput).ToArray())
+                : base(expectedLoggedValues)
             {
                 Name = name;
 
-                var sequence = new Sequence()
+                var sequence = new Sequence<StringStream>()
                 {
-                    Steps = new List<IStep<Unit>>()
+                    InitialSteps = new List<IStep<Unit>>()
                     {
-                        new SetVariable<string>()
+                        new SetVariable<StringStream>()
                         {
                             Variable = new VariableName("Output"),
                             Value = step
                         },
                         new NuixCloseConnection(),
-                        new Print<string>()
-                        {
-                            Value =GetVariable<string>(new VariableName("Output"))
-                        }
-                    }
+                    },
+                    FinalStep = GetVariable<StringStream>(new VariableName("Output"))
 
                 };
 
                 Step = sequence;
                 IgnoreFinalState = true;
+                ExpectedOutput = expectedOutput;
             }
 
             public override string Name { get; }
 
-            public Sequence Step { get; }
+            public Sequence<StringStream> Step { get; }
+
+            public string ExpectedOutput { get; }
 
             /// <inheritdoc />
             public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper, string? extraArgument)
             {
-                var yaml = await Step.Unfreeze().SerializeToYamlAsync(CancellationToken.None);
+                var yaml = await Step.SerializeAsync(CancellationToken.None);
 
-                var deserializedStep = YamlMethods.DeserializeFromYaml(yaml, StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(NuixRunScript)));
+                var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(NuixRunScript));
+
+
+                var deserializedStep = SequenceParsing.ParseSequence(yaml);
 
                 deserializedStep.ShouldBeSuccessful(x => x.AsString);
 
-                var unfrozenStep = deserializedStep.Value.TryFreeze();
+                var unfrozenStep = deserializedStep.Value.TryFreeze(sfs);
 
                 unfrozenStep.ShouldBeSuccessful(x => x.AsString);
 
@@ -253,14 +235,15 @@ EntityStreamParameter:
             /// <inheritdoc />
             public override void CheckUnitResult(Result<Unit, IError> result)
             {
-                result.ShouldBeSuccessful(x => x.AsString);
+                throw new NotImplementedException("Expecting an output result");
             }
 
             /// <inheritdoc />
-            public override void CheckOutputResult(Result<string, IError> result)
+            public override void CheckOutputResult(Result<StringStream, IError> result)
             {
                 result.ShouldBeSuccessful(x => x.AsString);
-                (result.Value as object).Should().Be(Unit.Default);
+
+                result.Value.Should().Be(ExpectedOutput);
             }
 
 

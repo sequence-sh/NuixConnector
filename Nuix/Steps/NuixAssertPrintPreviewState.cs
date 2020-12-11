@@ -5,6 +5,7 @@ using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -74,7 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The production set to reorder.
@@ -82,7 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
-        public IStep<string> ProductionSetName { get; set; } = null!;
+        public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// The expected print preview state of the production set;

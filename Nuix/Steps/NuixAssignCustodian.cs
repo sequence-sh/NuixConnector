@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -72,7 +73,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(2)]
         [Example("*.txt")]
         [RubyArgument("searchArg", 2)]
-        public IStep<string> SearchTerm { get; set; } = null!;
+        public IStep<StringStream> SearchTerm { get; set; } = null!;
 
         /// <summary>
         /// The custodian to assign to found results.
@@ -90,6 +91,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("custodianArg", 3)]
-        public IStep<string> Custodian { get; set; } = null!;
+        public IStep<StringStream> Custodian { get; set; } = null!;
     }
 }

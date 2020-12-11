@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Steps;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, string>
+    public class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, StringStream>
     {
         /// <inheritdoc />
         public NuixCreateTermListTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -34,14 +35,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     AddData,
                     new FileWrite
                     {
-                        Stream = new StringToStream
+                        Stream = new NuixCreateTermList
                         {
-                            String = new NuixCreateTermList
-                            {
-                                CasePath = CasePath,
-                            }
-                        } ,
-                        Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>(){OutputFolder,"Terms.txt"})}
+                            CasePath = CasePath,
+                        },
+                        Path = new PathCombine{Paths = Array(OutputFolder,"Terms.txt")}
                     }
                     ,
                     AssertFileContains(OutputFolder, "Terms.txt", "yellow	2"),

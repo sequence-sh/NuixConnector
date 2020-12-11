@@ -83,7 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         private const string DefaultSearchTerm =
             "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
@@ -106,7 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("MyOcrProfile")]
         [RubyArgument("ocrProfileArg", 3)]
-        public IStep<string>? OCRProfileName { get; set; }
+        public IStep<StringStream>? OCRProfileName { get; set; }
 
         /// <summary>
         /// Path to the OCR profile to use.
@@ -117,7 +117,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("C:\\Profiles\\MyProfile.xml")]
         [RubyArgument("ocrProfilePathArg", 4)]
-        public IStep<string>? OCRProfilePath { get; set; }
+        public IStep<StringStream>? OCRProfilePath { get; set; }
 
         /// <inheritdoc />
         public override Result<Unit, IError> VerifyThis(ISettings settings)
