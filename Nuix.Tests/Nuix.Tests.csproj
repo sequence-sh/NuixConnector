@@ -29,7 +29,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Include="MicrosoftExtensions.Logging.Xunit" Version="1.0.0" />
     <PackageReference Include="Moq" Version="4.15.2" />
-    <PackageReference Include="Reductech.EDR.Core.TestHarness" Version="0.4.0-a.master.2012101909" />
+    <PackageReference Include="Reductech.EDR.Core.TestHarness" Version="0.4.0-a.master.2012111411" />
     <PackageReference Include="Reductech.Utilities.Testing" Version="0.2.0-a.master.1604435560" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">

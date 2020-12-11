@@ -11,16 +11,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
     public class NuixGetItemPropertiesTests : NuixStepTestBase<NuixGetItemProperties, StringStream>
     {
         /// <inheritdoc />
-        public NuixGetItemPropertiesTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-        }
+        public NuixGetItemPropertiesTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) {}
 
 
         /// <inheritdoc />
         protected override IEnumerable<DeserializeCase> DeserializeCases
         {
             get { yield break; }
-
         }
 
         /// <inheritdoc />
@@ -43,8 +40,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                             SearchTerm = Constant("*")
                         }
                     },
-                    AssertFileContains(OutputFolder, "ItemProperties.txt",
-                        "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
+                    AssertFileContains(OutputFolder, "ItemProperties.txt", "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder
