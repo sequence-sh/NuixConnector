@@ -10,6 +10,7 @@ using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -25,13 +26,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
             get
             {
                 yield return new NuixStepCase("Create Case then add item",
-                    new Sequence
+                    new Sequence<Unit>
                     {
-                        Steps = new List<IStep<Unit>>
+                        InitialSteps = new List<IStep<Unit>>
                         {
                             CreateCase,
-                            AddData
-                        }
+                        },
+                        FinalStep = AddData
                     },
                     new List<ExternalProcessAction>
                     {
@@ -79,9 +80,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 yield return new ErrorCase("Missing Parameters", new NuixCreateCase(),
                         new ErrorBuilderList(new List<ErrorBuilder>
                         {
-                            new ErrorBuilder("Missing Parameter 'CasePath' in 'CreateCase'", ErrorCode.MissingParameter),
-                            new ErrorBuilder("Missing Parameter 'CaseName' in 'CreateCase'", ErrorCode.MissingParameter),
-                            new ErrorBuilder("Missing Parameter 'Investigator' in 'CreateCase'", ErrorCode.MissingParameter),
+                            new ErrorBuilder("Missing Parameter 'CasePath' in 'NuixCreateCase'", ErrorCode.MissingParameter),
+                            new ErrorBuilder("Missing Parameter 'CaseName' in 'NuixCreateCase'", ErrorCode.MissingParameter),
+                            new ErrorBuilder("Missing Parameter 'Investigator' in 'NuixCreateCase'", ErrorCode.MissingParameter),
                         }))
                     .WithSettings(UnitTestSettings);
 
@@ -107,9 +108,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 var custodian = @"Mark";
                 var folderName = @"New Folder";
                 var dataPath = @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data";
+
                 yield return new NuixDeserializeTest("Create Case then add item",
-                    $@"- NuixCreateCase(CaseName = '{caseName}', CasePath = '{CasePathString}', Investigator = '{investigator}')
-- NuixAddItem(CasePath = '{CasePathString}', Custodian = '{custodian}', FolderName = '{folderName}', Paths = ['{dataPath}'])",
+                    $@"- NuixCreateCase CaseName: '{caseName}' CasePath: '{CasePathString}' Investigator: '{investigator}'
+- NuixAddItem CasePath: '{CasePathString}' Custodian: '{custodian}' FolderName: '{folderName}' Paths: ['{dataPath}']",
                     Unit.Default,
                     new List<ExternalProcessAction>
                     {

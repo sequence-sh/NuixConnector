@@ -5,6 +5,7 @@ using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -29,9 +30,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         {
             NuixFeature.PRODUCTION_SET, NuixFeature.ANALYSIS
         };
-
-        /// <inheritdoc />
-        public override IEnumerable<Type> EnumTypes { get; } = new[] {typeof(PrintPreviewState)};
 
         /// <inheritdoc />
         public override string FunctionName => "GetPrintPreviewState";
@@ -74,26 +72,26 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The production set to reorder.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
-        public IStep<string> ProductionSetName { get; set; } = null!;
+        public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// The expected print preview state of the production set;
         /// </summary>
-        [StepProperty]
+        [StepProperty(3)]
         [DefaultValueExplanation(nameof(PrintPreviewState.All))]
         [RubyArgument("expectedStateArg", 3)]
 
-        public IStep<PrintPreviewState> ExpectedState { get; set; } = new Constant<PrintPreviewState>(PrintPreviewState.All);
+        public IStep<PrintPreviewState> ExpectedState { get; set; } = new EnumConstant<PrintPreviewState>(PrintPreviewState.All);
     }
 }

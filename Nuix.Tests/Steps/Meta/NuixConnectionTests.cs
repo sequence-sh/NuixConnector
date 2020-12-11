@@ -15,6 +15,7 @@ using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
+using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Sdk;
 
@@ -24,7 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
     {
         public static IStateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner) =>
             GetStateMonad(externalProcessRunner, FileSystemHelper.Instance);
-        
+
         public static IStateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner,
             IFileSystemHelper fileSystemHelper)
         {
@@ -250,7 +251,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             Assert.True(actual.IsFailure);
             Assert.Matches($"Cannot access a disposed object\\.\\s+Object name: '{nameof(NuixConnection)}'", actual.Error.AsString);
         }
-        
+
         [Fact]
         public void GetOrCreateNuixConnection_WhenScriptFileDoesNotExist_ReturnsError()
         {
@@ -363,7 +364,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var result = await nuixConnection.RunFunctionAsync(
                 logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
 
-            Assert.True(result.IsSuccess);
+            result.ShouldBeSuccessful(x=>x.AsString);
+
             Assert.Equal(@"[{""Property1"":""Value1""},{""Property2"":""Value2""}]", result.Value);
         }
 
@@ -403,11 +405,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var result = await nuixConnection.RunFunctionAsync(
                 logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
 
-            Assert.True(result.IsFailure);
+            result.ShouldBeFailure();
+
             Assert.Equal($"{nameof(ConnectionOutput)} must have at least one property set",
                 result.Error.AsString);
         }
-        
+
         [Fact]
         public async Task RunFunctionAsync_WhenConnectionOutputIsNotValid_ReturnsError()
         {

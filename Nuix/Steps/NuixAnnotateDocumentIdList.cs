@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -68,18 +69,18 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The production set to get names from.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
-        public IStep<string> ProductionSetName { get; set; }= null!;
+        public IStep<StringStream> ProductionSetName { get; set; }= null!;
 
 
 
@@ -87,8 +88,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// Specifies the file path of the document ID list.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(3)]
         [RubyArgument("dataPathArg", 3)]
-        public IStep<string> DataPath { get; set; }= null!;
+        public IStep<StringStream> DataPath { get; set; }= null!;
     }
 }

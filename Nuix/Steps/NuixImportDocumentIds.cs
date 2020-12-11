@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -75,34 +76,34 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
-
-        /// <summary>
-        /// Specifies that the source production set name(s) are contained in the document ID list.
-        /// </summary>
-        [StepProperty]
-        [DefaultValueExplanation("false")]
-        [RubyArgument("sourceProductionSetsInDataArg", 2)]
-        public IStep<bool> AreSourceProductionSetsInData { get; set; } = new Constant<bool>(false);
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The production set to add results to.
         /// </summary>
         [Required]
-        [StepProperty]
-        [RubyArgument("productionSetNameArg", 3)]
-        public IStep<string> ProductionSetName { get; set; } = null!;
+        [StepProperty(2)]
+        [RubyArgument("productionSetNameArg", 2)]
+        public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// Specifies the file path of the document ID list.
         /// </summary>
         [Required]
-        [StepProperty]
-        [RubyArgument("dataPathArg", 4)]
-        public IStep<string> DataPath { get; set; } = null!;
+        [StepProperty(3)]
+        [RubyArgument("dataPathArg", 3)]
+        public IStep<StringStream> DataPath { get; set; } = null!;
+
+        /// <summary>
+        /// Specifies that the source production set name(s) are contained in the document ID list.
+        /// </summary>
+        [StepProperty(4)]
+        [DefaultValueExplanation("false")]
+        [RubyArgument("sourceProductionSetsInDataArg", 4)]
+        public IStep<bool> AreSourceProductionSetsInData { get; set; } = new BoolConstant(false);
 
     }
 

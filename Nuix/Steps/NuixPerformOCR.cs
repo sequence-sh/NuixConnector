@@ -7,6 +7,7 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -79,40 +80,44 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
+
+        private const string DefaultSearchTerm =
+            "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
+
 
         /// <summary>
         /// The term to use for searching for files to OCR.
         /// </summary>
-        [StepProperty]
-        [DefaultValueExplanation("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))")]
+        [StepProperty(2)]
+        [DefaultValueExplanation(DefaultSearchTerm)]
         [RubyArgument("searchTermArg", 2)]
-        public IStep<string> SearchTerm { get; set; } =
-            new Constant<string>("NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))");
+        public IStep<StringStream> SearchTerm { get; set; } =
+            new StringConstant(DefaultSearchTerm);
 
         /// <summary>
         /// The name of the OCR profile to use.
         /// This cannot be set at the same time as OCRProfilePath.
         /// </summary>
-        [StepProperty]
+        [StepProperty(3)]
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("MyOcrProfile")]
         [RubyArgument("ocrProfileArg", 3)]
-        public IStep<string>? OCRProfileName { get; set; }
+        public IStep<StringStream>? OCRProfileName { get; set; }
 
         /// <summary>
         /// Path to the OCR profile to use.
         /// This cannot be set at the same times as OCRProfileName.
         /// </summary>
-        [StepProperty]
+        [StepProperty(4)]
         [RequiredVersion("Nuix", "7.6")]
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("C:\\Profiles\\MyProfile.xml")]
         [RubyArgument("ocrProfilePathArg", 4)]
-        public IStep<string>? OCRProfilePath { get; set; }
+        public IStep<StringStream>? OCRProfilePath { get; set; }
 
         /// <inheritdoc />
         public override Result<Unit, IError> VerifyThis(ISettings settings)

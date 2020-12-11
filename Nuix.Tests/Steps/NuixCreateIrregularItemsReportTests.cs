@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Steps;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixCreateIrregularItemsReportTests : NuixStepTestBase<NuixCreateIrregularItemsReport, string>
+    public class NuixCreateIrregularItemsReportTests : NuixStepTestBase<NuixCreateIrregularItemsReport, StringStream>
     {
         /// <inheritdoc />
         public NuixCreateIrregularItemsReportTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
@@ -33,14 +34,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     AddData,
                     new FileWrite
                     {
-                        Stream = new StringToStream
+                        Stream = new NuixCreateIrregularItemsReport
                         {
-                            String = new NuixCreateIrregularItemsReport
-                            {
-                                CasePath = CasePath
-                            }
+                            CasePath = CasePath
                         },
-                        Path = new PathCombine(){Paths = new Constant<List<string>>(new List<string>(){OutputFolder,"Irregular.txt"})}
+                        Path = new PathCombine(){Paths = Array(OutputFolder,"Irregular.txt")}
                     },
                     AssertFileContains(OutputFolder, "Irregular.txt",
                         "Unrecognised\tNew Folder/data/Theme in Yellow.txt"),

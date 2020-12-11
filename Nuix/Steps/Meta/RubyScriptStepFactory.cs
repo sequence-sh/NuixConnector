@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 
@@ -71,11 +70,5 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// The Required Nuix Features.
         /// </summary>
         public abstract IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
-
-        /// <inheritdoc />
-        public override IStepNameBuilder StepNameBuilder => new StepNameBuilderFromTemplate(FunctionName);
-
-        /// <inheritdoc />
-        public override Maybe<IStepCombiner> StepCombiner { get; } = Maybe<IStepCombiner>.None;
     }
 }

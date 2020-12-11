@@ -7,7 +7,9 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Enums;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -40,29 +42,29 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
         public static readonly string CasePathString = Path.Combine(GeneralDataFolder, "TestCase");
 
-        public static readonly IStep<string> CasePath = Constant(CasePathString);
+        public static readonly IStep<StringStream> CasePath = Constant(CasePathString);
         public static readonly string OutputFolder = Path.Combine(GeneralDataFolder, "OutputFolder");
         public static readonly string ConcordanceFolder = Path.Combine(GeneralDataFolder, "ConcordanceFolder");
-        public static readonly IStep<string> NRTFolder = Constant(Path.Combine(GeneralDataFolder, "NRT"));
-        public static readonly IStep<string> MigrationTestCaseFolder = Constant(Path.Combine(GeneralDataFolder, "MigrationTest"));
+        public static readonly IStep<StringStream> NRTFolder = Constant(Path.Combine(GeneralDataFolder, "NRT"));
+        public static readonly IStep<StringStream> MigrationTestCaseFolder = Constant(Path.Combine(GeneralDataFolder, "MigrationTest"));
 
         public static readonly string DataPathString = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data");
 
-        public static readonly IStep<string> DataPath = Constant(DataPathString);
-        public static readonly IStep<List<string>> DataPaths = Constant(new List<string>{ DataPathString });
+        public static readonly IStep<StringStream> DataPath = Constant(DataPathString);
+        public static readonly IStep<List<StringStream>> DataPaths = Array(DataPathString );
 
-        public static readonly IStep<List<string>> EncryptedDataPaths = Constant(new List<string>{ Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData") });
+        public static readonly IStep<List<StringStream>> EncryptedDataPaths = Array( Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData") );
 
-        public static readonly IStep<string> PasswordFilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt"));
+        public static readonly IStep<StringStream> PasswordFilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt"));
 
         //public static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultOCRProfile.xml");
-        public static readonly IStep<string> DefaultProcessingProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml"));
-        public static readonly IStep<string> TestProductionProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml"));
+        public static readonly IStep<StringStream> DefaultProcessingProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml"));
+        public static readonly IStep<StringStream> TestProductionProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml"));
 
-        public static readonly IStep<List<string>> PoemTextImagePaths = Constant(new List<string>{ Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png") });
+        public static readonly IStep<List<StringStream>> PoemTextImagePaths = Array( Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png") );
         public static readonly string ConcordancePathString = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat");
-        public static readonly IStep<string> ConcordancePath = Constant(ConcordancePathString);
-        public static readonly IStep<string> MigrationPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip"));
+        public static readonly IStep<StringStream> ConcordancePath = Constant(ConcordancePathString);
+        public static readonly IStep<StringStream> MigrationPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip"));
 
         public static readonly IStep<Unit> DeleteCaseFolder = new DeleteItem { Path = CasePath };
         public static readonly IStep<Unit> DeleteOutputFolder = new DeleteItem { Path = Constant(OutputFolder) };
@@ -83,31 +85,26 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 {
                     IgnoreCase = Constant(true),
                     Substring = Constant(expectedContents),
-                    String = new StringFromStream()
+                    String = new ReadFile
                     {
-                        Stream = new ReadFile
-                        {
-                            Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>{ folderName, fileName})}
-                        }
+                        Path = new PathCombine { Paths = Array(folderName, fileName) }
                     }
                 }
             };
         }
 
-        private static IStep<T> Constant<T>(T c) => new Constant<T>(c);
-
-        public static IStep<Unit> AssertCount(int expected, string searchTerm, IStep<string>? casePath = null) =>
+        public static IStep<Unit> AssertCount(int expected, string searchTerm, IStep<StringStream>? casePath = null) =>
             new AssertTrue
             {
                 Boolean = CompareItemsCount(expected, CompareOperator.Equals, searchTerm, casePath)
             };
 
-        public static IStep<bool> CompareItemsCount(int right, CompareOperator op, string searchTerm, IStep<string>? casePath)
+        public static IStep<bool> CompareItemsCount(int right, CompareOperator op, string searchTerm, IStep<StringStream>? casePath)
         {
             return new Compare<int>
             {
-                Left = new Constant<int>(right),
-                Operator = new Constant<CompareOperator>(op),
+                Left = Constant(right),
+                Operator = Constant(op),
                 Right = new NuixCountItems
                 {
                     CasePath = casePath ?? CasePath,

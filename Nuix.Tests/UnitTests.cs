@@ -18,7 +18,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
 
             public NuixStepCase(string name,
-                Sequence sequence,
+                Sequence<TOutput> sequence,
                 IReadOnlyCollection<ExternalProcessAction> externalProcessActions,
                 params string[] expectedLogValues)
                 : base(name, sequence, Maybe<TOutput>.None, expectedLogValues)

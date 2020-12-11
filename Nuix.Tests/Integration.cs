@@ -8,7 +8,7 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Serialization;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
@@ -44,11 +44,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             public NuixIntegrationTestCase(string name, params IStep<Unit>[] steps)
             {
                 Name = name;
-                Step = new Sequence { Steps = steps.Append(new NuixCloseConnection()).ToList() };
+                Step = new Sequence<Unit>
+                {
+                    InitialSteps = steps,
+                    FinalStep = new NuixCloseConnection()
+
+                };
             }
 
             public string Name { get; }
-            public Sequence Step { get; }
+            public Sequence<Unit> Step { get; }
         }
 
 
@@ -69,13 +74,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             /// <inheritdoc />
             public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper, string? extraArgument)
             {
-                var yaml = await Steps.Unfreeze().SerializeToYamlAsync(CancellationToken.None);
+                var yaml = await Steps.SerializeAsync(CancellationToken.None);
 
-                var deserializedStep = YamlMethods.DeserializeFromYaml(yaml,  StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(TStep)));
+                var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(TStep));
+
+
+                var deserializedStep = SequenceParsing.ParseSequence(yaml);
 
                 deserializedStep.ShouldBeSuccessful(x => x.AsString);
 
-                var unfrozenStep = deserializedStep.Value.TryFreeze().Bind(YamlRunner.ConvertToUnitStep);
+                var unfrozenStep = deserializedStep.Value.TryFreeze(sfs);
 
                 unfrozenStep.ShouldBeSuccessful(x => x.AsString);
 

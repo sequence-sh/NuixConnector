@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -49,7 +48,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     },
                     AssertFileContains(ConcordanceFolder, "loadfile.dat", "DOCID"),
                     AssertFileContains(ConcordanceFolder, "TEXT/000/000/DOC-000000001.txt", "Visible, invisible"),
-                    new DeleteItem {Path = new Constant<string>(ConcordanceFolder)},
+                    new DeleteItem {Path =  Constant(ConcordanceFolder)},
                     DeleteCaseFolder
                 );
 

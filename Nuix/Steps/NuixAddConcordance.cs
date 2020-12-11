@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -74,60 +75,62 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// The path to the case to import into.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-        public IStep<string> CasePath { get; set; } = null!;
+        public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The name of the folder to create.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(2)]
         [RubyArgument("folderNameArg", 2)]
-        public IStep<string> FolderName { get; set; } = null!;
+        public IStep<StringStream> FolderName { get; set; } = null!;
 
-        /// <summary>
-        /// A description to add to the folder.
-        /// </summary>
-        [StepProperty]
-        [RubyArgument("folderDescriptionArg", 3)]
-        [DefaultValueExplanation("No description")]
-        public IStep<string>? Description { get; set; }
+
 
         /// <summary>
         /// The name of the custodian to assign the folder to.
         /// </summary>
         [Required]
-        [StepProperty]
-        [RubyArgument("folderCustodianArg", 4)]
-        public IStep<string> Custodian { get; set; } = null!;
+        [StepProperty(3)]
+        [RubyArgument("folderCustodianArg", 3)]
+        public IStep<StringStream> Custodian { get; set; } = null!;
 
         /// <summary>
         /// The path of the concordance file to import.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(4)]
         [Example("C:/MyConcordance.dat")]
-        [RubyArgument("filePathArg", 5)]
-        public IStep<string> FilePath { get; set; } = null!;
+        [RubyArgument("filePathArg", 4)]
+        public IStep<StringStream> FilePath { get; set; } = null!;
 
         /// <summary>
         /// The concordance date format to use.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(5)]
         [Example("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
-        [RubyArgument("dateFormatArg", 6)]
-        public IStep<string> ConcordanceDateFormat { get; set; } = null!;
+        [RubyArgument("dateFormatArg", 5)]
+        public IStep<StringStream> ConcordanceDateFormat { get; set; } = null!;
 
         /// <summary>
         /// The name of the concordance profile to use.
         /// </summary>
         [Required]
-        [StepProperty]
+        [StepProperty(6)]
         [Example("MyProfile")]
-        [RubyArgument("profileNameArg", 7)]
-        public IStep<string> ConcordanceProfileName { get; set; } = null!;
+        [RubyArgument("profileNameArg", 6)]
+        public IStep<StringStream> ConcordanceProfileName { get; set; } = null!;
+
+        /// <summary>
+        /// A description to add to the folder.
+        /// </summary>
+        [StepProperty(7)]
+        [RubyArgument("folderDescriptionArg", 7)]
+        [DefaultValueExplanation("No description")]
+        public IStep<StringStream>? Description { get; set; }
     }
 }

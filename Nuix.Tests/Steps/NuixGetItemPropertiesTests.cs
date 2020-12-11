@@ -1,25 +1,23 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Steps;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixGetItemPropertiesTests : NuixStepTestBase<NuixGetItemProperties, string>
+    public class NuixGetItemPropertiesTests : NuixStepTestBase<NuixGetItemProperties, StringStream>
     {
         /// <inheritdoc />
-        public NuixGetItemPropertiesTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-        }
+        public NuixGetItemPropertiesTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) {}
 
 
         /// <inheritdoc />
         protected override IEnumerable<DeserializeCase> DeserializeCases
         {
             get { yield break; }
-
         }
 
         /// <inheritdoc />
@@ -34,19 +32,15 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     AddData,
                     new FileWrite
                     {
-                        Path = new PathCombine{Paths = new Constant<List<string>>(new List<string>(){OutputFolder,"ItemProperties.txt"})},
-                        Stream = new StringToStream
+                        Path = new PathCombine{Paths = Array(OutputFolder,"ItemProperties.txt")},
+                        Stream = new NuixGetItemProperties
                         {
-                            String = new NuixGetItemProperties
-                            {
-                                CasePath = CasePath,
-                                PropertyRegex = Constant("(.+)"),
-                                SearchTerm = Constant("*")
-                            }
+                            CasePath = CasePath,
+                            PropertyRegex = Constant("(.+)"),
+                            SearchTerm = Constant("*")
                         }
                     },
-                    AssertFileContains(OutputFolder, "ItemProperties.txt",
-                        "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
+                    AssertFileContains(OutputFolder, "ItemProperties.txt", "Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
 
                     DeleteCaseFolder,
                     DeleteOutputFolder

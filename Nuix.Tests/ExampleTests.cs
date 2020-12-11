@@ -9,7 +9,6 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Serialization;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
@@ -37,7 +36,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
-            var stepResult = YamlMethods.DeserializeFromYaml(yaml, sfs).Bind(x => x.TryFreeze());
+
+
+
+            var stepResult = Core.Parser.SequenceParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(sfs));
 
             if (stepResult.IsFailure)
                 errorAction.Invoke(stepResult);

@@ -10,10 +10,47 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Entity = Reductech.EDR.Core.Entities.Entity;
+using Reductech.EDR.Core.Parser;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
+    /// <summary>
+    /// Convert StringStreams to Json
+    /// </summary>
+    public class StringStreamJsonConverter : JsonConverter
+    {
+        private StringStreamJsonConverter() {}
+
+        /// <summary>
+        /// The instance
+        /// </summary>
+        public static StringStreamJsonConverter Instance { get; } = new StringStreamJsonConverter();
+
+        /// <inheritdoc />
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        {
+            if (value is StringStream ss)
+            {
+                var s = ss.GetString();
+                serializer.Serialize(writer, s);
+            }
+        }
+
+        /// <inheritdoc />
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(StringStream);
+        }
+    }
+
+
     /// <summary>
     /// Converts Entities to Json
     /// </summary>
@@ -80,44 +117,43 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public override void WriteJson(JsonWriter writer, object? entityObject, JsonSerializer serializer)
         {
-            if (entityObject is not Entity entity)
-                return;
-
-            var dictionary = new Dictionary<string, object?>();
-
-            foreach (var (key, value) in entity)
+            if (entityObject is Entity entity)
             {
-                value.Value.Switch(
-                    _ => { dictionary.Add(key, null); },
-                    x => dictionary.Add(key, GetObject(x)),
-                    x => dictionary.Add(key, GetList(x)));
+                var dictionary = new Dictionary<string, object?>();
+
+                foreach (var (key, value) in entity)
+                {
+                    value.Value.Switch(
+                        _ => { dictionary.Add(key, null); },
+                        x => dictionary.Add(key, GetObject(x)),
+                        x => dictionary.Add(key, GetList(x)));
+                }
+
+                serializer.Serialize(writer, dictionary);
+
+                static List<object?> GetList(IEnumerable<EntitySingleValue> source)
+                {
+                    var r = source.Select(GetObject).ToList();
+                    return r;
+                }
+
+                static object? GetObject(EntitySingleValue esv)
+                {
+                    object? o = null;
+
+                    esv.Value.Switch(
+                        a => o = a,
+                        a => o = a,
+                        a => o = a,
+                        a => o = a,
+                        a => o = a,
+                        a => o = a,
+                        e => o = e
+                    );
+
+                    return o;
+                }
             }
-
-            serializer.Serialize(writer, dictionary);
-
-            static List<object?> GetList(IEnumerable<EntitySingleValue> source)
-            {
-                var r = source.Select(GetObject).ToList();
-                return r;
-            }
-
-            static object? GetObject(EntitySingleValue esv)
-            {
-                object? o = null;
-
-                esv.Value.Switch(
-                    a => o = a,
-                    a => o = a,
-                    a => o = a,
-                    a => o = a,
-                    a => o = a,
-                    a => o = a
-                );
-
-                return o;
-            }
-
-
         }
 
         /// <inheritdoc />

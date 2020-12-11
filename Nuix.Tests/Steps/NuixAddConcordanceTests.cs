@@ -6,6 +6,7 @@ using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -72,7 +73,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 var custodian = @"Mark";
                 var newFolder = @"New Folder";
                 yield return new NuixDeserializeTest("Add Concordance",
-                        $@"NuixAddConcordance(CasePath = '{CasePathString}', ConcordanceDateFormat = '{concordanceDateFormat}', ConcordanceProfileName = '{integrationTestProfile}', Custodian = '{custodian}', FilePath = '{ConcordancePathString}', FolderName = '{newFolder}')",
+                        $@"NuixAddConcordance CasePath: '{CasePathString}' ConcordanceDateFormat: '{concordanceDateFormat}' ConcordanceProfileName: '{integrationTestProfile}' Custodian: '{custodian}' FilePath: '{ConcordancePathString}' FolderName: '{newFolder}'",
                         Unit.Default,
                         new List<ExternalProcessAction>
                         {

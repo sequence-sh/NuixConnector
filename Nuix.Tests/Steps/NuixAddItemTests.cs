@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Entities;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -53,38 +54,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 ).WithSettings(UnitTestSettings);
 
 
-            }
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerable<SerializeCase> SerializeCases
-        {
-            get
-            {
-                var (step, _) = CreateStepWithDefaultOrArbitraryValues();
-
-                yield return new SerializeCase("default",
-                    step,
-                    @"Do: NuixAddItem
-CasePath: 'Bar0'
-FolderName: 'Bar3'
-Description: 'Bar2'
-Custodian: 'Bar1'
-Paths:
-- 'Foo13'
-- 'Foo14'
-- 'Foo15'
-ProcessingProfileName: 'Bar16'
-ProcessingProfilePath: 'Bar17'
-ProcessingSettings: (Prop1 = 'Val18',Prop2 = 'Val19')
-ParallelProcessingSettings: (Prop1 = 'Val10',Prop2 = 'Val11')
-PasswordFilePath: 'Bar12'
-MimeTypeSettings:
-- (Prop1 = 'Val4',Prop2 = 'Val5')
-- (Prop1 = 'Val6',Prop2 = 'Val7')
-- (Prop1 = 'Val8',Prop2 = 'Val9')"
-
-                    );
             }
         }
 
@@ -170,7 +139,7 @@ MimeTypeSettings:
                         Custodian = Constant("Mark"),
                         Paths = DataPaths,
                         FolderName = Constant("New Folder"),
-                        ProcessingSettings = new Constant<Entity>(new Entity(new KeyValuePair<string, EntityValue>("processText", EntityValue.Create(true.ToString()))))
+                        ProcessingSettings = Constant(new Entity(new KeyValuePair<string, EntityValue>("processText", EntityValue.Create(true.ToString()))))
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
@@ -187,7 +156,7 @@ MimeTypeSettings:
                         Custodian = Constant("Mark"),
                         Paths = DataPaths,
                         FolderName = Constant("New Folder"),
-                        ParallelProcessingSettings = new Constant<Entity>(new Entity(new KeyValuePair<string, EntityValue>("workerCount", EntityValue.Create(1.ToString()))))
+                        ParallelProcessingSettings = Constant(new Entity(new KeyValuePair<string, EntityValue>("workerCount", EntityValue.Create(1.ToString()))))
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
