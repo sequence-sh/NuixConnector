@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
@@ -88,8 +87,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                         newArguments.Add(key, value);
                 }
 
-
-                var command2 = new ConnectionCommand()
+                var command2 = new ConnectionCommand
                 {
                     Arguments = newArguments,
                     Command = command1.Command,
@@ -121,37 +119,28 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             {
                 var dictionary = new Dictionary<string, object?>();
 
-                foreach (var (key, value) in entity)
+                foreach (var entityProperty in entity)
                 {
-                    value.Value.Switch(
-                        _ => { dictionary.Add(key, null); },
-                        x => dictionary.Add(key, GetObject(x)),
-                        x => dictionary.Add(key, GetList(x)));
+                    object? value = GetObject(entityProperty.BestValue);
+
+                    dictionary.Add(entityProperty.Name, value);
                 }
 
                 serializer.Serialize(writer, dictionary);
 
-                static List<object?> GetList(IEnumerable<EntitySingleValue> source)
+                static object? GetObject(EntityValue ev)
                 {
-                    var r = source.Select(GetObject).ToList();
-                    return r;
-                }
-
-                static object? GetObject(EntitySingleValue esv)
-                {
-                    object? o = null;
-
-                    esv.Value.Switch(
-                        a => o = a,
-                        a => o = a,
-                        a => o = a,
-                        a => o = a,
-                        a => o = a,
-                        a => o = a,
-                        e => o = e
+                    return ev.Value.Match(
+                        _ => null as object,
+                        x => x,
+                        x => x,
+                        x => x,
+                        x => x,
+                        x => x.Value,
+                        x => x,
+                        x => x,
+                        x => x.Select(GetObject).ToList()
                     );
-
-                    return o;
                 }
             }
         }
@@ -159,26 +148,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// <inheritdoc />
         public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            var evDict = ImmutableList<KeyValuePair<string, EntityValue>>.Empty.ToBuilder();
-
             var objectDict = serializer.Deserialize<Dictionary<string, object>>(reader);
-
-            foreach (var (key, value) in objectDict!)
-            {
-                EntityValue ev;
-
-                if (!(value is string) && value is IEnumerable enumerable)
-                {
-                    var list = enumerable.OfType<object>().Select(x => x.ToString()!).ToList();
-                    ev = EntityValue.Create(list);
-                }
-                else
-                    ev = EntityValue.Create(value.ToString());
-
-                evDict.Add(new KeyValuePair<string, EntityValue>(key, ev));
-            }
-
-            var entity = new Entity(evDict.ToImmutable());
+            var entity = Entity.Create(objectDict!.Select(x => (x.Key, x.Value)));
 
             return entity;
         }

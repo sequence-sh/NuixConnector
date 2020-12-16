@@ -313,7 +313,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var stream1 = new EntityStream(new List<Entity>().ToAsyncEnumerable());
             var stream2 = new EntityStream(new List<Entity>().ToAsyncEnumerable());
 
-            var dict = new Dictionary<RubyFunctionParameter, object>()
+            var dict = new Dictionary<RubyFunctionParameter, object>
             {
                 { new RubyFunctionParameter("stream1Arg", "Stream1", false, null), stream1 },
                 { new RubyFunctionParameter("stream2Arg", "Stream2", false, null), stream2 }
@@ -321,7 +321,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
 
             var step = new FakeNuixTwoStreamFunction();
-            var result = await nuixConnection.RunFunctionAsync<Unit>(
+            var result = await nuixConnection.RunFunctionAsync(
                 logger, step.RubyScriptStepFactory.RubyFunction, stepParams, ct);
 
             Assert.True(result.IsFailure);
@@ -345,10 +345,10 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var logger = new TestLogger();
             var ct = new CancellationToken();
 
-            var entities = new List<Entity>()
+            var entities = new List<Entity>
             {
-                new Entity(new KeyValuePair<string, EntityValue>("Property1", EntityValue.Create("Value1"))),
-                new Entity(new KeyValuePair<string, EntityValue>("Property2", EntityValue.Create("Value2")))
+                Entity.Create(("Property1", "Value1")),
+                Entity.Create(("Property2", "Value2"))
             };
 
             var stream1 = new EntityStream(entities.ToAsyncEnumerable());
