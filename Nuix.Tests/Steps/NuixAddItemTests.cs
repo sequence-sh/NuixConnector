@@ -139,7 +139,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         Custodian = Constant("Mark"),
                         Paths = DataPaths,
                         FolderName = Constant("New Folder"),
-                        ProcessingSettings = Constant(new Entity(new KeyValuePair<string, EntityValue>("processText", EntityValue.Create(true.ToString()))))
+                        ProcessingSettings = Constant(Entity.Create(("processText", true)))
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
@@ -156,7 +156,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         Custodian = Constant("Mark"),
                         Paths = DataPaths,
                         FolderName = Constant("New Folder"),
-                        ParallelProcessingSettings = Constant(new Entity(new KeyValuePair<string, EntityValue>("workerCount", EntityValue.Create(1.ToString()))))
+                        ParallelProcessingSettings = Constant(Entity.Create(("workerCount", 1)))
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder
