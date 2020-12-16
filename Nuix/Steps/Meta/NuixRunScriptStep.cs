@@ -48,13 +48,13 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
 
             var rubyFunctionParameters = parameters.Value
-                .Select(x => new RubyFunctionParameter(ConvertString(x.Key), x.Key, true, null))
+                .Select(x => new RubyFunctionParameter(ConvertString(x.Name), x.Name, true, null))
                 .ToList();
 
             var parameterDict = parameters.Value
                 .ToDictionary(x =>
-                        new RubyFunctionParameter( ConvertString(x.Key), x.Key, true, null),
-                    x=>GetObject(x.Value))
+                        new RubyFunctionParameter( ConvertString(x.Name), x.Name, true, null),
+                    x=>GetObject(x.BestValue))
                 .Where(x=>x.Value != null)
                 .ToDictionary(x=>x.Key, x=>x.Value!);
 
@@ -82,28 +82,19 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             return runResult.Value;
 
-            static object? GetObject(EntityValue entityValue)
+            static object? GetObject(EntityValue ev)
             {
-                return
-                entityValue.Value.Match(_ => null as object,
-                    GetObject,
-                    l=> l.Select(GetObject).ToList()
+                return ev.Value.Match(
+                    _ => null as object,
+                    x => x,
+                    x => x,
+                    x => x,
+                    x => x,
+                    x => x.Value,
+                    x => x,
+                    x => x,
+                    x => x.Select(GetObject).ToList()
                 );
-
-                static object GetObject(EntitySingleValue entitySingleValue)
-                {
-                    return entitySingleValue.Value.Match(
-                        x => x,
-                        x => x,
-                        x => x,
-                        x => x,
-                        x => x,
-                        x => x as object,
-                        x => x
-
-                    );
-                }
-
             }
 
         }
