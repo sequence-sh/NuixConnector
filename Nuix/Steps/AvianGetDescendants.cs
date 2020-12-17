@@ -117,7 +117,7 @@ nuix_case.close";
         /// </summary>
         [Required]
         [StepProperty(3)]
-        [Example("item-set:TaggedItems")]
+        [Example("NumDescendants")]
         [RubyArgument("metadataKeyArg", 3)]
         [Alias("PropertyName")]
         public IStep<StringStream> MetadataKey { get; set; } = null!;
