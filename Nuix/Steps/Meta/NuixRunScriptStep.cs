@@ -107,7 +107,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
             if (char.IsUpper(s.First()))
             {
-                s = char.ToLowerInvariant(s[0]) + s.Substring(1);
+                s = char.ToLowerInvariant(s[0]) + s[1..];
             }
 
             return s;
