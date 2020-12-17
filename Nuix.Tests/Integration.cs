@@ -24,7 +24,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private IEnumerable<IntegrationTestCase> IntegrationTestCasesWithSettings =>
             from nuixTestCase in NuixTestCases
             from settings in Constants.NuixSettingsList
-            where IsVersionCompatible(nuixTestCase.Step, settings.NuixVersion) //&& false //uncomment to disable integration tests
+            where IsVersionCompatible(nuixTestCase.Step, settings.NuixVersion) && false //uncomment to disable integration tests
             select new IntegrationTestCase(nuixTestCase.Name + settings.NuixVersion, nuixTestCase.Step)
                 .WithSettings(settings);
 

@@ -33,6 +33,17 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
         }
 
+        protected override IEnumerable<ErrorCase> ErrorCases
+        {
+            get
+            {
+                foreach (var errorCase in base.ErrorCases)
+                {
+                    yield return errorCase.WithSettings(UnitTestSettings);
+                }
+            }
+        }
+
         /// <inheritdoc />
         protected override IEnumerable<StepCase> StepCases
         {

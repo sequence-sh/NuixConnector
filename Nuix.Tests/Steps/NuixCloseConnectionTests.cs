@@ -21,13 +21,5 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 yield return new StepCase("Close connection that doesn't exist", new NuixCloseConnection(), Unit.Default);
             }
         }
-
-        protected override IEnumerable<ErrorCase> ErrorCases
-        {
-            get
-            {
-                yield break;
-            }
-        }
     }
 }
