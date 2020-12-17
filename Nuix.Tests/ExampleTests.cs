@@ -66,13 +66,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             ));
         }
 
-        //[Fact(Skip = "manual")]
-        [Fact]
+        [Fact(Skip = "manual")]
         public async Task RunYamlSequence()
         {
             const string yaml = @"- <CurrentDir>   = 'D:\temp'
 - <CasePath>     = PathCombine [<CurrentDir>, 'case']
 - <SearchTagCSV> = PathCombine [<CurrentDir>, 'searchtag.csv']
+- NuixOpenConnection
 - ReadFile <SearchTagCSV>
   | FromCsv
   | EntityForEach

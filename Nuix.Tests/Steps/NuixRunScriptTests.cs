@@ -108,7 +108,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
         public const string TestNuixPath = "TestPath";
 
-        public NuixSettings UnitTestSettings => new NuixSettings(true, TestNuixPath, new Version(8, 2), new List<NuixFeature>());
+        public static  NuixSettings UnitTestSettings => new NuixSettings(true, TestNuixPath, new Version(8, 2), new List<NuixFeature>());
 
         [Fact]
         [Trait("Category", "Integration")]

@@ -46,8 +46,11 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             get
             {
-                var defaultError = CreateDefaultErrorCase().WithSettings(UnitTestSettings);
-                yield return defaultError;
+                foreach (var baseErrorCase in base.ErrorCases)
+                {
+                    var caseWithSettings = baseErrorCase.WithSettings(UnitTestSettings);
+                    yield return caseWithSettings;
+                }
             }
         }
 
