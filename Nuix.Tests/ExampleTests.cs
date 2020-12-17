@@ -36,7 +36,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         {
             var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
-
+            var logger = new Microsoft.Extensions.Logging.Xunit.XunitLogger(TestOutputHelper, "Test");
 
 
             var stepResult = Core.Parser.SequenceParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(sfs));
@@ -44,7 +44,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             if (stepResult.IsFailure)
                 errorAction.Invoke(stepResult);
 
-            var monad = new StateMonad(new TestLogger(), _nuixSettings,
+            var monad = new StateMonad(logger, _nuixSettings,
                 ExternalProcessRunner.Instance, FileSystemHelper.Instance, sfs);
 
             var r = await stepResult.Value.Run<Unit>(monad, CancellationToken.None);
@@ -69,7 +69,19 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         [Fact(Skip = "manual")]
         public async Task RunYamlSequence()
         {
-            const string yaml = @"";
+            const string yaml = @"- <CurrentDir>   = 'D:\temp'
+- <CasePath>     = PathCombine [<CurrentDir>, 'case']
+- <SearchTagCSV> = PathCombine [<CurrentDir>, 'searchtag.csv']
+- NuixOpenConnection
+- ReadFile <SearchTagCSV>
+  | FromCsv
+  | EntityForEach
+    Action: (
+      NuixSearchAndTag
+        CasePath: <CasePath>
+        SearchTerm: (EntityGetValue <Entity> 'SearchTerm')
+        Tag: (EntityGetValue <Entity> 'Tag')
+    )";
 
             await RunYamlSequenceInternal(yaml, result =>
                 result.ShouldBeSuccessful(x => x.AsString));
