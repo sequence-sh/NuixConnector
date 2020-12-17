@@ -42,5 +42,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 yield return case1;
             }
         }
+
+        protected override IEnumerable<ErrorCase> ErrorCases
+        {
+            get
+            {
+                yield break;
+            }
+        }
     }
 }
