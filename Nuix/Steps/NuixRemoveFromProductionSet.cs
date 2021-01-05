@@ -12,18 +12,19 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Removes particular items from a Nuix production set.
     /// </summary>
-    public sealed class NuixRemoveFromProductionSetStepFactory : RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit>
+    public sealed class NuixRemoveFromProductionSetStepFactory
+        : RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit>
     {
         private NuixRemoveFromProductionSetStepFactory() { }
 
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit> Instance { get; } = new NuixRemoveFromProductionSetStepFactory();
-
+        public static RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit> Instance { get; } =
+            new NuixRemoveFromProductionSetStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(4, 2);
+        public override Version RequiredNuixVersion { get; } = new (4, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -64,7 +65,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     the_case.close";
     }
 
-
     /// <summary>
     /// Removes particular items from a Nuix production set.
     /// </summary>
@@ -74,7 +74,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
             NuixRemoveFromProductionSetStepFactory.Instance;
 
-
         /// <summary>
         /// The path to the case.
         /// </summary>
@@ -82,8 +81,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
-
 
         /// <summary>
         /// The production set to remove results from.
@@ -91,7 +90,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
-
+        [Alias("ProductionSet")]
         public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
@@ -101,9 +100,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [DefaultValueExplanation("All items will be removed.")]
         [Example("Tag:sushi")]
         [RubyArgument("searchArg", 3)]
+        [Alias("Search")]
         public IStep<StringStream>? SearchTerm { get; set; }
-
-
-
     }
 }
