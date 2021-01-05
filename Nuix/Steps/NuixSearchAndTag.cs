@@ -19,10 +19,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixSearchAndTag, Unit> Instance { get; } = new NuixSearchAndTagStepFactory();
+        public static RubyScriptStepFactory<NuixSearchAndTag, Unit> Instance { get; } =
+            new NuixSearchAndTagStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(2, 16);
+        public override Version RequiredNuixVersion { get; } = new (2, 16);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
@@ -54,8 +55,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     the_case.close";
     }
 
-
-
     /// <summary>
     /// Searches a NUIX case with a particular search string and tags all files it finds.
     /// </summary>
@@ -71,6 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -80,6 +80,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(2)]
         [Example("*.txt")]
         [RubyArgument("searchArg", 2)]
+        [Alias("Search")]
         public IStep<StringStream> SearchTerm { get; set; } = null!;
 
         /// <summary>
@@ -88,6 +89,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("tagArg", 3)]
-        public IStep<StringStream> Tag { get; set; }= null!;
+        public IStep<StringStream> Tag { get; set; } = null!;
     }
 }
