@@ -20,18 +20,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixCreateTermList, StringStream> Instance { get; } = new NuixCreateTermListStepFactory();
+        public static RubyScriptStepFactory<NuixCreateTermList, StringStream> Instance { get; } =
+            new NuixCreateTermListStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(4, 2);
+        public override Version RequiredNuixVersion { get; } = new (4, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
 
-
         /// <inheritdoc />
         public override string FunctionName => "CreateTermList";
-
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
@@ -53,7 +52,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     return text";
     }
 
-
     /// <summary>
     /// Creates a list of all terms appearing in the case and their frequencies.
     /// The report is in CSV format. The headers are 'Term' and 'Count'
@@ -62,7 +60,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     public sealed class NuixCreateTermList : RubyScriptStepBase<StringStream>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory => NuixCreateTermListStepFactory.Instance;
+        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
+            NuixCreateTermListStepFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -71,6 +70,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
     }
 }
