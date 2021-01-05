@@ -22,18 +22,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixAddToItemSet, Unit> Instance { get; } = new NuixAddToItemSetStepFactory();
-
+        public static RubyScriptStepFactory<NuixAddToItemSet, Unit> Instance { get; } =
+            new NuixAddToItemSetStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(4, 0);
+        public override Version RequiredNuixVersion { get; } = new (4, 0);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
         {
             NuixFeature.ANALYSIS
         };
-
 
         /// <inheritdoc />
         public override string FunctionName => "AddToItemSet";
@@ -67,16 +66,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     the_case.close";
     }
 
-
     /// <summary>
     /// Searches a case with a particular search string and adds all items it finds to a particular item set.
     /// Will create a new item set if one doesn't already exist.
     /// </summary>
+    [Alias("NuixCreateItemSet")]
     public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddToItemSetStepFactory.Instance;
-
 
         /// <summary>
         /// The path of the case to search.
@@ -85,6 +83,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -93,16 +92,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("searchArg", 2)]
-        public IStep<StringStream> SearchTerm { get; set; }= null!;
+        [Alias("Search")]
+        public IStep<StringStream> SearchTerm { get; set; } = null!;
 
         /// <summary>
         /// The item set to add results to. Will be created if it doesn't already exist.
         /// </summary>
-
         [Required]
         [StepProperty(3)]
         [RubyArgument("itemSetNameArg", 3)]
-        public IStep<StringStream> ItemSetName { get; set; }= null!;
+        [Alias("Set")]
+        public IStep<StringStream> ItemSetName { get; set; } = null!;
 
         /// <summary>
         /// The means of deduplicating items by key and prioritizing originals in a tie-break.
@@ -110,21 +110,21 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(4)]
         [RubyArgument("deduplicationArg", 4)]
         [DefaultValueExplanation("No deduplication")]
+        [Alias("DeduplicateUsing")]
         public IStep<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
 
         /// <summary>
         /// The description of the item set.
         /// </summary>
-
         [StepProperty(5)]
         [RubyArgument("descriptionArg", 5)]
         [DefaultValueExplanation("No description")]
+        [Alias("Description")]
         public IStep<StringStream>? ItemSetDescription { get; set; }
 
         /// <summary>
         /// Whether to deduplicate as a family or individual.
         /// </summary>
-
         [StepProperty(6)]
         [RubyArgument("deduplicateByArg", 6)]
         [DefaultValueExplanation("Neither")]
@@ -134,12 +134,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// A list of custodian names ordered from highest ranked to lowest ranked.
         /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
         /// </summary>
-
         [StepProperty(7)]
         [RubyArgument("custodianRankingArg", 7)]
         [DefaultValueExplanation("Do not rank custodians")]
         public IStep<Array<StringStream>>? CustodianRanking { get; set; }
-
 
         /// <summary>
         /// How to order the items to be added to the item set.
