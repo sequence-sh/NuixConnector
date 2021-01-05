@@ -25,11 +25,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixAddItem, Unit> Instance { get; } = new NuixAddItemStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion => new(3, 2);
+        public override Version RequiredNuixVersion => new (3, 2);
 
         /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature> { NuixFeature.CASE_CREATION };
-
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+            new List<NuixFeature> {NuixFeature.CASE_CREATION};
 
         /// <inheritdoc />
         public override string FunctionName => "AddToCase";
@@ -57,9 +57,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
 
         version_mimes = []
-		$utilities.getItemTypeUtility().getAllTypes().each do |mime|
-			version_mimes << mime.to_s
-		end
+        $utilities.getItemTypeUtility().getAllTypes().each do |mime|
+            version_mimes << mime.to_s
+        end
 
 
         mimeTypes.each do |mime_type|
@@ -97,7 +97,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     end
 
 
-#This only works in 7.2 or later
+    #This only works in 7.2 or later
     if passwordFilePathArg != nil
         lines = File.read(passwordFilePathArg, mode: 'r:bom|utf-8').split
 
@@ -126,18 +126,17 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     processor.process
     log 'Items added'
     the_case.close";
-
     }
 
     /// <summary>
     /// Adds a file or directory to a Nuix Case.
     /// </summary>
+    [Alias("NuixAdd")]
+    [Alias("NuixImportItem")]
     public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddItemStepFactory.Instance;
-
-
 
         /// <summary>
         /// The path to the case.
@@ -146,28 +145,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
-
-        /// <summary>
-        /// The name of the folder to create.
-        /// </summary>
-        [Required]
-        [StepProperty(2)]
-        [RubyArgument("folderNameArg", 2)]
-        public IStep<StringStream> FolderName { get; set; } = null!;
-
-
-
-        /// <summary>
-        /// The custodian to assign to the new folder.
-        /// </summary>
-        [Required]
-        [StepProperty(3)]
-        [RubyArgument("folderCustodianArg", 3)]
-        public IStep<StringStream> Custodian { get; set; } = null!;
-
-
-
+        
         /// <summary>
         /// The path of the file or directory to add to the case.
         /// </summary>
@@ -175,7 +155,27 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(4)]
         [Example("C:/Data/File.txt")]
         [RubyArgument("filePathsArgs", 4)]
+        [Alias("Directories")]
+        [Alias("Files")]
         public IStep<Array<StringStream>> Paths { get; set; } = null!;
+
+        /// <summary>
+        /// The name of the folder to create.
+        /// </summary>
+        [Required]
+        [StepProperty(2)]
+        [RubyArgument("folderNameArg", 2)]
+        [Alias("Container")]
+        [Alias("ToContainer")]
+        public IStep<StringStream> FolderName { get; set; } = null!;
+
+        /// <summary>
+        /// The custodian to assign to the new folder/container.
+        /// </summary>
+        [Required]
+        [StepProperty(3)]
+        [RubyArgument("folderCustodianArg", 3)]
+        public IStep<StringStream> Custodian { get; set; } = null!;
 
         /// <summary>
         /// The description of the new folder.
@@ -188,12 +188,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The name of the Processing profile to use.
         /// </summary>
-
         [RequiredVersion("Nuix", "7.6")]
         [StepProperty(6)]
         [Example("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("processingProfileNameArg", 6)]
+        [Alias("UsingProfile")]
         public IStep<StringStream>? ProcessingProfileName { get; set; }
 
         /// <summary>
@@ -204,6 +204,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Profiles/MyProcessingProfile.xml")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("processingProfilePathArg", 7)]
+        [Alias("UsingProfilePath")]
         public IStep<StringStream>? ProcessingProfilePath { get; set; }
 
         /// <summary>
@@ -213,6 +214,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(8)]
         [DefaultValueExplanation("Processing settings will not be changed")]
         [RubyArgument("processingSettingsArg", 8)]
+        [Alias("Settings")]
         public IStep<Core.Entity>? ProcessingSettings { get; set; }
 
         /// <summary>
@@ -224,7 +226,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [RubyArgument("parallelProcessingSettingsArg", 9)]
         public IStep<Core.Entity>? ParallelProcessingSettings { get; set; }
 
-
         /// <summary>
         /// The path of a file containing passwords to use for decryption.
         /// </summary>
@@ -233,8 +234,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Data/Passwords.txt")]
         [RubyArgument("passwordFilePathArg", 10)]
         [DefaultValueExplanation("Do not attempt decryption")]
+        [Alias("PasswordFile")]
         public IStep<StringStream>? PasswordFilePath { get; set; }
-
 
         /// <summary>
         /// Special settings for individual mime types.
