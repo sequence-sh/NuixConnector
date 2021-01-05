@@ -18,10 +18,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixDoesCaseExist, bool> Instance { get; } = new NuixDoesCaseExistStepFactory();
+        public static RubyScriptStepFactory<NuixDoesCaseExist, bool> Instance { get; } =
+            new NuixDoesCaseExistStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(2, 16);
+        public override Version RequiredNuixVersion { get; } = new (2, 16);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
@@ -44,7 +45,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 ";
     }
 
-
     /// <summary>
     /// Returns whether or not a case exists.
     /// </summary>
@@ -60,6 +60,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
     }
 }
