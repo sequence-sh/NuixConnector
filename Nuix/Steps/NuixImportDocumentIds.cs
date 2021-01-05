@@ -19,10 +19,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixImportDocumentIds, Unit> Instance { get; } = new NuixImportDocumentIdsStepFactory();
+        public static RubyScriptStepFactory<NuixImportDocumentIds, Unit> Instance { get; } =
+            new NuixImportDocumentIdsStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(7, 4);
+        public override Version RequiredNuixVersion { get; } = new (7, 4);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -63,7 +64,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     the_case.close";
     }
 
-
     /// <summary>
     /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
     /// </summary>
@@ -79,6 +79,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -87,6 +88,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
+        [Alias("ProductionSet")]
         public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
@@ -95,6 +97,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("dataPathArg", 3)]
+        [Alias("FromList")]
         public IStep<StringStream> DataPath { get; set; } = null!;
 
         /// <summary>
@@ -103,8 +106,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(4)]
         [DefaultValueExplanation("false")]
         [RubyArgument("sourceProductionSetsInDataArg", 4)]
+        [Alias("SetNameInList")]
         public IStep<bool> AreSourceProductionSetsInData { get; set; } = new BoolConstant(false);
-
     }
-
 }
