@@ -19,10 +19,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixExtractEntities, Unit> Instance { get; } = new NuixExtractEntitiesStepFactory();
+        public static RubyScriptStepFactory<NuixExtractEntities, Unit> Instance { get; } =
+            new NuixExtractEntitiesStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(4, 2);
+        public override Version RequiredNuixVersion { get; } = new (4, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
@@ -75,9 +76,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     File.write(File.join(outputFolderPathArg, 'Entities.txt'), entitiesText) #For consistency, file is written even if there are no entities
 
     the_case.close";
-
-
-
     }
 
     /// <summary>
@@ -95,6 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -104,6 +103,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Output")]
         [StepProperty(2)]
         [RubyArgument("outputFolderPathArg", 2)]
+        [Alias("ToDirectory")]
         public IStep<StringStream> OutputFolder { get; set; } = null!;
     }
 }
