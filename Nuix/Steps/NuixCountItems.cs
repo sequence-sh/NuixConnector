@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixCountItems, int> Instance { get; } = new NuixCountItemsStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(3, 4);
+        public override Version RequiredNuixVersion { get; } = new (3, 4);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
@@ -54,6 +54,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -63,6 +64,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("*.txt")]
         [StepProperty(2)]
         [RubyArgument("searchArg", 2)]
+        [Alias("Search")]
         public IStep<StringStream> SearchTerm { get; set; } = null!;
     }
 }
