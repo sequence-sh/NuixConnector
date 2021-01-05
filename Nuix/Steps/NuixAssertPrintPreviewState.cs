@@ -23,7 +23,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit> Instance { get; } = new NuixAssertPrintPreviewStateStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new Version(5, 2);
+        public override Version RequiredNuixVersion { get; } = new(5, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()

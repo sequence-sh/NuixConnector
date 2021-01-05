@@ -23,7 +23,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
             new NuixAddConcordanceFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new Version(7, 6); //This is required for the Metadata Import Profile
+        public override Version RequiredNuixVersion { get; } = new(7, 6); //This is required for the Metadata Import Profile
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature> { NuixFeature.CASE_CREATION, NuixFeature.METADATA_IMPORT };

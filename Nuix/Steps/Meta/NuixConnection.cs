@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
@@ -29,7 +28,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
     {
         internal const string NuixGeneralScriptName = "edr-nuix-connector.rb";
 
-        internal static readonly VariableName NuixVariableName = new VariableName("ReductechNuixConnection");
+        internal static readonly VariableName NuixVariableName = new("ReductechNuixConnection");
 
         /// <summary>
         /// Gets or creates a connection to nuix.
@@ -147,7 +146,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// </summary>
         public bool IsDisposed { get; private set; } = false;
 
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _semaphore = new(1);
 
         /// <summary>
         /// Sends the 'Done' command
@@ -163,7 +162,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             };
 
             // ReSharper disable once MethodHasAsyncOverload
-            var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, StringStreamJsonConverter.Instance, new StringEnumConverter());
+            var commandJson = JsonConvert.SerializeObject(command, Formatting.None, JsonConverters.All);
 
             await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
 
@@ -219,7 +218,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 command.Arguments = commandArguments;
 
                 // ReSharper disable once MethodHasAsyncOverload
-                var commandJson = JsonConvert.SerializeObject(command, Formatting.None, EntityJsonConverter.Instance, StringStreamJsonConverter.Instance,  new StringEnumConverter());
+                var commandJson = JsonConvert.SerializeObject(command, Formatting.None, JsonConverters.All);
 
                 await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellationToken);
 
@@ -236,7 +235,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                     foreach (var entity in entities.Value)
                     {
-                        var entityJson = JsonConvert.SerializeObject(entity, Formatting.None, EntityJsonConverter.Instance, new StringEnumConverter());
+                        var entityJson = JsonConvert.SerializeObject(entity, Formatting.None, JsonConverters.All);
 
                         await ExternalProcess.InputChannel.WriteAsync(entityJson, cancellationToken);
                     }
@@ -279,7 +278,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 try
                 {
-                    connectionOutput = JsonConvert.DeserializeObject<ConnectionOutput>(jsonString, EntityJsonConverter.Instance)!;
+                    connectionOutput = JsonConvert.DeserializeObject<ConnectionOutput>(jsonString, JsonConverters.All)!;
                 }
                 catch (Exception e)
                 {
@@ -363,7 +362,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
             return new ErrorBuilder("Process was cancelled", ErrorCode.ExternalProcessError);
         }
 
-        private readonly HashSet<string> _evaluatedFunctions = new HashSet<string>();
+        private readonly HashSet<string> _evaluatedFunctions = new();
 
         /// <inheritdoc />
         public void Dispose()

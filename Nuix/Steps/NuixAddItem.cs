@@ -25,7 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixAddItem, Unit> Instance { get; } = new NuixAddItemStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion => new Version(3, 2);
+        public override Version RequiredNuixVersion => new(3, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature> { NuixFeature.CASE_CREATION };

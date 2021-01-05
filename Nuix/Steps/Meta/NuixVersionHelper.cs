@@ -11,6 +11,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// The default required version of Nuix.
         /// 5.0 - this is required to check the nuix features.
         /// </summary>
-        public static Version DefaultRequiredVersion { get; } = new Version(5, 0);
+        public static Version DefaultRequiredVersion { get; } = new(5, 0);
     }
 }
