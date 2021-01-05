@@ -19,10 +19,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixGeneratePrintPreviews, Unit> Instance { get; } = new NuixGeneratePrintPreviewsStepFactory();
+        public static RubyScriptStepFactory<NuixGeneratePrintPreviews, Unit> Instance { get; } =
+            new NuixGeneratePrintPreviewsStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(5, 2);
+        public override Version RequiredNuixVersion { get; } = new (5, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -32,7 +33,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string FunctionName => "GeneratePrintPreviews";
-
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
@@ -61,7 +61,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     public sealed class NuixGeneratePrintPreviews : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixGeneratePrintPreviewsStepFactory.Instance;
+        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+            NuixGeneratePrintPreviewsStepFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -71,16 +72,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
         /// The production set to generate print previews for.
         /// </summary>
-
         [Required]
         [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
-
+        [Alias("ProductionSet")]
         public IStep<StringStream> ProductionSetName { get; set; } = null!;
     }
 }
