@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
@@ -35,10 +34,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
         {
             get
             {
-                foreach (var errorCase in base.ErrorCases)
-                {
-                    yield return errorCase.WithSettings(UnitTestSettings);
-                }
+                return from errorCase in base.ErrorCases
+                    where !errorCase.Name.Contains("EntityStreamParameter") //Skip this case because the failure happens too late to be tested here (it is tested in NuixConnection)
+                    select errorCase.WithSettings(UnitTestSettings);
             }
         }
 
@@ -58,7 +56,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     "Hello World",
                     new List<ExternalProcessAction>()
                     {
-                        new ExternalProcessAction(new ConnectionCommand()
+                        new(new ConnectionCommand()
                         {
                             Command = "test_Script",
                             FunctionDefinition = "Lorem Ipsum",
@@ -91,7 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     @"[{""Foo"":""a""},{""Foo"":""b""}]",
                     new List<ExternalProcessAction>()
                     {
-                        new ExternalProcessAction(new ConnectionCommand()
+                        new(new ConnectionCommand()
                         {
                             Command = "test_Script",
                             FunctionDefinition = "Lorem Ipsum",
@@ -113,7 +111,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
         public const string TestNuixPath = "TestPath";
 
-        public static  NuixSettings UnitTestSettings => new NuixSettings(true, TestNuixPath, new Version(8, 2), new List<NuixFeature>());
+        public static  NuixSettings UnitTestSettings => new(true, TestNuixPath, new Version(8, 2), new List<NuixFeature>());
 
         [Fact]
         [Trait("Category", "Integration")]
