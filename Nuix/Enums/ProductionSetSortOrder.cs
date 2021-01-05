@@ -12,12 +12,13 @@ namespace Reductech.EDR.Connectors.Nuix.Enums
         /// </summary>
         [Description("position")]
         Position,
+
         /// <summary>
         /// Sorts as documented in ItemSorter.sortItemsByTopLevelItemDate(List).
         /// </summary>
         [Description("top_level_item_date")]
         TopLevelItemDate,
-        
+
         /// <summary>
         /// Sorts as documented in ItemSorter.sortItemsByTopLevelItemDateDescending(List).
         /// </summary>
@@ -29,6 +30,5 @@ namespace Reductech.EDR.Connectors.Nuix.Enums
         /// </summary>
         [Description("document_id")]
         DocumentId
-
     }
 }
