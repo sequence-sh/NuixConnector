@@ -23,11 +23,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance
         /// </summary>
-        public static RubyScriptStepFactory<NuixAddToProductionSet, Unit> Instance { get; } = new NuixAddToProductionSetStepFactory();
-
+        public static RubyScriptStepFactory<NuixAddToProductionSet, Unit> Instance { get; } =
+            new NuixAddToProductionSetStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion =>  new(7, 2);
+        public override Version RequiredNuixVersion => new (7, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -87,18 +87,18 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     end
 
     the_case.close";
-
     }
 
     /// <summary>
     /// Searches a case with a particular search string and adds all items it finds to a production set.
     /// Will create a new production set if one with the given name does not already exist.
     /// </summary>
+    [Alias("NuixCreateProductionSet")]
     public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAddToProductionSetStepFactory.Instance;
-
+        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+            NuixAddToProductionSetStepFactory.Instance;
 
         /// <summary>
         /// The path of the case to search
@@ -108,6 +108,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -116,6 +117,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("searchArg", 2)]
+        [Alias("Search")]
         public IStep<StringStream> SearchTerm { get; set; } = null!;
 
         /// <summary>
@@ -124,6 +126,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("productionSetNameArg", 3)]
+        [Alias("ProductionSet")]
         public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
@@ -144,6 +147,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("MyProcessingProfile")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("productionProfileNameArg", 5)]
+        [Alias("Profile")]
         public IStep<StringStream>? ProductionProfileName { get; set; }
 
         /// <summary>
@@ -155,6 +159,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Profiles/MyProcessingProfile.xml")]
         [DefaultValueExplanation("The default processing profile will be used.")]
         [RubyArgument("productionProfilePathArg", 6)]
+        [Alias("ProfilePath")]
         public IStep<StringStream>? ProductionProfilePath { get; set; }
 
         /// <summary>
@@ -174,7 +179,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [DefaultValueExplanation("No limit")]
         public IStep<int>? Limit { get; set; }
 
-
         /// <inheritdoc />
         public override Result<Unit, IError> VerifyThis(ISettings settings)
         {
@@ -183,7 +187,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
                     $"Only one of {nameof(ProductionProfileName)} and {nameof(ProductionProfilePath)} may be set.",
                     ErrorCode.ConflictingParameters,
                     new StepErrorLocation(this)
-                    );
+                );
 
             if (ProductionProfileName == null && ProductionProfilePath == null)
                 return new SingleError(
