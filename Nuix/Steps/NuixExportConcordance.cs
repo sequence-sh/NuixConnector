@@ -19,10 +19,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixExportConcordance, Unit> Instance { get; } = new NuixExportConcordanceStepFactory();
+        public static RubyScriptStepFactory<NuixExportConcordance, Unit> Instance { get; } =
+            new NuixExportConcordanceStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(7, 2); //I'm checking the production profile here
+        public override Version RequiredNuixVersion { get; } = new (7, 2); //I'm checking the production profile here
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -58,7 +59,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     the_case.close";
     }
 
-
     /// <summary>
     /// Exports Concordance for a particular production set.
     /// </summary>
@@ -75,6 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -83,7 +84,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("exportPathArg", 2)]
-        public IStep<StringStream> ExportPath { get; set; }= null!;
+        [Alias("ToDirectory")]
+        public IStep<StringStream> ExportPath { get; set; } = null!;
 
         /// <summary>
         /// The name of the production set to export.
@@ -91,7 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("productionSetNameArg", 3)]
-        public IStep<StringStream> ProductionSetName { get; set; }= null!;
-
+        [Alias("ProductionSet")]
+        public IStep<StringStream> ProductionSetName { get; set; } = null!;
     }
 }
