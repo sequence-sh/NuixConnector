@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
@@ -27,7 +27,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         [Required]
         [StepProperty(1)]
         [RubyArgument("entityStream", 1)]
-        public IStep<EntityStream> EntityStream { get; set; } = null!;
+        public IStep<Array<Entity>> EntityStream { get; set; } = null!;
     }
 
     public sealed class FakeNuixTwoStreamFunctionFactory : RubyScriptStepFactory<FakeNuixTwoStreamFunction, Unit>
@@ -47,12 +47,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
         [Required]
         [StepProperty(1)]
         [RubyArgument("stream1Arg", 1)]
-        public IStep<EntityStream> Stream1 { get; set; } = null!;
+        public IStep<Array<Entity>> Stream1 { get; set; } = null!;
 
         [Required]
         [StepProperty(2)]
         [RubyArgument("stream2Arg", 2)]
-        public IStep<EntityStream> Stream2 { get; set; } = null!;
+        public IStep<Array<Entity>> Stream2 { get; set; } = null!;
     }
 
 }

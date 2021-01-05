@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Parser;
@@ -137,7 +138,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(7)]
         [RubyArgument("custodianRankingArg", 7)]
         [DefaultValueExplanation("Do not rank custodians")]
-        public IStep<List<StringStream>>? CustodianRanking { get; set; }
+        public IStep<Array<StringStream>>? CustodianRanking { get; set; }
 
 
         /// <summary>

@@ -13,12 +13,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -197,13 +197,13 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 
                 var commandArguments = new Dictionary<string, object>();
 
-                EntityStream? entityStream = null;
+                Array<Entity>? entityStream = null;
 
                 foreach (var argument in function.Arguments)
                 {
                     if (parameters.TryGetValue(argument, out var value))
                     {
-                        if (value is EntityStream sStream)
+                        if (value is Array<Entity> sStream)
                         {
                             if (entityStream != null)
                                 return new ErrorBuilder("Cannot have two entity stream parameters to a nuix function", ErrorCode.ExternalProcessError);
@@ -227,7 +227,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
                 {
                     var key = "--Stream--" + Guid.NewGuid();//random key as the stream opening / closing token
                     await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);
-                    var entities = await entityStream.TryGetResultsAsync(cancellationToken);
+                    var entities = await entityStream.GetElementsAsync(cancellationToken);
                     if (entities.IsFailure)
                     {
                         await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);

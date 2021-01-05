@@ -10,7 +10,6 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
@@ -310,8 +309,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
             var logger = new TestLogger();
             var ct = new CancellationToken();
 
-            var stream1 = new EntityStream(new List<Entity>().ToAsyncEnumerable());
-            var stream2 = new EntityStream(new List<Entity>().ToAsyncEnumerable());
+            var stream1 = new List<Entity>().ToAsyncEnumerable().ToSequence();
+            var stream2 = new List<Entity>().ToAsyncEnumerable().ToSequence();
 
             var dict = new Dictionary<RubyFunctionParameter, object>
             {
@@ -351,7 +350,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
                 Entity.Create(("Property2", "Value2"))
             };
 
-            var stream1 = new EntityStream(entities.ToAsyncEnumerable());
+            var stream1 = entities.ToAsyncEnumerable().ToSequence();
 
             var dict = new Dictionary<RubyFunctionParameter, object>()
             {

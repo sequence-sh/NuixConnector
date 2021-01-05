@@ -9,7 +9,6 @@ using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -20,7 +19,6 @@ using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
-using Entity = Reductech.EDR.Core.Entity;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
@@ -87,11 +85,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                     {
                         FunctionName = Constant("test_Script"),
                         ScriptText = Constant("Lorem Ipsum"),
-                        EntityStreamParameter = Constant(new EntityStream(new List<Entity>()
-                        {
-                            CreateEntity(("Foo", "a")),
-                            CreateEntity(("Foo", "b")),
-                        }.ToAsyncEnumerable())),
+                        EntityStreamParameter = Array(CreateEntity(("Foo", "a")), CreateEntity(("Foo", "b"))),
                         Parameters = Constant(CreateEntity(("param1", "ABC")))
                     },
                     @"[{""Foo"":""a""},{""Foo"":""b""}]",
@@ -130,11 +124,8 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                 {
                     FunctionName = Constant("test_Script2"),
                     ScriptText = Constant("log param1\r\nlog datastream.pop\r\nlog datastream.pop\r\nreturn param2"),
-                    EntityStreamParameter = Constant(new EntityStream(new List<Entity>()
-                        {
-                            CreateEntity(("Foo", "a")),
-                            CreateEntity(("Foo", "b")),
-                        }.ToAsyncEnumerable())),
+                    EntityStreamParameter =
+                        Array(CreateEntity(("Foo", "a")), CreateEntity(("Foo", "b"))),
                     Parameters = Constant(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
 
                 },
@@ -227,12 +218,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
             /// <inheritdoc />
             public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper, string? extraArgument)
             {
-                var yaml = await Step.SerializeAsync(CancellationToken.None);
+                await Task.CompletedTask;
+                var yaml = Step.Serialize();
 
                 var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(NuixRunScript));
 
 
-                var deserializedStep = SequenceParsing.ParseSequence(yaml);
+                var deserializedStep = SCLParsing.ParseSequence(yaml);
 
                 deserializedStep.ShouldBeSuccessful(x => x.AsString);
 
