@@ -20,10 +20,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixGetItemProperties, StringStream> Instance { get; } = new NuixGetItemPropertiesStepFactory();
+        public static RubyScriptStepFactory<NuixGetItemProperties, StringStream> Instance { get; } =
+            new NuixGetItemPropertiesStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(6, 2);
+        public override Version RequiredNuixVersion { get; } = new (6, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
@@ -64,9 +65,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
     the_case.close
     return text";
-
     }
-
 
     /// <summary>
     /// A step that the searches a case for items and outputs the values of item properties.
@@ -76,8 +75,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory => NuixGetItemPropertiesStepFactory.Instance;
-
+        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
+            NuixGetItemPropertiesStepFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -86,6 +85,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -95,8 +95,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("*.txt")]
         [StepProperty(2)]
         [RubyArgument("searchArg", 2)]
-        public IStep<StringStream> SearchTerm { get; set; }= null!;
-
+        [Alias("Search")]
+        public IStep<StringStream> SearchTerm { get; set; } = null!;
 
         /// <summary>
         /// The regex to search the property for.
@@ -105,7 +105,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("propertyRegexArg", 3)]
-        public IStep<StringStream> PropertyRegex { get; set; }= null!;
+        [Alias("Filter")]
+        public IStep<StringStream> PropertyRegex { get; set; } = null!;
 
         /// <summary>
         /// An optional regex to check the value.
@@ -115,6 +116,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(4)]
         [RubyArgument("valueRegexArg", 4)]
         [DefaultValueExplanation("All values will be returned")]
+        [Alias("ValueFilter")]
         public IStep<StringStream>? ValueRegex { get; set; }
     }
 }
