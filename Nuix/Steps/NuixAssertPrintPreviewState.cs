@@ -13,17 +13,19 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Checks the print preview state of the production set.
     /// </summary>
-    public sealed class NuixAssertPrintPreviewStateStepFactory : RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit>
+    public sealed class
+        NuixAssertPrintPreviewStateStepFactory : RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit>
     {
         private NuixAssertPrintPreviewStateStepFactory() { }
 
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit> Instance { get; } = new NuixAssertPrintPreviewStateStepFactory();
+        public static RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit> Instance { get; } =
+            new NuixAssertPrintPreviewStateStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(5, 2);
+        public override Version RequiredNuixVersion { get; } = new (5, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -36,7 +38,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
         /// <inheritdoc />
         public override string RubyFunctionText =>
-        @"
+            @"
     the_case = $utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
@@ -56,9 +58,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
             exit
         end
     end";
-
     }
-
 
     /// <summary>
     /// Checks the print preview state of the production set.
@@ -66,7 +66,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAssertPrintPreviewStateStepFactory.Instance;
+        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+            NuixAssertPrintPreviewStateStepFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -75,6 +76,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -83,6 +85,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
+        [Alias("ProductionSet")]
         public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
@@ -91,7 +94,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(3)]
         [DefaultValueExplanation(nameof(PrintPreviewState.All))]
         [RubyArgument("expectedStateArg", 3)]
-
-        public IStep<PrintPreviewState> ExpectedState { get; set; } = new EnumConstant<PrintPreviewState>(PrintPreviewState.All);
+        [Alias("HasState")]
+        public IStep<PrintPreviewState> ExpectedState { get; set; } =
+            new EnumConstant<PrintPreviewState>(PrintPreviewState.All);
     }
 }
