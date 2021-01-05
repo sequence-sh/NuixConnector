@@ -22,20 +22,20 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 {
     internal class ExternalProcessMock : IExternalProcessRunner
     {
-        
+
         public string ProcessPath { get; set; }= "TestPath";
-        
+
         public List<string> ProcessArgs { get; set; } = new List<string>
         {
             "-licencesourcetype",
             "dongle",
             NuixConnectionHelper.NuixGeneralScriptName
         };
-        
+
         public Encoding ProcessEncoding { get; set; } = Encoding.UTF8;
 
         public bool ValidateArguments { get; set; } = true;
-            
+
         public ExternalProcessMock(int expectedTimesStarted, params ExternalProcessAction[] externalProcessActions)
         {
             ExpectedTimesStarted = expectedTimesStarted;
@@ -107,7 +107,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 var isStream = false;
                 string? streamEndToken = null;
                 var entityStream = new List<string>();
-                
+
                 await foreach (var inputJson in inputChannel.ReadAllAsync(cancellationToken))
                 {
                     try
@@ -142,7 +142,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         if (!externalProcessActions.TryPop(out var expectedAction))
                             throw new XunitException($"Unexpected: '{inputJson}'");
 
-                        var commandResult = EntityJsonConverter.DeserializeConnectionCommand(inputJson);
+                        var commandResult = JsonConverters.DeserializeConnectionCommand(inputJson);
                         commandResult.ShouldBeSuccessful(x=>x.AsString);
 
                         commandResult.Value.Should().BeEquivalentTo(expectedAction.Command,
@@ -154,7 +154,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                         {
                             isStream = true;
                         }
-                        
+
                         foreach (var connectionOutput in expectedAction.DesiredOutput)
                         {
                             if (isStream && !(connectionOutput.Result is null))
@@ -170,7 +170,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
                         var error = new ConnectionOutput{Error = new ConnectionOutputError{Message = exception.Message}};
                         var errorJson = JsonConvert.SerializeObject(error);
-                        
+
                         await output.WriteAsync((errorJson, StreamSource.Error), cancellationToken);
                     }
                 }
@@ -181,7 +181,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             private Stack<ExternalProcessAction>  RemainingExternalProcessActions { get; }
 
             internal bool IsDisposed { get; private set; } = false;
-            
+
             /// <inheritdoc />
             public void Dispose()
             {

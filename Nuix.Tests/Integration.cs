@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Moq;
@@ -24,7 +23,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         private IEnumerable<IntegrationTestCase> IntegrationTestCasesWithSettings =>
             from nuixTestCase in NuixTestCases
             from settings in Constants.NuixSettingsList
-            where IsVersionCompatible(nuixTestCase.Step, settings.NuixVersion)// && false //uncomment to disable integration tests
+            where IsVersionCompatible(nuixTestCase.Step, settings.NuixVersion) //&& false //uncomment to disable integration tests
             select new IntegrationTestCase(nuixTestCase.Name + settings.NuixVersion, nuixTestCase.Step)
                 .WithSettings(settings);
 
@@ -74,12 +73,13 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             /// <inheritdoc />
             public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper, string? extraArgument)
             {
-                var yaml = await Steps.SerializeAsync(CancellationToken.None);
+                await Task.CompletedTask;
+                var yaml =  Steps.Serialize();
 
                 var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(TStep));
 
 
-                var deserializedStep = SequenceParsing.ParseSequence(yaml);
+                var deserializedStep = SCLParsing.ParseSequence(yaml);
 
                 deserializedStep.ShouldBeSuccessful(x => x.AsString);
 

@@ -140,7 +140,7 @@ namespace Reductech.EDR.Connectors.Nuix
 
 
         private static readonly Regex NuixFeatureRegex =
-            new Regex(@$"\A{RubyScriptStepBase<Unit>.NuixRequirementName}(?<feature>.+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            new(@$"\A{RubyScriptStepBase<Unit>.NuixRequirementName}(?<feature>.+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <inheritdoc />
         public Result<Unit, IErrorBuilder> CheckRequirement(Requirement requirement)

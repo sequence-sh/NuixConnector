@@ -22,7 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixAnnotateDocumentIdList, Unit> Instance { get; } = new NuixAnnotateDocumentIdListStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new Version(7, 4);
+        public override Version RequiredNuixVersion { get; } = new(7, 4);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()

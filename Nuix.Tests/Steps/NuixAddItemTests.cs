@@ -2,7 +2,6 @@
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
@@ -173,10 +172,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
                         Custodian = Constant("Mark"),
                         Paths = DataPaths,
                         FolderName = Constant("New Folder"),
-                        MimeTypeSettings = Constant(EntityStream.Create(
+                        MimeTypeSettings = Array(
                             CreateEntity(("mime_tye", "text/plain"), ("enabled", "true")), //These don't really do anything, just tests that it works
-                            CreateEntity(("mime_tye", "application/pdf"), ("enabled", "true"))
-                            ))
+                            CreateEntity(("mime_tye", "application/pdf"), ("enabled", "true")))
                     },
                     AssertCount(2, "*.txt"),
                     DeleteCaseFolder

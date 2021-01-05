@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Parser;
@@ -25,7 +26,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new Version(4, 0);
+        public override Version RequiredNuixVersion { get; } = new(4, 0);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -137,7 +138,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(7)]
         [RubyArgument("custodianRankingArg", 7)]
         [DefaultValueExplanation("Do not rank custodians")]
-        public IStep<List<StringStream>>? CustodianRanking { get; set; }
+        public IStep<Array<StringStream>>? CustodianRanking { get; set; }
 
 
         /// <summary>

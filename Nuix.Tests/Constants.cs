@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Enums;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
@@ -51,9 +52,9 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static readonly string DataPathString = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "data");
 
         public static readonly IStep<StringStream> DataPath = Constant(DataPathString);
-        public static readonly IStep<List<StringStream>> DataPaths = Array(DataPathString );
+        public static readonly IStep<Array<StringStream>> DataPaths = Array(DataPathString );
 
-        public static readonly IStep<List<StringStream>> EncryptedDataPaths = Array( Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData") );
+        public static readonly IStep<Array<StringStream>> EncryptedDataPaths = Array( Path.Combine(Directory.GetCurrentDirectory(), "AllData", "EncryptedData") );
 
         public static readonly IStep<StringStream> PasswordFilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt"));
 
@@ -61,7 +62,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         public static readonly IStep<StringStream> DefaultProcessingProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml"));
         public static readonly IStep<StringStream> TestProductionProfilePath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "IntegrationTestProductionProfile.xml"));
 
-        public static readonly IStep<List<StringStream>> PoemTextImagePaths = Array( Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png") );
+        public static readonly IStep<Array<StringStream>> PoemTextImagePaths = Array( Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png") );
         public static readonly string ConcordancePathString = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Concordance", "loadfile.dat");
         public static readonly IStep<StringStream> ConcordancePath = Constant(ConcordancePathString);
         public static readonly IStep<StringStream> MigrationPath = Constant(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip"));
@@ -85,7 +86,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
                 {
                     IgnoreCase = Constant(true),
                     Substring = Constant(expectedContents),
-                    String = new ReadFile
+                    String = new FileRead
                     {
                         Path = new PathCombine { Paths = Array(folderName, fileName) }
                     }
@@ -120,11 +121,5 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
             Paths = DataPaths,
             FolderName = Constant("New Folder")
         };
-
-
-
-
-
-
     }
 }

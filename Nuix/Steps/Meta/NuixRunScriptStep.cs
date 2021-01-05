@@ -142,24 +142,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
         /// </summary>
         [StepProperty( 4)]
         [DefaultValueExplanation("Do not stream entities")]
-        public IStep<EntityStream>? EntityStreamParameter { get;set; }= null!;
-
-
-        //private static bool IsCurrentProcessAdmin()
-        //{
-        //    using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-        //    var principal = new System.Security.Principal.WindowsPrincipal(identity);
-        //    return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
-        //}
-
-        //public static bool IsLinux
-        //{
-        //    get
-        //    {
-        //        var p = (int)Environment.OSVersion.Platform;
-        //        return (p == 4) || (p == 6) || (p == 128);
-        //    }
-        //}
+        public IStep<Array<Entity>>? EntityStreamParameter { get;set; }= null!;
 
 
         /// <inheritdoc />

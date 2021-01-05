@@ -25,7 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixPerformOCR, Unit> Instance { get; } = new NuixPerformOCRStepFactory();
 
         /// <inheritdoc />`,
-        public override Version RequiredNuixVersion => new Version(7, 6);
+        public override Version RequiredNuixVersion => new(7, 6);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()

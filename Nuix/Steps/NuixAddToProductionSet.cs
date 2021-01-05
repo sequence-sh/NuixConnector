@@ -27,7 +27,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion =>  new Version(7, 2);
+        public override Version RequiredNuixVersion =>  new(7, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()

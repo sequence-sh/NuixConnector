@@ -5,7 +5,6 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Parser;
@@ -26,7 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixAddItem, Unit> Instance { get; } = new NuixAddItemStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion => new Version(3, 2);
+        public override Version RequiredNuixVersion => new(3, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature> { NuixFeature.CASE_CREATION };
@@ -176,7 +175,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(4)]
         [Example("C:/Data/File.txt")]
         [RubyArgument("filePathsArgs", 4)]
-        public IStep<List<StringStream>> Paths { get; set; } = null!;
+        public IStep<Array<StringStream>> Paths { get; set; } = null!;
 
         /// <summary>
         /// The description of the new folder.
@@ -245,7 +244,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(11)]
         [RubyArgument("mimeTypeDataStreamArg", 11)]
         [DefaultValueExplanation("Use default settings for all MIME types")]
-        public IStep<EntityStream>? MimeTypeSettings { get; set; }
+        public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
 
         /// <inheritdoc />
         public override Result<Unit, IError> VerifyThis(ISettings settings)
