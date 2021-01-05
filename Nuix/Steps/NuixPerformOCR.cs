@@ -25,7 +25,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixPerformOCR, Unit> Instance { get; } = new NuixPerformOCRStepFactory();
 
         /// <inheritdoc />`,
-        public override Version RequiredNuixVersion => new(7, 6);
+        public override Version RequiredNuixVersion => new (7, 6);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -83,11 +83,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         private const string DefaultSearchTerm =
             "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
-
 
         /// <summary>
         /// The term to use for searching for files to OCR.
@@ -95,6 +95,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(2)]
         [DefaultValueExplanation(DefaultSearchTerm)]
         [RubyArgument("searchTermArg", 2)]
+        [Alias("Search")]
         public IStep<StringStream> SearchTerm { get; set; } =
             new StringConstant(DefaultSearchTerm);
 
@@ -106,6 +107,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [DefaultValueExplanation("The default profile will be used.")]
         [Example("MyOcrProfile")]
         [RubyArgument("ocrProfileArg", 3)]
+        [Alias("Profile")]
         public IStep<StringStream>? OCRProfileName { get; set; }
 
         /// <summary>
@@ -114,9 +116,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// </summary>
         [StepProperty(4)]
         [RequiredVersion("Nuix", "7.6")]
-        [DefaultValueExplanation("The default profile will be used.")]
+        [DefaultValueExplanation("The Default profile will be used.")]
         [Example("C:\\Profiles\\MyProfile.xml")]
         [RubyArgument("ocrProfilePathArg", 4)]
+        [Alias("ProfilePath")]
         public IStep<StringStream>? OCRProfilePath { get; set; }
 
         /// <inheritdoc />
