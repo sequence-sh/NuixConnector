@@ -9,7 +9,6 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
-
     /// <summary>
     /// Migrates a case to the latest version if necessary.
     /// </summary>
@@ -23,7 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixMigrateCase, Unit> Instance { get; } = new NuixMigrateCaseStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(7, 2);
+        public override Version RequiredNuixVersion { get; } = new (7, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
@@ -40,7 +39,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     the_case = $utilities.case_factory.open(pathArg, options)";
     }
 
-
     /// <summary>
     /// Migrates a case to the latest version if necessary.
     /// </summary>
@@ -56,7 +54,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
-
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
     }
 }

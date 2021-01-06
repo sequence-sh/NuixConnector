@@ -17,15 +17,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// </summary>
     public sealed class NuixCreateReportStepFactory : RubyScriptStepFactory<NuixCreateReport, StringStream>
     {
-        private NuixCreateReportStepFactory(){ }
+        private NuixCreateReportStepFactory() { }
 
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixCreateReport, StringStream> Instance { get; } = new NuixCreateReportStepFactory();
+        public static RubyScriptStepFactory<NuixCreateReport, StringStream> Instance { get; } =
+            new NuixCreateReportStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(6, 2);
+        public override Version RequiredNuixVersion { get; } = new (6, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -105,7 +106,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     return text;";
     }
 
-
     /// <summary>
     /// Creates a report for a Nuix case.
     /// The report is in csv format.
@@ -116,8 +116,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     public sealed class NuixCreateReport : RubyScriptStepBase<StringStream>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory => NuixCreateReportStepFactory.Instance;
-
+        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
+            NuixCreateReportStepFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -126,6 +126,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("casePathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
     }
 }

@@ -17,13 +17,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     public sealed class NuixOpenConnection : CompoundStep<Unit>
     {
         /// <inheritdoc />
-        public override async Task<Result<Unit, IError>> Run(IStateMonad stateMonad, CancellationToken cancellationToken)
+        public override async Task<Result<Unit, IError>> Run(IStateMonad stateMonad,
+            CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
 
             var r = stateMonad.GetOrCreateNuixConnection(false);
 
-            if (r.IsFailure) return r.MapError(x=>x.WithLocation(this)).ConvertFailure<Unit>();
+            if (r.IsFailure) return r.MapError(x => x.WithLocation(this)).ConvertFailure<Unit>();
 
             return Unit.Default;
         }

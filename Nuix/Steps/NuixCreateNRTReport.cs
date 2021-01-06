@@ -19,14 +19,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixCreateNRTReport, Unit> Instance { get; } = new NuixCreateNRTReportStepFactory();
+        public static RubyScriptStepFactory<NuixCreateNRTReport, Unit> Instance { get; } =
+            new NuixCreateNRTReportStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(7, 4);
+        public override Version RequiredNuixVersion { get; } = new (7, 4);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
-            new List<NuixFeature> { NuixFeature.ANALYSIS };
+            new List<NuixFeature> {NuixFeature.ANALYSIS};
 
         /// <inheritdoc />
         public override string FunctionName => "CreateNRTReport";
@@ -67,7 +68,6 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <inheritdoc />
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixCreateNRTReportStepFactory.Instance;
 
-
         /// <summary>
         /// The path to the case.
         /// </summary>
@@ -75,6 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -92,6 +93,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("PDF")]
         [StepProperty(3)]
         [RubyArgument("outputFormatArg", 3)]
+        [Alias("Format")]
         public IStep<StringStream> OutputFormat { get; set; } = null!;
 
         /// <summary>
@@ -101,16 +103,18 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Example("C:/Temp/report.pdf")]
         [StepProperty(4)]
         [RubyArgument("outputPathArg", 4)]
+        [Alias("ReportPath")]
         public IStep<StringStream> OutputPath { get; set; } = null!;
 
         /// <summary>
         /// The path to the local resources folder.
-        /// To load the logo's etc.
+        /// To load the logos etc.
         /// </summary>
         [Required]
         [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
         [StepProperty(5)]
         [RubyArgument("localResourcesUrlArg", 5)]
+        [Alias("Resources")]
         public IStep<StringStream> LocalResourcesURL { get; set; } = null!;
     }
 }

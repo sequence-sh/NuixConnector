@@ -19,10 +19,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance
         /// </summary>
-        public static RubyScriptStepFactory<NuixAnnotateDocumentIdList, Unit> Instance { get; } = new NuixAnnotateDocumentIdListStepFactory();
+        public static RubyScriptStepFactory<NuixAnnotateDocumentIdList, Unit> Instance { get; } =
+            new NuixAnnotateDocumentIdListStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(7, 4);
+        public override Version RequiredNuixVersion { get; } = new (7, 4);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -52,18 +53,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     end
 
     the_case.close";
-
     }
-
 
     /// <summary>
     /// Annotates a document ID list to add production set names to it.
     /// </summary>
     public class NuixAnnotateDocumentIdList : RubyScriptStepBase<Unit>
     {
-
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixAnnotateDocumentIdListStepFactory.Instance;
+        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+            NuixAnnotateDocumentIdListStepFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -72,6 +71,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -80,9 +80,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
-        public IStep<StringStream> ProductionSetName { get; set; }= null!;
-
-
+        [Alias("ProductionSet")]
+        public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
         /// Specifies the file path of the document ID list.
@@ -90,6 +89,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("dataPathArg", 3)]
-        public IStep<StringStream> DataPath { get; set; }= null!;
+        [Alias("IdList")]
+        public IStep<StringStream> DataPath { get; set; } = null!;
     }
 }

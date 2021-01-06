@@ -12,6 +12,7 @@ namespace Reductech.EDR.Connectors.Nuix.Enums
         /// </summary>
         [Description("INDIVIDUAL")]
         Individual,
+
         /// <summary>
         /// Items can be treated as a family where only the top-level item of a family is deduplicated and the descendants are classified as original or duplicate with their family as a group. The top-level item does not have to be in the set for its descendants to classified this way.
         /// </summary>

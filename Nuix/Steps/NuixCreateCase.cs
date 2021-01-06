@@ -22,15 +22,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public static RubyScriptStepFactory<NuixCreateCase, Unit> Instance { get; } = new NuixCreateCaseStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(2, 16);
+        public override Version RequiredNuixVersion { get; } = new (2, 16);
 
         /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>() { NuixFeature.CASE_CREATION };
-
+        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+            new List<NuixFeature>() {NuixFeature.CASE_CREATION};
 
         /// <inheritdoc />
         public override string FunctionName => "CreateCase";
-
 
         /// <inheritdoc />
         public override string RubyFunctionText => @"
@@ -53,12 +52,13 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixCreateCaseStepFactory.Instance;
 
         /// <summary>
-        /// The path to the folder to create the case in.
+        /// The path to the directory to create the case in.
         /// </summary>
         [Required]
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Directory")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -67,7 +67,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("nameArg", 2)]
-        public IStep<StringStream> CaseName { get; set; }= null!;
+        [Alias("Name")]
+        public IStep<StringStream> CaseName { get; set; } = null!;
 
         /// <summary>
         /// Name of the investigator.
@@ -75,7 +76,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(3)]
         [RubyArgument("investigatorArg", 3)]
-        public IStep<StringStream> Investigator { get; set; }= null!;
+        public IStep<StringStream> Investigator { get; set; } = null!;
 
         /// <summary>
         /// Description of the case.

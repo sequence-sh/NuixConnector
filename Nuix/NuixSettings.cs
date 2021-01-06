@@ -36,8 +36,8 @@ namespace Reductech.EDR.Connectors.Nuix
         /// A list of available Nuix features.
         /// </summary>
         IReadOnlyCollection<NuixFeature> NuixFeatures { get; }
-
     }
+
     /// <summary>
     /// Settings for a nuix step.
     /// </summary>
@@ -46,12 +46,15 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <summary>
         /// Create a new NuixSettings.
         /// </summary>
-        public NuixSettings(bool useDongle, string nuixExeConsolePath, Version nuixVersion, IReadOnlyCollection<NuixFeature> nuixFeatures)
+        public NuixSettings(
+            bool useDongle, string nuixExeConsolePath, Version nuixVersion,
+            IReadOnlyCollection<NuixFeature> nuixFeatures
+        )
         {
-            UseDongle = useDongle;
+            UseDongle          = useDongle;
             NuixExeConsolePath = nuixExeConsolePath;
-            NuixVersion = nuixVersion;
-            NuixFeatures = nuixFeatures;
+            NuixVersion        = nuixVersion;
+            NuixFeatures       = nuixFeatures;
         }
 
         /// <summary>
@@ -61,9 +64,9 @@ namespace Reductech.EDR.Connectors.Nuix
         {
             Console.OutputEncoding = Encoding.UTF8;
 
-            var useDongleString =  getSetting("NuixUseDongle");
+            var useDongleString    = getSetting("NuixUseDongle");
             var nuixExeConsolePath = getSetting("NuixExeConsolePath");
-            var nuixVersionString = getSetting("NuixVersion");
+            var nuixVersionString  = getSetting("NuixVersion");
             var nuixFeaturesString = getSetting("NuixFeatures");
 
             var stringBuilder = new StringBuilder();
@@ -80,12 +83,14 @@ namespace Reductech.EDR.Connectors.Nuix
 
             if (!Version.TryParse(nuixVersionString, out var nuixVersion))
             {
-                stringBuilder.AppendLine("Please set the property 'NuixVersion' in the settings file to a valid version number");
+                stringBuilder.AppendLine(
+                    "Please set the property 'NuixVersion' in the settings file to a valid version number");
             }
 
             if (!TryParseNuixFeatures(nuixFeaturesString, out var nuixFeatures))
             {
-                stringBuilder.AppendLine("Please set the property 'NuixFeatures' in the settings file to a comma separated list of nuix features or 'NO_FEATURES'");
+                stringBuilder.AppendLine(
+                    "Please set the property 'NuixFeatures' in the settings file to a comma separated list of nuix features or 'NO_FEATURES'");
             }
 
             var errorString = stringBuilder.ToString();
@@ -100,7 +105,7 @@ namespace Reductech.EDR.Connectors.Nuix
 
         private static bool TryParseNuixFeatures(string? s, out IReadOnlyCollection<NuixFeature> nuixFeatures)
         {
-            if(string.IsNullOrWhiteSpace(s))
+            if (string.IsNullOrWhiteSpace(s))
             {
                 nuixFeatures = new List<NuixFeature>();
                 return false;
@@ -112,8 +117,9 @@ namespace Reductech.EDR.Connectors.Nuix
             }
             else
             {
-                var nfs = new HashSet<NuixFeature>();
+                var nfs      = new HashSet<NuixFeature>();
                 var features = s.Split(',');
+
                 foreach (var feature in features)
                     if (Enum.TryParse(typeof(NuixFeature), feature, true, out var nf) && nf is NuixFeature nuixFeature)
                         nfs.Add(nuixFeature);
@@ -127,6 +133,7 @@ namespace Reductech.EDR.Connectors.Nuix
         /// Whether to use a dongle for nuix authentication.
         /// </summary>
         public bool UseDongle { get; }
+
         /// <summary>
         /// The path to the nuix console executable.
         /// </summary>
@@ -138,26 +145,29 @@ namespace Reductech.EDR.Connectors.Nuix
         /// <inheritdoc />
         public IReadOnlyCollection<NuixFeature> NuixFeatures { get; }
 
-
-        private static readonly Regex NuixFeatureRegex =
-            new(@$"\A{RubyScriptStepBase<Unit>.NuixRequirementName}(?<feature>.+)\Z", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex NuixFeatureRegex = new (
+            @$"\A{RubyScriptStepBase<Unit>.NuixRequirementName}(?<feature>.+)\Z",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase
+        );
 
         /// <inheritdoc />
         public Result<Unit, IErrorBuilder> CheckRequirement(Requirement requirement)
         {
             if (requirement.Name == RubyScriptStepBase<Unit>.NuixRequirementName)
             {
-                if(requirement.MinVersion != null && requirement.MinVersion > NuixVersion)
-                    return new ErrorBuilder($"Required Nuix Version >= {requirement.MinVersion} but had {NuixVersion}",ErrorCode.RequirementsNotMet);
+                if (requirement.MinVersion != null && requirement.MinVersion > NuixVersion)
+                    return new ErrorBuilder($"Required Nuix Version >= {requirement.MinVersion} but had {NuixVersion}",
+                        ErrorCode.RequirementsNotMet);
 
-                if(requirement.MaxVersion != null && requirement.MaxVersion < NuixVersion)
-                    return new ErrorBuilder($"Required Nuix Version <= {requirement.MaxVersion} but had {NuixVersion}", ErrorCode.RequirementsNotMet);
+                if (requirement.MaxVersion != null && requirement.MaxVersion < NuixVersion)
+                    return new ErrorBuilder($"Required Nuix Version <= {requirement.MaxVersion} but had {NuixVersion}",
+                        ErrorCode.RequirementsNotMet);
 
                 return Unit.Default;
             }
 
             if (!NuixFeatureRegex.TryMatch(requirement.Name, out var match))
-                return EmptySettings.Instance.CheckRequirement( requirement);
+                return EmptySettings.Instance.CheckRequirement(requirement);
 
             var feature = match.Groups["feature"].Value;
 
@@ -165,9 +175,6 @@ namespace Reductech.EDR.Connectors.Nuix
                 return Unit.Default;
 
             return new ErrorBuilder($"{feature} missing", ErrorCode.RequirementsNotMet);
-
         }
     }
-
-
 }

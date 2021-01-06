@@ -20,10 +20,11 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         /// <summary>
         /// The instance.
         /// </summary>
-        public static RubyScriptStepFactory<NuixReorderProductionSet, Unit> Instance { get; } = new NuixReorderProductionSetStepFactory();
+        public static RubyScriptStepFactory<NuixReorderProductionSet, Unit> Instance { get; } =
+            new NuixReorderProductionSetStepFactory();
 
         /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new(5, 2);
+        public override Version RequiredNuixVersion { get; } = new (5, 2);
 
         /// <inheritdoc />
         public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
@@ -60,10 +61,12 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     /// <summary>
     /// Reorders and renumbers the items in a production set.
     /// </summary>
+    [Alias("NuixReorderProduction")]
     public sealed class NuixReorderProductionSet : RubyScriptStepBase<Unit>
     {
         /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixReorderProductionSetStepFactory.Instance;
+        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+            NuixReorderProductionSetStepFactory.Instance;
 
         /// <summary>
         /// The path to the case.
@@ -72,6 +75,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(1)]
         [Example("C:/Cases/MyCase")]
         [RubyArgument("pathArg", 1)]
+        [Alias("Case")]
         public IStep<StringStream> CasePath { get; set; } = null!;
 
         /// <summary>
@@ -80,6 +84,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [Required]
         [StepProperty(2)]
         [RubyArgument("productionSetNameArg", 2)]
+        [Alias("Set")]
         public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
         /// <summary>
@@ -88,8 +93,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         [StepProperty(3)]
         [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
         [RubyArgument("sortOrderArg", 3)]
-        public IStep<ProductionSetSortOrder> SortOrder { get; set; } = new EnumConstant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);
-
+        [Alias("Order")]
+        public IStep<ProductionSetSortOrder> SortOrder { get; set; } =
+            new EnumConstant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);
     }
-
 }
