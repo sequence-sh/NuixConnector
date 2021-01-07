@@ -2,15 +2,17 @@
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
 {
+
+/// <summary>
+/// The object if this was an error.
+/// </summary>
+public class ConnectionOutputError
+{
     /// <summary>
-    /// The object if this was an error.
+    /// The error message.
     /// </summary>
-    public class ConnectionOutputError
-    {
-        /// <summary>
-        /// The error message.
-        /// </summary>
-        [JsonProperty("message")]
-        public string Message { get; set; } = null!;
-    }
+    [JsonProperty("message")]
+    public string Message { get; set; } = null!;
+}
+
 }

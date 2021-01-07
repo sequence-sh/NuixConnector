@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metadata-import-profile xmlns="http://schemas.nuix.com/2017/metadata-import-profile" version="1" created-by="8.2.0.123">
+
+<metadata-import-profile xmlns="http://schemas.nuix.com/2017/metadata-import-profile" version="1"
+                         created-by="8.2.0.123">
   <data-source>
     <from-file>true</from-file>
     <file-format>CONCORDANCE</file-format>

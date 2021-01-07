@@ -18,7 +18,6 @@
 //            IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock> arguments) =>
 //            Arguments = arguments;
 
-
 //        /// <summary>
 //        /// The final function to run.
 //        /// </summary>
@@ -29,13 +28,11 @@
 //        /// </summary>
 //        public IReadOnlyDictionary<RubyFunctionParameter, ITypedRubyBlock> Arguments { get; }
 
-
 //        /// <inheritdoc />
 //        public string Name => Function.FunctionName;
 
 //        /// <inheritdoc />
 //        public override string ToString() => Name;
-
 
 //        /// <inheritdoc />
 //        public IEnumerable<IRubyFunction> FunctionDefinitions =>
@@ -92,3 +89,5 @@
 //        }
 //    }
 //}
+
+

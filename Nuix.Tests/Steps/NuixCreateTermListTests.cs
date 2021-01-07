@@ -8,47 +8,41 @@ using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, StringStream>
+
+public class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, StringStream>
+{
+    /// <inheritdoc />
+    public NuixCreateTermListTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
+
+    /// <inheritdoc />
+    protected override IEnumerable<DeserializeCase> DeserializeCases
     {
-        /// <inheritdoc />
-        public NuixCreateTermListTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-        }
-
-
-        /// <inheritdoc />
-        protected override IEnumerable<DeserializeCase> DeserializeCases
-        {
-            get { yield break; }
-
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases {
-            get
-            {
-                yield return new NuixIntegrationTestCase("Create Term List",
-                    DeleteCaseFolder,
-                    DeleteOutputFolder,
-                    CreateOutputFolder,
-                    CreateCase,
-                    AddData,
-                    new FileWrite
-                    {
-                        Stream = new NuixCreateTermList
-                        {
-                            CasePath = CasePath,
-                        },
-                        Path = new PathCombine{Paths = Array(OutputFolder,"Terms.txt")}
-                    }
-                    ,
-                    AssertFileContains(OutputFolder, "Terms.txt", "yellow	2"),
-
-                    DeleteCaseFolder,
-                    DeleteOutputFolder
-                );
-
-
-            } }
+        get { yield break; }
     }
+
+    /// <inheritdoc />
+    protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
+    {
+        get
+        {
+            yield return new NuixIntegrationTestCase(
+                "Create Term List",
+                DeleteCaseFolder,
+                DeleteOutputFolder,
+                CreateOutputFolder,
+                CreateCase,
+                AddData,
+                new FileWrite
+                {
+                    Stream = new NuixCreateTermList { CasePath = CasePath, },
+                    Path   = new PathCombine { Paths           = Array(OutputFolder, "Terms.txt") }
+                },
+                AssertFileContains(OutputFolder, "Terms.txt", "yellow	2"),
+                DeleteCaseFolder,
+                DeleteOutputFolder
+            );
+        }
+    }
+}
+
 }

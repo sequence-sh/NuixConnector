@@ -20,188 +20,225 @@ using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
-    internal class ExternalProcessMock : IExternalProcessRunner
+
+internal class ExternalProcessMock : IExternalProcessRunner
+{
+    public string ProcessPath { get; set; } = "TestPath";
+
+    public List<string> ProcessArgs { get; set; } = new List<string>
     {
+        "-licencesourcetype", "dongle", NuixConnectionHelper.NuixGeneralScriptName
+    };
 
-        public string ProcessPath { get; set; }= "TestPath";
+    public Encoding ProcessEncoding { get; set; } = Encoding.UTF8;
 
-        public List<string> ProcessArgs { get; set; } = new List<string>
+    public bool ValidateArguments { get; set; } = true;
+
+    public ExternalProcessMock(
+        int expectedTimesStarted,
+        params ExternalProcessAction[] externalProcessActions)
+    {
+        ExpectedTimesStarted   = expectedTimesStarted;
+        ExternalProcessActions = externalProcessActions;
+    }
+
+    public int ExpectedTimesStarted { get; }
+    public ExternalProcessAction[] ExternalProcessActions { get; }
+
+    public int TimesStarted { get; private set; } = 0;
+
+    /// <inheritdoc />
+    public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(
+        string processPath,
+        ILogger logger,
+        IErrorHandler errorHandler,
+        IEnumerable<string> arguments,
+        Encoding encoding,
+        CancellationToken cancellationToken)
+    {
+        await Task.CompletedTask;
+
+        throw new XunitException("nuix processes should not RunExternalProcess");
+    }
+
+    /// <inheritdoc />
+    public Result<IExternalProcessReference, IErrorBuilder> StartExternalProcess(
+        string processPath,
+        IEnumerable<string> arguments,
+        Encoding encoding)
+    {
+        var args = arguments.ToList();
+
+        TimesStarted++;
+
+        if (TimesStarted > ExpectedTimesStarted)
+            throw new XunitException(
+                $"Should only start external process {ExpectedTimesStarted} times"
+            );
+
+        if (ValidateArguments)
         {
-            "-licencesourcetype",
-            "dongle",
-            NuixConnectionHelper.NuixGeneralScriptName
-        };
-
-        public Encoding ProcessEncoding { get; set; } = Encoding.UTF8;
-
-        public bool ValidateArguments { get; set; } = true;
-
-        public ExternalProcessMock(int expectedTimesStarted, params ExternalProcessAction[] externalProcessActions)
+            processPath.Should().Be(ProcessPath);
+            encoding.Should().Be(ProcessEncoding);
+            args[0].Should().Be(ProcessArgs[0]);
+            args[1].Should().Be(ProcessArgs[1]);
+            args[2].Should().EndWith(ProcessArgs[2]);
+        }
+        else
         {
-            ExpectedTimesStarted = expectedTimesStarted;
-            ExternalProcessActions = externalProcessActions;
+            if (!processPath.Equals(ProcessPath))
+                return new ErrorBuilder(
+                    $"Could not start '{processPath}'",
+                    ErrorCode.ExternalProcessError
+                );
         }
 
-        public int ExpectedTimesStarted { get; }
-        public ExternalProcessAction[] ExternalProcessActions { get; }
+        return new ProcessReferenceMock(ExternalProcessActions);
+    }
 
-        public int TimesStarted { get; private set; } = 0;
-
-        /// <inheritdoc />
-        public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(string processPath, ILogger logger, IErrorHandler errorHandler, IEnumerable<string> arguments,
-            Encoding encoding, CancellationToken cancellationToken)
+    internal class ProcessReferenceMock : IExternalProcessReference
+    {
+        public ProcessReferenceMock(params ExternalProcessAction[] externalProcessActions)
         {
-            await Task.CompletedTask;
+            RemainingExternalProcessActions =
+                new Stack<ExternalProcessAction>(externalProcessActions.Reverse());
 
-            throw new XunitException("nuix processes should not RunExternalProcess");
+            var iChannel = Channel.CreateUnbounded<string>();
+            var oChannel = Channel.CreateUnbounded<(string line, StreamSource source)>();
+
+            InputChannel             = iChannel.Writer;
+            OutputChannel            = oChannel.Reader;
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            //This method will run in another thread.
+            _ = ReadInput(
+                iChannel.Reader,
+                oChannel.Writer,
+                RemainingExternalProcessActions,
+                _cancellationTokenSource.Token
+            );
         }
 
-        /// <inheritdoc />
-        public Result<IExternalProcessReference, IErrorBuilder> StartExternalProcess(string processPath, IEnumerable<string> arguments, Encoding encoding)
+        private static async Task ReadInput(
+            ChannelReader<string> inputChannel,
+            ChannelWriter<(string line, StreamSource source)> output,
+            Stack<ExternalProcessAction> externalProcessActions,
+            CancellationToken cancellationToken)
         {
-            var args = arguments.ToList();
+            var     isStream       = false;
+            string? streamEndToken = null;
+            var     entityStream   = new List<string>();
 
-            TimesStarted++;
-            if(TimesStarted > ExpectedTimesStarted)
-                throw new XunitException($"Should only start external process {ExpectedTimesStarted} times");
-
-
-            if (ValidateArguments)
+            await foreach (var inputJson in inputChannel.ReadAllAsync(cancellationToken))
             {
-                processPath.Should().Be(ProcessPath);
-                encoding.Should().Be(ProcessEncoding);
-                args[0].Should().Be(ProcessArgs[0]);
-                args[1].Should().Be(ProcessArgs[1]);
-                args[2].Should().EndWith(ProcessArgs[2]);
-            }
-            else
-            {
-                if (!processPath.Equals(ProcessPath))
-                    return new ErrorBuilder($"Could not start '{processPath}'", ErrorCode.ExternalProcessError);
-            }
-
-            return new ProcessReferenceMock(ExternalProcessActions);
-        }
-
-        internal class ProcessReferenceMock : IExternalProcessReference
-        {
-            public ProcessReferenceMock(params ExternalProcessAction[] externalProcessActions)
-            {
-                RemainingExternalProcessActions = new Stack<ExternalProcessAction>(externalProcessActions.Reverse());
-                var iChannel = Channel.CreateUnbounded<string>();
-                var oChannel = Channel.CreateUnbounded<(string line, StreamSource source)>();
-
-                InputChannel = iChannel.Writer;
-                OutputChannel = oChannel.Reader;
-                _cancellationTokenSource = new CancellationTokenSource();
-
-                //This method will run in another thread.
-                _ = ReadInput(iChannel.Reader, oChannel.Writer, RemainingExternalProcessActions, _cancellationTokenSource.Token);
-            }
-
-            private static async Task ReadInput(ChannelReader<string> inputChannel,
-                ChannelWriter<(string line, StreamSource source)> output,
-                Stack<ExternalProcessAction> externalProcessActions,
-                CancellationToken cancellationToken)
-            {
-                var isStream = false;
-                string? streamEndToken = null;
-                var entityStream = new List<string>();
-
-                await foreach (var inputJson in inputChannel.ReadAllAsync(cancellationToken))
+                try
                 {
-                    try
+                    if (isStream)
                     {
-                        if (isStream)
+                        if (streamEndToken is null)
                         {
-                            if (streamEndToken is null)
+                            streamEndToken = inputJson;
+                        }
+                        else if (streamEndToken.Equals(inputJson))
+                        {
+                            isStream       = false;
+                            streamEndToken = null;
+
+                            var data = new ConnectionOutput()
                             {
-                                streamEndToken = inputJson;
-                            }
-                            else if (streamEndToken.Equals(inputJson))
-                            {
-                                isStream = false;
-                                streamEndToken = null;
-                                var data = new ConnectionOutput()
+                                Result = new ConnectionOutputResult()
                                 {
-                                    Result = new ConnectionOutputResult()
-                                    {
-                                        Data = $"[{string.Join(',',entityStream)}]"
-                                    }
-                                };
-                                var json = JsonConvert.SerializeObject(data);
-                                await output.WriteAsync((json, StreamSource.Output), cancellationToken);
-                            }
-                            else
-                            {
-                                entityStream.Add(inputJson);
-                            }
-                            continue;
+                                    Data = $"[{string.Join(',', entityStream)}]"
+                                }
+                            };
+
+                            var json = JsonConvert.SerializeObject(data);
+                            await output.WriteAsync((json, StreamSource.Output), cancellationToken);
+                        }
+                        else
+                        {
+                            entityStream.Add(inputJson);
                         }
 
-                        if (!externalProcessActions.TryPop(out var expectedAction))
-                            throw new XunitException($"Unexpected: '{inputJson}'");
+                        continue;
+                    }
 
-                        var commandResult = JsonConverters.DeserializeConnectionCommand(inputJson);
-                        commandResult.ShouldBeSuccessful(x=>x.AsString);
+                    if (!externalProcessActions.TryPop(out var expectedAction))
+                        throw new XunitException($"Unexpected: '{inputJson}'");
 
-                        commandResult.Value.Should().BeEquivalentTo(expectedAction.Command,
+                    var commandResult = JsonConverters.DeserializeConnectionCommand(inputJson);
+                    commandResult.ShouldBeSuccessful(x => x.AsString);
+
+                    commandResult.Value.Should()
+                        .BeEquivalentTo(
+                            expectedAction.Command,
                             option =>
                                 option.Excluding(su => su.FunctionDefinition)
                         );
 
-                        if (commandResult.Value.IsStream != null && commandResult.Value.IsStream.Value)
-                        {
-                            isStream = true;
-                        }
-
-                        foreach (var connectionOutput in expectedAction.DesiredOutput)
-                        {
-                            if (isStream && !(connectionOutput.Result is null))
-                                throw new XunitException("Stream functions cannot have 'Result' set in ConnectionOutput");
-                            var json = JsonConvert.SerializeObject(connectionOutput);
-                            await output.WriteAsync((json, StreamSource.Output), cancellationToken);
-                        }
-                    }
-                    catch (Exception e)
+                    if (commandResult.Value.IsStream != null && commandResult.Value.IsStream.Value)
                     {
-                        var exception = e;
-                        while (exception.InnerException != null) exception = exception.InnerException;
+                        isStream = true;
+                    }
 
-                        var error = new ConnectionOutput{Error = new ConnectionOutputError{Message = exception.Message}};
-                        var errorJson = JsonConvert.SerializeObject(error);
+                    foreach (var connectionOutput in expectedAction.DesiredOutput)
+                    {
+                        if (isStream && !(connectionOutput.Result is null))
+                            throw new XunitException(
+                                "Stream functions cannot have 'Result' set in ConnectionOutput"
+                            );
 
-                        await output.WriteAsync((errorJson, StreamSource.Error), cancellationToken);
+                        var json = JsonConvert.SerializeObject(connectionOutput);
+                        await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                     }
                 }
+                catch (Exception e)
+                {
+                    var exception = e;
+
+                    while (exception.InnerException != null)
+                        exception = exception.InnerException;
+
+                    var error = new ConnectionOutput
+                    {
+                        Error = new ConnectionOutputError { Message = exception.Message }
+                    };
+
+                    var errorJson = JsonConvert.SerializeObject(error);
+
+                    await output.WriteAsync((errorJson, StreamSource.Error), cancellationToken);
+                }
             }
-
-            private readonly CancellationTokenSource _cancellationTokenSource;
-
-            private Stack<ExternalProcessAction>  RemainingExternalProcessActions { get; }
-
-            internal bool IsDisposed { get; private set; } = false;
-
-            /// <inheritdoc />
-            public void Dispose()
-            {
-                if (IsDisposed)
-                    throw new InvalidOperationException("Already disposed.");
-                IsDisposed = true;
-                _cancellationTokenSource.Cancel();
-            }
-
-            /// <inheritdoc />
-            public void WaitForExit(int? milliseconds)
-            {
-                Thread.Sleep(new Random().Next(100));
-            }
-
-            /// <inheritdoc />
-            public ChannelReader<(string line, StreamSource source)> OutputChannel { get; }
-
-            /// <inheritdoc />
-            public ChannelWriter<string> InputChannel { get; }
         }
+
+        private readonly CancellationTokenSource _cancellationTokenSource;
+
+        private Stack<ExternalProcessAction> RemainingExternalProcessActions { get; }
+
+        internal bool IsDisposed { get; private set; } = false;
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (IsDisposed)
+                throw new InvalidOperationException("Already disposed.");
+
+            IsDisposed = true;
+            _cancellationTokenSource.Cancel();
+        }
+
+        /// <inheritdoc />
+        public void WaitForExit(int? milliseconds)
+        {
+            Thread.Sleep(new Random().Next(100));
+        }
+
+        /// <inheritdoc />
+        public ChannelReader<(string line, StreamSource source)> OutputChannel { get; }
+
+        /// <inheritdoc />
+        public ChannelWriter<string> InputChannel { get; }
     }
+}
+
 }

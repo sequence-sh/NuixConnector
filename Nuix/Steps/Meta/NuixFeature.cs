@@ -2,24 +2,26 @@
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
-    /// <summary>
-    /// A Nuix feature requirement
-    /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public enum NuixFeature
-    {
-#pragma warning disable 1591
-        ANALYSIS,
 
-        CASE_CREATION,
+/// <summary>
+/// A Nuix feature requirement
+/// </summary>
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+public enum NuixFeature
+{
+    #pragma warning disable 1591
+    ANALYSIS,
 
-        EXPORT_ITEMS,
+    CASE_CREATION,
 
-        METADATA_IMPORT,
+    EXPORT_ITEMS,
 
-        OCR_PROCESSING,
+    METADATA_IMPORT,
 
-        PRODUCTION_SET
-#pragma warning restore 1591
-    }
+    OCR_PROCESSING,
+
+    PRODUCTION_SET
+    #pragma warning restore 1591
+}
+
 }

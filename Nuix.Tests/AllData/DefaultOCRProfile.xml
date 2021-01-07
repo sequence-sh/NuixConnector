@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <ocr-profile xmlns="http://schemas.nuix.com/2017/ocr-profile" version="1" created-by="8.2.0.123">
   <id>9439a130-1aa6-4f25-ab87-8e053ce13d63</id>
   <update-duplicates>true</update-duplicates>

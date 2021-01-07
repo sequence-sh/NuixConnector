@@ -9,30 +9,33 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Extract Entities from a Nuix Case.
+/// </summary>
+public sealed class
+    NuixExtractEntitiesStepFactory : RubyScriptStepFactory<NuixExtractEntities, Unit>
+{
+    private NuixExtractEntitiesStepFactory() { }
+
     /// <summary>
-    /// Extract Entities from a Nuix Case.
+    /// The instance.
     /// </summary>
-    public sealed class NuixExtractEntitiesStepFactory : RubyScriptStepFactory<NuixExtractEntities, Unit>
-    {
-        private NuixExtractEntitiesStepFactory() { }
+    public static RubyScriptStepFactory<NuixExtractEntities, Unit> Instance { get; } =
+        new NuixExtractEntitiesStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixExtractEntities, Unit> Instance { get; } =
-            new NuixExtractEntitiesStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(4, 2);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (4, 2);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>();
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    /// <inheritdoc />
+    public override string FunctionName => "ExtractEntities";
 
-        /// <inheritdoc />
-        public override string FunctionName => "ExtractEntities";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText => @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(casePathArg)
 
     log ""Extracting Entities:""
@@ -76,34 +79,36 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     File.write(File.join(outputFolderPathArg, 'Entities.txt'), entitiesText) #For consistency, file is written even if there are no entities
 
     the_case.close";
-    }
+}
+
+/// <summary>
+/// Extract Entities from a Nuix Case.
+/// </summary>
+public sealed class NuixExtractEntities : RubyScriptStepBase<Unit>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+        NuixExtractEntitiesStepFactory.Instance;
 
     /// <summary>
-    /// Extract Entities from a Nuix Case.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixExtractEntities : RubyScriptStepBase<Unit>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixExtractEntitiesStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("casePathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("casePathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
+    /// <summary>
+    /// The path to the folder to put the output files in.
+    /// </summary>
+    [Required]
+    [Example("C:/Output")]
+    [StepProperty(2)]
+    [RubyArgument("outputFolderPathArg", 2)]
+    [Alias("ToDirectory")]
+    public IStep<StringStream> OutputFolder { get; set; } = null!;
+}
 
-        /// <summary>
-        /// The path to the folder to put the output files in.
-        /// </summary>
-        [Required]
-        [Example("C:/Output")]
-        [StepProperty(2)]
-        [RubyArgument("outputFolderPathArg", 2)]
-        [Alias("ToDirectory")]
-        public IStep<StringStream> OutputFolder { get; set; } = null!;
-    }
 }

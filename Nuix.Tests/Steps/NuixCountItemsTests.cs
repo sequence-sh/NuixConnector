@@ -4,23 +4,20 @@ using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
+
+public class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
+{
+    /// <inheritdoc />
+    public NuixCountItemsTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
+
+    /// <inheritdoc />
+    protected override IEnumerable<DeserializeCase> DeserializeCases
     {
-        /// <inheritdoc />
-        public NuixCountItemsTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-        {
-        }
-
-
-        /// <inheritdoc />
-        protected override IEnumerable<DeserializeCase> DeserializeCases
-        {
-            get { yield break; }
-
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases { get { yield break; } }
-
+        get { yield break; }
     }
+
+    /// <inheritdoc />
+    protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases { get { yield break; } }
+}
+
 }

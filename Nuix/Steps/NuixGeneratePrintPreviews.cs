@@ -9,33 +9,33 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Generates print previews for items in a production set.
+/// </summary>
+public sealed class
+    NuixGeneratePrintPreviewsStepFactory : RubyScriptStepFactory<NuixGeneratePrintPreviews, Unit>
+{
+    private NuixGeneratePrintPreviewsStepFactory() { }
+
     /// <summary>
-    /// Generates print previews for items in a production set.
+    /// The instance.
     /// </summary>
-    public sealed class NuixGeneratePrintPreviewsStepFactory : RubyScriptStepFactory<NuixGeneratePrintPreviews, Unit>
-    {
-        private NuixGeneratePrintPreviewsStepFactory() { }
+    public static RubyScriptStepFactory<NuixGeneratePrintPreviews, Unit> Instance { get; } =
+        new NuixGeneratePrintPreviewsStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixGeneratePrintPreviews, Unit> Instance { get; } =
-            new NuixGeneratePrintPreviewsStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(5, 2);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (5, 2);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>() { NuixFeature.PRODUCTION_SET };
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET
-        };
+    /// <inheritdoc />
+    public override string FunctionName => "GeneratePrintPreviews";
 
-        /// <inheritdoc />
-        public override string FunctionName => "GeneratePrintPreviews";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText => @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
@@ -53,35 +53,36 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     end
 
     the_case.close";
-    }
+}
+
+/// <summary>
+/// Generates print previews for items in a production set.
+/// </summary>
+public sealed class NuixGeneratePrintPreviews : RubyScriptStepBase<Unit>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+        NuixGeneratePrintPreviewsStepFactory.Instance;
 
     /// <summary>
-    /// Generates print previews for items in a production set.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixGeneratePrintPreviews : RubyScriptStepBase<Unit>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
-            NuixGeneratePrintPreviewsStepFactory.Instance;
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("pathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
 
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("pathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
+    /// <summary>
+    /// The production set to generate print previews for.
+    /// </summary>
+    [Required]
+    [StepProperty(2)]
+    [RubyArgument("productionSetNameArg", 2)]
+    [Alias("ProductionSet")]
+    public IStep<StringStream> ProductionSetName { get; set; } = null!;
+}
 
-        /// <summary>
-        /// The production set to generate print previews for.
-        /// </summary>
-        [Required]
-        [StepProperty(2)]
-        [RubyArgument("productionSetNameArg", 2)]
-        [Alias("ProductionSet")]
-        public IStep<StringStream> ProductionSetName { get; set; } = null!;
-    }
 }

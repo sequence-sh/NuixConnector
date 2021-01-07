@@ -7,27 +7,35 @@ using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
-    public class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection, Unit>
+
+public class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection, Unit>
+{
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    public NuixCloseConnectionTests([NotNull] ITestOutputHelper testOutputHelper) : base(
+        testOutputHelper
+    ) { }
+
+    protected override IEnumerable<StepCase> StepCases
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public NuixCloseConnectionTests([NotNull] ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
-        protected override IEnumerable<StepCase> StepCases
+        get
         {
-            get
-            {
-                yield return new StepCase("Close connection that doesn't exist", new NuixCloseConnection(), Unit.Default);
-            }
-        }
-
-        protected override IEnumerable<ErrorCase> ErrorCases
-        {
-            get
-            {
-                yield break;
-            }
+            yield return new StepCase(
+                "Close connection that doesn't exist",
+                new NuixCloseConnection(),
+                Unit.Default
+            );
         }
     }
+
+    protected override IEnumerable<ErrorCase> ErrorCases
+    {
+        get
+        {
+            yield break;
+        }
+    }
+}
+
 }

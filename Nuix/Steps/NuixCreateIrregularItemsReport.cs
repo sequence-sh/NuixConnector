@@ -8,35 +8,40 @@ using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Creates a list of all irregular items in a case.
+/// The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid'
+/// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
+/// Use this inside a WriteFile step to write it to a file.
+/// </summary>
+public sealed class NuixCreateIrregularItemsReportStepFactory
+    : RubyScriptStepFactory<NuixCreateIrregularItemsReport, StringStream>
+{
+    private NuixCreateIrregularItemsReportStepFactory() { }
+
     /// <summary>
-    /// Creates a list of all irregular items in a case.
-    /// The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid'
-    /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
-    /// Use this inside a WriteFile step to write it to a file.
+    /// The instance
     /// </summary>
-    public sealed class NuixCreateIrregularItemsReportStepFactory
-        : RubyScriptStepFactory<NuixCreateIrregularItemsReport, StringStream>
+    public static RubyScriptStepFactory<NuixCreateIrregularItemsReport, StringStream> Instance
     {
-        private NuixCreateIrregularItemsReportStepFactory() { }
+        get;
+    } =
+        new NuixCreateIrregularItemsReportStepFactory();
 
-        /// <summary>
-        /// The instance
-        /// </summary>
-        public static RubyScriptStepFactory<NuixCreateIrregularItemsReport, StringStream> Instance { get; } =
-            new NuixCreateIrregularItemsReportStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(2, 16);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (2, 16);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>();
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    /// <inheritdoc />
+    public override string FunctionName => "CreateIrregularItemsReport";
 
-        /// <inheritdoc />
-        public override string FunctionName => "CreateIrregularItemsReport";
-
-        //TODO change how this works - at the moment it creates multiple files
-        /// <inheritdoc />
-        public override string RubyFunctionText => @"
+    //TODO change how this works - at the moment it creates multiple files
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(casePathArg)
 
     log ""Generating Report:""
@@ -69,28 +74,29 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
     the_case.close
     return irregularText;";
-    }
+}
+
+/// <summary>
+/// Creates a list of all irregular items in a case.
+/// The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid'
+/// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
+/// Use this inside a WriteFile step to write it to a file.
+/// </summary>
+public sealed class NuixCreateIrregularItemsReport : RubyScriptStepBase<StringStream>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
+        NuixCreateIrregularItemsReportStepFactory.Instance;
 
     /// <summary>
-    /// Creates a list of all irregular items in a case.
-    /// The report is in CSV format. The headers are 'Reason', 'Path' and 'Guid'
-    /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
-    /// Use this inside a WriteFile step to write it to a file.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixCreateIrregularItemsReport : RubyScriptStepBase<StringStream>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
-            NuixCreateIrregularItemsReportStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("casePathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
+}
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("casePathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
-    }
 }

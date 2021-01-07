@@ -10,39 +10,44 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
-    /// <summary> 
-    /// Close the connection to nuix
-    /// </summary>
-    [Alias("NuixOpenCase")]
-    public sealed class NuixOpenConnection : CompoundStep<Unit>
+
+/// <summary> 
+/// Close the connection to nuix
+/// </summary>
+[Alias("NuixOpenCase")]
+public sealed class NuixOpenConnection : CompoundStep<Unit>
+{
+    /// <inheritdoc />
+    public override async Task<Result<Unit, IError>> Run(
+        IStateMonad stateMonad,
+        CancellationToken cancellationToken)
     {
-        /// <inheritdoc />
-        public override async Task<Result<Unit, IError>> Run(IStateMonad stateMonad,
-            CancellationToken cancellationToken)
-        {
-            await Task.CompletedTask;
+        await Task.CompletedTask;
 
-            var r = stateMonad.GetOrCreateNuixConnection(false);
+        var r = stateMonad.GetOrCreateNuixConnection(false);
 
-            if (r.IsFailure) return r.MapError(x => x.WithLocation(this)).ConvertFailure<Unit>();
+        if (r.IsFailure)
+            return r.MapError(x => x.WithLocation(this)).ConvertFailure<Unit>();
 
-            return Unit.Default;
-        }
-
-        /// <inheritdoc />
-        public override IStepFactory StepFactory => NuixOpenConnectionFactory.Instance;
+        return Unit.Default;
     }
+
+    /// <inheritdoc />
+    public override IStepFactory StepFactory => NuixOpenConnectionFactory.Instance;
+}
+
+/// <summary>
+/// Close the connection to nuix
+/// </summary>
+public sealed class NuixOpenConnectionFactory : SimpleStepFactory<NuixOpenConnection, Unit>
+{
+    private NuixOpenConnectionFactory() { }
 
     /// <summary>
-    /// Close the connection to nuix
+    /// The instance.
     /// </summary>
-    public sealed class NuixOpenConnectionFactory : SimpleStepFactory<NuixOpenConnection, Unit>
-    {
-        private NuixOpenConnectionFactory() { }
+    public static SimpleStepFactory<NuixOpenConnection, Unit> Instance { get; } =
+        new NuixOpenConnectionFactory();
+}
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static SimpleStepFactory<NuixOpenConnection, Unit> Instance { get; } = new NuixOpenConnectionFactory();
-    }
 }
