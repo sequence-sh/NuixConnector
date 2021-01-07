@@ -125,5 +125,5 @@ resharper_xml_blank_line_after_pi=false
 resharper_xml_indent_size=2
 resharper_xml_max_blank_lines_between_tags=1
 resharper_xml_max_line_length=100
-resharper_xml_pi_attribute_style=first_attribute_on_single_line
+resharper_xml_pi_attribute_style=on_single_line
 resharper_xml_tab_width=2
