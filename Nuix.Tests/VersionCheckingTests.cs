@@ -39,7 +39,6 @@
 //            result.Error.Should().Contain("Nuix Version is");
 //        }
 
-
 //        internal class NuixDoNothing : RubyScriptStepBase<Unit>
 //        {
 //            /// <inheritdoc />
@@ -56,8 +55,6 @@
 //                    MyRequiredVersion = myRequiredVersion;
 //                    MyRequiredFeatures = myRequiredFeatures;
 //                }
-
-
 
 //                /// <inheritdoc />
 //                public override Version RequiredNuixVersion => MyRequiredVersion ?? new Version(1, 0);
@@ -80,3 +77,5 @@
 //        }
 //    }
 //}
+
+

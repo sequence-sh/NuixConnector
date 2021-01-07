@@ -3,13 +3,15 @@ using JetBrains.Annotations;
 
 namespace Reductech.EDR.Connectors.Nuix
 {
-    internal static class RegexExtensions
+
+internal static class RegexExtensions
+{
+    [ContractAnnotation("=>true,match:notNull; =>false,match:null")]
+    public static bool TryMatch(this Regex r, string input, out Match match)
     {
-        [ContractAnnotation("=>true,match:notNull; =>false,match:null")]
-        public static bool TryMatch(this Regex r, string input, out Match match)
-        {
-            match = r.Match(input);
-            return match.Success;
-        }
+        match = r.Match(input);
+        return match.Success;
     }
+}
+
 }

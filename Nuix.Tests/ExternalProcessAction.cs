@@ -4,20 +4,21 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
-    public class ExternalProcessAction
+
+public class ExternalProcessAction
+{
+    public ExternalProcessAction(ConnectionCommand command, params ConnectionOutput[] desiredOutput)
     {
-        public ExternalProcessAction(ConnectionCommand command, params ConnectionOutput [] desiredOutput)
-        {
-            Command = command;
-            DesiredOutput = desiredOutput;
+        Command       = command;
+        DesiredOutput = desiredOutput;
 
-            if (command.IsStream == null || command.IsStream.Value == false)
-                DesiredOutput.Should().NotBeEmpty("If output is empty then the test will hang forever");
-        }
-
-        public ConnectionCommand Command { get; }
-
-        public IReadOnlyList<ConnectionOutput> DesiredOutput { get; }
-
+        if (command.IsStream == null || command.IsStream.Value == false)
+            DesiredOutput.Should().NotBeEmpty("If output is empty then the test will hang forever");
     }
+
+    public ConnectionCommand Command { get; }
+
+    public IReadOnlyList<ConnectionOutput> DesiredOutput { get; }
+}
+
 }

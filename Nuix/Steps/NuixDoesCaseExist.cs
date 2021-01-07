@@ -8,31 +8,32 @@ using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Returns whether or not a case exists.
+/// </summary>
+public sealed class NuixDoesCaseExistStepFactory : RubyScriptStepFactory<NuixDoesCaseExist, bool>
+{
+    private NuixDoesCaseExistStepFactory() { }
+
     /// <summary>
-    /// Returns whether or not a case exists.
+    /// The instance.
     /// </summary>
-    public sealed class NuixDoesCaseExistStepFactory : RubyScriptStepFactory<NuixDoesCaseExist, bool>
-    {
-        private NuixDoesCaseExistStepFactory() { }
+    public static RubyScriptStepFactory<NuixDoesCaseExist, bool> Instance { get; } =
+        new NuixDoesCaseExistStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixDoesCaseExist, bool> Instance { get; } =
-            new NuixDoesCaseExistStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(2, 16);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (2, 16);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>();
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    /// <inheritdoc />
+    public override string FunctionName => "DoesCaseExist";
 
-        /// <inheritdoc />
-        public override string FunctionName => "DoesCaseExist";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText =>
-            @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     begin
         log ""Trying to open case""
         the_case = $utilities.case_factory.open(pathArg)
@@ -43,24 +44,26 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         return false
     end
 ";
-    }
+}
+
+/// <summary>
+/// Returns whether or not a case exists.
+/// </summary>
+public sealed class NuixDoesCaseExist : RubyScriptStepBase<bool>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<bool> RubyScriptStepFactory =>
+        NuixDoesCaseExistStepFactory.Instance;
 
     /// <summary>
-    /// Returns whether or not a case exists.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixDoesCaseExist : RubyScriptStepBase<bool>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<bool> RubyScriptStepFactory => NuixDoesCaseExistStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("pathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
+}
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("pathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
-    }
 }

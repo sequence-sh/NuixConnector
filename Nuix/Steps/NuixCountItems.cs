@@ -8,63 +8,68 @@ using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Returns the number of items matching a particular search term
+/// </summary>
+public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountItems, int>
+{
+    private NuixCountItemsStepFactory() { }
+
     /// <summary>
-    /// Returns the number of items matching a particular search term
+    /// The instance.
     /// </summary>
-    public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountItems, int>
-    {
-        private NuixCountItemsStepFactory() { }
+    public static RubyScriptStepFactory<NuixCountItems, int> Instance { get; } =
+        new NuixCountItemsStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixCountItems, int> Instance { get; } = new NuixCountItemsStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(3, 4);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (3, 4);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>();
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    /// <inheritdoc />
+    public override string FunctionName => "CountItems";
 
-        /// <inheritdoc />
-        public override string FunctionName => "CountItems";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText => @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(pathArg)
     searchOptions = {}
     count = the_case.count(searchArg, searchOptions)
     the_case.close
     log ""#{count} found matching '#{searchArg}'""
     return count";
-    }
+}
+
+/// <summary>
+/// Returns the number of items matching a particular search term
+/// </summary>
+public sealed class NuixCountItems : RubyScriptStepBase<int>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<int> RubyScriptStepFactory =>
+        NuixCountItemsStepFactory.Instance;
 
     /// <summary>
-    /// Returns the number of items matching a particular search term
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixCountItems : RubyScriptStepBase<int>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<int> RubyScriptStepFactory => NuixCountItemsStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("pathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("pathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
+    /// <summary>
+    /// The search term to count.
+    /// </summary>
+    [Required]
+    [Example("*.txt")]
+    [StepProperty(2)]
+    [RubyArgument("searchArg", 2)]
+    [Alias("Search")]
+    public IStep<StringStream> SearchTerm { get; set; } = null!;
+}
 
-        /// <summary>
-        /// The search term to count.
-        /// </summary>
-        [Required]
-        [Example("*.txt")]
-        [StepProperty(2)]
-        [RubyArgument("searchArg", 2)]
-        [Alias("Search")]
-        public IStep<StringStream> SearchTerm { get; set; } = null!;
-    }
 }

@@ -12,32 +12,32 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Performs optical character recognition on files in a NUIX case.
+/// </summary>
+public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerformOCR, Unit>
+{
+    private NuixPerformOCRStepFactory() { }
+
     /// <summary>
-    /// Performs optical character recognition on files in a NUIX case.
+    /// The instance.
     /// </summary>
-    public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerformOCR, Unit>
-    {
-        private NuixPerformOCRStepFactory() { }
+    public static RubyScriptStepFactory<NuixPerformOCR, Unit> Instance { get; } =
+        new NuixPerformOCRStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixPerformOCR, Unit> Instance { get; } = new NuixPerformOCRStepFactory();
+    /// <inheritdoc />`,
+    public override Version RequiredNuixVersion => new(7, 6);
 
-        /// <inheritdoc />`,
-        public override Version RequiredNuixVersion => new (7, 6);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>() { NuixFeature.OCR_PROCESSING };
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.OCR_PROCESSING
-        };
+    /// <inheritdoc />
+    public override string FunctionName => "RunOCR";
 
-        /// <inheritdoc />
-        public override string FunctionName => "RunOCR";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText => @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(pathArg)
 
     searchTerm = searchTermArg
@@ -66,71 +66,75 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
         log ""Items Processed""
     end
     the_case.close";
-    }
+}
+
+/// <summary>
+/// Performs optical character recognition on files in a NUIX case.
+/// </summary>
+public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+        NuixPerformOCRStepFactory.Instance;
 
     /// <summary>
-    /// Performs optical character recognition on files in a NUIX case.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("pathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
+
+    private const string DefaultSearchTerm =
+        "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
+
+    /// <summary>
+    /// The term to use for searching for files to OCR.
+    /// </summary>
+    [StepProperty(2)]
+    [DefaultValueExplanation(DefaultSearchTerm)]
+    [RubyArgument("searchTermArg", 2)]
+    [Alias("Search")]
+    public IStep<StringStream> SearchTerm { get; set; } =
+        new StringConstant(DefaultSearchTerm);
+
+    /// <summary>
+    /// The name of the OCR profile to use.
+    /// This cannot be set at the same time as OCRProfilePath.
+    /// </summary>
+    [StepProperty(3)]
+    [DefaultValueExplanation("The default profile will be used.")]
+    [Example("MyOcrProfile")]
+    [RubyArgument("ocrProfileArg", 3)]
+    [Alias("Profile")]
+    public IStep<StringStream>? OCRProfileName { get; set; }
+
+    /// <summary>
+    /// Path to the OCR profile to use.
+    /// This cannot be set at the same times as OCRProfileName.
+    /// </summary>
+    [StepProperty(4)]
+    [RequiredVersion("Nuix", "7.6")]
+    [DefaultValueExplanation("The Default profile will be used.")]
+    [Example("C:\\Profiles\\MyProfile.xml")]
+    [RubyArgument("ocrProfilePathArg", 4)]
+    [Alias("ProfilePath")]
+    public IStep<StringStream>? OCRProfilePath { get; set; }
+
+    /// <inheritdoc />
+    public override Result<Unit, IError> VerifyThis(ISettings settings)
     {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixPerformOCRStepFactory.Instance;
+        if (OCRProfileName != null && OCRProfilePath != null)
+            return new SingleError(
+                $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.",
+                ErrorCode.ConflictingParameters,
+                new StepErrorLocation(this)
+            );
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("pathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
-
-        private const string DefaultSearchTerm =
-            "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
-
-        /// <summary>
-        /// The term to use for searching for files to OCR.
-        /// </summary>
-        [StepProperty(2)]
-        [DefaultValueExplanation(DefaultSearchTerm)]
-        [RubyArgument("searchTermArg", 2)]
-        [Alias("Search")]
-        public IStep<StringStream> SearchTerm { get; set; } =
-            new StringConstant(DefaultSearchTerm);
-
-        /// <summary>
-        /// The name of the OCR profile to use.
-        /// This cannot be set at the same time as OCRProfilePath.
-        /// </summary>
-        [StepProperty(3)]
-        [DefaultValueExplanation("The default profile will be used.")]
-        [Example("MyOcrProfile")]
-        [RubyArgument("ocrProfileArg", 3)]
-        [Alias("Profile")]
-        public IStep<StringStream>? OCRProfileName { get; set; }
-
-        /// <summary>
-        /// Path to the OCR profile to use.
-        /// This cannot be set at the same times as OCRProfileName.
-        /// </summary>
-        [StepProperty(4)]
-        [RequiredVersion("Nuix", "7.6")]
-        [DefaultValueExplanation("The Default profile will be used.")]
-        [Example("C:\\Profiles\\MyProfile.xml")]
-        [RubyArgument("ocrProfilePathArg", 4)]
-        [Alias("ProfilePath")]
-        public IStep<StringStream>? OCRProfilePath { get; set; }
-
-        /// <inheritdoc />
-        public override Result<Unit, IError> VerifyThis(ISettings settings)
-        {
-            if (OCRProfileName != null && OCRProfilePath != null)
-                return new SingleError(
-                    $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.",
-                    ErrorCode.ConflictingParameters, new StepErrorLocation(this));
-
-            return base.VerifyThis(settings);
-        }
+        return base.VerifyThis(settings);
     }
+}
+
 }

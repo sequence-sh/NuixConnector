@@ -9,34 +9,33 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Removes particular items from a Nuix production set.
+/// </summary>
+public sealed class NuixRemoveFromProductionSetStepFactory
+    : RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit>
+{
+    private NuixRemoveFromProductionSetStepFactory() { }
+
     /// <summary>
-    /// Removes particular items from a Nuix production set.
+    /// The instance.
     /// </summary>
-    public sealed class NuixRemoveFromProductionSetStepFactory
-        : RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit>
-    {
-        private NuixRemoveFromProductionSetStepFactory() { }
+    public static RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit> Instance { get; } =
+        new NuixRemoveFromProductionSetStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit> Instance { get; } =
-            new NuixRemoveFromProductionSetStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(4, 2);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (4, 2);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>() { NuixFeature.PRODUCTION_SET };
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET
-        };
+    /// <inheritdoc />
+    public override string FunctionName => "RemoveFromProductionSet";
 
-        /// <inheritdoc />
-        public override string FunctionName => "RemoveFromProductionSet";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText => @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(pathArg)
 
     log ""Searching""
@@ -63,44 +62,45 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     end
 
     the_case.close";
-    }
+}
+
+/// <summary>
+/// Removes particular items from a Nuix production set.
+/// </summary>
+public sealed class NuixRemoveFromProductionSet : RubyScriptStepBase<Unit>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+        NuixRemoveFromProductionSetStepFactory.Instance;
 
     /// <summary>
-    /// Removes particular items from a Nuix production set.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixRemoveFromProductionSet : RubyScriptStepBase<Unit>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
-            NuixRemoveFromProductionSetStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("pathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("pathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
+    /// <summary>
+    /// The production set to remove results from.
+    /// </summary>
+    [Required]
+    [StepProperty(2)]
+    [RubyArgument("productionSetNameArg", 2)]
+    [Alias("ProductionSet")]
+    public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
-        /// <summary>
-        /// The production set to remove results from.
-        /// </summary>
-        [Required]
-        [StepProperty(2)]
-        [RubyArgument("productionSetNameArg", 2)]
-        [Alias("ProductionSet")]
-        public IStep<StringStream> ProductionSetName { get; set; } = null!;
+    /// <summary>
+    /// The search term to use for choosing which items to remove.
+    /// </summary>
+    [StepProperty(3)]
+    [DefaultValueExplanation("All items will be removed.")]
+    [Example("Tag:sushi")]
+    [RubyArgument("searchArg", 3)]
+    [Alias("Search")]
+    public IStep<StringStream>? SearchTerm { get; set; }
+}
 
-        /// <summary>
-        /// The search term to use for choosing which items to remove.
-        /// </summary>
-        [StepProperty(3)]
-        [DefaultValueExplanation("All items will be removed.")]
-        [Example("Tag:sushi")]
-        [RubyArgument("searchArg", 3)]
-        [Alias("Search")]
-        public IStep<StringStream>? SearchTerm { get; set; }
-    }
 }

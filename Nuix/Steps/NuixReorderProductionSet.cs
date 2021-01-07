@@ -10,33 +10,33 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Reorders and renumbers the items in a production set.
+/// </summary>
+public sealed class
+    NuixReorderProductionSetStepFactory : RubyScriptStepFactory<NuixReorderProductionSet, Unit>
+{
+    private NuixReorderProductionSetStepFactory() { }
+
     /// <summary>
-    /// Reorders and renumbers the items in a production set.
+    /// The instance.
     /// </summary>
-    public sealed class NuixReorderProductionSetStepFactory : RubyScriptStepFactory<NuixReorderProductionSet, Unit>
-    {
-        private NuixReorderProductionSetStepFactory() { }
+    public static RubyScriptStepFactory<NuixReorderProductionSet, Unit> Instance { get; } =
+        new NuixReorderProductionSetStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixReorderProductionSet, Unit> Instance { get; } =
-            new NuixReorderProductionSetStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(5, 2);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (5, 2);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>() { NuixFeature.PRODUCTION_SET };
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET
-        };
+    /// <inheritdoc />
+    public override string FunctionName => "RenumberProductionSet";
 
-        /// <inheritdoc />
-        public override string FunctionName => "RenumberProductionSet";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText => @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(pathArg)
 
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
@@ -56,45 +56,46 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     end
 
     the_case.close";
-    }
+}
+
+/// <summary>
+/// Reorders and renumbers the items in a production set.
+/// </summary>
+[Alias("NuixReorderProduction")]
+public sealed class NuixReorderProductionSet : RubyScriptStepBase<Unit>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+        NuixReorderProductionSetStepFactory.Instance;
 
     /// <summary>
-    /// Reorders and renumbers the items in a production set.
+    /// The path to the case.
     /// </summary>
-    [Alias("NuixReorderProduction")]
-    public sealed class NuixReorderProductionSet : RubyScriptStepBase<Unit>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
-            NuixReorderProductionSetStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("pathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("pathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
+    /// <summary>
+    /// The production set to reorder.
+    /// </summary>
+    [Required]
+    [StepProperty(2)]
+    [RubyArgument("productionSetNameArg", 2)]
+    [Alias("Set")]
+    public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
-        /// <summary>
-        /// The production set to reorder.
-        /// </summary>
-        [Required]
-        [StepProperty(2)]
-        [RubyArgument("productionSetNameArg", 2)]
-        [Alias("Set")]
-        public IStep<StringStream> ProductionSetName { get; set; } = null!;
+    /// <summary>
+    /// The method of sorting items during the renumbering.
+    /// </summary>
+    [StepProperty(3)]
+    [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
+    [RubyArgument("sortOrderArg", 3)]
+    [Alias("Order")]
+    public IStep<ProductionSetSortOrder> SortOrder { get; set; } =
+        new EnumConstant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);
+}
 
-        /// <summary>
-        /// The method of sorting items during the renumbering.
-        /// </summary>
-        [StepProperty(3)]
-        [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
-        [RubyArgument("sortOrderArg", 3)]
-        [Alias("Order")]
-        public IStep<ProductionSetSortOrder> SortOrder { get; set; } =
-            new EnumConstant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);
-    }
 }

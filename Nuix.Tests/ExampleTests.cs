@@ -17,58 +17,72 @@ using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
-    /// <summary>
-    /// These are not really tests but ways to quickly and easily run steps
-    /// </summary>
-    public class ExampleTests
+
+/// <summary>
+/// These are not really tests but ways to quickly and easily run steps
+/// </summary>
+public class ExampleTests
+{
+    public ExampleTests(ITestOutputHelper testOutputHelper) => TestOutputHelper = testOutputHelper;
+
+    public ITestOutputHelper TestOutputHelper { get; }
+
+    private readonly NuixSettings _nuixSettings = new NuixSettings(
+        true,
+        Constants.NuixSettingsList.First().NuixExeConsolePath,
+        new Version(8, 8),
+        Constants.AllNuixFeatures
+    );
+
+    private async Task RunYamlSequenceInternal(
+        string yaml,
+        Action<Result<IStep, IError>> errorAction)
     {
-        public ExampleTests(ITestOutputHelper testOutputHelper) => TestOutputHelper = testOutputHelper;
+        var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
-        public ITestOutputHelper TestOutputHelper { get; }
+        var logger = new Microsoft.Extensions.Logging.Xunit.XunitLogger(TestOutputHelper, "Test");
 
-        private readonly NuixSettings _nuixSettings = new NuixSettings(true,
-            Constants.NuixSettingsList.First().NuixExeConsolePath,
-            new Version(8, 8),
-            Constants.AllNuixFeatures);
+        var stepResult = Core.Parser.SCLParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(sfs));
 
-        private async Task RunYamlSequenceInternal(string yaml, Action<Result<IStep, IError>> errorAction)
-        {
-            var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
+        if (stepResult.IsFailure)
+            errorAction.Invoke(stepResult);
 
-            var logger = new Microsoft.Extensions.Logging.Xunit.XunitLogger(TestOutputHelper, "Test");
+        var monad = new StateMonad(
+            logger,
+            _nuixSettings,
+            ExternalProcessRunner.Instance,
+            FileSystemHelper.Instance,
+            sfs
+        );
 
+        var r = await stepResult.Value.Run<Unit>(monad, CancellationToken.None);
 
-            var stepResult = Core.Parser.SCLParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(sfs));
+        r.ShouldBeSuccessful(x => x.AsString);
+    }
 
-            if (stepResult.IsFailure)
-                errorAction.Invoke(stepResult);
+    [Theory(Skip = "Manual")]
+    [InlineData(@"D:\temp\ExampleSequences\test.yml")]
+    public async Task RunYamlSequenceFromFile(string path)
+    {
+        var yaml = await File.ReadAllTextAsync(path);
 
-            var monad = new StateMonad(logger, _nuixSettings,
-                ExternalProcessRunner.Instance, FileSystemHelper.Instance, sfs);
+        TestOutputHelper.WriteLine(yaml);
 
-            var r = await stepResult.Value.Run<Unit>(monad, CancellationToken.None);
+        await RunYamlSequenceInternal(
+            yaml,
+            result => throw new XunitException(
+                string.Join(
+                    ", ",
+                    result.Error.GetAllErrors().Select(x => x.Message + " " + x.Location.AsString)
+                )
+            )
+        );
+    }
 
-            r.ShouldBeSuccessful(x => x.AsString);
-        }
-
-        [Theory(Skip = "Manual")]
-        [InlineData(@"D:\temp\ExampleSequences\test.yml")]
-        public async Task RunYamlSequenceFromFile(string path)
-        {
-            var yaml = await File.ReadAllTextAsync(path);
-
-            TestOutputHelper.WriteLine(yaml);
-
-            await RunYamlSequenceInternal(yaml, result => throw new XunitException(
-                string.Join(", ",
-                    result.Error.GetAllErrors().Select(x => x.Message + " " + x.Location.AsString))
-            ));
-        }
-
-        [Fact(Skip = "manual")]
-        public async Task RunYamlSequence()
-        {
-            const string yaml = @"- <CurrentDir>   = 'D:\temp'
+    [Fact(Skip = "manual")]
+    public async Task RunYamlSequence()
+    {
+        const string yaml = @"- <CurrentDir>   = 'D:\temp'
 - <CasePath>     = PathCombine [<CurrentDir>, 'case']
 - <SearchTagCSV> = PathCombine [<CurrentDir>, 'searchtag.csv']
 - NuixOpenConnection
@@ -82,8 +96,12 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
         Tag: (EntityGetValue <Entity> 'Tag')
     )";
 
-            await RunYamlSequenceInternal(yaml, result =>
-                result.ShouldBeSuccessful(x => x.AsString));
-        }
+        await RunYamlSequenceInternal(
+            yaml,
+            result =>
+                result.ShouldBeSuccessful(x => x.AsString)
+        );
     }
+}
+
 }

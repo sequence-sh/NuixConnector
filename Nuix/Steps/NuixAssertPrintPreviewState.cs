@@ -10,35 +10,34 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Checks the print preview state of the production set.
+/// </summary>
+public sealed class
+    NuixAssertPrintPreviewStateStepFactory : RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit
+    >
+{
+    private NuixAssertPrintPreviewStateStepFactory() { }
+
     /// <summary>
-    /// Checks the print preview state of the production set.
+    /// The instance.
     /// </summary>
-    public sealed class
-        NuixAssertPrintPreviewStateStepFactory : RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit>
-    {
-        private NuixAssertPrintPreviewStateStepFactory() { }
+    public static RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit> Instance { get; } =
+        new NuixAssertPrintPreviewStateStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixAssertPrintPreviewState, Unit> Instance { get; } =
-            new NuixAssertPrintPreviewStateStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(5, 2);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (5, 2);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>() { NuixFeature.PRODUCTION_SET, NuixFeature.ANALYSIS };
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.PRODUCTION_SET, NuixFeature.ANALYSIS
-        };
+    /// <inheritdoc />
+    public override string FunctionName => "GetPrintPreviewState";
 
-        /// <inheritdoc />
-        public override string FunctionName => "GetPrintPreviewState";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText =>
-            @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(pathArg)
     productionSet = the_case.findProductionSetByName(productionSetNameArg)
 
@@ -58,44 +57,45 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
             exit
         end
     end";
-    }
+}
+
+/// <summary>
+/// Checks the print preview state of the production set.
+/// </summary>
+public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+        NuixAssertPrintPreviewStateStepFactory.Instance;
 
     /// <summary>
-    /// Checks the print preview state of the production set.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
-            NuixAssertPrintPreviewStateStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("pathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("pathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
+    /// <summary>
+    /// The production set to reorder.
+    /// </summary>
+    [Required]
+    [StepProperty(2)]
+    [RubyArgument("productionSetNameArg", 2)]
+    [Alias("ProductionSet")]
+    public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
-        /// <summary>
-        /// The production set to reorder.
-        /// </summary>
-        [Required]
-        [StepProperty(2)]
-        [RubyArgument("productionSetNameArg", 2)]
-        [Alias("ProductionSet")]
-        public IStep<StringStream> ProductionSetName { get; set; } = null!;
+    /// <summary>
+    /// The expected print preview state of the production set;
+    /// </summary>
+    [StepProperty(3)]
+    [DefaultValueExplanation(nameof(PrintPreviewState.All))]
+    [RubyArgument("expectedStateArg", 3)]
+    [Alias("HasState")]
+    public IStep<PrintPreviewState> ExpectedState { get; set; } =
+        new EnumConstant<PrintPreviewState>(PrintPreviewState.All);
+}
 
-        /// <summary>
-        /// The expected print preview state of the production set;
-        /// </summary>
-        [StepProperty(3)]
-        [DefaultValueExplanation(nameof(PrintPreviewState.All))]
-        [RubyArgument("expectedStateArg", 3)]
-        [Alias("HasState")]
-        public IStep<PrintPreviewState> ExpectedState { get; set; } =
-            new EnumConstant<PrintPreviewState>(PrintPreviewState.All);
-    }
 }

@@ -10,37 +10,41 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
-    /// <summary>
-    /// Close the connection to nuix
-    /// </summary>
-    [Alias("NuixCloseCase")]
-    public sealed class NuixCloseConnection : CompoundStep<Unit>
+
+/// <summary>
+/// Close the connection to nuix
+/// </summary>
+[Alias("NuixCloseCase")]
+public sealed class NuixCloseConnection : CompoundStep<Unit>
+{
+    /// <inheritdoc />
+    public override async Task<Result<Unit, IError>> Run(
+        IStateMonad stateMonad,
+        CancellationToken cancellationToken)
     {
-        /// <inheritdoc />
-        public override async Task<Result<Unit, IError>> Run(IStateMonad stateMonad,
-            CancellationToken cancellationToken)
-        {
-            await Task.CompletedTask;
+        await Task.CompletedTask;
 
-            var r = await stateMonad.CloseNuixConnectionAsync(cancellationToken);
+        var r = await stateMonad.CloseNuixConnectionAsync(cancellationToken);
 
-            return r.MapError(x => x.WithLocation(this));
-        }
-
-        /// <inheritdoc />
-        public override IStepFactory StepFactory => NuixCloseConnectionFactory.Instance;
+        return r.MapError(x => x.WithLocation(this));
     }
 
-    /// <summary>
-    /// Close the connection to nuix
-    /// </summary>
-    public sealed class NuixCloseConnectionFactory : SimpleStepFactory<NuixCloseConnection, Unit>
-    {
-        private NuixCloseConnectionFactory() { }
+    /// <inheritdoc />
+    public override IStepFactory StepFactory => NuixCloseConnectionFactory.Instance;
+}
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static SimpleStepFactory<NuixCloseConnection, Unit> Instance { get; } = new NuixCloseConnectionFactory();
-    }
+/// <summary>
+/// Close the connection to nuix
+/// </summary>
+public sealed class NuixCloseConnectionFactory : SimpleStepFactory<NuixCloseConnection, Unit>
+{
+    private NuixCloseConnectionFactory() { }
+
+    /// <summary>
+    /// The instance.
+    /// </summary>
+    public static SimpleStepFactory<NuixCloseConnection, Unit> Instance { get; } =
+        new NuixCloseConnectionFactory();
+}
+
 }

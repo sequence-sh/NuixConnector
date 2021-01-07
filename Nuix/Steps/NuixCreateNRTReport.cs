@@ -9,32 +9,33 @@ using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Creates a report using an NRT file.
+/// </summary>
+public sealed class
+    NuixCreateNRTReportStepFactory : RubyScriptStepFactory<NuixCreateNRTReport, Unit>
+{
+    private NuixCreateNRTReportStepFactory() { }
+
     /// <summary>
-    /// Creates a report using an NRT file.
+    /// The instance.
     /// </summary>
-    public sealed class NuixCreateNRTReportStepFactory : RubyScriptStepFactory<NuixCreateNRTReport, Unit>
-    {
-        private NuixCreateNRTReportStepFactory() { }
+    public static RubyScriptStepFactory<NuixCreateNRTReport, Unit> Instance { get; } =
+        new NuixCreateNRTReportStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixCreateNRTReport, Unit> Instance { get; } =
-            new NuixCreateNRTReportStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(7, 4);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (7, 4);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature> { NuixFeature.ANALYSIS };
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
-            new List<NuixFeature> {NuixFeature.ANALYSIS};
+    /// <inheritdoc />
+    public override string FunctionName => "CreateNRTReport";
 
-        /// <inheritdoc />
-        public override string FunctionName => "CreateNRTReport";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText =>
-            @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(pathArg)
     log 'Generating NRT Report:'
 
@@ -58,63 +59,65 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
     )
 
     the_case.close";
-    }
+}
+
+/// <summary>
+/// Creates a report using an NRT file.
+/// </summary>
+public sealed class NuixCreateNRTReport : RubyScriptStepBase<Unit>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+        NuixCreateNRTReportStepFactory.Instance;
 
     /// <summary>
-    /// Creates a report using an NRT file.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixCreateNRTReport : RubyScriptStepBase<Unit>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory => NuixCreateNRTReportStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("pathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("pathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
+    /// <summary>
+    /// The NRT file path.
+    /// </summary>
+    [Required]
+    [StepProperty(2)]
+    [RubyArgument("nrtPathArg", 2)]
+    public IStep<StringStream> NRTPath { get; set; } = null!;
 
-        /// <summary>
-        /// The NRT file path.
-        /// </summary>
-        [Required]
-        [StepProperty(2)]
-        [RubyArgument("nrtPathArg", 2)]
-        public IStep<StringStream> NRTPath { get; set; } = null!;
+    /// <summary>
+    /// The format of the report file that will be created.
+    /// </summary>
+    [Required]
+    [Example("PDF")]
+    [StepProperty(3)]
+    [RubyArgument("outputFormatArg", 3)]
+    [Alias("Format")]
+    public IStep<StringStream> OutputFormat { get; set; } = null!;
 
-        /// <summary>
-        /// The format of the report file that will be created.
-        /// </summary>
-        [Required]
-        [Example("PDF")]
-        [StepProperty(3)]
-        [RubyArgument("outputFormatArg", 3)]
-        [Alias("Format")]
-        public IStep<StringStream> OutputFormat { get; set; } = null!;
+    /// <summary>
+    /// The path to output the file at.
+    /// </summary>
+    [Required]
+    [Example("C:/Temp/report.pdf")]
+    [StepProperty(4)]
+    [RubyArgument("outputPathArg", 4)]
+    [Alias("ReportPath")]
+    public IStep<StringStream> OutputPath { get; set; } = null!;
 
-        /// <summary>
-        /// The path to output the file at.
-        /// </summary>
-        [Required]
-        [Example("C:/Temp/report.pdf")]
-        [StepProperty(4)]
-        [RubyArgument("outputPathArg", 4)]
-        [Alias("ReportPath")]
-        public IStep<StringStream> OutputPath { get; set; } = null!;
+    /// <summary>
+    /// The path to the local resources folder.
+    /// To load the logos etc.
+    /// </summary>
+    [Required]
+    [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
+    [StepProperty(5)]
+    [RubyArgument("localResourcesUrlArg", 5)]
+    [Alias("Resources")]
+    public IStep<StringStream> LocalResourcesURL { get; set; } = null!;
+}
 
-        /// <summary>
-        /// The path to the local resources folder.
-        /// To load the logos etc.
-        /// </summary>
-        [Required]
-        [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
-        [StepProperty(5)]
-        [RubyArgument("localResourcesUrlArg", 5)]
-        [Alias("Resources")]
-        public IStep<StringStream> LocalResourcesURL { get; set; } = null!;
-    }
 }

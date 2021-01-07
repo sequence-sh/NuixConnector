@@ -8,32 +8,35 @@ using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// A step that the searches a case for items and outputs the values of item properties.
+/// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
+/// Use this inside a WriteFile step to write it to a file.
+/// </summary>
+public sealed class
+    NuixGetItemPropertiesStepFactory : RubyScriptStepFactory<NuixGetItemProperties, StringStream>
+{
+    private NuixGetItemPropertiesStepFactory() { }
+
     /// <summary>
-    /// A step that the searches a case for items and outputs the values of item properties.
-    /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
-    /// Use this inside a WriteFile step to write it to a file.
+    /// The instance.
     /// </summary>
-    public sealed class NuixGetItemPropertiesStepFactory : RubyScriptStepFactory<NuixGetItemProperties, StringStream>
-    {
-        private NuixGetItemPropertiesStepFactory() { }
+    public static RubyScriptStepFactory<NuixGetItemProperties, StringStream> Instance { get; } =
+        new NuixGetItemPropertiesStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixGetItemProperties, StringStream> Instance { get; } =
-            new NuixGetItemPropertiesStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(6, 2);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (6, 2);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>();
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>();
+    /// <inheritdoc />
+    public override string FunctionName => "GetParticularProperties";
 
-        /// <inheritdoc />
-        public override string FunctionName => "GetParticularProperties";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText => @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(casePathArg)
 
     log ""Finding Entities""
@@ -65,58 +68,59 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
     the_case.close
     return text";
-    }
+}
+
+/// <summary>
+/// A step that the searches a case for items and outputs the values of item properties.
+/// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
+/// Use this inside a WriteFile step to write it to a file.
+/// </summary>
+public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
+        NuixGetItemPropertiesStepFactory.Instance;
 
     /// <summary>
-    /// A step that the searches a case for items and outputs the values of item properties.
-    /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
-    /// Use this inside a WriteFile step to write it to a file.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
-            NuixGetItemPropertiesStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("casePathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("casePathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
+    /// <summary>
+    /// The term to search for.
+    /// </summary>
+    [Required]
+    [Example("*.txt")]
+    [StepProperty(2)]
+    [RubyArgument("searchArg", 2)]
+    [Alias("Search")]
+    public IStep<StringStream> SearchTerm { get; set; } = null!;
 
-        /// <summary>
-        /// The term to search for.
-        /// </summary>
-        [Required]
-        [Example("*.txt")]
-        [StepProperty(2)]
-        [RubyArgument("searchArg", 2)]
-        [Alias("Search")]
-        public IStep<StringStream> SearchTerm { get; set; } = null!;
+    /// <summary>
+    /// The regex to search the property for.
+    /// </summary>
+    [Example("Date")]
+    [Required]
+    [StepProperty(3)]
+    [RubyArgument("propertyRegexArg", 3)]
+    [Alias("Filter")]
+    public IStep<StringStream> PropertyRegex { get; set; } = null!;
 
-        /// <summary>
-        /// The regex to search the property for.
-        /// </summary>
-        [Example("Date")]
-        [Required]
-        [StepProperty(3)]
-        [RubyArgument("propertyRegexArg", 3)]
-        [Alias("Filter")]
-        public IStep<StringStream> PropertyRegex { get; set; } = null!;
+    /// <summary>
+    /// An optional regex to check the value.
+    /// If this is set, only values which match this regex will be returned, and only the contents of the first capture group.
+    /// </summary>
+    [Example(@"(199\d)")]
+    [StepProperty(4)]
+    [RubyArgument("valueRegexArg", 4)]
+    [DefaultValueExplanation("All values will be returned")]
+    [Alias("ValueFilter")]
+    public IStep<StringStream>? ValueRegex { get; set; }
+}
 
-        /// <summary>
-        /// An optional regex to check the value.
-        /// If this is set, only values which match this regex will be returned, and only the contents of the first capture group.
-        /// </summary>
-        [Example(@"(199\d)")]
-        [StepProperty(4)]
-        [RubyArgument("valueRegexArg", 4)]
-        [DefaultValueExplanation("All values will be returned")]
-        [Alias("ValueFilter")]
-        public IStep<StringStream>? ValueRegex { get; set; }
-    }
 }

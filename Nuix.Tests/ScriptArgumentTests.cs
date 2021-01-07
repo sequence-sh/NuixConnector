@@ -50,7 +50,6 @@
 
 //                });
 
-
 //                yield return new ScriptArgumentTestCase("If Then", new Conditional
 //                {
 //                    Condition = new Constant<bool>(true),
@@ -84,7 +83,6 @@
 //            }
 //        }
 
-
 //        private sealed class ScriptArgumentTestCase : ITestBaseCase
 //        {
 //            public ScriptArgumentTestCase(string name, IStep step)
@@ -94,7 +92,6 @@
 //            }
 
 //            public IStep RubyBlockStep { get; }
-
 
 //            /// <inheritdoc />
 //            public string Name { get; }
@@ -115,7 +112,6 @@
 
 //                var args = argsResult.Value.ToList();
 
-
 //                var allArguments = new List<string>();
 
 //                for (var i = 0; i < argsResult.Value.Count; i+=2)
@@ -135,9 +131,7 @@
 //                var optParseArguments = ArgRegex.Matches(optParseLines.StringBuilder.ToString())
 //                    .Select(x => x.Value).Distinct().ToList();
 
-
 //                optParseArguments.Should().Contain(allArguments);//There may be opt parse lines that do not map to particular arguments
-
 
 //                var blockLines = new IndentationStringBuilder(new StringBuilder(), 0);
 
@@ -164,3 +158,5 @@
 //        }
 //    }
 //}
+
+

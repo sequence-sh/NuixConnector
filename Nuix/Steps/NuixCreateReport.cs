@@ -8,38 +8,37 @@ using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
+
+/// <summary>
+/// Creates a report for a Nuix case.
+/// The report is in csv format.
+/// The headers are 'Custodian', 'Type', 'Value', and 'Count'.
+/// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
+/// Use this inside a WriteFile step to write it to a file.
+/// </summary>
+public sealed class
+    NuixCreateReportStepFactory : RubyScriptStepFactory<NuixCreateReport, StringStream>
+{
+    private NuixCreateReportStepFactory() { }
+
     /// <summary>
-    /// Creates a report for a Nuix case.
-    /// The report is in csv format.
-    /// The headers are 'Custodian', 'Type', 'Value', and 'Count'.
-    /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
-    /// Use this inside a WriteFile step to write it to a file.
+    /// The instance.
     /// </summary>
-    public sealed class NuixCreateReportStepFactory : RubyScriptStepFactory<NuixCreateReport, StringStream>
-    {
-        private NuixCreateReportStepFactory() { }
+    public static RubyScriptStepFactory<NuixCreateReport, StringStream> Instance { get; } =
+        new NuixCreateReportStepFactory();
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static RubyScriptStepFactory<NuixCreateReport, StringStream> Instance { get; } =
-            new NuixCreateReportStepFactory();
+    /// <inheritdoc />
+    public override Version RequiredNuixVersion { get; } = new(6, 2);
 
-        /// <inheritdoc />
-        public override Version RequiredNuixVersion { get; } = new (6, 2);
+    /// <inheritdoc />
+    public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
+        new List<NuixFeature>() { NuixFeature.ANALYSIS };
 
-        /// <inheritdoc />
-        public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } = new List<NuixFeature>()
-        {
-            NuixFeature.ANALYSIS
-        };
+    /// <inheritdoc />
+    public override string FunctionName => "CreateReport";
 
-        /// <inheritdoc />
-        public override string FunctionName => "CreateReport";
-
-        /// <inheritdoc />
-        public override string RubyFunctionText =>
-            @"
+    /// <inheritdoc />
+    public override string RubyFunctionText => @"
     the_case = $utilities.case_factory.open(casePathArg)
 
     log ""Generating Report:""
@@ -104,29 +103,30 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 
     the_case.close
     return text;";
-    }
+}
+
+/// <summary>
+/// Creates a report for a Nuix case.
+/// The report is in csv format.
+/// The headers are 'Custodian', 'Type', 'Value', and 'Count'.
+/// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
+/// Use this inside a WriteFile step to write it to a file.
+/// </summary>
+public sealed class NuixCreateReport : RubyScriptStepBase<StringStream>
+{
+    /// <inheritdoc />
+    public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
+        NuixCreateReportStepFactory.Instance;
 
     /// <summary>
-    /// Creates a report for a Nuix case.
-    /// The report is in csv format.
-    /// The headers are 'Custodian', 'Type', 'Value', and 'Count'.
-    /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
-    /// Use this inside a WriteFile step to write it to a file.
+    /// The path to the case.
     /// </summary>
-    public sealed class NuixCreateReport : RubyScriptStepBase<StringStream>
-    {
-        /// <inheritdoc />
-        public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
-            NuixCreateReportStepFactory.Instance;
+    [Required]
+    [StepProperty(1)]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument("casePathArg", 1)]
+    [Alias("Case")]
+    public IStep<StringStream> CasePath { get; set; } = null!;
+}
 
-        /// <summary>
-        /// The path to the case.
-        /// </summary>
-        [Required]
-        [StepProperty(1)]
-        [Example("C:/Cases/MyCase")]
-        [RubyArgument("casePathArg", 1)]
-        [Alias("Case")]
-        public IStep<StringStream> CasePath { get; set; } = null!;
-    }
 }
