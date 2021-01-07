@@ -54,10 +54,7 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                             },
                             FunctionDefinition = ""
                         },
-                        new ConnectionOutput
-                        {
-                            Result = new ConnectionOutputResult { Data = null }
-                        }
+                        new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
                     )
                 }
             ).WithSettings(UnitTestSettings);

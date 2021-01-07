@@ -92,9 +92,7 @@ public class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordance, Unit
                                 Command = "AddConcordanceToCase",
                                 Arguments = new Dictionary<string, object>
                                 {
-                                    {
-                                        nameof(NuixAddConcordance.CasePath), CasePathString
-                                    },
+                                    { nameof(NuixAddConcordance.CasePath), CasePathString },
                                     { nameof(NuixAddConcordance.FolderName), newFolder },
                                     { nameof(NuixAddConcordance.Custodian), custodian },
                                     {

@@ -40,8 +40,7 @@ public class NuixAssertPrintPreviewStateTests : NuixStepTestBase<NuixAssertPrint
                             Arguments = new Dictionary<string, object>
                             {
                                 {
-                                    nameof(NuixAssertPrintPreviewState.CasePath),
-                                    CasePathString
+                                    nameof(NuixAssertPrintPreviewState.CasePath), CasePathString
                                 },
                                 {
                                     nameof(NuixAssertPrintPreviewState.ProductionSetName),
@@ -53,10 +52,7 @@ public class NuixAssertPrintPreviewStateTests : NuixStepTestBase<NuixAssertPrint
                                 }
                             }
                         },
-                        new ConnectionOutput
-                        {
-                            Result = new ConnectionOutputResult { Data = null }
-                        }
+                        new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
                     )
                 }
             ).WithSettings(UnitTestSettings);
