@@ -7,7 +7,6 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -183,16 +182,18 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     {
         if (ProductionProfileName != null && ProductionProfilePath != null)
             return new SingleError(
-                $"Only one of {nameof(ProductionProfileName)} and {nameof(ProductionProfilePath)} may be set.",
+                new StepErrorLocation(this),
                 ErrorCode.ConflictingParameters,
-                new StepErrorLocation(this)
+                nameof(ProductionProfileName),
+                nameof(ProductionProfilePath)
             );
 
         if (ProductionProfileName == null && ProductionProfilePath == null)
             return new SingleError(
-                $"Either {nameof(ProductionProfileName)} or {nameof(ProductionProfilePath)} must be set.",
+                new StepErrorLocation(this),
                 ErrorCode.MissingParameter,
-                new StepErrorLocation(this)
+                nameof(ProductionProfileName),
+                nameof(ProductionProfilePath)
             );
 
         return base.VerifyThis(settings);

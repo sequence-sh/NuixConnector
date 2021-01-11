@@ -7,7 +7,6 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Parser;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -26,7 +25,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     public string FunctionName => RubyScriptStepFactory.RubyFunction.FunctionName;
 
     /// <inheritdoc />
-    public override Task<Result<T, IError>> Run(
+    protected override Task<Result<T, IError>> Run(
         IStateMonad stateMonad,
         CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
 
@@ -55,7 +54,8 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
         );
 
         if (runResult.IsFailure &&
-            runResult.Error.GetErrorBuilders().Any(x => x.Exception is ChannelClosedException))
+            runResult.Error.GetErrorBuilders()
+                .Any(x => x.Data.TryPickT0(out var e, out _) && e is ChannelClosedException))
         {
             //The channel has closed on us. Try reopening it and rerunning the function
 
@@ -124,7 +124,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
             {
                 if (!argument.IsOptional)
                     errors.Add(
-                        ErrorHelper.MissingParameterError(argument.PropertyName, Name)
+                        ErrorHelper.MissingParameterError(argument.PropertyName)
                             .WithLocation(this)
                     );
             }

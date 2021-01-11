@@ -10,7 +10,6 @@ using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Parser;
 using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -23,7 +22,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 public class NuixRunScript : CompoundStep<StringStream>
 {
     /// <inheritdoc />
-    public override async Task<Result<StringStream, IError>> Run(
+    protected override async Task<Result<StringStream, IError>> Run(
         IStateMonad stateMonad,
         CancellationToken cancellationToken)
     {
@@ -111,7 +110,7 @@ public class NuixRunScript : CompoundStep<StringStream>
 
         static object? GetObject(EntityValue ev)
         {
-            return ev.Value.Match(
+            return ev.Match(
                 _ => null as object,
                 x => x,
                 x => x,

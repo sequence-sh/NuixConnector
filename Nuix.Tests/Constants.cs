@@ -8,7 +8,7 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.Enums;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Parser;
+
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 

@@ -168,14 +168,14 @@ public class NuixSettings : INuixSettings
         {
             if (requirement.MinVersion != null && requirement.MinVersion > NuixVersion)
                 return new ErrorBuilder(
-                    $"Required Nuix Version >= {requirement.MinVersion} but had {NuixVersion}",
-                    ErrorCode.RequirementsNotMet
+                    ErrorCode.RequirementNotMet,
+                    $"Required Nuix Version >= {requirement.MinVersion}"
                 );
 
             if (requirement.MaxVersion != null && requirement.MaxVersion < NuixVersion)
                 return new ErrorBuilder(
-                    $"Required Nuix Version <= {requirement.MaxVersion} but had {NuixVersion}",
-                    ErrorCode.RequirementsNotMet
+                    ErrorCode.RequirementNotMet,
+                    $"Required Nuix Version <= {requirement.MaxVersion}"
                 );
 
             return Unit.Default;
@@ -190,7 +190,7 @@ public class NuixSettings : INuixSettings
          && NuixFeatures.Contains(nuixFeature))
             return Unit.Default;
 
-        return new ErrorBuilder($"{feature} missing", ErrorCode.RequirementsNotMet);
+        return new ErrorBuilder(ErrorCode.RequirementNotMet, $"{feature} missing");
     }
 }
 

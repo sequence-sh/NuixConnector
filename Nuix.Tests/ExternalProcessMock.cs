@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.ExternalProcesses;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
@@ -88,8 +87,8 @@ internal class ExternalProcessMock : IExternalProcessRunner
         {
             if (!processPath.Equals(ProcessPath))
                 return new ErrorBuilder(
-                    $"Could not start '{processPath}'",
-                    ErrorCode.ExternalProcessError
+                    ErrorCode.ExternalProcessError,
+                    $"Could not start '{processPath}'"
                 );
         }
 

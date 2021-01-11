@@ -48,7 +48,7 @@ public class ConnectionOutputLog
             "error" => LogSeverity.Error,
             "fatal" => LogSeverity.Critical,
             "debug" => LogSeverity.Debug,
-            _       => new ErrorBuilder($"Could not parse {Severity}", ErrorCode.CouldNotParse),
+            _       => new ErrorBuilder(ErrorCode.CouldNotParse, Severity, nameof(LogSeverity)),
         };
     }
 }

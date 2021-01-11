@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Parser;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Steps;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;

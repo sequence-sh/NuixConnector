@@ -51,13 +51,13 @@ public class ConnectionOutput
 
         if (count > 1)
             return new ErrorBuilder(
-                $"{nameof(ConnectionOutput)} can only have one property set",
-                ErrorCode.ExternalProcessError
+                ErrorCode.ExternalProcessError,
+                $"{nameof(ConnectionOutput)} can only have one property set"
             );
 
         return new ErrorBuilder(
-            $"{nameof(ConnectionOutput)} must have at least one property set",
-            ErrorCode.ExternalProcessMissingOutput
+            ErrorCode.ExternalProcessError,
+            $"{nameof(ConnectionOutput)} must have at least one property set"
         );
     }
 }

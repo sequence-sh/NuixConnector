@@ -7,7 +7,6 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -128,9 +127,10 @@ public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
     {
         if (OCRProfileName != null && OCRProfilePath != null)
             return new SingleError(
-                $"Only one of {nameof(OCRProfileName)} and {nameof(OCRProfilePath)} may be set.",
+                new StepErrorLocation(this),
                 ErrorCode.ConflictingParameters,
-                new StepErrorLocation(this)
+                nameof(OCRProfileName),
+                nameof(OCRProfilePath)
             );
 
         return base.VerifyThis(settings);
