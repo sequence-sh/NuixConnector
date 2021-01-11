@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using MELT;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -12,7 +13,6 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
@@ -23,10 +23,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 
 public static class NuixConnectionTestsHelper
 {
-    public static IStateMonad GetStateMonad(IExternalProcessRunner externalProcessRunner) =>
-        GetStateMonad(externalProcessRunner, FileSystemHelper.Instance);
+    public static IStateMonad GetStateMonad(
+        IExternalProcessRunner externalProcessRunner,
+        ITestLoggerFactory testLoggerFactory) => GetStateMonad(
+        testLoggerFactory,
+        externalProcessRunner,
+        FileSystemHelper.Instance
+    );
 
     public static IStateMonad GetStateMonad(
+        ITestLoggerFactory testLoggerFactory,
         IExternalProcessRunner externalProcessRunner,
         IFileSystemHelper fileSystemHelper)
     {
@@ -40,7 +46,7 @@ public static class NuixConnectionTestsHelper
         var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
 
         var monad = new StateMonad(
-            new TestLogger(),
+            testLoggerFactory.CreateLogger("Test"),
             nuixSettings,
             externalProcessRunner,
             fileSystemHelper,
@@ -73,14 +79,16 @@ public static class NuixConnectionTestsHelper
         return connection;
     }
 
-    public static IStateMonad GetStateMonadWithConnection() =>
-        GetStateMonadWithConnection(GetCreateCaseAction());
+    public static IStateMonad GetStateMonadWithConnection(ITestLoggerFactory loggerFactory) =>
+        GetStateMonadWithConnection(loggerFactory, GetCreateCaseAction());
 
-    public static IStateMonad GetStateMonadWithConnection(params ExternalProcessAction[] actions)
+    public static IStateMonad GetStateMonadWithConnection(
+        ITestLoggerFactory loggerFactory,
+        params ExternalProcessAction[] actions)
     {
         var fakeExternalProcess = new ExternalProcessMock(2, actions);
 
-        IStateMonad state = GetStateMonad(fakeExternalProcess);
+        IStateMonad state = GetStateMonad(fakeExternalProcess, loggerFactory);
 
         var nuixSettings = state.GetSettings<INuixSettings>();
 
@@ -107,7 +115,7 @@ public static class NuixConnectionTestsHelper
 
     public static ExternalProcessAction GetCreateCaseAction()
     {
-        return new ExternalProcessAction(
+        return new(
             new ConnectionCommand
             {
                 Command            = "CreateCase",
@@ -125,11 +133,11 @@ public static class NuixConnectionTestsHelper
 
     public static ExternalProcessAction GetDoneAction()
     {
-        return new ExternalProcessAction(
+        return new(
             new ConnectionCommand { Command = "done" },
             new ConnectionOutput
             {
-                Log = new ConnectionOutputLog()
+                Log = new ConnectionOutputLog
                 {
                     Message    = "Finished",
                     Severity   = "info",
@@ -146,7 +154,8 @@ public class NuixConnectionHelperTests
     [Fact]
     public void GetOrCreateNuixConnection_WhenConnectionExists_ReturnsConnection()
     {
-        var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
+        var loggerFactory = TestLoggerFactory.Create();
+        var state         = NuixConnectionTestsHelper.GetStateMonadWithConnection(loggerFactory);
 
         var expected = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
@@ -159,7 +168,8 @@ public class NuixConnectionHelperTests
     [Fact]
     public void GetOrCreateNuixConnection_WhenReopenIsSet_DisposesOldConnection()
     {
-        var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
+        var loggerFactory = TestLoggerFactory.Create();
+        var state         = NuixConnectionTestsHelper.GetStateMonadWithConnection(loggerFactory);
 
         var originalConnection =
             state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
@@ -176,7 +186,8 @@ public class NuixConnectionHelperTests
     [Fact]
     public void GetOrCreateNuixConnection_WhenConnectionAlreadyDisposed_LogsMessage()
     {
-        var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
+        var loggerFactory = TestLoggerFactory.Create();
+        var state         = NuixConnectionTestsHelper.GetStateMonadWithConnection(loggerFactory);
 
         var originalConnection =
             state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
@@ -188,13 +199,9 @@ public class NuixConnectionHelperTests
         Assert.True(originalConnection.IsSuccess);
         Assert.True(createConnection.IsSuccess);
 
-        var logger = state.Logger as TestLogger;
-
-        logger!.LoggedValues.Should()
-            .Contain(
-                s =>
-                    s.ToString()!.Equals("Connection already disposed.")
-            );
+        loggerFactory.Sink.LogEntries
+            .Should()
+            .Contain(x => x.Message != null && x.Message.Equals("Connection already disposed."));
     }
 
     [Fact]
@@ -206,14 +213,17 @@ public class NuixConnectionHelperTests
                 ProcessPath = "WrongPath", ValidateArguments = false
             };
 
-        IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess);
+        var loggerFactory = TestLoggerFactory.Create();
+
+        IStateMonad state =
+            NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess, loggerFactory);
 
         var createConnection = state.GetOrCreateNuixConnection(true);
 
         Assert.True(createConnection.IsFailure);
 
         Assert.Equal(
-            $"Could not start '{Constants.NuixSettingsList.First().NuixExeConsolePath}'",
+            $"External Process Failed: 'Could not start '{Constants.NuixSettingsList.First().NuixExeConsolePath}''",
             createConnection.Error.AsString
         );
     }
@@ -226,7 +236,10 @@ public class NuixConnectionHelperTests
             NuixConnectionTestsHelper.GetCreateCaseAction()
         );
 
-        IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess);
+        IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(
+            fakeExternalProcess,
+            TestLoggerFactory.Create()
+        );
 
         var ct = new CancellationToken();
 
@@ -239,8 +252,10 @@ public class NuixConnectionHelperTests
     [Fact]
     public async Task CloseNuixConnectionAsync_WhenConnectionExists_ClosesConnection()
     {
-        var state = NuixConnectionTestsHelper.GetStateMonadWithConnection();
-        var ct    = new CancellationToken();
+        var state =
+            NuixConnectionTestsHelper.GetStateMonadWithConnection(TestLoggerFactory.Create());
+
+        var ct = new CancellationToken();
 
         var actual     = await state.CloseNuixConnectionAsync(ct);
         var connection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
@@ -254,6 +269,7 @@ public class NuixConnectionHelperTests
     public async Task CloseNuixConnectionAsync_ErrorOnClose_ReturnsError()
     {
         var state = NuixConnectionTestsHelper.GetStateMonadWithConnection(
+            TestLoggerFactory.Create(),
             NuixConnectionTestsHelper.GetDoneAction()
         );
 
@@ -287,6 +303,7 @@ public class NuixConnectionHelperTests
             Mock.Of<IFileSystemHelper>(f => f.DoesFileExist(It.IsAny<string>()) == false);
 
         IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(
+            TestLoggerFactory.Create(),
             fakeExternalProcess,
             fakeFileSystemHelper
         );
@@ -294,7 +311,7 @@ public class NuixConnectionHelperTests
         var connection = state.GetOrCreateNuixConnection(false);
 
         Assert.True(connection.IsFailure);
-        Assert.Matches("Missing NUIX connector script", connection.Error.AsString);
+        Assert.Matches("Could not find.+edr-nuix-connector.rb'", connection.Error.AsString);
     }
 }
 
@@ -311,13 +328,15 @@ public class NuixConnectionTests
             NuixConnectionTestsHelper.GetCreateCaseAction()
         );
 
-        var state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess);
+        var logFactory = TestLoggerFactory.Create();
+
+        var state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess, logFactory);
         var ct    = new CancellationToken();
 
         await nuixConnection.SendDoneCommand(state, ct);
 
-        var logger = state.Logger as TestLogger;
-        logger!.LoggedValues.Should().Contain(s => s.ToString()!.Equals("Finished"));
+        logFactory.Sink.LogEntries.Should()
+            .Contain(x => x.Message != null && x.Message.Equals("Finished"));
     }
 
     [Fact]
@@ -325,14 +344,18 @@ public class NuixConnectionTests
     {
         var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(null);
 
-        var logger = new TestLogger();
-        var ct     = new CancellationToken();
+        var ct = new CancellationToken();
 
         nuixConnection.Dispose();
 
         await Assert.ThrowsAsync<ObjectDisposedException>(
             () =>
-                nuixConnection.RunFunctionAsync<Unit>(logger, null, null, ct)
+                nuixConnection.RunFunctionAsync<Unit>(
+                    TestLoggerFactory.Create().CreateLogger("Test"),
+                    null,
+                    null,
+                    ct
+                )
         );
     }
 
@@ -341,7 +364,7 @@ public class NuixConnectionTests
     {
         var action         = NuixConnectionTestsHelper.GetDoneAction();
         var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = new TestLogger();
+        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
         var ct             = new CancellationToken();
 
         var stream1 = new List<Entity>().ToAsyncEnumerable().ToSequence();
@@ -367,7 +390,7 @@ public class NuixConnectionTests
         Assert.True(result.IsFailure);
 
         Assert.Equal(
-            "Cannot have two entity stream parameters to a nuix function",
+            "A nuix function cannot have more than one Entity Array parameter.",
             result.Error.AsString
         );
     }
@@ -386,7 +409,7 @@ public class NuixConnectionTests
         );
 
         var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = new TestLogger();
+        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
         var ct             = new CancellationToken();
 
         var entities = new List<Entity>
@@ -436,7 +459,7 @@ public class NuixConnectionTests
         );
 
         var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = new TestLogger();
+        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
         var ct             = new CancellationToken();
 
         var dict = new Dictionary<RubyFunctionParameter, object>()
@@ -461,7 +484,7 @@ public class NuixConnectionTests
         result.ShouldBeFailure();
 
         Assert.Equal(
-            $"{nameof(ConnectionOutput)} must have at least one property set",
+            $"External Process Failed: '{nameof(ConnectionOutput)} must have at least one property set'",
             result.Error.AsString
         );
     }
@@ -488,7 +511,7 @@ public class NuixConnectionTests
         );
 
         var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = new TestLogger();
+        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
         var ct             = new CancellationToken();
 
         var dict = new Dictionary<RubyFunctionParameter, object>()
@@ -513,7 +536,7 @@ public class NuixConnectionTests
         Assert.True(result.IsFailure);
 
         Assert.Equal(
-            $"{nameof(ConnectionOutput)} can only have one property set",
+            $"External Process Failed: '{nameof(ConnectionOutput)} can only have one property set'",
             result.Error.AsString
         );
     }

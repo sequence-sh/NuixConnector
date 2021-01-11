@@ -9,9 +9,7 @@ using Newtonsoft.Json.Linq;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Entities;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Parser;
 using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -193,7 +191,7 @@ public static class JsonConverters
 
             static object? GetObject(EntityValue ev)
             {
-                return ev.Value.Match(
+                return ev.Match(
                     _ => null as object,
                     x => x,
                     x => x,

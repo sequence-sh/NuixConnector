@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Channels;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.ExternalProcesses;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;

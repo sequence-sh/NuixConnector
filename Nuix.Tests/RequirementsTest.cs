@@ -15,16 +15,16 @@ public class RequirementsTest
     public static readonly TheoryData<(string? expectedError, NuixSettings settings)> TestCases =
         new TheoryData<(string? expectedError, NuixSettings settings)>
         {
-            ("Required Nuix Version >= 5.0 but had 1.0",
+            ("Requirement 'Required Nuix Version >= 5.0' not met.",
              new NuixSettings(
                  true,
                  "abcd",
                  new Version(1, 0),
                  new List<NuixFeature> { NuixFeature.ANALYSIS }
              )),
-            ("ANALYSIS missing",
+            ("Requirement 'ANALYSIS' not met.",
              new NuixSettings(true, "abcd", new Version(8, 0), new List<NuixFeature>())),
-            ("Required Nuix Version >= 5.0 but had 1.0; ANALYSIS missing",
+            ("Requirement 'Required Nuix Version >= 5.0' not met.; Requirement 'ANALYSIS' not met.",
              new NuixSettings(true, "abcd", new Version(1, 0), new List<NuixFeature>())),
             (null,
              new NuixSettings(

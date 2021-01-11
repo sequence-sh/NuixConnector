@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
@@ -48,7 +47,7 @@ public class ConnectionOutputLog
             "error" => LogSeverity.Error,
             "fatal" => LogSeverity.Critical,
             "debug" => LogSeverity.Debug,
-            _       => new ErrorBuilder($"Could not parse {Severity}", ErrorCode.CouldNotParse),
+            _       => new ErrorBuilder(ErrorCode.CouldNotParse, Severity, nameof(LogSeverity)),
         };
     }
 }

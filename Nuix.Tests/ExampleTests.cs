@@ -9,6 +9,7 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
@@ -42,7 +43,7 @@ public class ExampleTests
 
         var logger = new Microsoft.Extensions.Logging.Xunit.XunitLogger(TestOutputHelper, "Test");
 
-        var stepResult = Core.Parser.SCLParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(sfs));
+        var stepResult = SCLParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(sfs));
 
         if (stepResult.IsFailure)
             errorAction.Invoke(stepResult);

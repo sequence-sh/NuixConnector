@@ -18,7 +18,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 public sealed class NuixCloseConnection : CompoundStep<Unit>
 {
     /// <inheritdoc />
-    public override async Task<Result<Unit, IError>> Run(
+    protected override async Task<Result<Unit, IError>> Run(
         IStateMonad stateMonad,
         CancellationToken cancellationToken)
     {

@@ -35,7 +35,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                 },
                 new List<ExternalProcessAction>
                 {
-                    new ExternalProcessAction(
+                    new(
                         new ConnectionCommand
                         {
                             Command            = "CreateCase",
@@ -51,7 +51,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                         },
                         new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
                     ),
-                    new ExternalProcessAction(
+                    new(
                         new ConnectionCommand
                         {
                             Command            = "AddToCase",
@@ -85,18 +85,9 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                     new ErrorBuilderList(
                         new List<ErrorBuilder>
                         {
-                            new ErrorBuilder(
-                                "Missing Parameter 'CasePath' in 'NuixCreateCase'",
-                                ErrorCode.MissingParameter
-                            ),
-                            new ErrorBuilder(
-                                "Missing Parameter 'CaseName' in 'NuixCreateCase'",
-                                ErrorCode.MissingParameter
-                            ),
-                            new ErrorBuilder(
-                                "Missing Parameter 'Investigator' in 'NuixCreateCase'",
-                                ErrorCode.MissingParameter
-                            ),
+                            new(ErrorCode.MissingParameter, "CasePath"),
+                            new(ErrorCode.MissingParameter, "CaseName"),
+                            new(ErrorCode.MissingParameter, "Investigator"),
                         }
                     )
                 )
@@ -110,10 +101,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                     CaseName     = Constant("Error Case"),
                     Investigator = Constant("investigator")
                 },
-                new ErrorBuilder(
-                    "Could not cast 'Reductech.EDR.Core.EmptySettings' to INuixSettings",
-                    ErrorCode.MissingStepSettings
-                )
+                new ErrorBuilder(ErrorCode.MissingStepSettings, "INuixSettings")
             );
         }
     }
@@ -138,7 +126,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                     Unit.Default,
                     new List<ExternalProcessAction>
                     {
-                        new ExternalProcessAction(
+                        new(
                             new ConnectionCommand
                             {
                                 Command = "CreateCase",
@@ -154,7 +142,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                                 Result = new ConnectionOutputResult { Data = null }
                             }
                         ),
-                        new ExternalProcessAction(
+                        new(
                             new ConnectionCommand
                             {
                                 Command = "AddToCase",

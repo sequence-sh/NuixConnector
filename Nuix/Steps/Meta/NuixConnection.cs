@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -10,12 +9,12 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Reductech.EDR.Connectors.Nuix.Errors;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Parser;
 using Reductech.EDR.Core.Util;
 using Entity = Reductech.EDR.Core.Entity;
 
@@ -80,10 +79,7 @@ public static class NuixConnectionHelper
         var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
 
         if (!stateMonad.FileSystemHelper.DoesFileExist(scriptPath))
-            return new ErrorBuilder(
-                $"Missing NUIX connector script {scriptPath}",
-                ErrorCode.ExternalProcessNotFound
-            );
+            return new ErrorBuilder(ErrorCode.ExternalProcessNotFound, scriptPath);
 
         arguments.Add(scriptPath);
 
@@ -102,11 +98,7 @@ public static class NuixConnectionHelper
 
         if (setResult.IsFailure)
             return setResult.ConvertFailure<NuixConnection>()
-                .MapError(
-                    e => ErrorBuilderList.Combine(
-                        e.GetAllErrors().Select(x => new ErrorBuilder(x.Message, x.ErrorCode))
-                    )
-                );
+                .MapError(x => x.ToErrorBuilder);
 
         return connection;
     }
@@ -217,10 +209,7 @@ public sealed class NuixConnection : IDisposable
                     if (value is Array<Entity> sStream)
                     {
                         if (entityStream != null)
-                            return new ErrorBuilder(
-                                "Cannot have two entity stream parameters to a nuix function",
-                                ErrorCode.ExternalProcessError
-                            );
+                            return new ErrorBuilder(ErrorCode_Nuix.TooManyEntityStreams);
 
                         entityStream     = sStream;
                         command.IsStream = true;
@@ -256,8 +245,8 @@ public sealed class NuixConnection : IDisposable
                     return entities.ConvertFailure<T>()
                         .MapError(
                             x => new ErrorBuilder(
-                                x.AsString,
-                                ErrorCode.ExternalProcessError
+                                ErrorCode.ExternalProcessError,
+                                x.AsString
                             ) as IErrorBuilder
                         );
                 }
@@ -308,8 +297,8 @@ public sealed class NuixConnection : IDisposable
             catch (ChannelClosedException e)
             {
                 return new ErrorBuilder(
-                    $"{e.Message} - there may have been an authentication error.",
-                    ErrorCode.ExternalProcessError
+                    ErrorCode.ExternalProcessError,
+                    $"{e.Message} - there may have been an authentication error."
                 );
             }
 
@@ -323,10 +312,13 @@ public sealed class NuixConnection : IDisposable
                         JsonConverters.All
                     )!;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                var parentException = new Exception($"Could not deserialize '{jsonString}'", e);
-                return new ErrorBuilder(parentException, ErrorCode.CouldNotDeserialize);
+                return new ErrorBuilder(
+                    ErrorCode.CouldNotParse,
+                    jsonString,
+                    nameof(ConnectionOutput)
+                );
             }
 
             var valid = connectionOutput.Validate();
@@ -336,16 +328,16 @@ public sealed class NuixConnection : IDisposable
 
             if (connectionOutput.Error != null)
                 return new ErrorBuilder(
-                    connectionOutput.Error.Message,
-                    ErrorCode.ExternalProcessError
+                    ErrorCode.ExternalProcessError,
+                    connectionOutput.Error.Message
                 );
 
             if (connectionOutput.Log != null)
             {
                 if (source == StreamSource.Error)
                     return new ErrorBuilder(
-                        connectionOutput.Log.Message,
-                        ErrorCode.ExternalProcessError
+                        ErrorCode.ExternalProcessError,
+                        connectionOutput.Log.Message
                     );
 
                 var severity = connectionOutput.Log.TryGetSeverity();
@@ -353,7 +345,7 @@ public sealed class NuixConnection : IDisposable
                 if (severity.IsFailure)
                     return severity.ConvertFailure<T>();
 
-                switch (severity.Value)
+                switch (severity.Value) //TODO replace with enumerated log messages
                 {
                     case LogSeverity.Trace:
                         logger.LogTrace(connectionOutput.Log.Message);
@@ -404,13 +396,14 @@ public sealed class NuixConnection : IDisposable
                     return tConverted;
 
                 return new ErrorBuilder(
-                    $"Could not deserialize '{connectionOutput.Result.Data}' to {typeof(T).Name}",
-                    ErrorCode.CouldNotDeserialize
+                    ErrorCode.CouldNotParse,
+                    connectionOutput.Result.Data,
+                    typeof(T).Name
                 );
             }
         }
 
-        return new ErrorBuilder("Process was cancelled", ErrorCode.ExternalProcessError);
+        return new ErrorBuilder(ErrorCode.ExternalProcessError, "Process was cancelled");
     }
 
     private readonly HashSet<string> _evaluatedFunctions = new();
