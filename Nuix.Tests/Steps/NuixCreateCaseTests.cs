@@ -35,7 +35,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                 },
                 new List<ExternalProcessAction>
                 {
-                    new ExternalProcessAction(
+                    new(
                         new ConnectionCommand
                         {
                             Command            = "CreateCase",
@@ -51,7 +51,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                         },
                         new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
                     ),
-                    new ExternalProcessAction(
+                    new(
                         new ConnectionCommand
                         {
                             Command            = "AddToCase",
@@ -85,7 +85,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                     new ErrorBuilderList(
                         new List<ErrorBuilder>
                         {
-                            new(ErrorCode.MissingParameter, CasePath),
+                            new(ErrorCode.MissingParameter, "CasePath"),
                             new(ErrorCode.MissingParameter, "CaseName"),
                             new(ErrorCode.MissingParameter, "Investigator"),
                         }
@@ -126,7 +126,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                     Unit.Default,
                     new List<ExternalProcessAction>
                     {
-                        new ExternalProcessAction(
+                        new(
                             new ConnectionCommand
                             {
                                 Command = "CreateCase",
@@ -142,7 +142,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                                 Result = new ConnectionOutputResult { Data = null }
                             }
                         ),
-                        new ExternalProcessAction(
+                        new(
                             new ConnectionCommand
                             {
                                 Command = "AddToCase",

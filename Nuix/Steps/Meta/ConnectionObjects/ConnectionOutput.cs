@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
