@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -37,9 +37,8 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
 
-    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+    productionSet = currentCase.findProductionSetByName(productionSetNameArg)
 
     if productionSet == nil
         log ""Could not find production set with name '#{productionSetNameArg.to_s}'""
@@ -53,9 +52,7 @@ public sealed class
         batchExporter.exportItems(productionSet)
         log 'Export complete.'
 
-    end
-
-    the_case.close";
+    end";
 }
 
 /// <summary>
@@ -68,22 +65,11 @@ public sealed class NuixExportConcordance : RubyScriptStepBase<Unit>
         NuixExportConcordanceStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// Where to export the Concordance to.
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("exportPathArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("exportPathArg", 1)]
     [Alias("ToDirectory")]
     public IStep<StringStream> ExportPath { get; set; } = null!;
 
@@ -91,8 +77,8 @@ public sealed class NuixExportConcordance : RubyScriptStepBase<Unit>
     /// The name of the production set to export.
     /// </summary>
     [Required]
-    [StepProperty(3)]
-    [RubyArgument("productionSetNameArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("productionSetNameArg", 2)]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 }

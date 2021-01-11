@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
@@ -40,8 +40,7 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 
     ds = args[""datastream""]
 
-    the_case = $utilities.case_factory.open(pathArg)
-    processor = the_case.create_processor
+    processor = currentCase.create_processor
 
     #Read special mime type settings from data stream
     if ds != nil
@@ -125,8 +124,7 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 
     log 'Adding items'
     processor.process
-    log 'Items added'
-    the_case.close";
+    log 'Items added'";
 }
 
 /// <summary>
@@ -141,22 +139,12 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
         NuixAddItemStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The path of the file or directory to add to the case.
     /// </summary>
     [Required]
-    [StepProperty(4)]
+    [StepProperty(1)]
     [Example("C:/Data/File.txt")]
-    [RubyArgument("filePathsArgs", 4)]
+    [RubyArgument("filePathsArgs", 1)]
     [Alias("Directories")]
     [Alias("Files")]
     public IStep<Array<StringStream>> Paths { get; set; } = null!;
@@ -182,8 +170,8 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// <summary>
     /// The description of the new folder.
     /// </summary>
-    [StepProperty(5)]
-    [RubyArgument("folderDescriptionArg", 5)]
+    [StepProperty(4)]
+    [RubyArgument("folderDescriptionArg", 4)]
     [DefaultValueExplanation("No Description")]
     public IStep<StringStream>? Description { get; set; }
 
@@ -191,10 +179,10 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// The name of the Processing profile to use.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(6)]
+    [StepProperty(5)]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("processingProfileNameArg", 6)]
+    [RubyArgument("processingProfileNameArg", 5)]
     [Alias("UsingProfile")]
     public IStep<StringStream>? ProcessingProfileName { get; set; }
 
@@ -202,10 +190,10 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// The path to the Processing profile to use
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(7)]
+    [StepProperty(6)]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("processingProfilePathArg", 7)]
+    [RubyArgument("processingProfilePathArg", 6)]
     [Alias("UsingProfilePath")]
     public IStep<StringStream>? ProcessingProfilePath { get; set; }
 
@@ -213,9 +201,9 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// Sets the processing settings to use.
     /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
     /// </summary>
-    [StepProperty(8)]
+    [StepProperty(7)]
     [DefaultValueExplanation("Processing settings will not be changed")]
-    [RubyArgument("processingSettingsArg", 8)]
+    [RubyArgument("processingSettingsArg", 7)]
     [Alias("Settings")]
     public IStep<Core.Entity>? ProcessingSettings { get; set; }
 
@@ -223,9 +211,9 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// Sets the parallel processing settings to use.
     /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
     /// </summary>
-    [StepProperty(9)]
+    [StepProperty(8)]
     [DefaultValueExplanation("Parallel processing settings will not be changed")]
-    [RubyArgument("parallelProcessingSettingsArg", 9)]
+    [RubyArgument("parallelProcessingSettingsArg", 8)]
     public IStep<Core.Entity>? ParallelProcessingSettings { get; set; }
 
     /// <summary>

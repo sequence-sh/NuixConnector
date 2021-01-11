@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -36,9 +36,7 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
-
-    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+    productionSet = currentCase.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
         log ""Production Set Not Found""
@@ -50,9 +48,7 @@ public sealed class
         resultMap = productionSet.generatePrintPreviews(options)
 
         log ""Print previews generated""
-    end
-
-    the_case.close";
+    end";
 }
 
 /// <summary>
@@ -65,22 +61,11 @@ public sealed class NuixGeneratePrintPreviews : RubyScriptStepBase<Unit>
         NuixGeneratePrintPreviewsStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The production set to generate print previews for.
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("productionSetNameArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("productionSetNameArg", 1)]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 }

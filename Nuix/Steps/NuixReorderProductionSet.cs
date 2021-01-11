@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Enums;
@@ -37,9 +37,7 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
-
-    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+    productionSet = currentCase.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
         log ""Production Set Not Found""
@@ -53,9 +51,7 @@ public sealed class
 
         resultMap = productionSet.renumber(options)
         log resultMap
-    end
-
-    the_case.close";
+    end";
 }
 
 /// <summary>
@@ -69,30 +65,20 @@ public sealed class NuixReorderProductionSet : RubyScriptStepBase<Unit>
         NuixReorderProductionSetStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The production set to reorder.
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("productionSetNameArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("productionSetNameArg", 1)]
     [Alias("Set")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
     /// <summary>
     /// The method of sorting items during the renumbering.
     /// </summary>
-    [StepProperty(3)]
+    [StepProperty(2)]
     [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
-    [RubyArgument("sortOrderArg", 3)]
+    [RubyArgument("sortOrderArg", 2)]
     [Alias("Order")]
     public IStep<ProductionSetSortOrder> SortOrder { get; set; } =
         new EnumConstant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);

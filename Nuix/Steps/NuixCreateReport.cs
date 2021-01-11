@@ -1,10 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
@@ -39,10 +36,9 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(casePathArg)
 
     log ""Generating Report:""
-    allItems = the_case.searchUnsorted("""")
+    allItems = currentCase.searchUnsorted("""")
     results = Hash.new { |h, k| h[k] = Hash.new { |hh, kk| hh[kk] = Hash.new{0} } }
 
     allItems.each do |i|
@@ -101,7 +97,6 @@ public sealed class
         end
     end
 
-    the_case.close
     return text;";
 }
 
@@ -117,16 +112,6 @@ public sealed class NuixCreateReport : RubyScriptStepBase<StringStream>
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixCreateReportStepFactory.Instance;
-
-    /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("casePathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
 }
 
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -39,7 +39,11 @@ public sealed class NuixMigrateCaseStepFactory : RubyScriptStepFactory<NuixMigra
 
     options = {migrate: true}
 
-    the_case = $utilities.case_factory.open(pathArg, options)";
+    the_case = $utilities.case_factory.open(pathArg, options)
+
+the_case.close
+log ""Case Closed""
+";
 }
 
 /// <summary>

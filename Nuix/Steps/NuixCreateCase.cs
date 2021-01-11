@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -11,7 +11,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 {
 
 /// <summary>
-/// Creates a new case.
+/// Creates a new case and opens it
 /// </summary>
 public sealed class NuixCreateCaseStepFactory : RubyScriptStepFactory<NuixCreateCase, Unit>
 {
@@ -41,12 +41,11 @@ public sealed class NuixCreateCaseStepFactory : RubyScriptStepFactory<NuixCreate
     :name => nameArg,
     :description => descriptionArg,
     :investigator => investigatorArg)
-    log 'Case Created'
-    the_case.close";
+    log 'Case Created'";
 }
 
 /// <summary>
-/// Creates a new case.
+/// Creates a new case and opens it.
 /// </summary>
 public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
@@ -39,21 +39,20 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
     log ""Searching""
 
     searchOptions = {}
     searchOptions[:order] = orderArg if orderArg != nil
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
 
-    items = the_case.search(searchArg, searchOptions)
+    items = currentCase.search(searchArg, searchOptions)
     log ""#{items.length} items found""
 
-    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+    productionSet = currentCase.findProductionSetByName(productionSetNameArg)
     if(productionSet == nil)
         options = {}
         options[:description] = descriptionArg.to_i if descriptionArg != nil
-        productionSet = the_case.newProductionSet(productionSetNameArg, options)
+        productionSet = currentCase.newProductionSet(productionSetNameArg, options)
 
         if productionProfileNameArg != nil
             productionSet.setProductionProfile(productionProfileNameArg)
@@ -82,9 +81,7 @@ public sealed class
         log ""Items added to production set""
     else
         log ""No items to add to production Set""
-    end
-
-    the_case.close";
+    end";
 }
 
 /// <summary>
@@ -99,22 +96,11 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
         NuixAddToProductionSetStepFactory.Instance;
 
     /// <summary>
-    /// The path of the case to search
-    /// </summary>
-
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The term to search for
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("searchArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("searchArg", 1)]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -122,16 +108,16 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     /// The production set to add results to. Will be created if it doesn't already exist
     /// </summary>
     [Required]
-    [StepProperty(3)]
-    [RubyArgument("productionSetNameArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("productionSetNameArg", 2)]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
     /// <summary>
     /// Description of the production set.
     /// </summary>
-    [StepProperty(4)]
-    [RubyArgument("descriptionArg", 4)]
+    [StepProperty(3)]
+    [RubyArgument("descriptionArg", 3)]
     [DefaultValueExplanation("No description")]
     public IStep<StringStream>? Description { get; set; }
 
@@ -141,10 +127,10 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     /// </summary>
 
     [RequiredVersion("Nuix", "7.2")]
-    [StepProperty(5)]
+    [StepProperty(4)]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("productionProfileNameArg", 5)]
+    [RubyArgument("productionProfileNameArg", 4)]
     [Alias("Profile")]
     public IStep<StringStream>? ProductionProfileName { get; set; }
 
@@ -153,27 +139,27 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     /// Either this or the ProductionProfileName must be set.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(6)]
+    [StepProperty(5)]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("productionProfilePathArg", 6)]
+    [RubyArgument("productionProfilePathArg", 5)]
     [Alias("ProfilePath")]
     public IStep<StringStream>? ProductionProfilePath { get; set; }
 
     /// <summary>
     /// How to order the items to be added to the production set.
     /// </summary>
-    [StepProperty(7)]
+    [StepProperty(6)]
     [Example("name ASC, item-date DESC")]
-    [RubyArgument("orderArg", 7)]
+    [RubyArgument("orderArg", 6)]
     [DefaultValueExplanation("Default order")]
     public IStep<StringStream>? Order { get; set; }
 
     /// <summary>
     /// The maximum number of items to add to the production set.
     /// </summary>
-    [StepProperty(8)]
-    [RubyArgument("limitArg", 8)]
+    [StepProperty(7)]
+    [RubyArgument("limitArg", 7)]
     [DefaultValueExplanation("No limit")]
     public IStep<int>? Limit { get; set; }
 

@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
@@ -37,10 +36,8 @@ public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerfor
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
-
     searchTerm = searchTermArg
-    items = the_case.searchUnsorted(searchTerm).to_a
+    items = currentCase.searchUnsorted(searchTerm).to_a
 
     log ""Running OCR on #{items.length} items""
 
@@ -63,8 +60,7 @@ public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerfor
     else
         processor.process(items)
         log ""Items Processed""
-    end
-    the_case.close";
+    end";
 }
 
 /// <summary>
@@ -76,25 +72,15 @@ public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixPerformOCRStepFactory.Instance;
 
-    /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
     private const string DefaultSearchTerm =
         "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
 
     /// <summary>
     /// The term to use for searching for files to OCR.
     /// </summary>
-    [StepProperty(2)]
+    [StepProperty(1)]
     [DefaultValueExplanation(DefaultSearchTerm)]
-    [RubyArgument("searchTermArg", 2)]
+    [RubyArgument("searchTermArg", 1)]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } =
         new StringConstant(DefaultSearchTerm);
@@ -103,10 +89,10 @@ public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
     /// The name of the OCR profile to use.
     /// This cannot be set at the same time as OCRProfilePath.
     /// </summary>
-    [StepProperty(3)]
+    [StepProperty(2)]
     [DefaultValueExplanation("The default profile will be used.")]
     [Example("MyOcrProfile")]
-    [RubyArgument("ocrProfileArg", 3)]
+    [RubyArgument("ocrProfileArg", 2)]
     [Alias("Profile")]
     public IStep<StringStream>? OCRProfileName { get; set; }
 
@@ -114,11 +100,11 @@ public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
     /// Path to the OCR profile to use.
     /// This cannot be set at the same times as OCRProfileName.
     /// </summary>
-    [StepProperty(4)]
+    [StepProperty(3)]
     [RequiredVersion("Nuix", "7.6")]
     [DefaultValueExplanation("The Default profile will be used.")]
     [Example("C:\\Profiles\\MyProfile.xml")]
-    [RubyArgument("ocrProfilePathArg", 4)]
+    [RubyArgument("ocrProfilePathArg", 3)]
     [Alias("ProfilePath")]
     public IStep<StringStream>? OCRProfilePath { get; set; }
 
