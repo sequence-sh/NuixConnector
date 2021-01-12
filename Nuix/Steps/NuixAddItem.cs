@@ -220,9 +220,9 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// The path of a file containing passwords to use for decryption.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(10)]
+    [StepProperty(9)]
     [Example("C:/Data/Passwords.txt")]
-    [RubyArgument("passwordFilePathArg", 10)]
+    [RubyArgument("passwordFilePathArg", 9)]
     [DefaultValueExplanation("Do not attempt decryption")]
     [Alias("PasswordFile")]
     public IStep<StringStream>? PasswordFilePath { get; set; }
@@ -232,8 +232,8 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// Should have a 'mime_type' property and then any other special properties.
     /// </summary>
     [RequiredVersion("Nuix", "8.2")]
-    [StepProperty(11)]
-    [RubyArgument("mimeTypeDataStreamArg", 11)]
+    [StepProperty(10)]
+    [RubyArgument("mimeTypeDataStreamArg", 10)]
     [DefaultValueExplanation("Use default settings for all MIME types")]
     public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
 

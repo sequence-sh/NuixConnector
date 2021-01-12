@@ -34,11 +34,14 @@ public class NuixMigrateCaseTests : NuixStepTestBase<NuixMigrateCase, Unit>
                 },
                 new AssertError
                 {
-                    Step = new NuixOpenCase { CasePath = Constants.MigrationTestCaseFolder }
+                    Step = new Nuix.Steps.NuixOpenCase
+                    {
+                        CasePath = Constants.MigrationTestCaseFolder
+                    }
                 },                         //This should fail because we can't open the case
                 new NuixCloseConnection(), //Not necessary
-                new NuixMigrateCase { CasePath = Constants.MigrationTestCaseFolder },
-                new NuixOpenCase { CasePath    = Constants.MigrationTestCaseFolder },
+                new NuixMigrateCase { CasePath         = Constants.MigrationTestCaseFolder },
+                new Nuix.Steps.NuixOpenCase { CasePath = Constants.MigrationTestCaseFolder },
                 Constants.AssertCount(1, "jellyfish.txt"),
                 new NuixCloseConnection(),
                 new DeleteItem { Path = Constants.MigrationTestCaseFolder }

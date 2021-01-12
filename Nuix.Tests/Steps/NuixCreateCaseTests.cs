@@ -121,7 +121,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
             yield return new NuixDeserializeTest(
                     "Create Case then add item",
                     $@"- NuixCreateCase CaseName: '{caseName}' CasePath: '{CasePathString}' Investigator: '{investigator}'
-- NuixAddItem CasePath: '{CasePathString}' Custodian: '{custodian}' FolderName: '{folderName}' Paths: ['{dataPath}']",
+- NuixAddItem Custodian: '{custodian}' FolderName: '{folderName}' Paths: ['{dataPath}']",
                     Unit.Default,
                     new List<ExternalProcessAction>
                     {
