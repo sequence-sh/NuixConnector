@@ -58,7 +58,7 @@ end
 log "Starting"
 
 $utilities = utilities if defined? utilities
-$currentCase = currentCase if defined? currentCase
+$currentCase = currentCase
 
 functions = {}
 
@@ -85,9 +85,10 @@ loop do
   fdef = json['def']
   is_stream = json['isstream']
 
-  #puts cmd
-  #puts args.inspect
-  #puts fdef
+  #log cmd
+  #log args.inspect
+  #log fdef
+  log "Current Case: '#{$currentCase}'"
 
   unless fdef.nil?
     op = functions.key?(cmd) ? 'Replacing' : 'Adding new'
@@ -137,6 +138,8 @@ loop do
   rescue => ex
     write_error("Could not execute #{cmd}: #{ex}", stack: ex.backtrace.join("\n"), terminating: true)
   end
+
+  
 
 end
 
