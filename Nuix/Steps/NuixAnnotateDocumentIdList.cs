@@ -36,7 +36,7 @@ public class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    productionSet = currentCase.findProductionSetByName(productionSetNameArg)
+    productionSet = $currentCase.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
         log ""Production Set Not Found""

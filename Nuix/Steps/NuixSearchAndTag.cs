@@ -38,7 +38,7 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
     log ""Searching for '#{searchArg}'""
 
     searchOptions = {}
-    items = currentCase.search(searchArg, searchOptions)
+    items = $currentCase.search(searchArg, searchOptions)
     log ""#{items.length} found""
 
     j = 0

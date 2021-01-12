@@ -54,30 +54,11 @@ def return_entity(props)
     puts JSON.generate(body)
 end
 
-################################################################################
-
-def open_case(path)
-  log "Opening case: #{path}"
-  nuix_case = $utilities.case_factory.open(path)
-  return nuix_case
-end
-
-def close_case(nuix_case)
-  log "Closing case: #{nuix_case.location}"
-  nuix_case.close
-  return nuix_case.is_closed
-end
-
-def BinToHex(s)
-  suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
-  return '0x' + suffix
-end
-
-################################################################################
 
 log "Starting"
 
 $utilities = utilities if defined? utilities
+$currentCase = currentCase if defined? currentCase
 
 functions = {}
 

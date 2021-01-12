@@ -38,7 +38,7 @@ public sealed class
     public override string RubyFunctionText => @"
 
     log ""Generating Report:""
-    allItems = currentCase.searchUnsorted("""")
+    allItems = $currentCase.searchUnsorted("""")
     results = Hash.new { |h, k| h[k] = Hash.new { |hh, kk| hh[kk] = Hash.new{0} } }
 
     allItems.each do |i|

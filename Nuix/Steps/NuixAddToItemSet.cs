@@ -37,7 +37,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    itemSet = currentCase.findItemSetByName(itemSetNameArg)
+    itemSet = $currentCase.findItemSetByName(itemSetNameArg)
     if(itemSet == nil)
         itemSetOptions = {}
         itemSetOptions[:deduplication] = deduplicationArg if deduplicationArg != nil

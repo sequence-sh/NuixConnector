@@ -40,7 +40,7 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 
     ds = args[""datastream""]
 
-    processor = currentCase.create_processor
+    processor = $currentCase.create_processor
 
     #Read special mime type settings from data stream
     if ds != nil

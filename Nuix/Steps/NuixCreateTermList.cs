@@ -36,7 +36,7 @@ public sealed class
     public override string RubyFunctionText => @"
 
     log ""Generating Report:""
-    caseStatistics = currentCase.getStatistics()
+    caseStatistics = $currentCase.getStatistics()
     termStatistics = caseStatistics.getTermStatistics("""", {""sort"" => ""on"", ""deduplicate"" => ""md5""}) #for some reason this takes strings rather than symbols
     #todo terms per custodian
     log ""#{termStatistics.length} terms""

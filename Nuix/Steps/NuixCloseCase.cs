@@ -32,7 +32,7 @@ public sealed class NuixCloseCaseStepFactory : RubyScriptStepFactory<NuixCloseCa
     /// <inheritdoc />
     public override string RubyFunctionText => @"
     log ""Closing Case""
-    currentCase.close()
+    $currentCase.close()
     log ""Case Closed""";
 }
 
