@@ -13,15 +13,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 /// <summary>
 /// Migrates a case to the latest version if necessary.
 /// </summary>
-public sealed class NuixMigrateCaseStepFactory : RubyScriptStepFactory<NuixMigrateCase, Unit>
+public sealed class NuixOpenCaseStepFactory : RubyScriptStepFactory<NuixOpenCase, Unit>
 {
-    private NuixMigrateCaseStepFactory() { }
+    private NuixOpenCaseStepFactory() { }
 
     /// <summary>
     /// The instance.
     /// </summary>
-    public static RubyScriptStepFactory<NuixMigrateCase, Unit> Instance { get; } =
-        new NuixMigrateCaseStepFactory();
+    public static RubyScriptStepFactory<NuixOpenCase, Unit> Instance { get; } =
+        new NuixOpenCaseStepFactory();
 
     /// <inheritdoc />
     public override Version RequiredNuixVersion { get; } = new(7, 2);
@@ -31,28 +31,23 @@ public sealed class NuixMigrateCaseStepFactory : RubyScriptStepFactory<NuixMigra
         new List<NuixFeature>();
 
     /// <inheritdoc />
-    public override string FunctionName => "MigrateCase";
+    public override string FunctionName => "OpenCase";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    log ""Opening Case, migrating if necessary""
-
-    options = {migrate: true}
-
-    the_case = $utilities.case_factory.open(pathArg, options)
-
-    the_case.close
-    log ""Case Closed""";
+    log ""Opening Case""
+    the_case = $utilities.case_factory.open(pathArg)
+    log ""Case Opened""";
 }
 
 /// <summary>
 /// Migrates a case to the latest version if necessary.
 /// </summary>
-public sealed class NuixMigrateCase : RubyScriptStepBase<Unit>
+public sealed class NuixOpenCase : RubyScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
-        NuixMigrateCaseStepFactory.Instance;
+        NuixOpenCaseStepFactory.Instance;
 
     /// <summary>
     /// The path to the case.
