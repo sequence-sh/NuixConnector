@@ -34,8 +34,8 @@ public class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, Stri
                 AddData,
                 new FileWrite
                 {
-                    Stream = new NuixCreateTermList { CasePath = CasePath, },
-                    Path   = new PathCombine { Paths           = Array(OutputFolder, "Terms.txt") }
+                    Stream = new NuixCreateTermList(),
+                    Path   = new PathCombine { Paths = Array(OutputFolder, "Terms.txt") }
                 },
                 AssertFileContains(OutputFolder, "Terms.txt", "yellow	2"),
                 DeleteCaseFolder,

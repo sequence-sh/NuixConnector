@@ -32,9 +32,7 @@ public class NuixAssignCustodianTests : NuixStepTestBase<NuixAssignCustodian, Un
                 AssertCount(0, "custodian:\"Jason\""),
                 new NuixAssignCustodian()
                 {
-                    CasePath   = CasePath,
-                    Custodian  = Constant("Jason"),
-                    SearchTerm = Constant("*")
+                    Custodian = Constant("Jason"), SearchTerm = Constant("*")
                 },
                 AssertCount(4, "custodian:\"Jason\""),
                 DeleteCaseFolder

@@ -34,14 +34,12 @@ public class NuixExportConcordanceTests : NuixStepTestBase<NuixExportConcordance
                 AddData,
                 new NuixAddToProductionSet
                 {
-                    CasePath              = CasePath,
                     SearchTerm            = Constant("charm"),
                     ProductionSetName     = Constant("charmset"),
                     ProductionProfilePath = TestProductionProfilePath
                 },
                 new NuixExportConcordance
                 {
-                    CasePath          = CasePath,
                     ProductionSetName = Constant("charmset"),
                     ExportPath        = Constant(ConcordanceFolder)
                 },

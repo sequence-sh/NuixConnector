@@ -31,9 +31,7 @@ public class NuixAddToItemSetTests : NuixStepTestBase<NuixAddToItemSet, Unit>
                 AddData,
                 new NuixAddToItemSet
                 {
-                    CasePath    = CasePath,
-                    SearchTerm  = Constant("charm"),
-                    ItemSetName = Constant("charmset")
+                    SearchTerm = Constant("charm"), ItemSetName = Constant("charmset")
                 },
                 AssertCount(1, "item-set:charmset"),
                 DeleteCaseFolder

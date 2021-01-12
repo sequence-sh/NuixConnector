@@ -31,12 +31,11 @@ public class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit>
                 AssertCount(0, "sheep"),
                 new NuixAddItem
                 {
-                    CasePath   = CasePath,
                     Custodian  = Constant("Mark"),
                     Paths      = PoemTextImagePaths,
                     FolderName = Constant("New Folder")
                 },
-                new NuixPerformOCR { CasePath = CasePath, SearchTerm = Constant("*.png") },
+                new NuixPerformOCR { SearchTerm = Constant("*.png") },
                 AssertCount(1, "sheep"),
                 DeleteCaseFolder
             );
@@ -48,16 +47,13 @@ public class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit>
                 AssertCount(0, "sheep"),
                 new NuixAddItem
                 {
-                    CasePath   = CasePath,
                     Custodian  = Constant("Mark"),
                     Paths      = PoemTextImagePaths,
                     FolderName = Constant("New Folder")
                 },
                 new NuixPerformOCR
                 {
-                    CasePath       = CasePath,
-                    SearchTerm     = Constant("*.png"),
-                    OCRProfileName = Constant("Default")
+                    SearchTerm = Constant("*.png"), OCRProfileName = Constant("Default")
                 },
                 AssertCount(1, "sheep"),
                 DeleteCaseFolder

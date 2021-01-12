@@ -34,7 +34,6 @@ public class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Un
                 AddData,
                 new NuixAddToProductionSet
                 {
-                    CasePath              = CasePath,
                     SearchTerm            = Constant("*.txt"),
                     ProductionSetName     = Constant("prodset"),
                     ProductionProfilePath = TestProductionProfilePath

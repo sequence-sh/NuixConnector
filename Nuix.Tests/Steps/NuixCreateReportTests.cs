@@ -34,8 +34,8 @@ public class NuixCreateReportTests : NuixStepTestBase<NuixCreateReport, StringSt
                 AddData,
                 new FileWrite
                 {
-                    Stream = new NuixCreateReport { CasePath = CasePath, },
-                    Path   = new PathCombine { Paths         = Array(OutputFolder, "Stats.txt") }
+                    Stream = new NuixCreateReport(),
+                    Path   = new PathCombine { Paths = Array(OutputFolder, "Stats.txt") }
                 },
                 AssertFileContains(OutputFolder, "Stats.txt", "Mark	type	text/plain	2"),
                 DeleteCaseFolder,

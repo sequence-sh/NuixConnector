@@ -39,9 +39,7 @@ public class NuixGetItemPropertiesTests : NuixStepTestBase<NuixGetItemProperties
                         new PathCombine { Paths = Array(OutputFolder, "ItemProperties.txt") },
                     Stream = new NuixGetItemProperties
                     {
-                        CasePath      = CasePath,
-                        PropertyRegex = Constant("(.+)"),
-                        SearchTerm    = Constant("*")
+                        PropertyRegex = Constant("(.+)"), SearchTerm = Constant("*")
                     }
                 },
                 AssertFileContains(

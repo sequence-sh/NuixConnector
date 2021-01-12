@@ -29,10 +29,7 @@ public class NuixSearchAndTagTests : NuixStepTestBase<NuixSearchAndTag, Unit>
                 DeleteCaseFolder,
                 CreateCase,
                 AddData,
-                new NuixSearchAndTag
-                {
-                    CasePath = CasePath, SearchTerm = Constant("charm"), Tag = Constant("charm")
-                },
+                new NuixSearchAndTag { SearchTerm = Constant("charm"), Tag = Constant("charm") },
                 AssertCount(1, "tag:charm"),
                 DeleteCaseFolder
             );

@@ -34,7 +34,6 @@ public class NuixGeneratePrintPreviewsTests : NuixStepTestBase<NuixGeneratePrint
                 AddData,
                 new NuixAddToProductionSet
                 {
-                    CasePath              = CasePath,
                     SearchTerm            = Constant("*.txt"),
                     ProductionSetName     = Constant("prodSet"),
                     ProductionProfilePath = TestProductionProfilePath
@@ -42,17 +41,12 @@ public class NuixGeneratePrintPreviewsTests : NuixStepTestBase<NuixGeneratePrint
                 AssertCount(2, "production-set:prodSet"),
                 new NuixAssertPrintPreviewState
                 {
-                    CasePath          = CasePath,
                     ProductionSetName = Constant("prodSet"),
                     ExpectedState     = Constant(PrintPreviewState.None)
                 },
-                new NuixGeneratePrintPreviews
-                {
-                    CasePath = CasePath, ProductionSetName = Constant("prodSet")
-                },
+                new NuixGeneratePrintPreviews { ProductionSetName = Constant("prodSet") },
                 new NuixAssertPrintPreviewState
                 {
-                    CasePath          = CasePath,
                     ProductionSetName = Constant("prodSet"),
                     ExpectedState     = Constant(PrintPreviewState.All)
                 },

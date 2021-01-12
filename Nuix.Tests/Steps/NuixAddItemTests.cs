@@ -25,7 +25,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 "Add item",
                 new NuixAddItem
                 {
-                    CasePath           = CasePath,
                     Custodian          = Constant("Mark"),
                     Paths              = DataPaths,
                     FolderName         = Constant("New Folder"),
@@ -40,7 +39,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                             Command = "AddToCase",
                             Arguments = new Dictionary<string, object>
                             {
-                                { nameof(NuixAddItem.CasePath), CasePathString },
                                 { nameof(NuixAddItem.FolderName), "New Folder" },
                                 { nameof(NuixAddItem.Custodian), "Mark" },
                                 {
@@ -74,7 +72,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
-                    CasePath   = (CasePath),
                     Custodian  = Constant("Mark"),
                     Paths      = DataPaths,
                     FolderName = Constant("New Folder")
@@ -91,7 +88,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*"),
                 new NuixAddItem
                 {
-                    CasePath         = (CasePath),
                     Custodian        = Constant("Mark"),
                     Paths            = EncryptedDataPaths,
                     FolderName       = Constant("New Folder"),
@@ -109,7 +105,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
-                    CasePath              = CasePath,
                     Custodian             = Constant("Mark"),
                     Paths                 = DataPaths,
                     FolderName            = Constant("New Folder"),
@@ -127,7 +122,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
-                    CasePath              = CasePath,
                     Custodian             = Constant("Mark"),
                     Paths                 = DataPaths,
                     FolderName            = Constant("New Folder"),
@@ -145,7 +139,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
-                    CasePath           = CasePath,
                     Custodian          = Constant("Mark"),
                     Paths              = DataPaths,
                     FolderName         = Constant("New Folder"),
@@ -163,7 +156,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
-                    CasePath                   = CasePath,
                     Custodian                  = Constant("Mark"),
                     Paths                      = DataPaths,
                     FolderName                 = Constant("New Folder"),
@@ -181,7 +173,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
-                    CasePath   = CasePath,
                     Custodian  = Constant("Mark"),
                     Paths      = DataPaths,
                     FolderName = Constant("New Folder"),

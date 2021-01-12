@@ -38,7 +38,7 @@ public class
                 AddData,
                 new FileWrite
                 {
-                    Stream = new NuixCreateIrregularItemsReport { CasePath = CasePath },
+                    Stream = new NuixCreateIrregularItemsReport(),
                     Path   = new PathCombine() { Paths = Array(OutputFolder, "Irregular.txt") }
                 },
                 AssertFileContains(

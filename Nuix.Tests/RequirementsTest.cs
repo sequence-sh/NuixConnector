@@ -39,10 +39,7 @@ public class RequirementsTest
     [MemberData(nameof(TestCases))]
     public void TestRequirements((string? expectedError, NuixSettings settings) args)
     {
-        var process = new NuixSearchAndTag
-        {
-            SearchTerm = Constant("a"), CasePath = Constant("b"), Tag = Constant("c")
-        };
+        var process = new NuixSearchAndTag { SearchTerm = Constant("a"), Tag = Constant("c") };
 
         var result = process.Verify(args.settings);
 

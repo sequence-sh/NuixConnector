@@ -26,7 +26,6 @@ public class NuixAssertPrintPreviewStateTests : NuixStepTestBase<NuixAssertPrint
                 "Check State All",
                 new NuixAssertPrintPreviewState
                 {
-                    CasePath          = CasePath,
                     ProductionSetName = Constant("Production Set"),
                     ExpectedState     = Constant(PrintPreviewState.All)
                 },
@@ -39,9 +38,6 @@ public class NuixAssertPrintPreviewStateTests : NuixStepTestBase<NuixAssertPrint
                             Command = "GetPrintPreviewState",
                             Arguments = new Dictionary<string, object>
                             {
-                                {
-                                    nameof(NuixAssertPrintPreviewState.CasePath), CasePathString
-                                },
                                 {
                                     nameof(NuixAssertPrintPreviewState.ProductionSetName),
                                     "Production Set"
