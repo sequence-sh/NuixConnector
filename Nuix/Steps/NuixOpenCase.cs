@@ -35,9 +35,8 @@ public sealed class NuixOpenCaseStepFactory : RubyScriptStepFactory<NuixOpenCase
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    log ""Opening Case""
-    the_case = $utilities.case_factory.open(pathArg)
-    log ""Case Opened""";
+    log ""Opening Case: #{path}""
+    the_case = $utilities.case_factory.open(pathArg);
 }
 
 /// <summary>
