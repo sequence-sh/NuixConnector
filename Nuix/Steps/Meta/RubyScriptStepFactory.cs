@@ -41,25 +41,23 @@ public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<
     protected RubyScriptStepFactory()
     {
         _lazyRubyFunction
-            = new Lazy<IRubyFunction<TOutput>>(
+            = new Lazy<RubyFunction<TOutput>>(
                 () => new RubyFunction<TOutput>(
                     FunctionName,
                     RubyFunctionText,
-                    RubyFunctionParameter.GetRubyFunctionParameters<TStep>()
+                    RubyFunctionParameter.GetRubyFunctionParameters<TStep>(),
+                    RequiredNuixVersion,
+                    RequiredFeatures
                 )
-                {
-                    RequiredNuixVersion  = RequiredNuixVersion,
-                    RequiredNuixFeatures = RequiredFeatures
-                }
             );
     }
 
-    private readonly Lazy<IRubyFunction<TOutput>> _lazyRubyFunction;
+    private readonly Lazy<RubyFunction<TOutput>> _lazyRubyFunction;
 
     /// <summary>
     /// The ruby function to run.
     /// </summary>
-    public IRubyFunction<TOutput> RubyFunction => _lazyRubyFunction.Value;
+    public RubyFunction<TOutput> RubyFunction => _lazyRubyFunction.Value;
 
     /// <summary>
     /// The Name of the Ruby Function.

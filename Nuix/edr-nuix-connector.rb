@@ -54,11 +54,35 @@ def return_entity(props)
     puts JSON.generate(body)
 end
 
+################################################################################
+
+def open_case(path)
+
+  unless $currentCase.nil?
+    if $currentCase.getlocation().getPath() == path
+        return #the case is already open
+    end
+    close_case()
+  end
+
+  log "Opening case: #{path}"
+  $currentCase = $utilities.case_factory.open(path)
+end
+
+def close_case()
+  unless $currentCase.nil?
+      log "Closing case: #{$currentCase.location}"
+      $currentCase.close
+  end
+end
+
+################################################################################
+
 
 log "Starting"
 
 $utilities = utilities if defined? utilities
-$currentCase = currentCase
+$currentCase = nil
 
 functions = {}
 
@@ -84,6 +108,14 @@ loop do
   args = json['args']
   fdef = json['def']
   is_stream = json['isstream']
+  case_path = json['casepath']
+
+  if case_path.nil?
+    close_case        
+  else
+    $currentCase = open_case(case_path)
+  end
+ 
 
   #log cmd
   #log args.inspect
@@ -142,5 +174,7 @@ loop do
   
 
 end
+
+close_case
 
 log "Finished"

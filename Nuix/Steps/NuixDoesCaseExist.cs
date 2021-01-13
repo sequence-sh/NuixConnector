@@ -55,6 +55,9 @@ public sealed class NuixDoesCaseExist : RubyScriptStepBase<bool>
     public override IRubyScriptStepFactory<bool> RubyScriptStepFactory =>
         NuixDoesCaseExistStepFactory.Instance;
 
+    /// <inheritdoc />
+    public override CasePathParameter CasePathParameter => new CasePathParameter.NoCasePath();
+
     /// <summary>
     /// The path to the case.
     /// </summary>

@@ -13,7 +13,7 @@ public interface IRubyScriptStepFactory<T> : IStepFactory
     /// <summary>
     /// The ruby function to run.
     /// </summary>
-    IRubyFunction<T> RubyFunction { get; }
+    RubyFunction<T> RubyFunction { get; }
 
     /// <summary>
     /// The Required Nuix version

@@ -54,6 +54,9 @@ public sealed class NuixMigrateCase : RubyScriptStepBase<Unit>
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixMigrateCaseStepFactory.Instance;
 
+    /// <inheritdoc />
+    public override CasePathParameter CasePathParameter => new CasePathParameter.NoCasePath();
+
     /// <summary>
     /// The path to the case.
     /// </summary>

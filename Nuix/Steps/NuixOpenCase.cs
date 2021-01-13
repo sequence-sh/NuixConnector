@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -34,10 +35,7 @@ public sealed class NuixOpenCaseStepFactory : RubyScriptStepFactory<NuixOpenCase
     public override string FunctionName => "OpenCase";
 
     /// <inheritdoc />
-    public override string RubyFunctionText => @"
-    log ""Opening Case: #{pathArg}""
-    the_case = $utilities.case_factory.open(pathArg)
-    $currentCase = the_case";
+    public override string RubyFunctionText => @"open_case(pathArg)"; // very simple
 }
 
 /// <summary>
@@ -46,8 +44,18 @@ public sealed class NuixOpenCaseStepFactory : RubyScriptStepFactory<NuixOpenCase
 public sealed class NuixOpenCase : RubyScriptStepBase<Unit>
 {
     /// <inheritdoc />
+    public override CasePathParameter CasePathParameter => new CasePathParameter.OpensCase(
+        new RubyFunctionParameter(PathArg, nameof(CasePath), false, null)
+    );
+
+    /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixOpenCaseStepFactory.Instance;
+
+    /// <summary>
+    /// The pathArg argument name in Ruby.
+    /// </summary>
+    public const string PathArg = "pathArg";
 
     /// <summary>
     /// The path to the case.
@@ -55,7 +63,7 @@ public sealed class NuixOpenCase : RubyScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
+    [RubyArgument(PathArg, 1)]
     [Alias("Case")]
     public IStep<StringStream> CasePath { get; set; } = null!;
 }

@@ -5,11 +5,34 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
+
+/// <summary>
+/// A ruby script step that uses a case.
+/// </summary>
+public abstract class RubyCaseScriptStepBase<T> : RubyScriptStepBase<T>
+{
+    /// <summary>
+    /// The pathArg argument name in Ruby.
+    /// </summary>
+    public const string PathArg = "pathArg";
+
+    /// <summary>
+    /// The case path to use. If this is set, that case will be opened.
+    /// If it is not set, the existing case will be used.
+    /// If no existing case is open this will result in an error.
+    /// </summary>
+    [StepProperty]
+    [Example("C:/Cases/MyCase")]
+    [RubyArgument(PathArg, 1)]
+    [Alias("Directory")]
+    public IStep<StringStream>? CasePath { get; set; }
+}
 
 /// <summary>
 /// The base of a ruby script step.
@@ -28,6 +51,11 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     protected override Task<Result<T, IError>> Run(
         IStateMonad stateMonad,
         CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
+
+    /// <summary>
+    /// Gets the CasePath Parameter.
+    /// </summary>
+    public abstract CasePathParameter CasePathParameter { get; }
 
     /// <summary>
     /// Runs this step asynchronously.
@@ -50,6 +78,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
             stateMonad.Logger,
             RubyScriptStepFactory.RubyFunction,
             methodParameters.Value,
+            CasePathParameter,
             cancellationToken
         );
 
@@ -68,6 +97,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
                 stateMonad.Logger,
                 RubyScriptStepFactory.RubyFunction,
                 methodParameters.Value,
+                CasePathParameter,
                 cancellationToken
             );
         }

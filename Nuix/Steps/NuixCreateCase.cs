@@ -51,8 +51,18 @@ public sealed class NuixCreateCaseStepFactory : RubyScriptStepFactory<NuixCreate
 public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
 {
     /// <inheritdoc />
+    public override CasePathParameter CasePathParameter => new CasePathParameter.OpensCase(
+        new RubyFunctionParameter(PathArg, nameof(CasePath), false, null)
+    );
+
+    /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixCreateCaseStepFactory.Instance;
+
+    /// <summary>
+    /// The pathArg argument name in Ruby.
+    /// </summary>
+    public const string PathArg = "pathArg";
 
     /// <summary>
     /// The path to the directory to create the case in.
@@ -60,7 +70,7 @@ public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
+    [RubyArgument(PathArg, 1)]
     [Alias("Directory")]
     public IStep<StringStream> CasePath { get; set; } = null!;
 

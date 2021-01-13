@@ -92,7 +92,11 @@ public class NuixRunScript : CompoundStep<StringStream>
         var function = new RubyFunction<string>(
             ConvertString(functionName.Value),
             scriptText.Value,
-            rubyFunctionParameters
+            rubyFunctionParameters,
+            new Version(5, 0),
+            ArraySegment<NuixFeature>.Empty,
+            Maybe<RubyFunctionParameter>.None,
+            true
         );
 
         var runResult = await nuixConnection.Value.RunFunctionAsync(

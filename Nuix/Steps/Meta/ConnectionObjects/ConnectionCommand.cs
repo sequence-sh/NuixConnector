@@ -31,6 +31,13 @@ public class ConnectionCommand
     public Dictionary<string, object>? Arguments { get; set; }
 
     /// <summary>
+    /// The path to the case.
+    /// If this is not set the current case will be used
+    /// </summary>
+    [JsonProperty("casepath")]
+    public string? CasePath { get; set; }
+
+    /// <summary>
     /// Whether this process takes a stream as an argument
     /// </summary>
     // ReSharper disable once StringLiteralTypo

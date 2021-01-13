@@ -17,6 +17,10 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
     /// <summary>
     /// Creates a new RubyFunctionParameter.
     /// </summary>
+    /// <param name="parameterName">Argument in ruby</param>
+    /// <param name="propertyName">Property in C#</param>
+    /// <param name="isOptional">Is this optional</param>
+    /// <param name="requiredNuixVersion">Required version</param>
     public RubyFunctionParameter(
         string parameterName,
         string propertyName,
@@ -33,7 +37,7 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
     public override string ToString() => ParameterName;
 
     /// <summary>
-    /// The name of the argument.
+    /// The name of the argument in ruby.
     /// Should be lower case as per style guidelines.
     /// The arguments to a function should have unique names.
     /// </summary>
