@@ -1,0 +1,3 @@
+[submodule "nuixconnectorscript"]
+	path = nuixconnectorscript
+	url = git@gitlab.com:reductech/edr/connectors/nuixconnectorscript.git
