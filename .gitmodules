@@ -1,0 +1,3 @@
+[submodule "nuixconnectorscript"]
+	path = nuixconnectorscript
+	url = ../nuixconnectorscript.git

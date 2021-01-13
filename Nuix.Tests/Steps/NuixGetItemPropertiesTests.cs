@@ -47,7 +47,8 @@ public class NuixGetItemPropertiesTests : NuixStepTestBase<NuixGetItemProperties
                     "ItemProperties.txt",
                     "Character Set	UTF-8	New Folder/data/Jellyfish.txt"
                 ),
-                new NuixCloseConnection(), DeleteCaseFolder,
+                new NuixCloseConnection(),
+                DeleteCaseFolder,
                 DeleteOutputFolder
             );
         }

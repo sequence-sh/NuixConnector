@@ -59,7 +59,7 @@ public sealed class NuixCreateIrregularItemsReportStepFactory
     irregularText = ""Reason\tPath\tGuid""
 
     fields.each do |key, value|
-        items = $currentCase.search(value)
+        items = $current_case.search(value)
 
         items.each do |i|
             path = i.getPathNames().join(""/"")

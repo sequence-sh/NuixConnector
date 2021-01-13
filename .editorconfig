@@ -1,23 +1,13 @@
 
-[*.proto]
-indent_style=space
-indent_size=4
-tab_width=4
-
-[*.{asax,ascx,aspx,cs,cshtml,master,skin,vb}]
-indent_style=space
-indent_size=4
-tab_width=4
-
-[*.{appxmanifest,axaml,axml,build,config,csproj,css,dbml,discomap,dtd,htm,html,js,json,jsproj,jsx,lsproj,njsproj,nuspec,paml,proj,props,razor,resjson,resw,resx,StyleCop,targets,tasks,ts,tsx,vbproj,xaml,xamlx,xml,xoml,xsd}]
-indent_style=space
-indent_size=2
-tab_width=2
-
 [*]
 
 # Standard properties
 end_of_line=native
+insert_final_newline=true
+
+indent_style=space
+indent_size=4
+tab_width=4
 
 # Microsoft .NET properties
 csharp_indent_braces=false
@@ -83,6 +73,7 @@ resharper_csharp_wrap_before_binary_opsign=true
 resharper_csharp_wrap_chained_method_calls=chop_if_long
 resharper_csharp_wrap_parameters_style=chop_if_long
 resharper_enforce_line_ending_style=true
+resharper_html_insert_final_newline=true
 resharper_indent_inside_namespace=false
 resharper_indent_preprocessor_other=usual_indent
 resharper_indent_preprocessor_region=no_indent
@@ -92,6 +83,7 @@ resharper_int_align_invocations=true
 resharper_int_align_switch_expressions=true
 resharper_int_align_switch_sections=true
 resharper_int_align_variables=true
+resharper_js_insert_final_newline=true
 resharper_keep_existing_declaration_parens_arrangement=false
 resharper_keep_existing_embedded_arrangement=false
 resharper_keep_existing_expr_member_arrangement=false
@@ -110,6 +102,7 @@ resharper_place_linq_into_on_new_line=false
 resharper_place_simple_case_statement_on_same_line=if_owner_is_single_line
 resharper_place_simple_embedded_statement_on_same_line=false
 resharper_place_simple_enum_on_single_line=true
+resharper_quote_style=singlequoted
 resharper_show_autodetect_configure_formatting_tip=false
 resharper_space_between_attribute_sections=false
 resharper_space_within_single_line_array_initializer_braces=true
@@ -123,7 +116,13 @@ resharper_xmldoc_max_line_length=100
 resharper_xmldoc_tab_width=2
 resharper_xml_blank_line_after_pi=false
 resharper_xml_indent_size=2
+resharper_xml_insert_final_newline=true
 resharper_xml_max_blank_lines_between_tags=1
 resharper_xml_max_line_length=100
 resharper_xml_pi_attribute_style=on_single_line
 resharper_xml_tab_width=2
+
+[*.{appxmanifest,axaml,axml,build,config,csproj,css,dbml,discomap,dtd,htm,html,js,json,jsproj,jsx,lsproj,njsproj,nuspec,paml,proj,props,razor,resjson,resw,resx,StyleCop,targets,tasks,ts,tsx,vbproj,xaml,xamlx,xml,xoml,xsd,yaml,yml}]
+indent_style=space
+indent_size=2
+tab_width=2

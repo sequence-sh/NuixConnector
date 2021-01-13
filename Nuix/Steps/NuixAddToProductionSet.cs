@@ -45,14 +45,14 @@ public sealed class
     searchOptions[:order] = orderArg if orderArg != nil
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
 
-    items = $currentCase.search(searchArg, searchOptions)
+    items = $current_case.search(searchArg, searchOptions)
     log ""#{items.length} items found""
 
-    productionSet = $currentCase.findProductionSetByName(productionSetNameArg)
+    productionSet = $current_case.findProductionSetByName(productionSetNameArg)
     if(productionSet == nil)
         options = {}
         options[:description] = descriptionArg.to_i if descriptionArg != nil
-        productionSet = $currentCase.newProductionSet(productionSetNameArg, options)
+        productionSet = $current_case.newProductionSet(productionSetNameArg, options)
 
         if productionProfileNameArg != nil
             productionSet.setProductionProfile(productionProfileNameArg)

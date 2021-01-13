@@ -35,7 +35,7 @@ public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountI
     /// <inheritdoc />
     public override string RubyFunctionText => @"
     searchOptions = {}
-    count = $currentCase.count(searchArg, searchOptions)
+    count = $current_case.count(searchArg, searchOptions)
     log ""#{count} found matching '#{searchArg}'""
     return count";
 }
