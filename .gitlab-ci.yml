@@ -38,7 +38,7 @@ variables:
 test dev:
   script:
     - dotnet test --no-build --configuration $CONFIG --filter "Category!=Integration"
-      --collect:"XPlat Code Coverage" --results-directory ./
+      --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
 
 integration test:
@@ -58,8 +58,7 @@ integration test:
   script:
     - dotnet restore --packages ./packages
     - dotnet test --no-restore --configuration $CONFIG
-      --collect:"XPlat Code Coverage" --results-directory ./
-      -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=false
+      --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
