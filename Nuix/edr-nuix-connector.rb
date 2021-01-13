@@ -62,6 +62,7 @@ def open_case(path)
     if $currentCase.get_location().getPath() == path
         return #the case is already open
     end
+    log "Another Case is open"
     close_case()
   end
 
@@ -115,12 +116,8 @@ loop do
   #log fdef
   #log case_path
   #log "Previous Current Case: '#{$currentCase}'"
-
-  if case_path.nil?
-    close_case        
-  else
-    open_case(case_path)
-  end
+  
+  open_case(case_path) unless case_path.nil?
  
   #log "New Current Case: '#{$currentCase}'"
   

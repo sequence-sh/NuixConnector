@@ -32,7 +32,7 @@ public abstract class RubyCaseScriptStepBase<T> : RubyScriptStepBase<T>
     /// <summary>
     /// The case path to use. If this is set, that case will be opened.
     /// If it is not set, the existing case will be used.
-    /// If no existing case is open this will result in an error.
+    /// If it is not set and no existing case is open this will result in an error.
     /// </summary>
     [StepProperty]
     [Example("C:/Cases/MyCase")]

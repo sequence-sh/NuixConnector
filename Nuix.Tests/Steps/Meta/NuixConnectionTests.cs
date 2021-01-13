@@ -354,7 +354,7 @@ public class NuixConnectionTests
                     TestLoggerFactory.Create().CreateLogger("Test"),
                     null!,
                     null!,
-                    CasePathParameter.NoCasePath.Instance,
+                    CasePathParameter.IgnoresOpenCase.Instance,
                     ct
                 )
         );
@@ -385,7 +385,7 @@ public class NuixConnectionTests
             logger,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
-            CasePathParameter.NoCasePath.Instance,
+            CasePathParameter.IgnoresOpenCase.Instance,
             ct
         );
 
@@ -434,7 +434,7 @@ public class NuixConnectionTests
             logger,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
-            CasePathParameter.NoCasePath.Instance,
+            CasePathParameter.IgnoresOpenCase.Instance,
             ct
         );
 
@@ -481,7 +481,7 @@ public class NuixConnectionTests
             logger,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
-            CasePathParameter.NoCasePath.Instance,
+            CasePathParameter.IgnoresOpenCase.Instance,
             ct
         );
 
@@ -534,7 +534,7 @@ public class NuixConnectionTests
             logger,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
-            CasePathParameter.NoCasePath.Instance,
+            CasePathParameter.IgnoresOpenCase.Instance,
             ct
         );
 

@@ -44,7 +44,7 @@ public sealed class NuixOpenCaseStepFactory : RubyScriptStepFactory<NuixOpenCase
 public sealed class NuixOpenCase : RubyScriptStepBase<Unit>
 {
     /// <inheritdoc />
-    public override CasePathParameter CasePathParameter => new CasePathParameter.OpensCase(
+    public override CasePathParameter CasePathParameter => new CasePathParameter.ChangesOpenCase(
         new RubyFunctionParameter(PathArg, nameof(CasePath), false, null)
     );
 

@@ -193,30 +193,36 @@ public sealed class NuixConnection : IDisposable
 
         switch (casePathParameter)
         {
-            case CasePathParameter.NoCasePath:
+            case CasePathParameter.IgnoresOpenCase:
+                casePath = null;
+                break;
+
+            case CasePathParameter.ChangesOpenCase opensCase
+                when opensCase.NewCaseParameter.HasNoValue:
             {
+                CurrentCasePath = Maybe<string>.None; //This will be the case path for the next step
                 casePath        = null;
-                CurrentCasePath = Maybe<string>.None;
                 break;
             }
-            case CasePathParameter.OpensCase opensCase:
+            case CasePathParameter.ChangesOpenCase opensCase
+                when opensCase.NewCaseParameter.HasValue:
             {
-                if (parameters.TryGetValue(opensCase.Parameter, out var cp))
+                if (parameters.TryGetValue(opensCase.NewCaseParameter.Value, out var cp))
                 {
-                    CurrentCasePath = cp.ToString()!;
+                    CurrentCasePath = cp.ToString()!; //This will be the case path for the next step
                     casePath        = null;
                 }
                 else
                     return new ErrorBuilder(
                         ErrorCode.MissingParameter,
-                        opensCase.Parameter.PropertyName
+                        opensCase.NewCaseParameter.Value.PropertyName
                     );
 
                 break;
             }
             case CasePathParameter.UsesCase usesCase:
             {
-                if (parameters.TryGetValue(usesCase.Parameter, out var cp))
+                if (parameters.TryGetValue(usesCase.CaseParameter, out var cp))
                 {
                     casePath        = cp.ToString()!;
                     CurrentCasePath = casePath;
