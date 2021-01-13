@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -36,18 +36,16 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(casePathArg)
-
     log ""Extracting Entities:""
 
-    entityTypes = the_case.getAllEntityTypes()
+    entityTypes = $currentCase.getAllEntityTypes()
 
     results = Hash.new { |h, k| h[k] = Hash.new { [] } }
 
     entitiesText = ""TypeDescription\tValue\tCount"" #The headers for the entities file
 
     if entityTypes.length > 0
-        allItems = the_case.searchUnsorted(""named-entities:*"")
+        allItems = $currentCase.searchUnsorted(""named-entities:*"")
 
         allItems.each do |i|
             entityTypes.each do |et|
@@ -76,37 +74,25 @@ public sealed class
         log ""Case has no entities""
     end
 
-    File.write(File.join(outputFolderPathArg, 'Entities.txt'), entitiesText) #For consistency, file is written even if there are no entities
-
-    the_case.close";
+    File.write(File.join(outputFolderPathArg, 'Entities.txt'), entitiesText) #For consistency, file is written even if there are no entities";
 }
 
 /// <summary>
 /// Extract Entities from a Nuix Case.
 /// </summary>
-public sealed class NuixExtractEntities : RubyScriptStepBase<Unit>
+public sealed class NuixExtractEntities : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixExtractEntitiesStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("casePathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The path to the folder to put the output files in.
     /// </summary>
     [Required]
     [Example("C:/Output")]
-    [StepProperty(2)]
-    [RubyArgument("outputFolderPathArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("outputFolderPathArg")]
     [Alias("ToDirectory")]
     public IStep<StringStream> OutputFolder { get; set; } = null!;
 }

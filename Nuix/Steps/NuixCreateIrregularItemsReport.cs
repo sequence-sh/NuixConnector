@@ -1,10 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
@@ -42,7 +39,6 @@ public sealed class NuixCreateIrregularItemsReportStepFactory
     //TODO change how this works - at the moment it creates multiple files
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(casePathArg)
 
     log ""Generating Report:""
     fields = {
@@ -63,7 +59,7 @@ public sealed class NuixCreateIrregularItemsReportStepFactory
     irregularText = ""Reason\tPath\tGuid""
 
     fields.each do |key, value|
-        items = the_case.search(value)
+        items = $currentCase.search(value)
 
         items.each do |i|
             path = i.getPathNames().join(""/"")
@@ -72,7 +68,6 @@ public sealed class NuixCreateIrregularItemsReportStepFactory
         end
     end
 
-    the_case.close
     return irregularText;";
 }
 
@@ -82,21 +77,11 @@ public sealed class NuixCreateIrregularItemsReportStepFactory
 /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
-public sealed class NuixCreateIrregularItemsReport : RubyScriptStepBase<StringStream>
+public sealed class NuixCreateIrregularItemsReport : RubyCaseScriptStepBase<StringStream>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixCreateIrregularItemsReportStepFactory.Instance;
-
-    /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("casePathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
 }
 
 }

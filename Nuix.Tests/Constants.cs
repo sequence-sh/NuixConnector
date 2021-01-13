@@ -8,7 +8,6 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.Enums;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
-
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
@@ -150,35 +149,29 @@ public static class Constants
 
     public static IStep<Unit> AssertCount(
         int expected,
-        string searchTerm,
-        IStep<StringStream>? casePath = null) => new AssertTrue
+        string searchTerm) => new AssertTrue
     {
-        Boolean = CompareItemsCount(expected, CompareOperator.Equals, searchTerm, casePath)
+        Boolean = CompareItemsCount(expected, CompareOperator.Equals, searchTerm)
     };
 
     public static IStep<bool> CompareItemsCount(
         int right,
         CompareOperator op,
-        string searchTerm,
-        IStep<StringStream>? casePath)
+        string searchTerm)
     {
         return new Compare<int>
         {
             Left     = Constant(right),
             Operator = Constant(op),
-            Right = new NuixCountItems
-            {
-                CasePath = casePath ?? CasePath, SearchTerm = Constant(searchTerm)
-            }
+            Right    = new NuixCountItems { SearchTerm = Constant(searchTerm) }
         };
     }
 
+    public static readonly IStep<Unit> OpenCase = new NuixOpenCase() { CasePath = CasePath };
+
     public static readonly IStep<Unit> AddData = new NuixAddItem
     {
-        CasePath   = CasePath,
-        Custodian  = Constant("Mark"),
-        Paths      = DataPaths,
-        FolderName = Constant("New Folder")
+        Custodian = Constant("Mark"), Paths = DataPaths, FolderName = Constant("New Folder")
     };
 }
 

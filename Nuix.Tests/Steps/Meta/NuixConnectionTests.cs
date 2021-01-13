@@ -141,7 +141,7 @@ public static class NuixConnectionTestsHelper
                 {
                     Message    = "Finished",
                     Severity   = "info",
-                    Time       = DateTime.Now.ToString(),
+                    Time       = DateTime.Now.ToString("G17"),
                     StackTrace = ""
                 }
             }
@@ -342,7 +342,7 @@ public class NuixConnectionTests
     [Fact]
     public async Task RunFunctionAsync_WhenDisposed_Throws()
     {
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(null);
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(null!);
 
         var ct = new CancellationToken();
 
@@ -352,8 +352,9 @@ public class NuixConnectionTests
             () =>
                 nuixConnection.RunFunctionAsync<Unit>(
                     TestLoggerFactory.Create().CreateLogger("Test"),
-                    null,
-                    null,
+                    null!,
+                    null!,
+                    CasePathParameter.NoCasePath.Instance,
                     ct
                 )
         );
@@ -384,6 +385,7 @@ public class NuixConnectionTests
             logger,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
+            CasePathParameter.NoCasePath.Instance,
             ct
         );
 
@@ -432,6 +434,7 @@ public class NuixConnectionTests
             logger,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
+            CasePathParameter.NoCasePath.Instance,
             ct
         );
 
@@ -478,6 +481,7 @@ public class NuixConnectionTests
             logger,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
+            CasePathParameter.NoCasePath.Instance,
             ct
         );
 
@@ -530,6 +534,7 @@ public class NuixConnectionTests
             logger,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
+            CasePathParameter.NoCasePath.Instance,
             ct
         );
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -13,15 +14,15 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 /// <summary>
 /// Migrates a case to the latest version if necessary.
 /// </summary>
-public sealed class NuixMigrateCaseStepFactory : RubyScriptStepFactory<NuixMigrateCase, Unit>
+public sealed class NuixOpenCaseStepFactory : RubyScriptStepFactory<NuixOpenCase, Unit>
 {
-    private NuixMigrateCaseStepFactory() { }
+    private NuixOpenCaseStepFactory() { }
 
     /// <summary>
     /// The instance.
     /// </summary>
-    public static RubyScriptStepFactory<NuixMigrateCase, Unit> Instance { get; } =
-        new NuixMigrateCaseStepFactory();
+    public static RubyScriptStepFactory<NuixOpenCase, Unit> Instance { get; } =
+        new NuixOpenCaseStepFactory();
 
     /// <inheritdoc />
     public override Version RequiredNuixVersion { get; } = new(7, 2);
@@ -31,31 +32,30 @@ public sealed class NuixMigrateCaseStepFactory : RubyScriptStepFactory<NuixMigra
         new List<NuixFeature>();
 
     /// <inheritdoc />
-    public override string FunctionName => "MigrateCase";
+    public override string FunctionName => "OpenCase";
 
     /// <inheritdoc />
-    public override string RubyFunctionText => @"
-    log ""Opening Case, migrating if necessary""
-
-    options = {migrate: true}
-
-    the_case = $utilities.case_factory.open(pathArg, options)
-
-    the_case.close
-    log ""Case Closed""";
+    public override string RubyFunctionText => @"open_case(pathArg)"; // very simple
 }
 
 /// <summary>
 /// Migrates a case to the latest version if necessary.
 /// </summary>
-public sealed class NuixMigrateCase : RubyScriptStepBase<Unit>
+public sealed class NuixOpenCase : RubyScriptStepBase<Unit>
 {
     /// <inheritdoc />
-    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
-        NuixMigrateCaseStepFactory.Instance;
+    public override CasePathParameter CasePathParameter => new CasePathParameter.OpensCase(
+        new RubyFunctionParameter(PathArg, nameof(CasePath), false, null)
+    );
 
     /// <inheritdoc />
-    public override CasePathParameter CasePathParameter => CasePathParameter.NoCasePath.Instance;
+    public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
+        NuixOpenCaseStepFactory.Instance;
+
+    /// <summary>
+    /// The pathArg argument name in Ruby.
+    /// </summary>
+    public const string PathArg = "pathArg";
 
     /// <summary>
     /// The path to the case.
@@ -63,7 +63,7 @@ public sealed class NuixMigrateCase : RubyScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg")]
+    [RubyArgument(PathArg)]
     [Alias("Case")]
     public IStep<StringStream> CasePath { get; set; } = null!;
 }

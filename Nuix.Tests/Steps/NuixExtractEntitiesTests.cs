@@ -33,18 +33,14 @@ public class NuixExtractEntitiesTests : NuixStepTestBase<NuixExtractEntities, Un
                 //Note - we have to add items with a special profile in order to extract entities
                 new NuixAddItem
                 {
-                    CasePath              = CasePath,
                     Custodian             = Constant("Mark"),
                     Paths                 = DataPaths,
                     FolderName            = Constant("New Folder"),
                     ProcessingProfileName = Constant("ExtractEntities")
                 },
-                new NuixExtractEntities
-                {
-                    CasePath = CasePath, OutputFolder = Constant(OutputFolder)
-                },
+                new NuixExtractEntities { OutputFolder = Constant(OutputFolder) },
                 AssertFileContains(OutputFolder, "email.txt", "Marianne.Moore@yahoo.com"),
-                DeleteCaseFolder,
+                new NuixCloseConnection(), DeleteCaseFolder,
                 DeleteOutputFolder
             );
         }

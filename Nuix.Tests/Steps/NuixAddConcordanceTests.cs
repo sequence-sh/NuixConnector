@@ -35,7 +35,7 @@ public class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordance, Unit
                 Unit.Default,
                 new List<ExternalProcessAction>
                 {
-                    new ExternalProcessAction(
+                    new(
                         new ConnectionCommand
                         {
                             Command            = "AddConcordanceToCase",
@@ -86,7 +86,7 @@ public class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordance, Unit
                     Unit.Default,
                     new List<ExternalProcessAction>
                     {
-                        new ExternalProcessAction(
+                        new(
                             new ConnectionCommand
                             {
                                 Command = "AddConcordanceToCase",
@@ -139,10 +139,10 @@ public class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordance, Unit
                     ConcordanceDateFormat  = Constant("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
                     FilePath               = ConcordancePath,
                     Custodian              = Constant("Mark"),
-                    FolderName             = Constant("New Folder"),
-                    CasePath               = CasePath
+                    FolderName             = Constant("New Folder")
                 },
                 AssertCount(1, "*.txt"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

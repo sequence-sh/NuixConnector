@@ -30,6 +30,11 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
         CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
 
     /// <summary>
+    /// Gets the CasePath Parameter.
+    /// </summary>
+    public abstract CasePathParameter CasePathParameter { get; }
+
+    /// <summary>
     /// Runs this step asynchronously.
     /// </summary>
     protected async Task<Result<T, IError>> RunAsync(
@@ -50,6 +55,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
             stateMonad.Logger,
             RubyScriptStepFactory.RubyFunction,
             methodParameters.Value,
+            CasePathParameter,
             cancellationToken
         );
 
@@ -68,6 +74,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
                 stateMonad.Logger,
                 RubyScriptStepFactory.RubyFunction,
                 methodParameters.Value,
+                CasePathParameter,
                 cancellationToken
             );
         }

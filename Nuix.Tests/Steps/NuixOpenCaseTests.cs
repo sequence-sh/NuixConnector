@@ -3,21 +3,14 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public class NuixSearchAndTagTests : NuixStepTestBase<NuixSearchAndTag, Unit>
+public class NuixOpenCaseTests : NuixStepTestBase<NuixOpenCase, Unit>
 {
     /// <inheritdoc />
-    public NuixSearchAndTagTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
-    /// <inheritdoc />
-    protected override IEnumerable<DeserializeCase> DeserializeCases
-    {
-        get { yield break; }
-    }
+    public NuixOpenCaseTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 
     /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
@@ -25,12 +18,13 @@ public class NuixSearchAndTagTests : NuixStepTestBase<NuixSearchAndTag, Unit>
         get
         {
             yield return new NuixIntegrationTestCase(
-                "Search and tag",
+                "Test Open Case multiple times",
                 DeleteCaseFolder,
+                AssertCaseDoesNotExist,
                 CreateCase,
-                AddData,
-                new NuixSearchAndTag { SearchTerm = Constant("charm"), Tag = Constant("charm") },
-                AssertCount(1, "tag:charm"),
+                OpenCase,
+                OpenCase,
+                OpenCase,
                 new NuixCloseConnection(),
                 DeleteCaseFolder
             );

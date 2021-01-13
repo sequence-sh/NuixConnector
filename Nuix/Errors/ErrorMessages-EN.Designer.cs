@@ -61,6 +61,15 @@ namespace Reductech.EDR.Connectors.Nuix.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No case was open. Use NuixOpenCase to open a case..
+        /// </summary>
+        internal static string NoCaseOpen {
+            get {
+                return ResourceManager.GetString("NoCaseOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A nuix function cannot have more than one Entity Array parameter..
         /// </summary>
         internal static string TooManyEntityStreams {

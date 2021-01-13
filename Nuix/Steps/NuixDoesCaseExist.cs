@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -55,13 +55,16 @@ public sealed class NuixDoesCaseExist : RubyScriptStepBase<bool>
     public override IRubyScriptStepFactory<bool> RubyScriptStepFactory =>
         NuixDoesCaseExistStepFactory.Instance;
 
+    /// <inheritdoc />
+    public override CasePathParameter CasePathParameter => CasePathParameter.NoCasePath.Instance;
+
     /// <summary>
     /// The path to the case.
     /// </summary>
     [Required]
     [StepProperty(1)]
     [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
+    [RubyArgument("pathArg")]
     [Alias("Case")]
     public IStep<StringStream> CasePath { get; set; } = null!;
 }

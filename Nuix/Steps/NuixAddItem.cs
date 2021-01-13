@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
@@ -40,8 +40,7 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 
     ds = args[""datastream""]
 
-    the_case = $utilities.case_factory.open(pathArg)
-    processor = the_case.create_processor
+    processor = $currentCase.create_processor
 
     #Read special mime type settings from data stream
     if ds != nil
@@ -125,8 +124,7 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 
     log 'Adding items'
     processor.process
-    log 'Items added'
-    the_case.close";
+    log 'Items added'";
 }
 
 /// <summary>
@@ -134,29 +132,19 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 /// </summary>
 [Alias("NuixAdd")]
 [Alias("NuixImportItem")]
-public sealed class NuixAddItem : RubyScriptStepBase<Unit>
+public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixAddItemStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The path of the file or directory to add to the case.
     /// </summary>
     [Required]
-    [StepProperty(4)]
+    [StepProperty(1)]
     [Example("C:/Data/File.txt")]
-    [RubyArgument("filePathsArgs", 4)]
+    [RubyArgument("filePathsArgs")]
     [Alias("Directories")]
     [Alias("Files")]
     public IStep<Array<StringStream>> Paths { get; set; } = null!;
@@ -166,7 +154,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("folderNameArg", 2)]
+    [RubyArgument("folderNameArg")]
     [Alias("Container")]
     [Alias("ToContainer")]
     public IStep<StringStream> FolderName { get; set; } = null!;
@@ -176,14 +164,14 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(3)]
-    [RubyArgument("folderCustodianArg", 3)]
+    [RubyArgument("folderCustodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
 
     /// <summary>
     /// The description of the new folder.
     /// </summary>
-    [StepProperty(5)]
-    [RubyArgument("folderDescriptionArg", 5)]
+    [StepProperty(4)]
+    [RubyArgument("folderDescriptionArg")]
     [DefaultValueExplanation("No Description")]
     public IStep<StringStream>? Description { get; set; }
 
@@ -191,10 +179,10 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// The name of the Processing profile to use.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(6)]
+    [StepProperty(5)]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("processingProfileNameArg", 6)]
+    [RubyArgument("processingProfileNameArg")]
     [Alias("UsingProfile")]
     public IStep<StringStream>? ProcessingProfileName { get; set; }
 
@@ -202,10 +190,10 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// The path to the Processing profile to use
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(7)]
+    [StepProperty(6)]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("processingProfilePathArg", 7)]
+    [RubyArgument("processingProfilePathArg")]
     [Alias("UsingProfilePath")]
     public IStep<StringStream>? ProcessingProfilePath { get; set; }
 
@@ -213,9 +201,9 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// Sets the processing settings to use.
     /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
     /// </summary>
-    [StepProperty(8)]
+    [StepProperty(7)]
     [DefaultValueExplanation("Processing settings will not be changed")]
-    [RubyArgument("processingSettingsArg", 8)]
+    [RubyArgument("processingSettingsArg")]
     [Alias("Settings")]
     public IStep<Core.Entity>? ProcessingSettings { get; set; }
 
@@ -223,18 +211,18 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// Sets the parallel processing settings to use.
     /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
     /// </summary>
-    [StepProperty(9)]
+    [StepProperty(8)]
     [DefaultValueExplanation("Parallel processing settings will not be changed")]
-    [RubyArgument("parallelProcessingSettingsArg", 9)]
+    [RubyArgument("parallelProcessingSettingsArg")]
     public IStep<Core.Entity>? ParallelProcessingSettings { get; set; }
 
     /// <summary>
     /// The path of a file containing passwords to use for decryption.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(10)]
+    [StepProperty(9)]
     [Example("C:/Data/Passwords.txt")]
-    [RubyArgument("passwordFilePathArg", 10)]
+    [RubyArgument("passwordFilePathArg")]
     [DefaultValueExplanation("Do not attempt decryption")]
     [Alias("PasswordFile")]
     public IStep<StringStream>? PasswordFilePath { get; set; }
@@ -244,8 +232,8 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// Should have a 'mime_type' property and then any other special properties.
     /// </summary>
     [RequiredVersion("Nuix", "8.2")]
-    [StepProperty(11)]
-    [RubyArgument("mimeTypeDataStreamArg", 11)]
+    [StepProperty(10)]
+    [RubyArgument("mimeTypeDataStreamArg")]
     [DefaultValueExplanation("Use default settings for all MIME types")]
     public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
 

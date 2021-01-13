@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
@@ -33,15 +34,12 @@ public class NuixAssertPrintPreviewStateTests : NuixStepTestBase<NuixAssertPrint
                 Unit.Default,
                 new List<ExternalProcessAction>
                 {
-                    new ExternalProcessAction(
+                    new(
                         new ConnectionCommand
                         {
                             Command = "GetPrintPreviewState",
                             Arguments = new Dictionary<string, object>
                             {
-                                {
-                                    nameof(NuixAssertPrintPreviewState.CasePath), CasePathString
-                                },
                                 {
                                     nameof(NuixAssertPrintPreviewState.ProductionSetName),
                                     "Production Set"
@@ -49,6 +47,10 @@ public class NuixAssertPrintPreviewStateTests : NuixStepTestBase<NuixAssertPrint
                                 {
                                     nameof(NuixAssertPrintPreviewState.ExpectedState),
                                     PrintPreviewState.All.ToString()
+                                },
+                                {
+                                    nameof(RubyCaseScriptStepBase<bool>.CasePath),
+                                    CasePathString
                                 }
                             }
                         },

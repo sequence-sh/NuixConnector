@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -12,7 +12,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 {
 
 /// <summary>
-/// Close the connection to nuix
+/// Close the connection to nuix. Also closes all cases
 /// </summary>
 [Alias("NuixCloseCase")]
 public sealed class NuixCloseConnection : CompoundStep<Unit>

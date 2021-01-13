@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -37,10 +37,8 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(casePathArg)
-
     log ""Finding Entities""
-    items = the_case.search(searchArg, {})
+    items = $currentCase.search(searchArg, {})
     log ""#{items.length} items found""
     propertyRegex = Regexp.new(propertyRegexArg)
     valueRegex = nil
@@ -65,8 +63,6 @@ public sealed class
             end
         end
     end
-
-    the_case.close
     return text";
 }
 
@@ -75,29 +71,19 @@ public sealed class
 /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
-public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
+public sealed class NuixGetItemProperties : RubyCaseScriptStepBase<StringStream>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixGetItemPropertiesStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("casePathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The term to search for.
     /// </summary>
     [Required]
     [Example("*.txt")]
-    [StepProperty(2)]
-    [RubyArgument("searchArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -106,8 +92,8 @@ public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
     /// </summary>
     [Example("Date")]
     [Required]
-    [StepProperty(3)]
-    [RubyArgument("propertyRegexArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("propertyRegexArg")]
     [Alias("Filter")]
     public IStep<StringStream> PropertyRegex { get; set; } = null!;
 
@@ -116,8 +102,8 @@ public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
     /// If this is set, only values which match this regex will be returned, and only the contents of the first capture group.
     /// </summary>
     [Example(@"(199\d)")]
-    [StepProperty(4)]
-    [RubyArgument("valueRegexArg", 4)]
+    [StepProperty(3)]
+    [RubyArgument("valueRegexArg")]
     [DefaultValueExplanation("All values will be returned")]
     [Alias("ValueFilter")]
     public IStep<StringStream>? ValueRegex { get; set; }

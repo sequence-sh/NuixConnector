@@ -38,7 +38,7 @@ public class
                 AddData,
                 new FileWrite
                 {
-                    Stream = new NuixCreateIrregularItemsReport { CasePath = CasePath },
+                    Stream = new NuixCreateIrregularItemsReport(),
                     Path   = new PathCombine() { Paths = Array(OutputFolder, "Irregular.txt") }
                 },
                 AssertFileContains(
@@ -51,6 +51,7 @@ public class
                     "Irregular.txt",
                     "NeedManualExamination\tNew Folder/data/Jellyfish.txt"
                 ),
+                new NuixCloseConnection(),
                 DeleteCaseFolder,
                 DeleteOutputFolder
             );

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -35,11 +35,10 @@ public sealed class NuixAssignCustodianFactory : RubyScriptStepFactory<NuixAssig
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
     log ""Searching for '#{searchArg}'""
 
     searchOptions = {}
-    items = the_case.search(searchArg, searchOptions)
+    items = $currentCase.search(searchArg, searchOptions)
     log ""#{items.length} found""
 
     j = 0
@@ -51,36 +50,25 @@ public sealed class NuixAssignCustodianFactory : RubyScriptStepFactory<NuixAssig
         end
     }
 
-    log ""#{j} items assigned to custodian #{custodianArg}""
-    the_case.close";
+    log ""#{j} items assigned to custodian #{custodianArg}""";
 }
 
 /// <summary>
 /// Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
 /// </summary>
-public sealed class NuixAssignCustodian : RubyScriptStepBase<Unit>
+public sealed class NuixAssignCustodian : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixAssignCustodianFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The term to search for.
     /// </summary>
     [Required]
-    [StepProperty(2)]
+    [StepProperty(1)]
     [Example("*.txt")]
-    [RubyArgument("searchArg", 2)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -88,8 +76,8 @@ public sealed class NuixAssignCustodian : RubyScriptStepBase<Unit>
     /// The custodian to assign to found results.
     /// </summary>
     [Required]
-    [StepProperty(3)]
-    [RubyArgument("custodianArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("custodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
 }
 

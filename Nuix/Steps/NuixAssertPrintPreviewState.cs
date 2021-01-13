@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Enums;
@@ -38,17 +38,14 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
-    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+    productionSet = $currentCase.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
-        the_case.close
         raise 'Production Set Not Found'
         
         exit
     else
         r = productionSet.getPrintPreviewState()
-        the_case.close
 
         if r.to_s.downcase == expectedStateArg.to_s.downcase
             log ""Print preview state was #{r}, as expected.""
@@ -62,37 +59,27 @@ public sealed class
 /// <summary>
 /// Checks the print preview state of the production set.
 /// </summary>
-public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
+public sealed class NuixAssertPrintPreviewState : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixAssertPrintPreviewStateStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The production set to reorder.
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("productionSetNameArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
     /// <summary>
     /// The expected print preview state of the production set;
     /// </summary>
-    [StepProperty(3)]
+    [StepProperty(2)]
     [DefaultValueExplanation(nameof(PrintPreviewState.All))]
-    [RubyArgument("expectedStateArg", 3)]
+    [RubyArgument("expectedStateArg")]
     [Alias("HasState")]
     public IStep<PrintPreviewState> ExpectedState { get; set; } =
         new EnumConstant<PrintPreviewState>(PrintPreviewState.All);

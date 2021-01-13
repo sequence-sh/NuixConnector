@@ -17,6 +17,10 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
     /// <summary>
     /// Creates a new RubyFunctionParameter.
     /// </summary>
+    /// <param name="parameterName">Argument in ruby</param>
+    /// <param name="propertyName">Property in C#</param>
+    /// <param name="isOptional">Is this optional</param>
+    /// <param name="requiredNuixVersion">Required version</param>
     public RubyFunctionParameter(
         string parameterName,
         string propertyName,
@@ -33,7 +37,7 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
     public override string ToString() => ParameterName;
 
     /// <summary>
-    /// The name of the argument.
+    /// The name of the argument in ruby.
     /// Should be lower case as per style guidelines.
     /// The arguments to a function should have unique names.
     /// </summary>
@@ -125,7 +129,7 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
     public static IReadOnlyCollection<RubyFunctionParameter> GetRubyFunctionParameters<TStep>()
         where TStep : IRubyScriptStep
     {
-        var list = new List<(RubyFunctionParameter argument, int order)>();
+        var list = new List<RubyFunctionParameter>();
 
         foreach (var p in typeof(TStep).GetProperties())
         {
@@ -142,8 +146,12 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
 
                 if (isRunnableProcess)
                     list.Add(
-                        (new RubyFunctionParameter(argumentAttribute.RubyName, p.Name, isNullable, version),
-                         argumentAttribute.Order)
+                        new RubyFunctionParameter(
+                            argumentAttribute.RubyName,
+                            p.Name,
+                            isNullable,
+                            version
+                        )
                     );
                 else
 
@@ -157,7 +165,7 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
                 );
         }
 
-        return list.OrderBy(x => x.order).Select(x => x.argument).ToList();
+        return list;
     }
 
     private static (bool isRunnableProcess, bool isOptional) CheckType(PropertyInfo propertyInfo)

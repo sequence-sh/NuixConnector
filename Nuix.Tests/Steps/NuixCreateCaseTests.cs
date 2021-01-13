@@ -58,7 +58,6 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                             FunctionDefinition = "",
                             Arguments = new Dictionary<string, object>
                             {
-                                { nameof(NuixAddItem.CasePath), CasePathString },
                                 { nameof(NuixAddItem.FolderName), "New Folder" },
                                 { nameof(NuixAddItem.Custodian), "Mark" },
                                 {
@@ -122,7 +121,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
             yield return new NuixDeserializeTest(
                     "Create Case then add item",
                     $@"- NuixCreateCase CaseName: '{caseName}' CasePath: '{CasePathString}' Investigator: '{investigator}'
-- NuixAddItem CasePath: '{CasePathString}' Custodian: '{custodian}' FolderName: '{folderName}' Paths: ['{dataPath}']",
+- NuixAddItem Custodian: '{custodian}' FolderName: '{folderName}' Paths: ['{dataPath}']",
                     Unit.Default,
                     new List<ExternalProcessAction>
                     {
@@ -148,10 +147,12 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                                 Command = "AddToCase",
                                 Arguments = new Dictionary<string, object>
                                 {
-                                    { nameof(NuixAddItem.CasePath), CasePathString },
                                     { nameof(NuixAddItem.Custodian), custodian },
                                     { nameof(NuixAddItem.FolderName), folderName },
-                                    { nameof(NuixAddItem.Paths), new List<string> { dataPath } },
+                                    {
+                                        nameof(NuixAddItem.Paths),
+                                        new List<string> { dataPath }
+                                    },
                                 }
                             },
                             new ConnectionOutput
@@ -178,6 +179,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                 AssertCaseDoesNotExist,
                 CreateCase,
                 new AssertTrue { Boolean = new NuixDoesCaseExist { CasePath = CasePath } },
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

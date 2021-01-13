@@ -57,27 +57,32 @@ end
 ################################################################################
 
 def open_case(path)
+
+  unless $currentCase.nil?
+    if $currentCase.get_location().getPath() == path
+        return #the case is already open
+    end
+    close_case()
+  end
+
   log "Opening case: #{path}"
-  nuix_case = $utilities.case_factory.open(path)
-  return nuix_case
+  $currentCase = $utilities.case_factory.open(path)
 end
 
-def close_case(nuix_case)
-  log "Closing case: #{nuix_case.location}"
-  nuix_case.close
-  return nuix_case.is_closed
-end
-
-def BinToHex(s)
-  suffix = s.to_s.each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join('').upcase
-  return '0x' + suffix
+def close_case()
+  unless $currentCase.nil?
+      log "Closing case: #{$currentCase.location}"
+      $currentCase.close
+  end
 end
 
 ################################################################################
 
+
 log "Starting"
 
 $utilities = utilities if defined? utilities
+$currentCase = nil
 
 functions = {}
 
@@ -103,10 +108,22 @@ loop do
   args = json['args']
   fdef = json['def']
   is_stream = json['isstream']
+  case_path = json['casepath']
 
-  #puts cmd
-  #puts args.inspect
-  #puts fdef
+  #log cmd
+  #log args.inspect
+  #log fdef
+  #log case_path
+  #log "Previous Current Case: '#{$currentCase}'"
+
+  if case_path.nil?
+    close_case        
+  else
+    open_case(case_path)
+  end
+ 
+  #log "New Current Case: '#{$currentCase}'"
+  
 
   unless fdef.nil?
     op = functions.key?(cmd) ? 'Replacing' : 'Adding new'
@@ -157,6 +174,10 @@ loop do
     write_error("Could not execute #{cmd}: #{ex}", stack: ex.backtrace.join("\n"), terminating: true)
   end
 
+  
+
 end
+
+close_case
 
 log "Finished"

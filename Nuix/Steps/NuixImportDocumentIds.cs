@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -36,10 +36,7 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-
-    the_case = $utilities.case_factory.open(pathArg)
-
-    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+    productionSet = $currentCase.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
         log ""Production Set Not Found""
@@ -59,36 +56,24 @@ public sealed class
         else
             log ""#{failedItemsCount} items failed to import""
 
-    end
-
-    the_case.close";
+    end";
 }
 
 /// <summary>
 /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
 /// </summary>
-public sealed class NuixImportDocumentIds : RubyScriptStepBase<Unit>
+public sealed class NuixImportDocumentIds : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixImportDocumentIdsStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The production set to add results to.
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("productionSetNameArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
@@ -96,17 +81,17 @@ public sealed class NuixImportDocumentIds : RubyScriptStepBase<Unit>
     /// Specifies the file path of the document ID list.
     /// </summary>
     [Required]
-    [StepProperty(3)]
-    [RubyArgument("dataPathArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("dataPathArg")]
     [Alias("FromList")]
     public IStep<StringStream> DataPath { get; set; } = null!;
 
     /// <summary>
     /// Specifies that the source production set name(s) are contained in the document ID list.
     /// </summary>
-    [StepProperty(4)]
+    [StepProperty(3)]
     [DefaultValueExplanation("false")]
-    [RubyArgument("sourceProductionSetsInDataArg", 4)]
+    [RubyArgument("sourceProductionSetsInDataArg")]
     [Alias("SetNameInList")]
     public IStep<bool> AreSourceProductionSetsInData { get; set; } = new BoolConstant(false);
 }

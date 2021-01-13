@@ -3,6 +3,7 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.Util;
 using Xunit.Abstractions;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
+using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -26,18 +27,18 @@ public class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToProductionS
         {
             yield return new NuixIntegrationTestCase(
                 "Add to production set",
-                Constants.DeleteCaseFolder,
-                Constants.CreateCase,
-                Constants.AddData,
+                DeleteCaseFolder,
+                CreateCase,
+                AddData,
                 new NuixAddToProductionSet
                 {
-                    CasePath              = Constants.CasePath,
                     SearchTerm            = Constant("charm"),
                     ProductionSetName     = Constant("charmset"),
-                    ProductionProfilePath = Constants.TestProductionProfilePath
+                    ProductionProfilePath = TestProductionProfilePath
                 },
-                Constants.AssertCount(1, "production-set:charmset"),
-                Constants.DeleteCaseFolder
+                AssertCount(1, "production-set:charmset"),
+                new NuixCloseConnection(),
+                DeleteCaseFolder
             );
         }
     }

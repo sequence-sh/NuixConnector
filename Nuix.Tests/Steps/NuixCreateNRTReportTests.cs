@@ -34,7 +34,6 @@ public class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Un
                 AddData,
                 new NuixAddToProductionSet
                 {
-                    CasePath              = CasePath,
                     SearchTerm            = Constant("*.txt"),
                     ProductionSetName     = Constant("prodset"),
                     ProductionProfilePath = TestProductionProfilePath
@@ -52,6 +51,7 @@ public class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Un
                 },
                 AssertFileContains(GeneralDataFolder, "NRT", "PDF-1.4"),
                 new DeleteItem { Path = NRTFolder },
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

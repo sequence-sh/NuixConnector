@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -28,7 +29,8 @@ public static class NuixConnectionHelper
 {
     internal const string NuixGeneralScriptName = "edr-nuix-connector.rb";
 
-    internal static readonly VariableName NuixVariableName = new("ReductechNuixConnection");
+    internal static readonly VariableName NuixVariableName =
+        new("ReductechNuixConnection");
 
     /// <summary>
     /// Gets or creates a connection to nuix.
@@ -129,8 +131,6 @@ public static class NuixConnectionHelper
 
         stateMonad.RemoveVariable(NuixVariableName, false);
 
-        //TODO remove connection variable
-
         return Unit.Default;
     }
 }
@@ -154,7 +154,9 @@ public sealed class NuixConnection : IDisposable
     /// <summary>
     /// Returns true if the underlying connection has been disposed.
     /// </summary>
-    public bool IsDisposed { get; private set; } = false;
+    public bool IsDisposed { get; private set; }
+
+    private Maybe<string> CurrentCasePath { get; set; } = Maybe<string>.None;
 
     private readonly SemaphoreSlim _semaphore = new(1);
 
@@ -182,10 +184,53 @@ public sealed class NuixConnection : IDisposable
     /// </summary>
     public async Task<Result<T, IErrorBuilder>> RunFunctionAsync<T>(
         ILogger logger,
-        IRubyFunction<T> function,
+        RubyFunction<T> function,
         IReadOnlyDictionary<RubyFunctionParameter, object> parameters,
+        CasePathParameter casePathParameter,
         CancellationToken cancellationToken)
     {
+        string? casePath;
+
+        switch (casePathParameter)
+        {
+            case CasePathParameter.NoCasePath:
+            {
+                casePath        = null;
+                CurrentCasePath = Maybe<string>.None;
+                break;
+            }
+            case CasePathParameter.OpensCase opensCase:
+            {
+                if (parameters.TryGetValue(opensCase.Parameter, out var cp))
+                {
+                    CurrentCasePath = cp.ToString()!;
+                    casePath        = null;
+                }
+                else
+                    return new ErrorBuilder(
+                        ErrorCode.MissingParameter,
+                        opensCase.Parameter.PropertyName
+                    );
+
+                break;
+            }
+            case CasePathParameter.UsesCase usesCase:
+            {
+                if (parameters.TryGetValue(usesCase.Parameter, out var cp))
+                {
+                    casePath        = cp.ToString()!;
+                    CurrentCasePath = casePath;
+                }
+                else if (CurrentCasePath.HasValue)
+                    casePath = CurrentCasePath.Value;
+                else
+                    return new ErrorBuilder(ErrorCode_Nuix.NoCaseOpen);
+
+                break;
+            }
+            default: throw new ArgumentOutOfRangeException(nameof(casePathParameter));
+        }
+
         if (IsDisposed)
             throw new ObjectDisposedException(nameof(NuixConnection));
 
@@ -193,7 +238,10 @@ public sealed class NuixConnection : IDisposable
 
         try
         {
-            var command = new ConnectionCommand { Command = function.FunctionName };
+            var command = new ConnectionCommand
+            {
+                Command = function.FunctionName, CasePath = casePath
+            };
 
             if (_evaluatedFunctions.Add(function.FunctionName))
                 command.FunctionDefinition = function.CompileFunctionText();
@@ -279,6 +327,11 @@ public sealed class NuixConnection : IDisposable
         }
     }
 
+    private static readonly Regex JavaWarningRegex = new Regex(
+        @"\(eval\):9: warning:(?<text>.+)",
+        RegexOptions.Compiled
+    );
+
     private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(
         ILogger logger,
         CancellationToken cancellationToken,
@@ -314,11 +367,28 @@ public sealed class NuixConnection : IDisposable
             }
             catch (Exception)
             {
-                return new ErrorBuilder(
-                    ErrorCode.CouldNotParse,
-                    jsonString,
-                    nameof(ConnectionOutput)
-                );
+                var warningMatch = JavaWarningRegex.Match(jsonString);
+
+                if (warningMatch.Success)
+                {
+                    connectionOutput = new ConnectionOutput
+                    {
+                        Log = new ConnectionOutputLog
+                        {
+                            Message = warningMatch.Groups["text"].Value, Severity = "warn"
+                        }
+                    };
+
+                    source = StreamSource.Output; //Filthy hack
+                }
+                else
+                {
+                    return new ErrorBuilder(
+                        ErrorCode.CouldNotParse,
+                        jsonString,
+                        nameof(ConnectionOutput)
+                    );
+                }
             }
 
             var valid = connectionOutput.Validate();

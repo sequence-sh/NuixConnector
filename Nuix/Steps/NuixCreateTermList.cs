@@ -1,10 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
 {
@@ -37,10 +34,9 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(casePathArg)
 
     log ""Generating Report:""
-    caseStatistics = the_case.getStatistics()
+    caseStatistics = $currentCase.getStatistics()
     termStatistics = caseStatistics.getTermStatistics("""", {""sort"" => ""on"", ""deduplicate"" => ""md5""}) #for some reason this takes strings rather than symbols
     #todo terms per custodian
     log ""#{termStatistics.length} terms""
@@ -50,8 +46,6 @@ public sealed class
     termStatistics.each do |term, count|
         text << ""\n#{term}\t#{count}""
     end
-
-    the_case.close
     return text";
 }
 
@@ -60,21 +54,11 @@ public sealed class
 /// The report is in CSV format. The headers are 'Term' and 'Count'
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
-public sealed class NuixCreateTermList : RubyScriptStepBase<StringStream>
+public sealed class NuixCreateTermList : RubyCaseScriptStepBase<StringStream>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixCreateTermListStepFactory.Instance;
-
-    /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("casePathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
 }
 
 }

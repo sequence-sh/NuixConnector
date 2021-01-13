@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -35,11 +35,10 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
     log ""Searching for '#{searchArg}'""
 
     searchOptions = {}
-    items = the_case.search(searchArg, searchOptions)
+    items = $currentCase.search(searchArg, searchOptions)
     log ""#{items.length} found""
 
     j = 0
@@ -49,36 +48,25 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
        j += 1 if added
     }
 
-    log ""#{j} items tagged with #{tagArg}""
-    the_case.close";
+    log ""#{j} items tagged with #{tagArg}""";
 }
 
 /// <summary>
 /// Searches a NUIX case with a particular search string and tags all files it finds.
 /// </summary>
-public sealed class NuixSearchAndTag : RubyScriptStepBase<Unit>
+public sealed class NuixSearchAndTag : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixSearchAndTagStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The term to search for.
     /// </summary>
     [Required]
-    [StepProperty(2)]
+    [StepProperty(1)]
     [Example("*.txt")]
-    [RubyArgument("searchArg", 2)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -86,8 +74,8 @@ public sealed class NuixSearchAndTag : RubyScriptStepBase<Unit>
     /// The tag to assign to found results.
     /// </summary>
     [Required]
-    [StepProperty(3)]
-    [RubyArgument("tagArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("tagArg")]
     public IStep<StringStream> Tag { get; set; } = null!;
 }
 

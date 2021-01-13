@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -34,10 +34,8 @@ public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountI
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
     searchOptions = {}
-    count = the_case.count(searchArg, searchOptions)
-    the_case.close
+    count = $currentCase.count(searchArg, searchOptions)
     log ""#{count} found matching '#{searchArg}'""
     return count";
 }
@@ -45,29 +43,19 @@ public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountI
 /// <summary>
 /// Returns the number of items matching a particular search term
 /// </summary>
-public sealed class NuixCountItems : RubyScriptStepBase<int>
+public sealed class NuixCountItems : RubyCaseScriptStepBase<int>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<int> RubyScriptStepFactory =>
         NuixCountItemsStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The search term to count.
     /// </summary>
     [Required]
     [Example("*.txt")]
-    [StepProperty(2)]
-    [RubyArgument("searchArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 }

@@ -33,18 +33,16 @@ public class NuixRemoveFromProductionSetTests : NuixStepTestBase<NuixRemoveFromP
                 AddData,
                 new NuixAddToProductionSet
                 {
-                    CasePath              = CasePath,
                     SearchTerm            = Constant("*.txt"),
                     ProductionSetName     = Constant("fullset"),
                     ProductionProfilePath = TestProductionProfilePath
                 },
                 new NuixRemoveFromProductionSet
                 {
-                    CasePath          = CasePath,
-                    SearchTerm        = Constant("Charm"),
-                    ProductionSetName = Constant("fullset")
+                    SearchTerm = Constant("Charm"), ProductionSetName = Constant("fullset")
                 },
                 AssertCount(1, "production-set:fullset"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

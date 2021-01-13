@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -36,8 +36,7 @@ public class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
-    productionSet = the_case.findProductionSetByName(productionSetNameArg)
+    productionSet = $currentCase.findProductionSetByName(productionSetNameArg)
 
     if(productionSet == nil)
         log ""Production Set Not Found""
@@ -50,36 +49,24 @@ public class
         }
         resultMap = productionSet.annotateDocumentIdList(options)
         log resultMap
-    end
-
-    the_case.close";
+    end";
 }
 
 /// <summary>
 /// Annotates a document ID list to add production set names to it.
 /// </summary>
-public class NuixAnnotateDocumentIdList : RubyScriptStepBase<Unit>
+public class NuixAnnotateDocumentIdList : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixAnnotateDocumentIdListStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The production set to get names from.
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("productionSetNameArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
@@ -87,8 +74,8 @@ public class NuixAnnotateDocumentIdList : RubyScriptStepBase<Unit>
     /// Specifies the file path of the document ID list.
     /// </summary>
     [Required]
-    [StepProperty(3)]
-    [RubyArgument("dataPathArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("dataPathArg")]
     [Alias("IdList")]
     public IStep<StringStream> DataPath { get; set; } = null!;
 }
