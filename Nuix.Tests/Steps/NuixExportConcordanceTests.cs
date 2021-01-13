@@ -50,7 +50,8 @@ public class NuixExportConcordanceTests : NuixStepTestBase<NuixExportConcordance
                     "Visible, invisible"
                 ),
                 new DeleteItem { Path = Constant(ConcordanceFolder) },
-                new NuixCloseConnection(), DeleteCaseFolder
+                new NuixCloseConnection(),
+                DeleteCaseFolder
             );
         }
     }
