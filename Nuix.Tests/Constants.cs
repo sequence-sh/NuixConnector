@@ -17,8 +17,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 public static class Constants
 {
     //TODO set paths from a config file, or something
-
-    public const string Nuix6Path = @"C:\Program Files\Nuix\Nuix 6.2";
+    public const string Nuix70Path = @"C:\Program Files\Nuix\Nuix 7.0";
     public const string Nuix7Path = @"C:\Program Files\Nuix\Nuix 7.8";
     public const string Nuix8Path = @"C:\Program Files\Nuix\Nuix 8.8";
 
@@ -35,10 +34,18 @@ public static class Constants
             new Version(8, 8),
             AllNuixFeatures
         ),
-        //new NuixSettings(true, Path.Join(Nuix7Path, NuixConsoleExe), new Version(7, 8), //TODO redo these
-        //    AllNuixFeatures),
-        //new NuixSettings(true, Path.Join(Nuix6Path, NuixConsoleExe), new Version(6, 2),
-        //    AllNuixFeatures),
+        new NuixSettings(
+            true,
+            Path.Join(Nuix7Path, NuixConsoleExe),
+            new Version(7, 8),
+            AllNuixFeatures
+        ),
+        new NuixSettings(
+            true,
+            Path.Join(Nuix70Path, NuixConsoleExe),
+            new Version(7, 0),
+            AllNuixFeatures
+        )
     };
 
     public static readonly string GeneralDataFolder = Path.Combine(
