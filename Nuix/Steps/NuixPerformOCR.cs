@@ -37,7 +37,7 @@ public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerfor
     /// <inheritdoc />
     public override string RubyFunctionText => @"
     searchTerm = searchTermArg
-    items = $currentCase.searchUnsorted(searchTerm).to_a
+    items = $current_case.searchUnsorted(searchTerm).to_a
 
     log ""Running OCR on #{items.length} items""
 

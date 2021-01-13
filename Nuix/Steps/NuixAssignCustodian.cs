@@ -38,7 +38,7 @@ public sealed class NuixAssignCustodianFactory : RubyScriptStepFactory<NuixAssig
     log ""Searching for '#{searchArg}'""
 
     searchOptions = {}
-    items = $currentCase.search(searchArg, searchOptions)
+    items = $current_case.search(searchArg, searchOptions)
     log ""#{items.length} found""
 
     j = 0

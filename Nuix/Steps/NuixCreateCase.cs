@@ -42,7 +42,7 @@ public sealed class NuixCreateCaseStepFactory : RubyScriptStepFactory<NuixCreate
     :description => descriptionArg,
     :investigator => investigatorArg)
     log 'Case Created'
-    $currentCase = the_case";
+    $current_case = the_case";
 }
 
 /// <summary>

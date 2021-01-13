@@ -38,7 +38,7 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
     public override string RubyFunctionText { get; } =
         //language=RUBY
         @"
-    processor = $currentCase.create_processor
+    processor = $current_case.create_processor
     processor.processing_settings = { :create_thumbnails       => false,
                                     :additional_digests      => [ 'SHA-1' ] }
 

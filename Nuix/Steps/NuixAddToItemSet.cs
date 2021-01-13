@@ -37,14 +37,14 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    itemSet = $currentCase.findItemSetByName(itemSetNameArg)
+    itemSet = $current_case.findItemSetByName(itemSetNameArg)
     if(itemSet == nil)
         itemSetOptions = {}
         itemSetOptions[:deduplication] = deduplicationArg if deduplicationArg != nil
         itemSetOptions[:description] = descriptionArg if descriptionArg != nil
         itemSetOptions[:deduplicateBy] = deduplicateByArg if deduplicateByArg != nil
         itemSetOptions[:custodianRanking] = custodianRankingArg.split("","") if custodianRankingArg != nil
-        itemSet = $currentCase.createItemSet(itemSetNameArg, itemSetOptions)
+        itemSet = $current_case.createItemSet(itemSetNameArg, itemSetOptions)
 
         log ""Item Set Created""
     else
@@ -55,7 +55,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
     searchOptions = {}
     searchOptions[:order] = orderArg if orderArg != nil
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
-    items = $currentCase.search(searchArg, searchOptions)
+    items = $current_case.search(searchArg, searchOptions)
     log ""#{items.length} found""
     itemSet.addItems(items)
     log ""items added""";

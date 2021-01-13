@@ -39,14 +39,14 @@ public sealed class NuixRemoveFromProductionSetStepFactory
 
     log ""Searching""
 
-    productionSet = $currentCase.findProductionSetByName(productionSetNameArg)
+    productionSet = $current_case.findProductionSetByName(productionSetNameArg)
     if(productionSet == nil)
         log ""Production Set Not Found""
     else
         log ""Production Set Found""
 
         if searchArg != nil
-            items = $currentCase.searchUnsorted(searchArg)
+            items = $current_case.searchUnsorted(searchArg)
             productionSetItems = productionSet.getItems();
             itemsToRemove = items.to_a & productionSetItems
             productionSet.removeItems(itemsToRemove)

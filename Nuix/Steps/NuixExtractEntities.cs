@@ -38,14 +38,14 @@ public sealed class
     public override string RubyFunctionText => @"
     log ""Extracting Entities:""
 
-    entityTypes = $currentCase.getAllEntityTypes()
+    entityTypes = $current_case.getAllEntityTypes()
 
     results = Hash.new { |h, k| h[k] = Hash.new { [] } }
 
     entitiesText = ""TypeDescription\tValue\tCount"" #The headers for the entities file
 
     if entityTypes.length > 0
-        allItems = $currentCase.searchUnsorted(""named-entities:*"")
+        allItems = $current_case.searchUnsorted(""named-entities:*"")
 
         allItems.each do |i|
             entityTypes.each do |et|

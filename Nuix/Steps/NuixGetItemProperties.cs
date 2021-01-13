@@ -38,7 +38,7 @@ public sealed class
     /// <inheritdoc />
     public override string RubyFunctionText => @"
     log ""Finding Entities""
-    items = $currentCase.search(searchArg, {})
+    items = $current_case.search(searchArg, {})
     log ""#{items.length} items found""
     propertyRegex = Regexp.new(propertyRegexArg)
     valueRegex = nil
