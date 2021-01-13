@@ -22,6 +22,7 @@ workflow:
 variables:
   PACKAGE_NAME_NUGET: Reductech.EDR.Connectors.Nuix
   PACKAGE_NAME_DLL: Reductech.EDR.Connectors.Nuix
+  GIT_SUBMODULE_STRATEGY: normal
 
 .get_coverage:
   - &get_coverage |
