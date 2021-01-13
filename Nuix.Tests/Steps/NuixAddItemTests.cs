@@ -75,7 +75,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 DeleteCaseFolder,
                 AssertCaseDoesNotExist,
                 CreateCase,
-                OpenCase,
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
@@ -93,7 +92,6 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 DeleteCaseFolder,
                 AssertCaseDoesNotExist,
                 CreateCase,
-                OpenCase,
                 AssertCount(0, "*"),
                 new NuixAddItem
                 {

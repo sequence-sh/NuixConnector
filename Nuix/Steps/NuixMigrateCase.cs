@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -36,6 +37,7 @@ public sealed class NuixMigrateCaseStepFactory : RubyScriptStepFactory<NuixMigra
     /// <inheritdoc />
     public override string RubyFunctionText => @"
     log ""Opening Case, migrating if necessary""
+    close_case
 
     options = {migrate: true}
 
@@ -55,7 +57,8 @@ public sealed class NuixMigrateCase : RubyScriptStepBase<Unit>
         NuixMigrateCaseStepFactory.Instance;
 
     /// <inheritdoc />
-    public override CasePathParameter CasePathParameter => CasePathParameter.NoCasePath.Instance;
+    public override CasePathParameter CasePathParameter =>
+        new CasePathParameter.ChangesOpenCase(Maybe<RubyFunctionParameter>.None);
 
     /// <summary>
     /// The path to the case.

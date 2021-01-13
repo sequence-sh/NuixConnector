@@ -11,27 +11,40 @@ public record CasePathParameter
     private CasePathParameter() { }
 
     /// <summary>
-    /// This function doesn't need an opened case
+    /// Ignores the currently open case
     /// </summary>
-    public record NoCasePath : CasePathParameter
+    public record IgnoresOpenCase : CasePathParameter
     {
-        private NoCasePath() { }
+        private IgnoresOpenCase() { }
 
         /// <summary>
-        /// The Instance
+        /// The instance
         /// </summary>
-        public static readonly NoCasePath Instance = new NoCasePath();
+        public static IgnoresOpenCase Instance { get; } = new();
     }
 
     /// <summary>
-    /// This function opens a case
+    /// This function changes the currently open case
     /// </summary>
-    public record OpensCase(RubyFunctionParameter Parameter) : CasePathParameter;
+    public record ChangesOpenCase
+        (Maybe<RubyFunctionParameter> NewCaseParameter) : CasePathParameter
+    {
+        /// <summary>
+        /// The parameter pointing to the new case. If empty, the new case will be empty.
+        /// </summary>
+        public Maybe<RubyFunctionParameter> NewCaseParameter { get; init; } = NewCaseParameter;
+    }
 
     /// <summary>
     /// This function uses a case
     /// </summary>
-    public record UsesCase(RubyFunctionParameter Parameter) : CasePathParameter;
+    public record UsesCase(RubyFunctionParameter CaseParameter) : CasePathParameter
+    {
+        /// <summary>
+        /// The parameter pointing to the case to use.
+        /// </summary>
+        public RubyFunctionParameter CaseParameter { get; init; } = CaseParameter;
+    }
 }
 
 }
