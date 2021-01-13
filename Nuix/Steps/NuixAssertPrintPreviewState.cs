@@ -59,7 +59,7 @@ public sealed class
 /// <summary>
 /// Checks the print preview state of the production set.
 /// </summary>
-public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
+public sealed class NuixAssertPrintPreviewState : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -70,7 +70,7 @@ public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("productionSetNameArg", 1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
@@ -79,7 +79,7 @@ public sealed class NuixAssertPrintPreviewState : RubyScriptStepBase<Unit>
     /// </summary>
     [StepProperty(2)]
     [DefaultValueExplanation(nameof(PrintPreviewState.All))]
-    [RubyArgument("expectedStateArg", 2)]
+    [RubyArgument("expectedStateArg")]
     [Alias("HasState")]
     public IStep<PrintPreviewState> ExpectedState { get; set; } =
         new EnumConstant<PrintPreviewState>(PrintPreviewState.All);

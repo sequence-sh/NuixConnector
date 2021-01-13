@@ -13,7 +13,15 @@ public record CasePathParameter
     /// <summary>
     /// This function doesn't need an opened case
     /// </summary>
-    public record NoCasePath : CasePathParameter;
+    public record NoCasePath : CasePathParameter
+    {
+        private NoCasePath() { }
+
+        /// <summary>
+        /// The Instance
+        /// </summary>
+        public static readonly NoCasePath Instance = new NoCasePath();
+    }
 
     /// <summary>
     /// This function opens a case

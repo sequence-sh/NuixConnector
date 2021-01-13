@@ -62,7 +62,7 @@ public sealed class
 /// <summary>
 /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
 /// </summary>
-public sealed class NuixImportDocumentIds : RubyScriptStepBase<Unit>
+public sealed class NuixImportDocumentIds : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -73,7 +73,7 @@ public sealed class NuixImportDocumentIds : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("productionSetNameArg", 1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
@@ -82,7 +82,7 @@ public sealed class NuixImportDocumentIds : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("dataPathArg", 2)]
+    [RubyArgument("dataPathArg")]
     [Alias("FromList")]
     public IStep<StringStream> DataPath { get; set; } = null!;
 
@@ -91,7 +91,7 @@ public sealed class NuixImportDocumentIds : RubyScriptStepBase<Unit>
     /// </summary>
     [StepProperty(3)]
     [DefaultValueExplanation("false")]
-    [RubyArgument("sourceProductionSetsInDataArg", 3)]
+    [RubyArgument("sourceProductionSetsInDataArg")]
     [Alias("SetNameInList")]
     public IStep<bool> AreSourceProductionSetsInData { get; set; } = new BoolConstant(false);
 }

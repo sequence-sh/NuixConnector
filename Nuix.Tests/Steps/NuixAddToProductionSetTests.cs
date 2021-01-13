@@ -37,6 +37,7 @@ public class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToProductionS
                     ProductionProfilePath = TestProductionProfilePath
                 },
                 AssertCount(1, "production-set:charmset"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

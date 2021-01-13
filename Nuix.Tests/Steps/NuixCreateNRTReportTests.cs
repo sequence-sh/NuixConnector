@@ -51,6 +51,7 @@ public class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Un
                 },
                 AssertFileContains(GeneralDataFolder, "NRT", "PDF-1.4"),
                 new DeleteItem { Path = NRTFolder },
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

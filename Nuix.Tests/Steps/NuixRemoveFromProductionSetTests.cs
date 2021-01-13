@@ -42,6 +42,7 @@ public class NuixRemoveFromProductionSetTests : NuixStepTestBase<NuixRemoveFromP
                     SearchTerm = Constant("Charm"), ProductionSetName = Constant("fullset")
                 },
                 AssertCount(1, "production-set:fullset"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

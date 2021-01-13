@@ -58,7 +58,7 @@ public sealed class
 /// Reorders and renumbers the items in a production set.
 /// </summary>
 [Alias("NuixReorderProduction")]
-public sealed class NuixReorderProductionSet : RubyScriptStepBase<Unit>
+public sealed class NuixReorderProductionSet : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -69,7 +69,7 @@ public sealed class NuixReorderProductionSet : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("productionSetNameArg", 1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("Set")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
@@ -78,7 +78,7 @@ public sealed class NuixReorderProductionSet : RubyScriptStepBase<Unit>
     /// </summary>
     [StepProperty(2)]
     [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
-    [RubyArgument("sortOrderArg", 2)]
+    [RubyArgument("sortOrderArg")]
     [Alias("Order")]
     public IStep<ProductionSetSortOrder> SortOrder { get; set; } =
         new EnumConstant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);

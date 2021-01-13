@@ -55,7 +55,7 @@ public class
 /// <summary>
 /// Annotates a document ID list to add production set names to it.
 /// </summary>
-public class NuixAnnotateDocumentIdList : RubyScriptStepBase<Unit>
+public class NuixAnnotateDocumentIdList : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -66,7 +66,7 @@ public class NuixAnnotateDocumentIdList : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("productionSetNameArg", 1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
@@ -75,7 +75,7 @@ public class NuixAnnotateDocumentIdList : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("dataPathArg", 2)]
+    [RubyArgument("dataPathArg")]
     [Alias("IdList")]
     public IStep<StringStream> DataPath { get; set; } = null!;
 }

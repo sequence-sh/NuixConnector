@@ -37,6 +37,7 @@ public class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit>
                 },
                 new NuixPerformOCR { SearchTerm = Constant("*.png") },
                 AssertCount(1, "sheep"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
 
@@ -56,6 +57,7 @@ public class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit>
                     SearchTerm = Constant("*.png"), OCRProfileName = Constant("Default")
                 },
                 AssertCount(1, "sheep"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

@@ -63,7 +63,7 @@ public sealed class NuixOpenCase : RubyScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [Example("C:/Cases/MyCase")]
-    [RubyArgument(PathArg, 1)]
+    [RubyArgument(PathArg)]
     [Alias("Case")]
     public IStep<StringStream> CasePath { get; set; } = null!;
 }

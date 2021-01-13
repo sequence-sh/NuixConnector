@@ -64,7 +64,7 @@ public sealed class NuixRemoveFromProductionSetStepFactory
 /// <summary>
 /// Removes particular items from a Nuix production set.
 /// </summary>
-public sealed class NuixRemoveFromProductionSet : RubyScriptStepBase<Unit>
+public sealed class NuixRemoveFromProductionSet : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -75,7 +75,7 @@ public sealed class NuixRemoveFromProductionSet : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("productionSetNameArg", 1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
@@ -85,7 +85,7 @@ public sealed class NuixRemoveFromProductionSet : RubyScriptStepBase<Unit>
     [StepProperty(2)]
     [DefaultValueExplanation("All items will be removed.")]
     [Example("Tag:sushi")]
-    [RubyArgument("searchArg", 2)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream>? SearchTerm { get; set; }
 }

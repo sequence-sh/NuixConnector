@@ -71,7 +71,7 @@ public sealed class
 /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
-public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
+public sealed class NuixGetItemProperties : RubyCaseScriptStepBase<StringStream>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
@@ -83,7 +83,7 @@ public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
     [Required]
     [Example("*.txt")]
     [StepProperty(1)]
-    [RubyArgument("searchArg", 1)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -93,7 +93,7 @@ public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
     [Example("Date")]
     [Required]
     [StepProperty(2)]
-    [RubyArgument("propertyRegexArg", 2)]
+    [RubyArgument("propertyRegexArg")]
     [Alias("Filter")]
     public IStep<StringStream> PropertyRegex { get; set; } = null!;
 
@@ -103,7 +103,7 @@ public sealed class NuixGetItemProperties : RubyScriptStepBase<StringStream>
     /// </summary>
     [Example(@"(199\d)")]
     [StepProperty(3)]
-    [RubyArgument("valueRegexArg", 3)]
+    [RubyArgument("valueRegexArg")]
     [DefaultValueExplanation("All values will be returned")]
     [Alias("ValueFilter")]
     public IStep<StringStream>? ValueRegex { get; set; }

@@ -34,6 +34,7 @@ public class NuixAddToItemSetTests : NuixStepTestBase<NuixAddToItemSet, Unit>
                     SearchTerm = Constant("charm"), ItemSetName = Constant("charmset")
                 },
                 AssertCount(1, "item-set:charmset"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

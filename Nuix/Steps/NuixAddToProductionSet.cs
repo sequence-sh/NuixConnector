@@ -89,7 +89,7 @@ public sealed class
 /// Will create a new production set if one with the given name does not already exist.
 /// </summary>
 [Alias("NuixCreateProductionSet")]
-public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
+public sealed class NuixAddToProductionSet : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -100,7 +100,7 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("searchArg", 1)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -109,7 +109,7 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("productionSetNameArg", 2)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
@@ -117,7 +117,7 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     /// Description of the production set.
     /// </summary>
     [StepProperty(3)]
-    [RubyArgument("descriptionArg", 3)]
+    [RubyArgument("descriptionArg")]
     [DefaultValueExplanation("No description")]
     public IStep<StringStream>? Description { get; set; }
 
@@ -130,7 +130,7 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     [StepProperty(4)]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("productionProfileNameArg", 4)]
+    [RubyArgument("productionProfileNameArg")]
     [Alias("Profile")]
     public IStep<StringStream>? ProductionProfileName { get; set; }
 
@@ -142,7 +142,7 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     [StepProperty(5)]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("productionProfilePathArg", 5)]
+    [RubyArgument("productionProfilePathArg")]
     [Alias("ProfilePath")]
     public IStep<StringStream>? ProductionProfilePath { get; set; }
 
@@ -151,7 +151,7 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     /// </summary>
     [StepProperty(6)]
     [Example("name ASC, item-date DESC")]
-    [RubyArgument("orderArg", 6)]
+    [RubyArgument("orderArg")]
     [DefaultValueExplanation("Default order")]
     public IStep<StringStream>? Order { get; set; }
 
@@ -159,7 +159,7 @@ public sealed class NuixAddToProductionSet : RubyScriptStepBase<Unit>
     /// The maximum number of items to add to the production set.
     /// </summary>
     [StepProperty(7)]
-    [RubyArgument("limitArg", 7)]
+    [RubyArgument("limitArg")]
     [DefaultValueExplanation("No limit")]
     public IStep<int>? Limit { get; set; }
 

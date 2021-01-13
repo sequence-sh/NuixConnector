@@ -38,8 +38,7 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
     public override string RubyFunctionText { get; } =
         //language=RUBY
         @"
-    the_case =$utilities.case_factory.open(pathArg)
-    processor = the_case.create_processor
+    processor = $currentCase.create_processor
     processor.processing_settings = { :create_thumbnails       => false,
                                     :additional_digests      => [ 'SHA-1' ] }
 
@@ -56,15 +55,14 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
 
     log 'Starting processing.'
     processor.process
-    log 'Processing complete.'
-    the_case.close";
+    log 'Processing complete.'";
 }
 
 /// <summary>
 /// Adds data from a Concordance file to a NUIX case.
 /// </summary>
 [Alias("NuixImportConcordance")]
-public sealed class NuixAddConcordance : RubyScriptStepBase<Unit>
+public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -73,21 +71,11 @@ public sealed class NuixAddConcordance : RubyScriptStepBase<Unit>
     //TODO add a profile from a file - there is no Nuix function to do this right now.
 
     /// <summary>
-    /// The path to the case to import into.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The name of the folder to create.
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("folderNameArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("folderNameArg")]
     [Alias("Container")]
     public IStep<StringStream> FolderName { get; set; } = null!;
 
@@ -95,17 +83,17 @@ public sealed class NuixAddConcordance : RubyScriptStepBase<Unit>
     /// The name of the custodian to assign the folder/container to.
     /// </summary>
     [Required]
-    [StepProperty(3)]
-    [RubyArgument("folderCustodianArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("folderCustodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
 
     /// <summary>
     /// The path of the concordance file to import.
     /// </summary>
     [Required]
-    [StepProperty(4)]
+    [StepProperty(3)]
     [Example("C:/MyConcordance.dat")]
-    [RubyArgument("filePathArg", 4)]
+    [RubyArgument("filePathArg")]
     [Alias("ConcordanceFile")]
     public IStep<StringStream> FilePath { get; set; } = null!;
 
@@ -113,25 +101,25 @@ public sealed class NuixAddConcordance : RubyScriptStepBase<Unit>
     /// The concordance date format to use.
     /// </summary>
     [Required]
-    [StepProperty(5)]
+    [StepProperty(4)]
     [Example("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
-    [RubyArgument("dateFormatArg", 5)]
+    [RubyArgument("dateFormatArg")]
     public IStep<StringStream> ConcordanceDateFormat { get; set; } = null!;
 
     /// <summary>
     /// The name of the concordance profile to use.
     /// </summary>
     [Required]
-    [StepProperty(6)]
+    [StepProperty(5)]
     [Example("MyProfile")]
-    [RubyArgument("profileNameArg", 6)]
+    [RubyArgument("profileNameArg")]
     public IStep<StringStream> ConcordanceProfileName { get; set; } = null!;
 
     /// <summary>
     /// A description to add to the folder.
     /// </summary>
-    [StepProperty(7)]
-    [RubyArgument("folderDescriptionArg", 7)]
+    [StepProperty(6)]
+    [RubyArgument("folderDescriptionArg")]
     [DefaultValueExplanation("No description")]
     public IStep<StringStream>? Description { get; set; }
 }

@@ -50,6 +50,7 @@ public class NuixGeneratePrintPreviewsTests : NuixStepTestBase<NuixGeneratePrint
                     ProductionSetName = Constant("prodSet"),
                     ExpectedState     = Constant(PrintPreviewState.All)
                 },
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

@@ -56,7 +56,7 @@ public sealed class NuixDoesCaseExist : RubyScriptStepBase<bool>
         NuixDoesCaseExistStepFactory.Instance;
 
     /// <inheritdoc />
-    public override CasePathParameter CasePathParameter => new CasePathParameter.NoCasePath();
+    public override CasePathParameter CasePathParameter => CasePathParameter.NoCasePath.Instance;
 
     /// <summary>
     /// The path to the case.
@@ -64,7 +64,7 @@ public sealed class NuixDoesCaseExist : RubyScriptStepBase<bool>
     [Required]
     [StepProperty(1)]
     [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
+    [RubyArgument("pathArg")]
     [Alias("Case")]
     public IStep<StringStream> CasePath { get; set; } = null!;
 }

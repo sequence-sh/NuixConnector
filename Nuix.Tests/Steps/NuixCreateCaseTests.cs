@@ -179,6 +179,7 @@ public class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
                 AssertCaseDoesNotExist,
                 CreateCase,
                 new AssertTrue { Boolean = new NuixDoesCaseExist { CasePath = CasePath } },
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

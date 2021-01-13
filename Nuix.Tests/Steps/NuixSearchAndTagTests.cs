@@ -31,6 +31,7 @@ public class NuixSearchAndTagTests : NuixStepTestBase<NuixSearchAndTag, Unit>
                 AddData,
                 new NuixSearchAndTag { SearchTerm = Constant("charm"), Tag = Constant("charm") },
                 AssertCount(1, "tag:charm"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

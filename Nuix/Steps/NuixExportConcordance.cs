@@ -58,7 +58,7 @@ public sealed class
 /// <summary>
 /// Exports Concordance for a particular production set.
 /// </summary>
-public sealed class NuixExportConcordance : RubyScriptStepBase<Unit>
+public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -69,7 +69,7 @@ public sealed class NuixExportConcordance : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("exportPathArg", 1)]
+    [RubyArgument("exportPathArg")]
     [Alias("ToDirectory")]
     public IStep<StringStream> ExportPath { get; set; } = null!;
 
@@ -78,7 +78,7 @@ public sealed class NuixExportConcordance : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("productionSetNameArg", 2)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 }

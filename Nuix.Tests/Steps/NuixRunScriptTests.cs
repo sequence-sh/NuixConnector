@@ -30,18 +30,14 @@ public class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStream>
     /// <inheritdoc />
     public NuixRunScriptTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 
-    protected override IEnumerable<ErrorCase> ErrorCases
-    {
-        get
-        {
-            return from errorCase in base.ErrorCases
-                   where
-                       !errorCase.Name.Contains(
-                           "EntityStreamParameter"
-                       ) //Skip this case because the failure happens too late to be tested here (it is tested in NuixConnection)
-                   select errorCase.WithSettings(UnitTestSettings);
-        }
-    }
+    protected override IEnumerable<ErrorCase> ErrorCases => from errorCase in base.ErrorCases
+                                                            where
+                                                                !errorCase.Name.Contains(
+                                                                    "EntityStreamParameter"
+                                                                ) //Skip this case because the failure happens too late to be tested here (it is tested in NuixConnection)
+                                                            select errorCase.WithSettings(
+                                                                UnitTestSettings
+                                                            );
 
     /// <inheritdoc />
     protected override IEnumerable<StepCase> StepCases
@@ -58,28 +54,28 @@ public class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStream>
                         Parameters            = Constant(CreateEntity(("param1", "ABC")))
                     },
                     "Hello World",
-                    new List<ExternalProcessAction>()
+                    new List<ExternalProcessAction>
                     {
                         new(
-                            new ConnectionCommand()
+                            new ConnectionCommand
                             {
                                 Command            = "test_Script",
                                 FunctionDefinition = "Lorem Ipsum",
-                                Arguments = new Dictionary<string, object>()
+                                Arguments = new Dictionary<string, object>
                                 {
                                     { "param1", "ABC" }
                                 }
                             },
-                            new ConnectionOutput()
+                            new ConnectionOutput
                             {
-                                Log = new ConnectionOutputLog()
+                                Log = new ConnectionOutputLog
                                 {
                                     Message = "Log Message", Severity = "info"
                                 }
                             },
-                            new ConnectionOutput()
+                            new ConnectionOutput
                             {
-                                Result = new ConnectionOutputResult() { Data = "Hello World" }
+                                Result = new ConnectionOutputResult { Data = "Hello World" }
                             }
                         )
                     },
@@ -100,22 +96,22 @@ public class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStream>
                         Parameters = Constant(CreateEntity(("param1", "ABC")))
                     },
                     @"[{""Foo"":""a""},{""Foo"":""b""}]",
-                    new List<ExternalProcessAction>()
+                    new List<ExternalProcessAction>
                     {
                         new(
-                            new ConnectionCommand()
+                            new ConnectionCommand
                             {
                                 Command            = "test_Script",
                                 FunctionDefinition = "Lorem Ipsum",
-                                Arguments = new Dictionary<string, object>()
+                                Arguments = new Dictionary<string, object>
                                 {
                                     { "param1", "ABC" }
                                 },
                                 IsStream = true
                             },
-                            new ConnectionOutput()
+                            new ConnectionOutput
                             {
-                                Log = new ConnectionOutputLog()
+                                Log = new ConnectionOutputLog
                                 {
                                     Message = "Log Message", Severity = "info"
                                 }
@@ -222,11 +218,11 @@ public class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStream>
         {
             Name = name;
 
-            var sequence = new Sequence<StringStream>()
+            var sequence = new Sequence<StringStream>
             {
-                InitialSteps = new List<IStep<Unit>>()
+                InitialSteps = new List<IStep<Unit>>
                 {
-                    new SetVariable<StringStream>()
+                    new SetVariable<StringStream>
                     {
                         Variable = new VariableName("Output"), Value = step
                     },

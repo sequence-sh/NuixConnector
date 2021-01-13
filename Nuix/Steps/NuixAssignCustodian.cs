@@ -56,7 +56,7 @@ public sealed class NuixAssignCustodianFactory : RubyScriptStepFactory<NuixAssig
 /// <summary>
 /// Searches a NUIX case with a particular search string and assigns all files it finds to a particular custodian.
 /// </summary>
-public sealed class NuixAssignCustodian : RubyScriptStepBase<Unit>
+public sealed class NuixAssignCustodian : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -68,7 +68,7 @@ public sealed class NuixAssignCustodian : RubyScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [Example("*.txt")]
-    [RubyArgument("searchArg", 1)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -77,7 +77,7 @@ public sealed class NuixAssignCustodian : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("custodianArg", 2)]
+    [RubyArgument("custodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
 }
 

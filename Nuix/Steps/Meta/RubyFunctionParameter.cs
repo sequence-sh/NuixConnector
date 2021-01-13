@@ -129,7 +129,7 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
     public static IReadOnlyCollection<RubyFunctionParameter> GetRubyFunctionParameters<TStep>()
         where TStep : IRubyScriptStep
     {
-        var list = new List<(RubyFunctionParameter argument, int order)>();
+        var list = new List<RubyFunctionParameter>();
 
         foreach (var p in typeof(TStep).GetProperties())
         {
@@ -146,8 +146,12 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
 
                 if (isRunnableProcess)
                     list.Add(
-                        (new RubyFunctionParameter(argumentAttribute.RubyName, p.Name, isNullable, version),
-                         argumentAttribute.Order)
+                        new RubyFunctionParameter(
+                            argumentAttribute.RubyName,
+                            p.Name,
+                            isNullable,
+                            version
+                        )
                     );
                 else
 
@@ -161,7 +165,7 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
                 );
         }
 
-        return list.OrderBy(x => x.order).Select(x => x.argument).ToList();
+        return list;
     }
 
     private static (bool isRunnableProcess, bool isOptional) CheckType(PropertyInfo propertyInfo)

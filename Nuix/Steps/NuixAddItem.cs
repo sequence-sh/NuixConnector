@@ -132,7 +132,7 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 /// </summary>
 [Alias("NuixAdd")]
 [Alias("NuixImportItem")]
-public sealed class NuixAddItem : RubyScriptStepBase<Unit>
+public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -144,7 +144,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [Example("C:/Data/File.txt")]
-    [RubyArgument("filePathsArgs", 1)]
+    [RubyArgument("filePathsArgs")]
     [Alias("Directories")]
     [Alias("Files")]
     public IStep<Array<StringStream>> Paths { get; set; } = null!;
@@ -154,7 +154,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("folderNameArg", 2)]
+    [RubyArgument("folderNameArg")]
     [Alias("Container")]
     [Alias("ToContainer")]
     public IStep<StringStream> FolderName { get; set; } = null!;
@@ -164,14 +164,14 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(3)]
-    [RubyArgument("folderCustodianArg", 3)]
+    [RubyArgument("folderCustodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
 
     /// <summary>
     /// The description of the new folder.
     /// </summary>
     [StepProperty(4)]
-    [RubyArgument("folderDescriptionArg", 4)]
+    [RubyArgument("folderDescriptionArg")]
     [DefaultValueExplanation("No Description")]
     public IStep<StringStream>? Description { get; set; }
 
@@ -182,7 +182,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     [StepProperty(5)]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("processingProfileNameArg", 5)]
+    [RubyArgument("processingProfileNameArg")]
     [Alias("UsingProfile")]
     public IStep<StringStream>? ProcessingProfileName { get; set; }
 
@@ -193,7 +193,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     [StepProperty(6)]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("The default processing profile will be used.")]
-    [RubyArgument("processingProfilePathArg", 6)]
+    [RubyArgument("processingProfilePathArg")]
     [Alias("UsingProfilePath")]
     public IStep<StringStream>? ProcessingProfilePath { get; set; }
 
@@ -203,7 +203,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// </summary>
     [StepProperty(7)]
     [DefaultValueExplanation("Processing settings will not be changed")]
-    [RubyArgument("processingSettingsArg", 7)]
+    [RubyArgument("processingSettingsArg")]
     [Alias("Settings")]
     public IStep<Core.Entity>? ProcessingSettings { get; set; }
 
@@ -213,7 +213,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// </summary>
     [StepProperty(8)]
     [DefaultValueExplanation("Parallel processing settings will not be changed")]
-    [RubyArgument("parallelProcessingSettingsArg", 8)]
+    [RubyArgument("parallelProcessingSettingsArg")]
     public IStep<Core.Entity>? ParallelProcessingSettings { get; set; }
 
     /// <summary>
@@ -222,7 +222,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     [RequiredVersion("Nuix", "7.6")]
     [StepProperty(9)]
     [Example("C:/Data/Passwords.txt")]
-    [RubyArgument("passwordFilePathArg", 9)]
+    [RubyArgument("passwordFilePathArg")]
     [DefaultValueExplanation("Do not attempt decryption")]
     [Alias("PasswordFile")]
     public IStep<StringStream>? PasswordFilePath { get; set; }
@@ -233,7 +233,7 @@ public sealed class NuixAddItem : RubyScriptStepBase<Unit>
     /// </summary>
     [RequiredVersion("Nuix", "8.2")]
     [StepProperty(10)]
-    [RubyArgument("mimeTypeDataStreamArg", 10)]
+    [RubyArgument("mimeTypeDataStreamArg")]
     [DefaultValueExplanation("Use default settings for all MIME types")]
     public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
 

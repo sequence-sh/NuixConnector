@@ -44,7 +44,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
         itemSetOptions[:description] = descriptionArg if descriptionArg != nil
         itemSetOptions[:deduplicateBy] = deduplicateByArg if deduplicateByArg != nil
         itemSetOptions[:custodianRanking] = custodianRankingArg.split("","") if custodianRankingArg != nil
-        itemSet = the_case.createItemSet(itemSetNameArg, itemSetOptions)
+        itemSet = $currentCase.createItemSet(itemSetNameArg, itemSetOptions)
 
         log ""Item Set Created""
     else
@@ -55,7 +55,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
     searchOptions = {}
     searchOptions[:order] = orderArg if orderArg != nil
     searchOptions[:limit] = limitArg.to_i if limitArg != nil
-    items = the_case.search(searchArg, searchOptions)
+    items = $currentCase.search(searchArg, searchOptions)
     log ""#{items.length} found""
     itemSet.addItems(items)
     log ""items added""";
@@ -66,7 +66,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
 /// Will create a new item set if one doesn't already exist.
 /// </summary>
 [Alias("NuixCreateItemSet")]
-public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
+public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -77,7 +77,7 @@ public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("searchArg", 1)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -86,7 +86,7 @@ public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("itemSetNameArg", 2)]
+    [RubyArgument("itemSetNameArg")]
     [Alias("Set")]
     public IStep<StringStream> ItemSetName { get; set; } = null!;
 
@@ -94,7 +94,7 @@ public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     /// The means of deduplicating items by key and prioritizing originals in a tie-break.
     /// </summary>
     [StepProperty(3)]
-    [RubyArgument("deduplicationArg", 3)]
+    [RubyArgument("deduplicationArg")]
     [DefaultValueExplanation("No deduplication")]
     [Alias("DeduplicateUsing")]
     public IStep<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
@@ -103,7 +103,7 @@ public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     /// The description of the item set.
     /// </summary>
     [StepProperty(4)]
-    [RubyArgument("descriptionArg", 4)]
+    [RubyArgument("descriptionArg")]
     [DefaultValueExplanation("No description")]
     [Alias("Description")]
     public IStep<StringStream>? ItemSetDescription { get; set; }
@@ -112,7 +112,7 @@ public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     /// Whether to deduplicate as a family or individual.
     /// </summary>
     [StepProperty(5)]
-    [RubyArgument("deduplicateByArg", 5)]
+    [RubyArgument("deduplicateByArg")]
     [DefaultValueExplanation("Neither")]
     public IStep<DeduplicateBy>? DeduplicateBy { get; set; }
 
@@ -121,7 +121,7 @@ public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
     /// </summary>
     [StepProperty(6)]
-    [RubyArgument("custodianRankingArg", 6)]
+    [RubyArgument("custodianRankingArg")]
     [DefaultValueExplanation("Do not rank custodians")]
     public IStep<Array<StringStream>>? CustodianRanking { get; set; }
 
@@ -130,7 +130,7 @@ public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     /// </summary>
     [StepProperty(7)]
     [Example("name ASC, item-date DESC")]
-    [RubyArgument("orderArg", 7)]
+    [RubyArgument("orderArg")]
     [DefaultValueExplanation("Do not reorder")]
     public IStep<StringStream>? Order { get; set; }
 
@@ -138,7 +138,7 @@ public sealed class NuixAddToItemSet : RubyScriptStepBase<Unit>
     /// The maximum number of items to add to the item set.
     /// </summary>
     [StepProperty(8)]
-    [RubyArgument("limitArg", 8)]
+    [RubyArgument("limitArg")]
     [DefaultValueExplanation("No limit")]
     public IStep<int>? Limit { get; set; }
 }

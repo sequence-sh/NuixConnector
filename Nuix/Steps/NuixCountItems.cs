@@ -43,7 +43,7 @@ public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountI
 /// <summary>
 /// Returns the number of items matching a particular search term
 /// </summary>
-public sealed class NuixCountItems : RubyScriptStepBase<int>
+public sealed class NuixCountItems : RubyCaseScriptStepBase<int>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<int> RubyScriptStepFactory =>
@@ -55,7 +55,7 @@ public sealed class NuixCountItems : RubyScriptStepBase<int>
     [Required]
     [Example("*.txt")]
     [StepProperty(1)]
-    [RubyArgument("searchArg", 1)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 }

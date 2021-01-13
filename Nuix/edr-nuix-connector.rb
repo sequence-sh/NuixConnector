@@ -59,7 +59,7 @@ end
 def open_case(path)
 
   unless $currentCase.nil?
-    if $currentCase.getlocation().getPath() == path
+    if $currentCase.get_location().getPath() == path
         return #the case is already open
     end
     close_case()
@@ -110,17 +110,20 @@ loop do
   is_stream = json['isstream']
   case_path = json['casepath']
 
-  if case_path.nil?
-    close_case        
-  else
-    $currentCase = open_case(case_path)
-  end
- 
-
   #log cmd
   #log args.inspect
   #log fdef
-  log "Current Case: '#{$currentCase}'"
+  #log case_path
+  #log "Previous Current Case: '#{$currentCase}'"
+
+  if case_path.nil?
+    close_case        
+  else
+    open_case(case_path)
+  end
+ 
+  #log "New Current Case: '#{$currentCase}'"
+  
 
   unless fdef.nil?
     op = functions.key?(cmd) ? 'Replacing' : 'Adding new'

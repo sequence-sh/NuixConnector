@@ -107,7 +107,7 @@ public sealed class
 /// The different types are: 'Kind', 'Type', 'Tag', and 'Address'.
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
-public sealed class NuixCreateReport : RubyScriptStepBase<StringStream>
+public sealed class NuixCreateReport : RubyCaseScriptStepBase<StringStream>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>

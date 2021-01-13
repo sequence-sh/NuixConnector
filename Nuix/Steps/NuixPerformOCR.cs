@@ -66,7 +66,7 @@ public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerfor
 /// <summary>
 /// Performs optical character recognition on files in a NUIX case.
 /// </summary>
-public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
+public sealed class NuixPerformOCR : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -80,7 +80,7 @@ public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
     /// </summary>
     [StepProperty(1)]
     [DefaultValueExplanation(DefaultSearchTerm)]
-    [RubyArgument("searchTermArg", 1)]
+    [RubyArgument("searchTermArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } =
         new StringConstant(DefaultSearchTerm);
@@ -92,7 +92,7 @@ public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
     [StepProperty(2)]
     [DefaultValueExplanation("The default profile will be used.")]
     [Example("MyOcrProfile")]
-    [RubyArgument("ocrProfileArg", 2)]
+    [RubyArgument("ocrProfileArg")]
     [Alias("Profile")]
     public IStep<StringStream>? OCRProfileName { get; set; }
 
@@ -104,7 +104,7 @@ public sealed class NuixPerformOCR : RubyScriptStepBase<Unit>
     [RequiredVersion("Nuix", "7.6")]
     [DefaultValueExplanation("The Default profile will be used.")]
     [Example("C:\\Profiles\\MyProfile.xml")]
-    [RubyArgument("ocrProfilePathArg", 3)]
+    [RubyArgument("ocrProfilePathArg")]
     [Alias("ProfilePath")]
     public IStep<StringStream>? OCRProfilePath { get; set; }
 

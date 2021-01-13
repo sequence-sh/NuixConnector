@@ -54,7 +54,7 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
 /// <summary>
 /// Searches a NUIX case with a particular search string and tags all files it finds.
 /// </summary>
-public sealed class NuixSearchAndTag : RubyScriptStepBase<Unit>
+public sealed class NuixSearchAndTag : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -66,7 +66,7 @@ public sealed class NuixSearchAndTag : RubyScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [Example("*.txt")]
-    [RubyArgument("searchArg", 1)]
+    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
@@ -75,7 +75,7 @@ public sealed class NuixSearchAndTag : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("tagArg", 2)]
+    [RubyArgument("tagArg")]
     public IStep<StringStream> Tag { get; set; } = null!;
 }
 

@@ -54,7 +54,7 @@ public sealed class
 /// <summary>
 /// Generates print previews for items in a production set.
 /// </summary>
-public sealed class NuixGeneratePrintPreviews : RubyScriptStepBase<Unit>
+public sealed class NuixGeneratePrintPreviews : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -65,7 +65,7 @@ public sealed class NuixGeneratePrintPreviews : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("productionSetNameArg", 1)]
+    [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 }

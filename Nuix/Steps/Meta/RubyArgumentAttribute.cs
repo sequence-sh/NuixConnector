@@ -10,16 +10,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 public sealed class RubyArgumentAttribute : Attribute
 {
     /// <inheritdoc />
-    public RubyArgumentAttribute(string rubyName, int order)
-    {
-        RubyName = rubyName;
-        Order    = order;
-    }
-
-    /// <summary>
-    /// The position in the order where this function argument will occur.
-    /// </summary>
-    public int Order { get; }
+    public RubyArgumentAttribute(string rubyName) => RubyName = rubyName;
 
     /// <summary>
     /// The name of the argument in Ruby.

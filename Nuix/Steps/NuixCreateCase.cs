@@ -70,7 +70,7 @@ public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [Example("C:/Cases/MyCase")]
-    [RubyArgument(PathArg, 1)]
+    [RubyArgument(PathArg)]
     [Alias("Directory")]
     public IStep<StringStream> CasePath { get; set; } = null!;
 
@@ -79,7 +79,7 @@ public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("nameArg", 2)]
+    [RubyArgument("nameArg")]
     [Alias("Name")]
     public IStep<StringStream> CaseName { get; set; } = null!;
 
@@ -88,14 +88,14 @@ public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [StepProperty(3)]
-    [RubyArgument("investigatorArg", 3)]
+    [RubyArgument("investigatorArg")]
     public IStep<StringStream> Investigator { get; set; } = null!;
 
     /// <summary>
     /// Description of the case.
     /// </summary>
     [StepProperty(4)]
-    [RubyArgument("descriptionArg", 4)]
+    [RubyArgument("descriptionArg")]
     [DefaultValueExplanation("No Description")]
     public IStep<StringStream>? Description { get; set; }
 }

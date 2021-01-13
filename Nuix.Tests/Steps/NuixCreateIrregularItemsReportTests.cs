@@ -51,6 +51,7 @@ public class
                     "Irregular.txt",
                     "NeedManualExamination\tNew Folder/data/Jellyfish.txt"
                 ),
+                new NuixCloseConnection(),
                 DeleteCaseFolder,
                 DeleteOutputFolder
             );

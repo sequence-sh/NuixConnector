@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -326,6 +327,11 @@ public sealed class NuixConnection : IDisposable
         }
     }
 
+    private static readonly Regex JavaWarningRegex = new Regex(
+        @"\(eval\):9: warning:(?<text>.+)",
+        RegexOptions.Compiled
+    );
+
     private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(
         ILogger logger,
         CancellationToken cancellationToken,
@@ -361,11 +367,28 @@ public sealed class NuixConnection : IDisposable
             }
             catch (Exception)
             {
-                return new ErrorBuilder(
-                    ErrorCode.CouldNotParse,
-                    jsonString,
-                    nameof(ConnectionOutput)
-                );
+                var warningMatch = JavaWarningRegex.Match(jsonString);
+
+                if (warningMatch.Success)
+                {
+                    connectionOutput = new ConnectionOutput
+                    {
+                        Log = new ConnectionOutputLog
+                        {
+                            Message = warningMatch.Groups["text"].Value, Severity = "warn"
+                        }
+                    };
+
+                    source = StreamSource.Output; //Filthy hack
+                }
+                else
+                {
+                    return new ErrorBuilder(
+                        ErrorCode.CouldNotParse,
+                        jsonString,
+                        nameof(ConnectionOutput)
+                    );
+                }
             }
 
             var valid = connectionOutput.Validate();

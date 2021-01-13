@@ -80,7 +80,7 @@ public sealed class
 /// <summary>
 /// Extract Entities from a Nuix Case.
 /// </summary>
-public sealed class NuixExtractEntities : RubyScriptStepBase<Unit>
+public sealed class NuixExtractEntities : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -92,7 +92,7 @@ public sealed class NuixExtractEntities : RubyScriptStepBase<Unit>
     [Required]
     [Example("C:/Output")]
     [StepProperty(1)]
-    [RubyArgument("outputFolderPathArg", 1)]
+    [RubyArgument("outputFolderPathArg")]
     [Alias("ToDirectory")]
     public IStep<StringStream> OutputFolder { get; set; } = null!;
 }

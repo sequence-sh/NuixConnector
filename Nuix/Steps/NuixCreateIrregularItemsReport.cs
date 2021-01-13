@@ -77,7 +77,7 @@ public sealed class NuixCreateIrregularItemsReportStepFactory
 /// Reasons include 'NonSearchablePDF','BadExtension','Unrecognised','Unsupported','TextNotIndexed','ImagesNotProcessed','Poisoned','Record','UnrecognisedDeleted','NeedManualExamination', and 'CodeTextFiles'
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
-public sealed class NuixCreateIrregularItemsReport : RubyScriptStepBase<StringStream>
+public sealed class NuixCreateIrregularItemsReport : RubyCaseScriptStepBase<StringStream>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>

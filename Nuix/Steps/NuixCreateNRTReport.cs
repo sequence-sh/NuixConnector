@@ -36,7 +36,6 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    the_case = $utilities.case_factory.open(pathArg)
     log 'Generating NRT Report:'
 
     reportGenerator =$utilities.getReportGenerator();
@@ -46,7 +45,7 @@ public sealed class
     'NUIX_REPORT_TITLE' => 'ReportTitle',
     'NUIX_APP_VERSION' => NUIX_VERSION,
     'LOCAL_RESOURCES_URL' => localResourcesUrlArg,
-    '$currentCase' => the_case,
+    'currentCase' => $currentCase,
     'utilities' => $utilities,
     'dedupeEnabled' => true
     }
@@ -56,36 +55,24 @@ public sealed class
     reportContext.to_java,
     outputFormatArg,
     outputPathArg
-    )
-
-    the_case.close";
+    )";
 }
 
 /// <summary>
 /// Creates a report using an NRT file.
 /// </summary>
-public sealed class NuixCreateNRTReport : RubyScriptStepBase<Unit>
+public sealed class NuixCreateNRTReport : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixCreateNRTReportStepFactory.Instance;
 
     /// <summary>
-    /// The path to the case.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("C:/Cases/MyCase")]
-    [RubyArgument("pathArg", 1)]
-    [Alias("Case")]
-    public IStep<StringStream> CasePath { get; set; } = null!;
-
-    /// <summary>
     /// The NRT file path.
     /// </summary>
     [Required]
-    [StepProperty(2)]
-    [RubyArgument("nrtPathArg", 2)]
+    [StepProperty(1)]
+    [RubyArgument("nrtPathArg")]
     public IStep<StringStream> NRTPath { get; set; } = null!;
 
     /// <summary>
@@ -93,8 +80,8 @@ public sealed class NuixCreateNRTReport : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [Example("PDF")]
-    [StepProperty(3)]
-    [RubyArgument("outputFormatArg", 3)]
+    [StepProperty(2)]
+    [RubyArgument("outputFormatArg")]
     [Alias("Format")]
     public IStep<StringStream> OutputFormat { get; set; } = null!;
 
@@ -103,8 +90,8 @@ public sealed class NuixCreateNRTReport : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [Example("C:/Temp/report.pdf")]
-    [StepProperty(4)]
-    [RubyArgument("outputPathArg", 4)]
+    [StepProperty(3)]
+    [RubyArgument("outputPathArg")]
     [Alias("ReportPath")]
     public IStep<StringStream> OutputPath { get; set; } = null!;
 
@@ -114,8 +101,8 @@ public sealed class NuixCreateNRTReport : RubyScriptStepBase<Unit>
     /// </summary>
     [Required]
     [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
-    [StepProperty(5)]
-    [RubyArgument("localResourcesUrlArg", 5)]
+    [StepProperty(4)]
+    [RubyArgument("localResourcesUrlArg")]
     [Alias("Resources")]
     public IStep<StringStream> LocalResourcesURL { get; set; } = null!;
 }

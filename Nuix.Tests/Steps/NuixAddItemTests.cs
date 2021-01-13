@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.TestHarness;
@@ -28,17 +29,22 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     Custodian          = Constant("Mark"),
                     Paths              = DataPaths,
                     FolderName         = Constant("New Folder"),
-                    ProcessingSettings = Constant(CreateEntity(("Foo", "Bar")))
+                    ProcessingSettings = Constant(CreateEntity(("Foo", "Bar"))),
+                    CasePath           = CasePath,
                 },
                 Unit.Default,
                 new List<ExternalProcessAction>
                 {
-                    new ExternalProcessAction(
+                    new(
                         new ConnectionCommand
                         {
                             Command = "AddToCase",
                             Arguments = new Dictionary<string, object>
                             {
+                                {
+                                    nameof(RubyCaseScriptStepBase<bool>.CasePath),
+                                    CasePathString
+                                },
                                 { nameof(NuixAddItem.FolderName), "New Folder" },
                                 { nameof(NuixAddItem.Custodian), "Mark" },
                                 {
@@ -78,6 +84,7 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     FolderName = Constant("New Folder")
                 },
                 AssertCount(2, "*.txt"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
 
@@ -96,6 +103,7 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     PasswordFilePath = (PasswordFilePath)
                 },
                 AssertCount(1, "princess"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
 
@@ -114,6 +122,7 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     ProcessingProfileName = Constant("Default")
                 },
                 AssertCount(2, "*.txt"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
 
@@ -132,6 +141,7 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     ProcessingProfilePath = DefaultProcessingProfilePath
                 },
                 AssertCount(2, "*.txt"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
 
@@ -150,6 +160,7 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     ProcessingSettings = Constant(Entity.Create(("processText", true)))
                 },
                 AssertCount(2, "*.txt"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
 
@@ -168,6 +179,7 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     ParallelProcessingSettings = Constant(Entity.Create(("workerCount", 1)))
                 },
                 AssertCount(2, "*.txt"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
 
@@ -192,6 +204,7 @@ public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     )
                 },
                 AssertCount(2, "*.txt"),
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

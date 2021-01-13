@@ -54,7 +54,7 @@ public sealed class
 /// The report is in CSV format. The headers are 'Term' and 'Count'
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
-public sealed class NuixCreateTermList : RubyScriptStepBase<StringStream>
+public sealed class NuixCreateTermList : RubyCaseScriptStepBase<StringStream>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>

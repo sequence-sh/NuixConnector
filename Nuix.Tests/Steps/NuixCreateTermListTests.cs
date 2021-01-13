@@ -38,7 +38,7 @@ public class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, Stri
                     Path   = new PathCombine { Paths = Array(OutputFolder, "Terms.txt") }
                 },
                 AssertFileContains(OutputFolder, "Terms.txt", "yellow	2"),
-                DeleteCaseFolder,
+                new NuixCloseConnection(), DeleteCaseFolder,
                 DeleteOutputFolder
             );
         }

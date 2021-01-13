@@ -25,6 +25,7 @@ public class NuixOpenCaseTests : NuixStepTestBase<NuixOpenCase, Unit>
                 OpenCase,
                 OpenCase,
                 OpenCase,
+                new NuixCloseConnection(),
                 DeleteCaseFolder
             );
         }

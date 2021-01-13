@@ -40,7 +40,7 @@ public class NuixExtractEntitiesTests : NuixStepTestBase<NuixExtractEntities, Un
                 },
                 new NuixExtractEntities { OutputFolder = Constant(OutputFolder) },
                 AssertFileContains(OutputFolder, "email.txt", "Marianne.Moore@yahoo.com"),
-                DeleteCaseFolder,
+                new NuixCloseConnection(), DeleteCaseFolder,
                 DeleteOutputFolder
             );
         }

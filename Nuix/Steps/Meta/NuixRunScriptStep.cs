@@ -18,6 +18,8 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 /// <summary>
 /// Run an arbitrary ruby script in nuix.
 /// It should return a string.
+/// This will automatically close any open case.
+/// You should open any case you need yourself.
 /// </summary>
 public class NuixRunScript : CompoundStep<StringStream>
 {
@@ -94,15 +96,14 @@ public class NuixRunScript : CompoundStep<StringStream>
             scriptText.Value,
             rubyFunctionParameters,
             new Version(5, 0),
-            ArraySegment<NuixFeature>.Empty,
-            Maybe<RubyFunctionParameter>.None,
-            true
+            ArraySegment<NuixFeature>.Empty
         );
 
         var runResult = await nuixConnection.Value.RunFunctionAsync(
                 stateMonad.Logger,
                 function,
                 parameterDict,
+                CasePathParameter.NoCasePath.Instance,
                 cancellationToken
             )
             .Map(x => new StringStream(x));
