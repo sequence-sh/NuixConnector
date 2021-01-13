@@ -9,8 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuix.Tests", "Nuix.Tests\Nu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74B1B4BD-D3BB-4210-99C1-7E577ED3E18C}"
 	ProjectSection(SolutionItems) = preProject
+		.codeclimate.yml = .codeclimate.yml
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.gitlab-ci.yml = .gitlab-ci.yml
+		CHANGELOG.md = CHANGELOG.md
+		coverlet.runsettings = coverlet.runsettings
 		documentation.md = documentation.md
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{2F057313-34E3-47F6-A7D6-E68F23D13FCB}"
