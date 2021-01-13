@@ -27,7 +27,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 /// </summary>
 public static class NuixConnectionHelper
 {
-    internal const string NuixGeneralScriptName = "edr-nuix-connector.rb";
+    internal const string NuixGeneralScriptName = "nuixconnectorscript.rb";
 
     internal static readonly VariableName NuixVariableName =
         new("ReductechNuixConnection");

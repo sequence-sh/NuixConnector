@@ -311,7 +311,11 @@ public class NuixConnectionHelperTests
         var connection = state.GetOrCreateNuixConnection(false);
 
         Assert.True(connection.IsFailure);
-        Assert.Matches("Could not find.+edr-nuix-connector.rb'", connection.Error.AsString);
+
+        Assert.Matches(
+            $"Could not find.+{NuixConnectionHelper.NuixGeneralScriptName}'",
+            connection.Error.AsString
+        );
     }
 }
 
