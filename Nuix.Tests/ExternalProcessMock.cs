@@ -180,6 +180,14 @@ internal class ExternalProcessMock : IExternalProcessRunner
                         isStream = true;
                     }
 
+                    if (expectedAction.WriteToStdOut != null)
+                        foreach (var msg in expectedAction.WriteToStdOut)
+                            await output.WriteAsync((msg, StreamSource.Output), cancellationToken);
+
+                    if (expectedAction.WriteToStdErr != null)
+                        foreach (var msg in expectedAction.WriteToStdErr)
+                            await output.WriteAsync((msg, StreamSource.Error), cancellationToken);
+
                     foreach (var connectionOutput in expectedAction.DesiredOutput)
                     {
                         if (isStream && !(connectionOutput.Result is null))

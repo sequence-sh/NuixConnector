@@ -19,6 +19,10 @@ public class ExternalProcessAction
     public ConnectionCommand Command { get; }
 
     public IReadOnlyList<ConnectionOutput> DesiredOutput { get; }
+
+    public string[]? WriteToStdOut { get; set; }
+
+    public string[]? WriteToStdErr { get; set; }
 }
 
 }
