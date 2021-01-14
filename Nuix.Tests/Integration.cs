@@ -28,7 +28,10 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             nuixTestCase.Step,
             settings.NuixVersion
         ) //&& false //uncomment to disable integration tests
-        select new IntegrationTestCase(nuixTestCase.Name + settings.NuixVersion, nuixTestCase.Step)
+        select new IntegrationTestCase(
+                $"{nuixTestCase.Name} (Nuix {settings.NuixVersion})",
+                nuixTestCase.Step
+            )
             .WithSettings(settings);
 
     public IEnumerable<object?[]> IntegrationTestCaseNames =>
