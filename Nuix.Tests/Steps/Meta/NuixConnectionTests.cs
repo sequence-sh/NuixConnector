@@ -450,56 +450,6 @@ public class NuixConnectionTests
         Assert.Equal(@"[{""Property1"":""Value1""},{""Property2"":""Value2""}]", result.Value);
     }
 
-    [Fact]
-    public async Task RunFunctionAsync_WhenConnectionOutputPropertiesAreNull_ReturnsError()
-    {
-        var casePath = @"d:\case";
-
-        var action = new ExternalProcessAction(
-            new ConnectionCommand
-            {
-                Command            = "MigrateCase",
-                FunctionDefinition = "",
-                Arguments = new Dictionary<string, object>
-                {
-                    { nameof(NuixMigrateCase.CasePath), casePath }
-                }
-            },
-            new ConnectionOutput { Result = null }
-        );
-
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
-        var ct             = new CancellationToken();
-
-        var dict = new Dictionary<RubyFunctionParameter, object>()
-        {
-            {
-                new RubyFunctionParameter("pathArg", nameof(NuixMigrateCase.CasePath), false, null),
-                casePath
-            }
-        };
-
-        var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
-
-        var step = new NuixMigrateCase();
-
-        var result = await nuixConnection.RunFunctionAsync(
-            logger,
-            step.RubyScriptStepFactory.RubyFunction,
-            stepParams,
-            CasePathParameter.IgnoresOpenCase.Instance,
-            ct
-        );
-
-        result.ShouldBeFailure();
-
-        Assert.Equal(
-            $"External Process Failed: '{nameof(ConnectionOutput)} must have at least one property set'",
-            result.Error.AsString
-        );
-    }
-
     private static async Task<(ITestLoggerFactory, Result<Unit, IErrorBuilder>)>
         GetActionResult(
             ConnectionOutput output,
@@ -546,6 +496,21 @@ public class NuixConnectionTests
         );
 
         return (loggerFactory, result);
+    }
+
+    [Fact]
+    public async Task RunFunctionAsync_WhenConnectionOutputPropertiesAreNull_ReturnsError()
+    {
+        var output = new ConnectionOutput { Result = null };
+
+        var (_, result) = await GetActionResult(output, null, null);
+
+        result.ShouldBeFailure();
+
+        Assert.Equal(
+            $"External Process Failed: '{nameof(ConnectionOutput)} must have at least one property set'",
+            result.Error.AsString
+        );
     }
 
     [Fact]
