@@ -338,7 +338,7 @@ public sealed class NuixConnection : IDisposable
         RegexOptions.Compiled
     );
 
-    private static readonly Regex JavaErrorRegex = new(@"ERROR\s*(?<text>)");
+    private static readonly Regex JavaErrorRegex = new(@"ERROR\s*(?<text>.+)");
 
     private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(
         ILogger logger,
@@ -396,7 +396,7 @@ public sealed class NuixConnection : IDisposable
                     {
                         Log = new ConnectionOutputLog
                         {
-                            Message = warningMatch.Groups["text"].Value, Severity = "warn"
+                            Message = errorMatch.Groups["text"].Value, Severity = "warn"
                         }
                     };
 
