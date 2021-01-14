@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 using FluentAssertions;
 using MELT;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -13,10 +15,12 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Sdk;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 {
@@ -353,14 +357,13 @@ public class NuixConnectionTests
         nuixConnection.Dispose();
 
         await Assert.ThrowsAsync<ObjectDisposedException>(
-            () =>
-                nuixConnection.RunFunctionAsync<Unit>(
-                    TestLoggerFactory.Create().CreateLogger("Test"),
-                    null!,
-                    null!,
-                    CasePathParameter.IgnoresOpenCase.Instance,
-                    ct
-                )
+            () => nuixConnection.RunFunctionAsync<Unit>(
+                TestLoggerFactory.Create().CreateLogger("Test"),
+                null!,
+                null!,
+                CasePathParameter.IgnoresOpenCase.Instance,
+                ct
+            )
         );
     }
 
@@ -447,10 +450,13 @@ public class NuixConnectionTests
         Assert.Equal(@"[{""Property1"":""Value1""},{""Property2"":""Value2""}]", result.Value);
     }
 
-    [Fact]
-    public async Task RunFunctionAsync_WhenConnectionOutputPropertiesAreNull_ReturnsError()
+    private static async Task<(ITestLoggerFactory, Result<Unit, IErrorBuilder>)>
+        GetActionResult(
+            ConnectionOutput output,
+            string[]? stdOut,
+            string[]? stdErr)
     {
-        var casePath = @"d:\case";
+        const string? casePath = @"d:\case";
 
         var action = new ExternalProcessAction(
             new ConnectionCommand
@@ -462,11 +468,11 @@ public class NuixConnectionTests
                     { nameof(NuixMigrateCase.CasePath), casePath }
                 }
             },
-            new ConnectionOutput { Result = null }
-        );
+            output
+        ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
 
         var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
+        var loggerFactory  = TestLoggerFactory.Create();
         var ct             = new CancellationToken();
 
         var dict = new Dictionary<RubyFunctionParameter, object>()
@@ -482,12 +488,22 @@ public class NuixConnectionTests
         var step = new NuixMigrateCase();
 
         var result = await nuixConnection.RunFunctionAsync(
-            logger,
+            loggerFactory.CreateLogger("Test"),
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
             CasePathParameter.IgnoresOpenCase.Instance,
             ct
         );
+
+        return (loggerFactory, result);
+    }
+
+    [Fact]
+    public async Task RunFunctionAsync_WhenConnectionOutputPropertiesAreNull_ReturnsError()
+    {
+        var output = new ConnectionOutput { Result = null };
+
+        var (_, result) = await GetActionResult(output, null, null);
 
         result.ShouldBeFailure();
 
@@ -500,52 +516,63 @@ public class NuixConnectionTests
     [Fact]
     public async Task RunFunctionAsync_WhenConnectionOutputIsNotValid_ReturnsError()
     {
-        var casePath = @"d:\case";
-
-        var action = new ExternalProcessAction(
-            new ConnectionCommand
-            {
-                Command            = "MigrateCase",
-                FunctionDefinition = "",
-                Arguments = new Dictionary<string, object>
-                {
-                    { nameof(NuixMigrateCase.CasePath), casePath }
-                }
-            },
-            new ConnectionOutput
-            {
-                Log = new ConnectionOutputLog(), Result = new ConnectionOutputResult()
-            }
-        );
-
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
-        var ct             = new CancellationToken();
-
-        var dict = new Dictionary<RubyFunctionParameter, object>()
+        var output = new ConnectionOutput
         {
-            {
-                new RubyFunctionParameter("pathArg", nameof(NuixMigrateCase.CasePath), false, null),
-                casePath
-            }
+            Log = new ConnectionOutputLog(), Result = new ConnectionOutputResult()
         };
 
-        var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
-
-        var step = new NuixMigrateCase();
-
-        var result = await nuixConnection.RunFunctionAsync(
-            logger,
-            step.RubyScriptStepFactory.RubyFunction,
-            stepParams,
-            CasePathParameter.IgnoresOpenCase.Instance,
-            ct
-        );
+        var (_, result) = await GetActionResult(output, null, null);
 
         Assert.True(result.IsFailure);
 
         Assert.Equal(
             $"External Process Failed: '{nameof(ConnectionOutput)} can only have one property set'",
+            result.Error.AsString
+        );
+    }
+
+    [Theory]
+    [InlineData("(eval):9: warning:", "This is a warning.")]
+    [InlineData("ERROR ",             "This is an error.")]
+    public async Task RunFunctionAsync_WhenJavaWritesToStdErr_LogsWarning(
+        string prefix,
+        string message)
+    {
+        var output = new ConnectionOutput { Result = new ConnectionOutputResult() };
+
+        var (loggerFactory, result) = await GetActionResult(
+            output,
+            null,
+            new[] { $"{prefix}{message}" }
+        );
+
+        Assert.True(result.IsSuccess);
+
+        loggerFactory.Sink.LogEntries
+            .Should()
+            .Contain(
+                x => x.LogLevel == LogLevel.Warning
+                  && x.Message != null && x.Message.Equals(message)
+            );
+    }
+
+    [Fact]
+    public async Task RunFunctionAsync_WhenItCantParseJson_ReturnsFailure()
+    {
+        const string? message = "A random message";
+
+        var output = new ConnectionOutput { Result = new ConnectionOutputResult() };
+
+        var (_, result) = await GetActionResult(
+            output,
+            new[] { message },
+            null
+        );
+
+        Assert.True(result.IsFailure);
+
+        Assert.Equal(
+            ErrorCode.CouldNotParse.GetFormattedMessage(message, nameof(ConnectionOutput)),
             result.Error.AsString
         );
     }

@@ -333,10 +333,12 @@ public sealed class NuixConnection : IDisposable
         }
     }
 
-    private static readonly Regex JavaWarningRegex = new Regex(
+    private static readonly Regex JavaWarningRegex = new(
         @"\(eval\):9: warning:(?<text>.+)",
         RegexOptions.Compiled
     );
+
+    private static readonly Regex JavaErrorRegex = new(@"ERROR\s*(?<text>.+)");
 
     private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(
         ILogger logger,
@@ -374,6 +376,7 @@ public sealed class NuixConnection : IDisposable
             catch (Exception)
             {
                 var warningMatch = JavaWarningRegex.Match(jsonString);
+                var errorMatch   = JavaErrorRegex.Match(jsonString);
 
                 if (warningMatch.Success)
                 {
@@ -382,6 +385,18 @@ public sealed class NuixConnection : IDisposable
                         Log = new ConnectionOutputLog
                         {
                             Message = warningMatch.Groups["text"].Value, Severity = "warn"
+                        }
+                    };
+
+                    source = StreamSource.Output; //Filthy hack
+                }
+                else if (errorMatch.Success)
+                {
+                    connectionOutput = new ConnectionOutput
+                    {
+                        Log = new ConnectionOutputLog
+                        {
+                            Message = errorMatch.Groups["text"].Value, Severity = "warn"
                         }
                     };
 

@@ -60,6 +60,12 @@ integration test:
     - dotnet test --no-restore --configuration $CONFIG
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
+    - |
+      dotnet test --no-restore --configuration $CONFIG --list-tests |
+      ForEach-Object {
+        if ($_ -match 'stepCaseName: "(.+?)\(Nuix (\d+\.\d+)\)') {
+          [pscustomobject]@{ Name = $Matches[1] ; Version = $Matches[2] }
+      } } | group Version
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
     reports:
