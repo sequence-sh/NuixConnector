@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.Utilities.Testing;
+using Reductech.EDR.Core.TestHarness;
 using Xunit;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 

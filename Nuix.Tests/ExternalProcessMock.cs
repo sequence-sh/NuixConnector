@@ -13,8 +13,8 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
-using Reductech.Utilities.Testing;
 using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests

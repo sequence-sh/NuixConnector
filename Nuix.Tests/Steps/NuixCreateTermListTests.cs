@@ -2,17 +2,14 @@
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Steps;
-using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, StringStream>
+public  partial class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, StringStream>
 {
-    /// <inheritdoc />
-    public NuixCreateTermListTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases

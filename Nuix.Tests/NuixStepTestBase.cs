@@ -1,26 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
-using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
 
-//TODO test script composition
-//TODO test deserialization
-
 public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TStep, TOutput>
     where TStep : class, IRubyScriptStep<TOutput>, new()
 {
-    /// <inheritdoc />
-    protected NuixStepTestBase([NotNull] ITestOutputHelper testOutputHelper) : base(
-        testOutputHelper
-    ) { }
-
     public const string TestNuixPath = "TestPath";
 
     private static bool IsVersionCompatible(IStep step, Version nuixVersion)

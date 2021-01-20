@@ -11,7 +11,6 @@ using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
-using Reductech.Utilities.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,29 +20,16 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 [Collection("RequiresNuixLicense")]
 public abstract partial class NuixStepTestBase<TStep, TOutput>
 {
-    private IEnumerable<IntegrationTestCase> IntegrationTestCasesWithSettings =>
+    [AutoTheory.GenerateAsyncTheory("NuixIntegration", Category = "Integration")]
+    public IEnumerable<IntegrationTestCase> IntegrationTestCasesWithSettings =>
         from nuixTestCase in NuixTestCases
         from settings in Constants.NuixSettingsList
         where IsVersionCompatible(
             nuixTestCase.Step,
             settings.NuixVersion
         ) //&& false //uncomment to disable integration tests
-        select new IntegrationTestCase(
-                $"{nuixTestCase.Name} (Nuix {settings.NuixVersion})",
-                nuixTestCase.Step
-            )
+        select new IntegrationTestCase(nuixTestCase.Name + settings.NuixVersion, nuixTestCase.Step)
             .WithSettings(settings);
-
-    public IEnumerable<object?[]> IntegrationTestCaseNames =>
-        IntegrationTestCasesWithSettings.Select(x => new[] { x.Name });
-
-    [Theory]
-    [NonStaticMemberData(nameof(IntegrationTestCaseNames), true)]
-    [Trait("Category", "Integration")]
-    public async Task Should_behave_as_expected_when_run_integration(string stepCaseName)
-    {
-        await IntegrationTestCasesWithSettings.FindAndRunAsync(stepCaseName, TestOutputHelper);
-    }
 
     public class NuixIntegrationTestCase
     {
@@ -61,24 +47,19 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         public Sequence<Unit> Step { get; }
     }
 
-    public class IntegrationTestCase : CaseThatExecutes
+    public record IntegrationTestCase : CaseThatExecutes
     {
-        public IntegrationTestCase(string name, IStep<Unit> steps) : base(new List<object>())
+        public IntegrationTestCase(string name, IStep<Unit> steps) : base(name, new List<string>())
         {
-            Name               = name;
             Steps              = steps;
             IgnoreFinalState   = true;
             IgnoreLoggedValues = true;
         }
 
-        public override string Name { get; }
-
         public IStep<Unit> Steps { get; }
 
         /// <inheritdoc />
-        public override async Task<IStep> GetStepAsync(
-            ITestOutputHelper testOutputHelper,
-            string? extraArgument)
+        public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper)
         {
             await Task.CompletedTask;
             var yaml = Steps.Serialize();

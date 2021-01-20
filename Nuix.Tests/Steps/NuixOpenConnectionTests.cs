@@ -2,26 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using CSharpFunctionalExtensions;
-using JetBrains.Annotations;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
-using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, Unit>
+public  partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, Unit>
 {
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    public NuixOpenConnectionTests([NotNull] ITestOutputHelper testOutputHelper) : base(
-        testOutputHelper
-    ) { }
 
     protected override IEnumerable<StepCase> StepCases
     {

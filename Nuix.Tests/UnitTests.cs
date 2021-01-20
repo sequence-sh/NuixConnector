@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CSharpFunctionalExtensions;
 using Moq;
+using OneOf;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Steps;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -13,14 +14,19 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
     /// <inheritdoc />
     protected override IEnumerable<StepCase> StepCases { get { yield break; } }
 
-    public class NuixStepCase : StepCase
+    public record NuixStepCase : StepCase
     {
         public NuixStepCase(
             string name,
             Sequence<TOutput> sequence,
             IReadOnlyCollection<ExternalProcessAction> externalProcessActions,
             params string[] expectedLogValues)
-            : base(name, sequence, Maybe<TOutput>.None, expectedLogValues)
+            : base(
+                name,
+                sequence,
+                new ExpectedOutput(OneOf<Unit, TOutput>.FromT0(Unit.Default)),
+                expectedLogValues
+            )
         {
             ExternalProcessActions = externalProcessActions;
             IgnoreFinalState       = true;

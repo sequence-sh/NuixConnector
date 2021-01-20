@@ -3,17 +3,14 @@ using System.IO;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Util;
-using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Unit>
+public  partial class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Unit>
 {
-    /// <inheritdoc />
-    public NuixCreateNRTReportTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases
