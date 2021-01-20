@@ -2,16 +2,13 @@
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Util;
-using Xunit.Abstractions;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public class NuixMigrateCaseTests : NuixStepTestBase<NuixMigrateCase, Unit>
+public  partial class NuixMigrateCaseTests : NuixStepTestBase<NuixMigrateCase, Unit>
 {
-    /// <inheritdoc />
-    public NuixMigrateCaseTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases

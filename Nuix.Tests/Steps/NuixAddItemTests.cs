@@ -5,18 +5,14 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
-using Xunit.Abstractions;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
+public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
 {
-    /// <inheritdoc />
-    public NuixAddItemTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
-
     /// <inheritdoc />
     protected override IEnumerable<StepCase> StepCases
     {

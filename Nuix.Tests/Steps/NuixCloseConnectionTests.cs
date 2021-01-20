@@ -1,21 +1,13 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
-using Xunit.Abstractions;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection, Unit>
+public  partial class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection, Unit>
 {
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    public NuixCloseConnectionTests([NotNull] ITestOutputHelper testOutputHelper) : base(
-        testOutputHelper
-    ) { }
 
     protected override IEnumerable<StepCase> StepCases
     {

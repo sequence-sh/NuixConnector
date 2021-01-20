@@ -9,7 +9,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
 public abstract partial class NuixStepTestBase<TStep, TOutput>
 {
-    public class NuixDeserializeTest : DeserializeCase
+    public record NuixDeserializeTest : DeserializeCase
     {
         /// <inheritdoc />
         public NuixDeserializeTest(
