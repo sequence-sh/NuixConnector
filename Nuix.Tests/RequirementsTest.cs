@@ -13,7 +13,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 public class RequirementsTest
 {
     public static readonly TheoryData<(string? expectedError, NuixSettings settings)> TestCases =
-        new TheoryData<(string? expectedError, NuixSettings settings)>
+        new()
         {
             ("Requirement 'Required Nuix Version >= 5.0' not met.",
              new NuixSettings(

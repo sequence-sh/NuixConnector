@@ -88,28 +88,6 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     /// <inheritdoc />
     public override IStepFactory StepFactory => RubyScriptStepFactory;
 
-    /// <inheritdoc />
-    public override IEnumerable<Requirement> RuntimeRequirements
-    {
-        get
-        {
-            var highestRequiredVersion = GetArgumentValues()
-                .Keys
-                .Select(x => x.RequiredNuixVersion)
-                .Where(x => x != null)
-                .OrderByDescending(x => x)
-                .FirstOrDefault();
-
-            if (highestRequiredVersion != null)
-            {
-                yield return new Requirement
-                {
-                    MinVersion = highestRequiredVersion, Name = NuixRequirementName
-                };
-            }
-        }
-    }
-
     internal IReadOnlyDictionary<RubyFunctionParameter, IStep?> GetArgumentValues() =>
         RubyFunctionParameter.GetRubyFunctionArguments(this);
 

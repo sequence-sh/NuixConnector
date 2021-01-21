@@ -380,8 +380,8 @@ public class NuixConnectionTests
 
         var dict = new Dictionary<RubyFunctionParameter, object>
         {
-            { new RubyFunctionParameter("stream1Arg", "Stream1", false, null), stream1 },
-            { new RubyFunctionParameter("stream2Arg", "Stream2", false, null), stream2 }
+            { new RubyFunctionParameter("stream1Arg", "Stream1", false), stream1 },
+            { new RubyFunctionParameter("stream2Arg", "Stream2", false), stream2 }
         };
 
         var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
@@ -430,7 +430,7 @@ public class NuixConnectionTests
 
         var dict = new Dictionary<RubyFunctionParameter, object>()
         {
-            { new RubyFunctionParameter("entityStream", "EntityStream", false, null), stream1 }
+            { new RubyFunctionParameter("entityStream", "EntityStream", false), stream1 }
         };
 
         var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
@@ -478,7 +478,7 @@ public class NuixConnectionTests
         var dict = new Dictionary<RubyFunctionParameter, object>()
         {
             {
-                new RubyFunctionParameter("pathArg", nameof(NuixMigrateCase.CasePath), false, null),
+                new RubyFunctionParameter("pathArg", nameof(NuixMigrateCase.CasePath), false),
                 casePath
             }
         };

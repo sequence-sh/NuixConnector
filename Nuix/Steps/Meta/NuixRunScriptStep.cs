@@ -56,13 +56,13 @@ public class NuixRunScript : CompoundStep<StringStream>
                 .MapError(x => x.WithLocation(this));
 
         var rubyFunctionParameters = parameters.Value
-            .Select(x => new RubyFunctionParameter(ConvertString(x.Name), x.Name, true, null))
+            .Select(x => new RubyFunctionParameter(ConvertString(x.Name), x.Name, true))
             .ToList();
 
         var parameterDict = parameters.Value
             .ToDictionary(
                 x =>
-                    new RubyFunctionParameter(ConvertString(x.Name), x.Name, true, null),
+                    new RubyFunctionParameter(ConvertString(x.Name), x.Name, true),
                 x => GetObject(x.BestValue)
             )
             .Where(x => x.Value != null)
@@ -80,8 +80,7 @@ public class NuixRunScript : CompoundStep<StringStream>
             var parameter = new RubyFunctionParameter(
                 ConvertString(streamParameter),
                 streamParameter,
-                true,
-                null
+                true
             );
 
             rubyFunctionParameters.Add(parameter);
