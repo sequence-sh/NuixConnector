@@ -17,7 +17,7 @@ public abstract class RubyCaseScriptStepBase<T> : RubyScriptStepBase<T>
 
     // ReSharper disable once StaticMemberInGenericType
     private static readonly RubyFunctionParameter PathParameter =
-        new(PathArg, nameof(CasePath), true, null);
+        new(PathArg, nameof(CasePath), true);
 
     /// <summary>
     /// The case path parameter

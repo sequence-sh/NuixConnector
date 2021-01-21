@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
-using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -20,17 +18,14 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
     /// <param name="parameterName">Argument in ruby</param>
     /// <param name="propertyName">Property in C#</param>
     /// <param name="isOptional">Is this optional</param>
-    /// <param name="requiredNuixVersion">Required version</param>
     public RubyFunctionParameter(
         string parameterName,
         string propertyName,
-        bool isOptional,
-        Version? requiredNuixVersion)
+        bool isOptional)
     {
-        ParameterName       = parameterName;
-        PropertyName        = propertyName;
-        IsOptional          = isOptional;
-        RequiredNuixVersion = requiredNuixVersion;
+        ParameterName = parameterName;
+        PropertyName  = propertyName;
+        IsOptional    = isOptional;
     }
 
     /// <inheritdoc />
@@ -52,11 +47,6 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
     /// False if this argument is required.
     /// </summary>
     public bool IsOptional { get; }
-
-    /// <summary>
-    /// The required Nuix version for this parameter.
-    /// </summary>
-    public Version? RequiredNuixVersion { get; }
 
     /// <inheritdoc />
     public bool Equals(RubyFunctionParameter other) => ParameterName == other.ParameterName;
@@ -100,16 +90,10 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
             if (!isRunnableProcess)
                 continue;
 
-            var version = p.GetCustomAttributes<RequiredVersionAttribute>()
-                .Where(x => x.SoftwareName.Equals("Nuix", StringComparison.OrdinalIgnoreCase))
-                .Select(x => x.RequiredVersion)
-                .FirstOrDefault();
-
             var parameter = new RubyFunctionParameter(
                 argumentAttribute.RubyName,
                 p.Name,
-                isNullable,
-                version
+                isNullable
             );
 
             var value = p.GetValue(process);
@@ -139,18 +123,12 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
 
             if (argumentAttribute != null)
             {
-                var version = p.GetCustomAttributes<RequiredVersionAttribute>()
-                    .Where(x => x.SoftwareName.Equals("Nuix", StringComparison.OrdinalIgnoreCase))
-                    .Select(x => x.RequiredVersion)
-                    .FirstOrDefault();
-
                 if (isRunnableProcess)
                     list.Add(
                         new RubyFunctionParameter(
                             argumentAttribute.RubyName,
                             p.Name,
-                            isNullable,
-                            version
+                            isNullable
                         )
                     );
                 else
