@@ -38,11 +38,10 @@
     <Content Include="..\nuixconnectorscript\lib\nuixconnectorscript.rb">
       <Link>nuixconnectorscript.rb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Pack>true</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>contentFiles\any\any</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
-      <PackageFlatten>true</PackageFlatten>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
 
