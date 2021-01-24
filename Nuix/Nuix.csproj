@@ -37,7 +37,8 @@
   <ItemGroup>
     <Content Include="..\nuixconnectorscript\lib\nuixconnectorscript.rb">
       <Link>nuixconnectorscript.rb</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Pack>true</Pack>
       <PackagePath></PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
