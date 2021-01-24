@@ -36,7 +36,12 @@
 
   <ItemGroup>
     <Content Include="..\nuixconnectorscript\lib\nuixconnectorscript.rb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>nuixconnectorscript.rb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>contentFiles\any\any</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
 
