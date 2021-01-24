@@ -35,9 +35,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\nuixconnectorscript\lib\nuixconnectorscript.rb">
+    <None Include="..\nuixconnectorscript\lib\nuixconnectorscript.rb">
+      <Link>nuixconnectorscript.rb</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
