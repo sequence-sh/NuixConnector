@@ -31,19 +31,19 @@ public static class Constants
         NuixSettings.CreateSettings(
             Path.Combine(Nuix8Path, NuixConsoleExe),
             new Version(8, 8),
-            NuixSettings.DongleArguments,
+            true,
             AllNuixFeatures
         ),
         NuixSettings.CreateSettings(
             Path.Combine(Nuix7Path, NuixConsoleExe),
             new Version(7, 8),
-            NuixSettings.DongleArguments,
+            true,
             AllNuixFeatures
         ),
         NuixSettings.CreateSettings(
             Path.Combine(Nuix70Path, NuixConsoleExe),
             new Version(7, 0),
-            NuixSettings.DongleArguments,
+            true,
             AllNuixFeatures
         )
     };

@@ -20,7 +20,7 @@ public static class NuixSettings
     public static SCLSettings CreateSettings(
         string consolePath,
         Version version,
-        IReadOnlyCollection<string> arguments,
+        bool useDongle,
         IReadOnlyCollection<NuixFeature> features)
     {
         var dict = new Dictionary<string, object>
@@ -31,8 +31,8 @@ public static class NuixSettings
                 {
                     { "exeConsolePath", consolePath },
                     { "version", version.ToString() },
-                    { "ConsoleArguments", arguments },
-                    { "Features", features }
+                    { "licencesourcetype", "dongle" },
+                    { "Features", features.Select(x => x.ToString()).ToList() }
                 }
             }
         };
@@ -52,12 +52,6 @@ public static class NuixSettings
 
         return Version.Parse(versionString);
     }
-
-    /// <summary>
-    /// Arguments to use for Dongle License source
-    /// </summary>
-    public static readonly IReadOnlyList<string> DongleArguments =
-        new List<string> { "-licencesourcetype", "dongle" };
 
     /// <summary>
     /// Tries to get a nested string.
@@ -89,6 +83,18 @@ public static class NuixSettings
             return Maybe<string>.None;
 
         return lastProp.Value.ToString();
+    }
+
+    public static bool TryGetNestedBool(this Entity current, params string[] properties)
+    {
+        var s = TryGetNestedString(current, properties);
+
+        if (s.HasNoValue)
+            return false;
+
+        var b = bool.TryParse(s.Value, out var r) && r;
+
+        return b;
     }
 
     /// <summary>

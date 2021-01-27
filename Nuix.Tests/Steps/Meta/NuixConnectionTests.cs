@@ -43,7 +43,7 @@ public static class NuixConnectionTestsHelper
         var nuixSettings = NuixSettings.CreateSettings(
             Constants.NuixConsoleExe,
             new Version(8, 0),
-            NuixSettings.DongleArguments,
+            true,
             Constants.AllNuixFeatures
         );
 

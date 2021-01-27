@@ -18,35 +18,27 @@ public class RequirementsTest
     public static readonly TheoryData<(string? expectedError, SCLSettings settings)> TestCases =
         new()
         {
-            ("Requirement 'Required Nuix Version >= 5.0' not met.",
-             NuixSettings.CreateSettings(
-                 FakeConstantPath,
-                 new Version(1, 0),
-                 NuixSettings.DongleArguments,
-                 new List<NuixFeature> { NuixFeature.ANALYSIS }
-             )
-            ),
-            ("Requirement 'ANALYSIS' not met.",
+            ("Could not get settings value: Nuix.Features",
              NuixSettings.CreateSettings(
                  FakeConstantPath,
                  new Version(8, 0),
-                 NuixSettings.DongleArguments,
+                 true,
                  new List<NuixFeature>()
              )
             ),
             ("Requirement 'Nuix Version 5.0Features: ANALYSIS' not met.",
              NuixSettings.CreateSettings(
                  FakeConstantPath,
-                 new Version(1, 0),
-                 NuixSettings.DongleArguments,
-                 new List<NuixFeature>()
+                 new Version(8, 0),
+                 true,
+                 new List<NuixFeature>() { NuixFeature.CASE_CREATION }
              )
             ),
             (null,
              NuixSettings.CreateSettings(
                  FakeConstantPath,
                  new Version(8, 0),
-                 NuixSettings.DongleArguments,
+                 true,
                  new List<NuixFeature> { NuixFeature.ANALYSIS }
              )
             )

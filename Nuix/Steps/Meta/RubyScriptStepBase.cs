@@ -7,6 +7,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -33,6 +34,18 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     /// Gets the CasePath Parameter.
     /// </summary>
     public abstract CasePathParameter CasePathParameter { get; }
+
+    /// <inheritdoc />
+    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
+    {
+        var r = NuixConnectionHelper.TryGetConsoleArguments(settings)
+            .MapError(x => x.WithLocation(this));
+
+        if (r.IsFailure)
+            return r.ConvertFailure<Unit>();
+
+        return base.VerifyThis(settings);
+    }
 
     /// <summary>
     /// Runs this step asynchronously.

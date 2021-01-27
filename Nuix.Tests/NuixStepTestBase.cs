@@ -21,7 +21,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TS
         var settings = NuixSettings.CreateSettings(
             TestNuixPath,
             nuixVersion,
-            NuixSettings.DongleArguments,
+            true,
             features
         );
 
@@ -39,7 +39,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TS
             return NuixSettings.CreateSettings(
                 TestNuixPath,
                 factory.RequiredNuixVersion,
-                NuixSettings.DongleArguments,
+                true,
                 factory.RequiredFeatures
             );
         }

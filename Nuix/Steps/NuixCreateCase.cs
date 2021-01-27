@@ -66,12 +66,6 @@ public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
     /// </summary>
     public const string PathArg = "pathArg";
 
-    /// <inheritdoc />
-    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
-    {
-        return base.VerifyThis(settings);
-    }
-
     /// <summary>
     /// The path to the directory to create the case in.
     /// </summary>

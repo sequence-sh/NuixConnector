@@ -28,7 +28,7 @@ public partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, 
                     NuixSettings.CreateSettings(
                         "TestPath",
                         new Version(1, 0),
-                        NuixSettings.DongleArguments,
+                        true,
                         Constants.AllNuixFeatures
                     )
                 )

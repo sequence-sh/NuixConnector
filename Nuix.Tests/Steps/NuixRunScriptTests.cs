@@ -134,7 +134,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
     public static SCLSettings UnitTestSettings => NuixSettings.CreateSettings(
         TestNuixPath,
         new Version(8, 2),
-        NuixSettings.DongleArguments,
+        true,
         AllNuixFeatures
     );
 
