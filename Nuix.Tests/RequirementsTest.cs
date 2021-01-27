@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.TestHarness;
 using Xunit;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
@@ -12,32 +13,40 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 
 public class RequirementsTest
 {
-    public static readonly TheoryData<(string? expectedError, NuixSettings settings)> TestCases =
+    private const string FakeConstantPath = "abcd";
+
+    public static readonly TheoryData<(string? expectedError, SCLSettings settings)> TestCases =
         new()
         {
-            ("Requirement 'Required Nuix Version >= 5.0' not met.",
-             new NuixSettings(
-                 true,
-                 "abcd",
-                 new Version(1, 0),
-                 new List<NuixFeature> { NuixFeature.ANALYSIS }
-             )),
-            ("Requirement 'ANALYSIS' not met.",
-             new NuixSettings(true, "abcd", new Version(8, 0), new List<NuixFeature>())),
-            ("Requirement 'Required Nuix Version >= 5.0' not met.; Requirement 'ANALYSIS' not met.",
-             new NuixSettings(true, "abcd", new Version(1, 0), new List<NuixFeature>())),
-            (null,
-             new NuixSettings(
-                 true,
-                 "abcd",
+            ("Could not get settings value: Nuix.Features",
+             NuixSettings.CreateSettings(
+                 FakeConstantPath,
                  new Version(8, 0),
+                 true,
+                 new List<NuixFeature>()
+             )
+            ),
+            ("Requirement 'Nuix Version 5.0Features: ANALYSIS' not met.",
+             NuixSettings.CreateSettings(
+                 FakeConstantPath,
+                 new Version(8, 0),
+                 true,
+                 new List<NuixFeature>() { NuixFeature.CASE_CREATION }
+             )
+            ),
+            (null,
+             NuixSettings.CreateSettings(
+                 FakeConstantPath,
+                 new Version(8, 0),
+                 true,
                  new List<NuixFeature> { NuixFeature.ANALYSIS }
-             ))
+             )
+            )
         };
 
     [Theory]
     [MemberData(nameof(TestCases))]
-    public void TestRequirements((string? expectedError, NuixSettings settings) args)
+    public void TestRequirements((string? expectedError, SCLSettings settings) args)
     {
         var process = new NuixSearchAndTag { SearchTerm = Constant("a"), Tag = Constant("c") };
 

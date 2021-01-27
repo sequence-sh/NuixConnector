@@ -30,7 +30,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
 
     /// <inheritdoc />
     public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
-        new List<NuixFeature>() { NuixFeature.ANALYSIS };
+        new List<NuixFeature> { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
     public override string FunctionName => "AddToItemSet";

@@ -13,9 +13,8 @@ using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
+public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<StepCase> StepCases
     {
@@ -94,7 +93,7 @@ public  partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Uni
                     CaseName     = Constant("Error Case"),
                     Investigator = Constant("investigator")
                 },
-                new ErrorBuilder(ErrorCode.MissingStepSettings, "INuixSettings")
+                new ErrorBuilder(ErrorCode.MissingStepSettingsValue, "Nuix", "exeConsolePath")
             );
         }
     }

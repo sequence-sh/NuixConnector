@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CSharpFunctionalExtensions;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {

@@ -164,7 +164,7 @@ public sealed class NuixAddToProductionSet : RubyCaseScriptStepBase<Unit>
     public IStep<int>? Limit { get; set; }
 
     /// <inheritdoc />
-    public override Result<Unit, IError> VerifyThis(ISettings settings)
+    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
     {
         if (ProductionProfileName != null && ProductionProfilePath != null)
             return new SingleError(

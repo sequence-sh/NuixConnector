@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
 
@@ -16,22 +17,29 @@ public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TS
     private static bool IsVersionCompatible(IStep step, Version nuixVersion)
     {
         var features = Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToHashSet();
-        var settings = new NuixSettings(false, "", nuixVersion, features);
-        var r        = step.Verify(settings);
+
+        var settings = NuixSettings.CreateSettings(
+            TestNuixPath,
+            nuixVersion,
+            true,
+            features
+        );
+
+        var r = step.Verify(settings);
         return r.IsSuccess;
     }
 
-    public NuixSettings UnitTestSettings
+    public SCLSettings UnitTestSettings
     {
         get
         {
             var instance = new TStep();
             var factory  = instance.RubyScriptStepFactory;
 
-            return new NuixSettings(
-                true,
+            return NuixSettings.CreateSettings(
                 TestNuixPath,
                 factory.RequiredNuixVersion,
+                true,
                 factory.RequiredFeatures
             );
         }

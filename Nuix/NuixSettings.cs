@@ -1,195 +1,136 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Util;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix
 {
 
 /// <summary>
-/// Settings required to run a nuix step.
+/// Methods to create Nuix Settings
 /// </summary>
-public interface INuixSettings : ISettings
+public static class NuixSettings
 {
     /// <summary>
-    /// Whether to use a dongle for nuix authentication.
+    /// Create Nuix Settings
     /// </summary>
-    bool UseDongle { get; }
-
-    /// <summary>
-    /// The path to the nuix console executable.
-    /// </summary>
-    string NuixExeConsolePath { get; }
-
-    /// <summary>
-    /// The version of Nuix
-    /// </summary>
-    Version NuixVersion { get; }
-
-    /// <summary>
-    /// A list of available Nuix features.
-    /// </summary>
-    IReadOnlyCollection<NuixFeature> NuixFeatures { get; }
-}
-
-/// <summary>
-/// Settings for a nuix step.
-/// </summary>
-public class NuixSettings : INuixSettings
-{
-    /// <summary>
-    /// Create a new NuixSettings.
-    /// </summary>
-    public NuixSettings(
+    public static SCLSettings CreateSettings(
+        string consolePath,
+        Version version,
         bool useDongle,
-        string nuixExeConsolePath,
-        Version nuixVersion,
-        IReadOnlyCollection<NuixFeature> nuixFeatures)
+        IReadOnlyCollection<NuixFeature> features)
     {
-        UseDongle          = useDongle;
-        NuixExeConsolePath = nuixExeConsolePath;
-        NuixVersion        = nuixVersion;
-        NuixFeatures       = nuixFeatures;
+        var dict = new Dictionary<string, object>
+        {
+            {
+                "nuix",
+                new Dictionary<string, object>
+                {
+                    { "exeConsolePath", consolePath },
+                    { "version", version.ToString() },
+                    { "licencesourcetype", "dongle" },
+                    { "Features", features.Select(x => x.ToString()).ToList() }
+                }
+            }
+        };
+
+        var entity = Entity.Create(("connectors", dict));
+
+        return new SCLSettings(entity);
+    }
+
+    public static Version GetNuixVersion(SCLSettings settings)
+    {
+        var versionString =
+            settings.Entity.TryGetValue("connectors")
+                .Value.AsT7.TryGetValue("nuix")
+                .Value.AsT7.TryGetValue("version")
+                .Value.ToString()!;
+
+        return Version.Parse(versionString);
     }
 
     /// <summary>
-    /// Tries to create new Nuix Process Settings from the configuration manager.
+    /// Tries to get a nested string.
     /// </summary>
-    public static Result<NuixSettings> TryCreate(Func<string, string> getSetting)
+    public static Maybe<string>
+        TryGetNestedString(
+            this Entity current,
+            params string[] properties) //TODO remove when we can update core
     {
-        Console.OutputEncoding = Encoding.UTF8;
+        if (!properties.Any())
+            return Maybe<string>.None;
 
-        var useDongleString    = getSetting("NuixUseDongle");
-        var nuixExeConsolePath = getSetting("NuixExeConsolePath");
-        var nuixVersionString  = getSetting("NuixVersion");
-        var nuixFeaturesString = getSetting("NuixFeatures");
-
-        var stringBuilder = new StringBuilder();
-
-        if (!bool.TryParse(useDongleString, out var useDongle))
+        foreach (var property in properties.SkipLast(1))
         {
-            stringBuilder.AppendLine(
-                "Please set the property 'NuixUseDongle' in the settings file"
-            );
+            var v = current.TryGetValue(property);
+
+            if (v.HasNoValue)
+                return Maybe<string>.None;
+
+            if (v.Value.TryPickT7(out var e, out _))
+                current = e;
+            else
+                return Maybe<string>.None;
         }
 
-        if (string.IsNullOrWhiteSpace(nuixExeConsolePath))
-        {
-            stringBuilder.AppendLine(
-                "Please set the property 'NuixExeConsolePath' in the settings file"
-            );
-        }
+        var lastProp = current.TryGetValue(properties.Last());
 
-        if (!Version.TryParse(nuixVersionString, out var nuixVersion))
-        {
-            stringBuilder.AppendLine(
-                "Please set the property 'NuixVersion' in the settings file to a valid version number"
-            );
-        }
+        if (lastProp.HasNoValue)
+            return Maybe<string>.None;
 
-        if (!TryParseNuixFeatures(nuixFeaturesString, out var nuixFeatures))
-        {
-            stringBuilder.AppendLine(
-                "Please set the property 'NuixFeatures' in the settings file to a comma separated list of nuix features or 'NO_FEATURES'"
-            );
-        }
-
-        var errorString = stringBuilder.ToString();
-
-        if (!string.IsNullOrWhiteSpace(errorString))
-            return Result.Failure<NuixSettings>(errorString);
-
-        #pragma warning disable CS8604 // Possible null reference argument. - this is checked above
-        return new NuixSettings(useDongle, nuixExeConsolePath, nuixVersion, nuixFeatures);
-        #pragma warning restore CS8604 // Possible null reference argument.
+        return lastProp.Value.ToString();
     }
 
-    private static bool TryParseNuixFeatures(
-        string? s,
-        out IReadOnlyCollection<NuixFeature> nuixFeatures)
+    public static bool TryGetNestedBool(this Entity current, params string[] properties)
     {
-        if (string.IsNullOrWhiteSpace(s))
-        {
-            nuixFeatures = new List<NuixFeature>();
+        var s = TryGetNestedString(current, properties);
+
+        if (s.HasNoValue)
             return false;
-        }
-        else if (s == "NO_FEATURES")
-        {
-            nuixFeatures = new List<NuixFeature>();
-            return true;
-        }
-        else
-        {
-            var nfs      = new HashSet<NuixFeature>();
-            var features = s.Split(',');
 
-            foreach (var feature in features)
-                if (Enum.TryParse(typeof(NuixFeature), feature, true, out var nf)
-                 && nf is NuixFeature nuixFeature)
-                    nfs.Add(nuixFeature);
+        var b = bool.TryParse(s.Value, out var r) && r;
 
-            nuixFeatures = nfs;
-            return true;
-        }
+        return b;
     }
 
     /// <summary>
-    /// Whether to use a dongle for nuix authentication.
+    /// Tries to get a nested string.
     /// </summary>
-    public bool UseDongle { get; }
-
-    /// <summary>
-    /// The path to the nuix console executable.
-    /// </summary>
-    public string NuixExeConsolePath { get; }
-
-    /// <inheritdoc />
-    public Version NuixVersion { get; }
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<NuixFeature> NuixFeatures { get; }
-
-    private static readonly Regex NuixFeatureRegex = new(
-        @$"\A{RubyScriptStepBase<Unit>.NuixRequirementName}(?<feature>.+)\Z",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase
-    );
-
-    /// <inheritdoc />
-    public Result<Unit, IErrorBuilder> CheckRequirement(Requirement requirement)
+    public static Maybe<string[]>
+        TryGetNestedList(
+            this Entity current,
+            params string[] properties) //TODO remove when we can update core
     {
-        if (requirement.Name == RubyScriptStepBase<Unit>.NuixRequirementName)
+        if (!properties.Any())
+            return Maybe<string[]>.None;
+
+        foreach (var property in properties.SkipLast(1))
         {
-            if (requirement.MinVersion != null && requirement.MinVersion > NuixVersion)
-                return new ErrorBuilder(
-                    ErrorCode.RequirementNotMet,
-                    $"Required Nuix Version >= {requirement.MinVersion}"
-                );
+            var v = current.TryGetValue(property);
 
-            if (requirement.MaxVersion != null && requirement.MaxVersion < NuixVersion)
-                return new ErrorBuilder(
-                    ErrorCode.RequirementNotMet,
-                    $"Required Nuix Version <= {requirement.MaxVersion}"
-                );
+            if (v.HasNoValue)
+                return Maybe<string[]>.None;
 
-            return Unit.Default;
+            if (v.Value.TryPickT7(out var e, out _))
+                current = e;
+            else
+                return Maybe<string[]>.None;
         }
 
-        if (!NuixFeatureRegex.TryMatch(requirement.Name, out var match))
-            return EmptySettings.Instance.CheckRequirement(requirement);
+        var lastProp = current.TryGetValue(properties.Last());
 
-        var feature = match.Groups["feature"].Value;
+        if (lastProp.HasNoValue)
+            return Maybe<string[]>.None;
 
-        if (Enum.TryParse<NuixFeature>(feature, true, out var nuixFeature)
-         && NuixFeatures.Contains(nuixFeature))
-            return Unit.Default;
+        if (!lastProp.Value.TryPickT8(out var list, out _))
+            return Maybe<string[]>.None;
 
-        return new ErrorBuilder(ErrorCode.RequirementNotMet, feature);
+        var stringArray = list.Select(x => x.ToString()).ToArray();
+        return stringArray;
     }
 }
 

@@ -109,7 +109,7 @@ public sealed class NuixPerformOCR : RubyCaseScriptStepBase<Unit>
     public IStep<StringStream>? OCRProfilePath { get; set; }
 
     /// <inheritdoc />
-    public override Result<Unit, IError> VerifyThis(ISettings settings)
+    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
     {
         if (OCRProfileName != null && OCRProfilePath != null)
             return new SingleError(

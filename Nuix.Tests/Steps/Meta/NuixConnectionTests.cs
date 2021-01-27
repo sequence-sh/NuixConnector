@@ -40,10 +40,10 @@ public static class NuixConnectionTestsHelper
         IExternalProcessRunner externalProcessRunner,
         IFileSystemHelper fileSystemHelper)
     {
-        var nuixSettings = new NuixSettings(
+        var nuixSettings = NuixSettings.CreateSettings(
+            Constants.NuixConsoleExe,
+            new Version(8, 0),
             true,
-            Constants.NuixSettingsList.First().NuixExeConsolePath,
-            new Version(8, 8),
             Constants.AllNuixFeatures
         );
 
@@ -66,7 +66,7 @@ public static class NuixConnectionTestsHelper
     {
         var fakeExternalProcess = new ExternalProcessMock(expectedTimesStarted, action)
         {
-            ProcessPath = Constants.NuixSettingsList.First().NuixExeConsolePath
+            ProcessPath = Constants.NuixConsoleExe
         };
 
         var process = fakeExternalProcess.StartExternalProcess(
@@ -94,9 +94,7 @@ public static class NuixConnectionTestsHelper
 
         IStateMonad state = GetStateMonad(fakeExternalProcess, loggerFactory);
 
-        var nuixSettings = state.GetSettings<INuixSettings>();
-
-        fakeExternalProcess.ProcessPath = nuixSettings.Value.NuixExeConsolePath;
+        fakeExternalProcess.ProcessPath = Constants.NuixConsoleExe;
 
         var process = state.ExternalProcessRunner.StartExternalProcess(
             fakeExternalProcess.ProcessPath,
@@ -227,7 +225,7 @@ public class NuixConnectionHelperTests
         Assert.True(createConnection.IsFailure);
 
         Assert.Equal(
-            $"External Process Failed: 'Could not start '{Constants.NuixSettingsList.First().NuixExeConsolePath}''",
+            $"External Process Failed: 'Could not start '{Constants.NuixConsoleExe}''",
             createConnection.Error.AsString
         );
     }

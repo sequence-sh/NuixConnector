@@ -63,19 +63,12 @@ public static class NuixConnectionHelper
                 return currentConnection.Value;
         }
 
-        var nuixSettingsResult = stateMonad.GetSettings<INuixSettings>();
+        var settings = stateMonad.Settings;
 
-        if (nuixSettingsResult.IsFailure)
-            return nuixSettingsResult.ConvertFailure<NuixConnection>();
+        var consoleArguments = TryGetConsoleArguments(settings);
 
-        var arguments = new List<string>();
-
-        if (nuixSettingsResult.Value.UseDongle)
-        {
-            // ReSharper disable once StringLiteralTypo
-            arguments.Add("-licencesourcetype");
-            arguments.Add("dongle");
-        }
+        if (consoleArguments.IsFailure)
+            return consoleArguments.ConvertFailure<NuixConnection>();
 
         // TODO: Make this configurable
         var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
@@ -83,11 +76,11 @@ public static class NuixConnectionHelper
         if (!stateMonad.FileSystemHelper.DoesFileExist(scriptPath))
             return new ErrorBuilder(ErrorCode.ExternalProcessNotFound, scriptPath);
 
-        arguments.Add(scriptPath);
+        consoleArguments.Value.arguments.Add(scriptPath);
 
         var r = stateMonad.ExternalProcessRunner.StartExternalProcess(
-            nuixSettingsResult.Value.NuixExeConsolePath,
-            arguments,
+            consoleArguments.Value.consolePath,
+            consoleArguments.Value.arguments,
             Encoding.UTF8
         );
 
@@ -103,6 +96,85 @@ public static class NuixConnectionHelper
                 .MapError(x => x.ToErrorBuilder);
 
         return connection;
+    }
+
+    /// <summary>
+    /// Get the arguments that will be sent to the nuix console
+    /// </summary>
+    public static Result<(string consolePath, List<string> arguments), IErrorBuilder>
+        TryGetConsoleArguments(SCLSettings sclSettings)
+    {
+        // ReSharper disable StringLiteralTypo
+        const string nuixSettingsKey          = "Nuix";
+        const string extraArgumentsKey        = "ConsoleArguments";
+        const string consolePathKey           = "exeConsolePath";
+        const string signoutKey               = "signout";
+        const string releaseKey               = "release";
+        const string licenceSourceTypeKey     = "licencesourcetype";
+        const string licenceSourceLocationKey = "licencesourcelocation";
+        const string licenceTypeKey           = "licencetype";
+        const string licenceWorkersKey        = "licenceworkers";
+        // ReSharper restore StringLiteralTypo
+
+        var pathResult = sclSettings.Entity.TryGetNestedString(
+            SCLSettings.ConnectorsKey,
+            nuixSettingsKey,
+            consolePathKey
+        );
+
+        if (pathResult.HasNoValue)
+            return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(
+                nuixSettingsKey,
+                consolePathKey
+            );
+
+        var argumentsList = new List<string>();
+
+        void MaybeAddBoolValue(string key)
+        {
+            var b = sclSettings.Entity.TryGetNestedBool(
+                SCLSettings.ConnectorsKey,
+                nuixSettingsKey,
+                key
+            );
+
+            if (b)
+                argumentsList.Add("-" + key);
+        }
+
+        void MaybeAddStringKey(string key)
+        {
+            var s = sclSettings.Entity.TryGetNestedString(
+                SCLSettings.ConnectorsKey,
+                nuixSettingsKey,
+                key
+            );
+
+            if (s.HasValue)
+            {
+                argumentsList.Add("-" + key);
+                argumentsList.Add(s.Value);
+            }
+        }
+
+        MaybeAddBoolValue(signoutKey);
+        MaybeAddBoolValue(releaseKey);
+        MaybeAddStringKey(licenceSourceTypeKey);
+        MaybeAddStringKey(licenceSourceLocationKey);
+        MaybeAddStringKey(licenceTypeKey);
+        MaybeAddStringKey(licenceWorkersKey);
+
+        var extraArguments =
+            sclSettings.Entity.TryGetNestedList(
+                SCLSettings.ConnectorsKey,
+                nuixSettingsKey,
+                extraArgumentsKey
+            );
+
+        if (extraArguments.HasValue)
+            argumentsList.AddRange(extraArguments.Value);
+
+        return (pathResult.Value, argumentsList);
     }
 
     /// <summary>
