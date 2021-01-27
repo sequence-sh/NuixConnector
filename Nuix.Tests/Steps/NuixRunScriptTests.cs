@@ -128,11 +128,14 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
     public const string TestNuixPath = "TestPath";
 
-    public static NuixSettings UnitTestSettings => new(
-        true,
+    public static List<NuixFeature> AllNuixFeatures =>
+        Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
+
+    public static SCLSettings UnitTestSettings => NuixSettings.CreateSettings(
         TestNuixPath,
         new Version(8, 2),
-        new List<NuixFeature>()
+        NuixSettings.DongleArguments,
+        AllNuixFeatures
     );
 
     [Fact]
@@ -158,7 +161,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             "{\"Foo\":\"a\"}",
             "{\"Foo\":\"b\"}",
             "Finished"
-        ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x => x.NuixVersion).First());
+        ).WithSettings(Constants.NuixSettingsList.First());
 
         await stepCase.RunAsync(TestOutputHelper);
     }
@@ -180,7 +183,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             "Starting",
             "ABC",
             "Finished"
-        ).WithSettings(Constants.NuixSettingsList.OrderByDescending(x => x.NuixVersion).First());
+        ).WithSettings(Constants.NuixSettingsList.First());
 
         await stepCase.RunAsync(TestOutputHelper);
     }

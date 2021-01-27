@@ -28,12 +28,7 @@ public class ExampleTests
 
     public ITestOutputHelper TestOutputHelper { get; }
 
-    private readonly NuixSettings _nuixSettings = new NuixSettings(
-        true,
-        Constants.NuixSettingsList.First().NuixExeConsolePath,
-        new Version(8, 8),
-        Constants.AllNuixFeatures
-    );
+    private SCLSettings _nuixSettings => Constants.NuixSettingsList.First();
 
     private async Task RunYamlSequenceInternal(
         string yaml,

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps
@@ -63,6 +65,12 @@ public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
     /// The pathArg argument name in Ruby.
     /// </summary>
     public const string PathArg = "pathArg";
+
+    /// <inheritdoc />
+    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
+    {
+        return base.VerifyThis(settings);
+    }
 
     /// <summary>
     /// The path to the directory to create the case in.

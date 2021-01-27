@@ -26,24 +26,24 @@ public static class Constants
     public static List<NuixFeature> AllNuixFeatures =>
         Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
 
-    public static IReadOnlyCollection<INuixSettings> NuixSettingsList => new List<INuixSettings>
+    public static IReadOnlyCollection<SCLSettings> NuixSettingsList => new List<SCLSettings>
     {
-        new NuixSettings(
-            true,
-            Path.Join(Nuix8Path, NuixConsoleExe),
+        NuixSettings.CreateSettings(
+            Path.Combine(Nuix8Path, NuixConsoleExe),
             new Version(8, 8),
+            NuixSettings.DongleArguments,
             AllNuixFeatures
         ),
-        new NuixSettings(
-            true,
-            Path.Join(Nuix7Path, NuixConsoleExe),
+        NuixSettings.CreateSettings(
+            Path.Combine(Nuix7Path, NuixConsoleExe),
             new Version(7, 8),
+            NuixSettings.DongleArguments,
             AllNuixFeatures
         ),
-        new NuixSettings(
-            true,
-            Path.Join(Nuix70Path, NuixConsoleExe),
+        NuixSettings.CreateSettings(
+            Path.Combine(Nuix70Path, NuixConsoleExe),
             new Version(7, 0),
+            NuixSettings.DongleArguments,
             AllNuixFeatures
         )
     };
