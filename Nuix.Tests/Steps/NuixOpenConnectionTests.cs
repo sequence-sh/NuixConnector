@@ -12,9 +12,8 @@ using Reductech.EDR.Core.Util;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, Unit>
+public partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, Unit>
 {
-
     protected override IEnumerable<StepCase> StepCases
     {
         get
@@ -26,7 +25,12 @@ public  partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection,
                     IgnoreFinalState = true
                 }
                 .WithSettings(
-                    new NuixSettings(true, "TestPath", new Version(1, 0), Constants.AllNuixFeatures)
+                    NuixSettings.CreateSettings(
+                        "TestPath",
+                        new Version(1, 0),
+                        NuixSettings.DongleArguments,
+                        Constants.AllNuixFeatures
+                    )
                 )
                 .WithFileSystemAction(
                     x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true)

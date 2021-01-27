@@ -238,7 +238,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
 
     /// <inheritdoc />
-    public override Result<Unit, IError> VerifyThis(ISettings settings)
+    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
     {
         if (ProcessingProfileName != null && ProcessingProfilePath != null)
         {

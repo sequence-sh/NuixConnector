@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -63,19 +64,33 @@ public static class NuixConnectionHelper
                 return currentConnection.Value;
         }
 
-        var nuixSettingsResult = stateMonad.GetSettings<INuixSettings>();
+        const string nuixKey        = "Nuix";
+        const string argumentsKey   = "ConsoleArguments";
+        const string consolePathKey = "exeConsolePath";
 
-        if (nuixSettingsResult.IsFailure)
-            return nuixSettingsResult.ConvertFailure<NuixConnection>();
+        var settings   = stateMonad.Settings;
+        var connectors = settings.Entity.TryGetValue(SCLSettings.ConnectorsKey);
 
-        var arguments = new List<string>();
+        if (connectors.HasNoValue || !connectors.Value.TryPickT7(out var connectorsEntity, out _))
+            return ErrorCode.MissingStepSettings.ToErrorBuilder(SCLSettings.ConnectorsKey);
 
-        if (nuixSettingsResult.Value.UseDongle)
-        {
-            // ReSharper disable once StringLiteralTypo
-            arguments.Add("-licencesourcetype");
-            arguments.Add("dongle");
-        }
+        var nuixSettings = connectorsEntity.TryGetValue(nuixKey);
+
+        if (nuixSettings.HasNoValue || !nuixSettings.Value.TryPickT7(out var settingsEntity, out _))
+            return ErrorCode.MissingStepSettings.ToErrorBuilder(nuixKey);
+
+        var consolePath = settingsEntity.TryGetValue(consolePathKey);
+
+        if (consolePath.HasNoValue)
+            return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(nuixKey, consolePathKey);
+
+        var argumentsEntity = settingsEntity.TryGetValue(argumentsKey);
+
+        if (argumentsEntity.HasNoValue
+         || !argumentsEntity.Value.TryPickT8(out var argumentsList, out _))
+            return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(nuixKey, argumentsKey);
+
+        var argumentStringList = argumentsList.Select(x => x.ToString()).ToList();
 
         // TODO: Make this configurable
         var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
@@ -83,11 +98,11 @@ public static class NuixConnectionHelper
         if (!stateMonad.FileSystemHelper.DoesFileExist(scriptPath))
             return new ErrorBuilder(ErrorCode.ExternalProcessNotFound, scriptPath);
 
-        arguments.Add(scriptPath);
+        argumentStringList.Add(scriptPath);
 
         var r = stateMonad.ExternalProcessRunner.StartExternalProcess(
-            nuixSettingsResult.Value.NuixExeConsolePath,
-            arguments,
+            consolePath.Value.ToString(),
+            argumentStringList,
             Encoding.UTF8
         );
 

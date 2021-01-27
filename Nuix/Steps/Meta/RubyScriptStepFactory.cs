@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 
@@ -24,14 +25,9 @@ public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<
                 MinVersion =
                     NuixVersionHelper.DefaultRequiredVersion > RubyFunction.RequiredNuixVersion
                         ? NuixVersionHelper.DefaultRequiredVersion
-                        : RubyFunction.RequiredNuixVersion
+                        : RubyFunction.RequiredNuixVersion,
+                Features = RubyFunction.RequiredNuixFeatures.Select(x => x.ToString()).ToList()
             };
-
-            foreach (var feature in RubyFunction.RequiredNuixFeatures)
-                yield return new Requirement
-                {
-                    Name = RubyScriptStepBase<TStep>.NuixRequirementName + feature
-                };
         }
     }
 
