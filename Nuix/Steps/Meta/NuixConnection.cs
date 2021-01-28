@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Errors;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -104,28 +105,16 @@ public static class NuixConnectionHelper
     public static Result<(string consolePath, List<string> arguments), IErrorBuilder>
         TryGetConsoleArguments(SCLSettings sclSettings)
     {
-        // ReSharper disable StringLiteralTypo
-        const string nuixSettingsKey          = "Nuix";
-        const string extraArgumentsKey        = "ConsoleArguments";
-        const string consolePathKey           = "exeConsolePath";
-        const string signoutKey               = "signout";
-        const string releaseKey               = "release";
-        const string licenceSourceTypeKey     = "licencesourcetype";
-        const string licenceSourceLocationKey = "licencesourcelocation";
-        const string licenceTypeKey           = "licencetype";
-        const string licenceWorkersKey        = "licenceworkers";
-        // ReSharper restore StringLiteralTypo
-
         var pathResult = sclSettings.Entity.TryGetNestedString(
             SCLSettings.ConnectorsKey,
-            nuixSettingsKey,
-            consolePathKey
+            NuixSettings.NuixSettingsKey,
+            NuixSettings.ConsolePathKey
         );
 
         if (pathResult.HasNoValue)
             return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(
-                nuixSettingsKey,
-                consolePathKey
+                NuixSettings.NuixSettingsKey,
+                NuixSettings.ConsolePathKey
             );
 
         var argumentsList = new List<string>();
@@ -134,7 +123,7 @@ public static class NuixConnectionHelper
         {
             var b = sclSettings.Entity.TryGetNestedBool(
                 SCLSettings.ConnectorsKey,
-                nuixSettingsKey,
+                NuixSettings.NuixSettingsKey,
                 key
             );
 
@@ -146,7 +135,7 @@ public static class NuixConnectionHelper
         {
             var s = sclSettings.Entity.TryGetNestedString(
                 SCLSettings.ConnectorsKey,
-                nuixSettingsKey,
+                NuixSettings.NuixSettingsKey,
                 key
             );
 
@@ -157,18 +146,18 @@ public static class NuixConnectionHelper
             }
         }
 
-        MaybeAddBoolValue(signoutKey);
-        MaybeAddBoolValue(releaseKey);
-        MaybeAddStringKey(licenceSourceTypeKey);
-        MaybeAddStringKey(licenceSourceLocationKey);
-        MaybeAddStringKey(licenceTypeKey);
-        MaybeAddStringKey(licenceWorkersKey);
+        MaybeAddBoolValue(NuixSettings.SignoutKey);
+        MaybeAddBoolValue(NuixSettings.ReleaseKey);
+        MaybeAddStringKey(NuixSettings.LicenceSourceTypeKey);
+        MaybeAddStringKey(NuixSettings.LicenceSourceLocationKey);
+        MaybeAddStringKey(NuixSettings.LicenceTypeKey);
+        MaybeAddStringKey(NuixSettings.LicenceWorkersKey);
 
         var extraArguments =
             sclSettings.Entity.TryGetNestedList(
                 SCLSettings.ConnectorsKey,
-                nuixSettingsKey,
-                extraArgumentsKey
+                NuixSettings.NuixSettingsKey,
+                NuixSettings.ExtraArgumentsKey
             );
 
         if (extraArguments.HasValue)

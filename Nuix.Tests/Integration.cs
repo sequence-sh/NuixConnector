@@ -26,10 +26,10 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         from settings in Constants.NuixSettingsList
         where IsVersionCompatible(
             nuixTestCase.Step,
-            NuixSettings.GetNuixVersion(settings)
+            NuixSettings.TryGetNuixVersion(settings).Value
         ) //&& false //uncomment to disable integration tests
         select new IntegrationTestCase(
-                nuixTestCase.Name + NuixSettings.GetNuixVersion(settings),
+                nuixTestCase.Name + NuixSettings.TryGetNuixVersion(settings).Value,
                 nuixTestCase.Step
             )
             .WithSettings(settings);
