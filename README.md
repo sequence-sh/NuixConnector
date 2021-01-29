@@ -2,72 +2,152 @@
 [![coverage report](https://gitlab.com/reductech/edr/connectors/nuix/badges/master/coverage.svg)](https://gitlab.com/reductech/edr/connectors/nuix/-/commits/master)
 [![Gitter](https://badges.gitter.im/reductech/edr.svg)](https://gitter.im/reductech/edr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+# EDR Nuix Connector
 
-# Introduction
+[Reductech EDR](https://gitlab.com/reductech/edr) is a collection of
+libraries that automates cross-application e-discovery and forensic workflows.
 
-This is a project that lets you execute various processes in NUIX from outside of NUIX and construct pipelines to automate entire workflows.<br>
+The EDR Nuix Connector allows users to automate forensic workflows using
+[Nuix Workstation](https://www.nuix.com/products/nuixworkstation).
 
-To do this you will need to create a settings file with details about your NUIX application and a YAML file explaining your pipeline.
+This connector has Steps to:
 
-### Running a sequence
+- Creating new cases
+- Ingest concordance and loose files
+- Search and tag items
+- Create and update item and production sets
+- Extract entities
+- Create reports
+- Export concordance or document metadata
 
-To run a sequence, use the Nuix.Console application
+### [Try Nuix Connector](https://gitlab.com/reductech/edr/edr/-/releases)
 
-`EDRNuixConsole.exe execute -p C:/MySequence.yaml`
+Using [EDR](https://gitlab.com/reductech/edr/edr),
+the command line tool for running Sequences.
 
+## Documentation
 
-### Yaml
+Documentation is available here: https://docs.reductech.io
 
-Yaml is a human-readable data-serialization language you can use to define your pipelines.<br>
-You define a list of steps and their parameters and they will be performed in order. <br>
-For a list of possible steps see the [Documentation](documentation.md)<br>
+## Example Workflow
 
-The following yaml does the following
-- Create a new case
-- Add an item to the case
-- Write a report on the case
-- Perform OCR on relevant files
-- Assign a tag to all items matching a particular search term
-- Add all tagged items to a new item set
-- Add everything in that item set to a new production set
-- Export that production set as concordance
+A workflow to automatically create a case, ingest evidence,
+search and tag from a CSV file, create reports, and export as concordance.
 
+```powershell
+- <CaseName>          = 'Case001'
+- <Investigator>      = 'John'
+- <Custodian>         = 'Bill Rapp'
+- <FolderName>        = 'CASE01B0001'
+- <CurrentDir>        = 'D:/Cases'
+- <CasePath>          = PathCombine [<CurrentDir>, 'case']
+- <ExportPath>        = PathCombine [<CurrentDir>, 'export']
+- <ReportsFolder>     = PathCombine [<CurrentDir>, 'reports']
+- <SearchTagCSV>      = PathCombine [<CurrentDir>, 'search-tag.csv']
+- <ProductionProfile> = 'ProductionProfile'
+- <ProductionSet>     = 'TaggedItemsProductionSet'
+- <OCRProfileName>    = 'Default'
+- <ProcessingProfileName> = 'Default'
+- <Evidence> = [
+    (PathCombine [<CurrentDir>, 'evidence/bill_rapp_000_1_1.pst'])
+  ]
 
-```yaml
-- NuixCreateCase(CaseName = 'My Case', CasePath = 'C:/MyCase', Investigator = 'Sherlock Holmes')
-- NuixAddItem(CasePath = 'C:/MyCase', Custodian = 'Moriarty', FolderName = 'My Folder', Path = 'C:/Data/MyFile.txt')
-- WriteFile(FileName = 'Report', Folder = 'C:/Output', Text = NuixCreateReport(CasePath = 'C:/MyCase'))
-- NuixPerformOCR(CasePath = 'C:/MyCase', OCRProfileName = 'My OCR Profile', SearchTerm = 'NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))')
-- NuixSearchAndTag(CasePath = 'C:/MyCase', SearchTerm = 'Diamond', Tag = 'Gems')
-- NuixAddToItemSet(CasePath = 'C:/MyCase', ItemSetName = 'TaggedItems', SearchTerm = 'Tag:*')
-- NuixAddToProductionSet(CasePath = 'C:/MyCase', ProductionSetName = 'TaggedItemsProductionSet', SearchTerm = 'ItemSet:TaggedItems')
-- NuixExportConcordance(CasePath = 'C:/MyCase', ExportPath = 'C:/Export', ProductionSetName = 'TaggedItemsProductionSet')
+# Create a Nuix case. This keeps the connection open for the rest of the Sequence.
+- NuixCreateCase
+    CaseName: <CaseName>
+    CasePath: <CasePath>
+    Investigator: <Investigator>
 
+# Add PST file to the case
+- NuixAddItem
+    Custodian: <Custodian>
+    Paths: <Evidence>
+    FolderName: <FolderName>
+    ProcessingProfileName: <ProcessingProfileName>
+
+# Perform OCR on the
+- NuixPerformOCR OCRProfileName: <OCRProfileName>
+
+# Read a CSV file, and for each row run a search and tag the results
+- ReadFromFile <SearchTagCSV>
+  | FromCsv
+  | ForEach (
+      NuixSearchAndTag
+        SearchTerm: (From <Entity> 'SearchTerm')
+        Tag: (From <Entity> 'Tag')
+    )
+
+# Add all the tagged items to an ItemSet
+- NuixAddToItemSet ItemSetName: 'TaggedItems' SearchTerm: 'tag:*'
+
+# Create a production set from the tagged item set
+- NuixAddToProductionSet
+    ProductionProfileName: <ProductionProfile>
+    ProductionSetName: <ProductionSet>
+    SearchTerm: 'item-set:TaggedItems'
+
+# Create an item/document type report
+- NuixCreateReport
+  | WriteToFile Path: (PathCombine [<ReportsFolder>, 'types-report.txt'])
+
+# Create Irregular items report and export to file
+- NuixCreateIrregularItemsReport
+  | WriteToFile Path: (PathCombine [<ReportsFolder>, 'irregular-items.txt'])
+
+# Create Terms list and export to file
+- NuixCreateTermList
+  | WriteToFile Path: (PathCombine [<ReportsFolder>, 'term-list.txt'])
+
+# Export concordance to file
+- NuixExportConcordance
+    ProductionSetName: <ProductionSet>
+    ExportPath: <ExportPath>
 ```
 
-### Settings
+## Settings
 
-You need to edit the App.config file to match your Nuix configuration<br>
+To use the Nuix connector you need to add a `nuix` section to
+the `connectors` section of your `appsettings.json` file.
 
-Adjust the following settings<br>
+This is an example of that section.
 
-- NuixUseDongle : Whether the Nuix authentication is supplied by a dongle
-- NuixExeConsolePath : The path to the nuix console application
-- NuixVersion: The version of that is installed
-- NuixFeatures: The Nuix features you have available
-
-The file should look like this
-
-```xml
-<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <appSettings>
-    <add key="NuixUseDongle" value="true"/>
-    <add key="NuixExeConsolePath" value="C:\Program Files\Nuix\Nuix 8.2\nuix_console.exe"/>
-    <add key="NuixVersion" value="8.2"/>
-    <add key="NuixFeatures" value="ANALYSIS,CASE_CREATION,EXPORT_ITEMS,METADATA_IMPORT,OCR_PROCESSING,PRODUCTION_SET"/>
-  </appSettings>
-</configuration>
+```json
+"connectors": {
+  "nuix": {
+    "version": "8.8",
+    "features": [
+      "ANALYSIS",
+      "CASE_CREATION",
+      "EXPORT_ITEMS",
+      "METADATA_IMPORT",
+      "OCR_PROCESSING",
+      "PRODUCTION_SET"
+    ],
+    "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 8.8\\nuix_console.exe",
+    "licencesourcetype": "dongle"
+  }
+}
 ```
 
+This table shows the available properties
 
+| Name                  | Required | Type       | Description                                                                                         |
+| --------------------- | -------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| version               | ✔        | `Version`  | The installed version of Nuix.                                                                      |
+| features              | ✔        | `string[]` | The available Nuix features.                                                                        |
+| exeConsolePath        | ✔        | `string`   | The path to the Nuix Console application.                                                           |
+| release               |          | `bool`     | Releases the semi-offline licence at the end of the execution.                                      |
+| signout               |          | `bool`     | Signs the user out at the end of the execution, also releasing the semi-offline licence if present. |
+| licencesourcetype     |          | `string`   | Selects a licence source type (e.g. dongle, server, cloud-server) to use.                           |
+| licencesourcelocation |          | `string`   | Selects a licence source if multiple are available.                                                 |
+| licencetype           |          | `string`   | Selects a licence type to use if multiple are available.                                            |
+| licenceworkers        |          | `integer`  | Selects the number of workers to use if the choice is available.                                    |
+| ConsoleArguments      |          | `string[]` | Additional arguments to send to the Nuix console application.                                       |
+
+## E-discovery Reduct
+
+The Nuix Connector is part of a group of projects called
+[E-discovery Reduct](https://gitlab.com/reductech/edr)
+which consists of a collection of [Connectors](https://gitlab.com/reductech/edr/connectors)
+and a command-line application for running Sequences, called
+[EDR](https://gitlab.com/reductech/edr/edr/-/releases).
