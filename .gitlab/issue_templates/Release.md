@@ -15,7 +15,6 @@
     - `dotnet list .\Nuix.Tests\Nuix.Tests.csproj package --outdated`
   - To update
     - `dotnet add .\Nuix\Nuix.csproj package Reductech.EDR.Core`
-    - `dotnet add .\Nuix.Tests\Nuix.Tests.csproj package Reductech.Utilities.Testing`
     - `dotnet add .\Nuix.Tests\Nuix.Tests.csproj package Reductech.EDR.Core.TestHarness`
 - [ ] Update the changelog
   - Manually, or use: reductech/pwsh/New-Changelog>

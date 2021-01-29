@@ -12,9 +12,9 @@
   <PropertyGroup>
     <RepositoryUrl>https://gitlab.com/reductech/edr/connectors/nuix</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <Authors>reductech</Authors>
+    <Authors>Reductech</Authors>
     <Company>Reductech</Company>
-    <Copyright>Copyright (c) 2020 Reductech Ltd</Copyright>
+    <Copyright>Copyright (c) 2021 Reductech Ltd</Copyright>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="3.0.1">
+    <PackageReference Include="coverlet.collector" Version="3.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -33,7 +33,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Include="MicrosoftExtensions.Logging.Xunit" Version="1.0.0" />
     <PackageReference Include="Moq" Version="4.16.0" />
-    <PackageReference Include="Reductech.EDR.Core.TestHarness" Version="0.4.0-a.master.2101281052" />
+    <PackageReference Include="Reductech.EDR.Core.TestHarness" Version="0.4.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
