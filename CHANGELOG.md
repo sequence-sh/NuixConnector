@@ -1,3 +1,43 @@
+## v0.4.0 (2021-01-29)
+
+- Upgrade to Core v0.4.0 and the new SCL configuration language
+- Add step to run inline ruby scripts
+- The connector script is now a separate project
+- Reworked logging and exceptions
+
+### New Features
+
+- Use dynamic settings #138
+- Remove Version checking code as that is now handled by core #135
+- Use SourceGeneration for tests #133
+- Split out nuix connector ruby script into a separate project and add unit tests #104
+- Change Ruby Script so that it doesn't automatically close cases #130
+- Create OpenCase and CloseCase steps #121
+- Update Logging and Error Messages to support latest version of Core #129
+- Add parameter and step aliases, to make SCL more user-friendly #123
+- Update Core and refactor to use AsyncList instead of EntityStreams and Arrays #126
+- Update version of Core to support new language features #122
+- Create RunRubyScript step so technicians can run arbitrary scripts in Nuix #116
+- Upgrade to .NET 5 #117
+
+### Bug Fixes
+
+- Unable to add or update the Reductech.EDR.Connectors.Nuix nuget package #137
+- Nuix Connector no longer supports versions 6 and 7 #103
+- Scoped state does not persist nuix connection #124
+- Running from EDR should not result in "Unexpected character encountered while parsing value" error #114
+- Integration test job should produce a coverage report #111
+- Fix flaky Integration Tests #118
+
+### Maintenance
+
+- Update to latest version of Core #136 #139
+- Re-enable integration tests for Nuix 7 #131
+- Update nuixconnectorscript to v0.1.1 #134
+- Add .editorconfig file and standardize formatting #127
+- Include all tests in the integration job to make test coverage more representative #120
+- Disable push on the nightly integration test pipeline #112
+
 ## v0.3.0 (2020-11-27)
 
 The way the connector interacts with Nuix has been rewritten - functions
