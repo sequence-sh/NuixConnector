@@ -13,7 +13,7 @@
   <PropertyGroup>
     <PackageId>Reductech.EDR.Connectors.Nuix</PackageId>
     <Title>EDR NUIX Connector</Title>
-    <Description>Class library containing Steps for build Nuix sequences.</Description>
+    <Description>Class library for automating Nuix workflows using Steps and Sequences.</Description>
     <Product>EDR</Product>
 
     <PackageProjectUrl>https://gitlab.com/reductech/edr/connectors/nuix</PackageProjectUrl>
@@ -22,15 +22,15 @@
     <PackageTags>ediscovery;forensics;nuix;automation;orchestration;edrm</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
-    <Authors>reductech</Authors>
+    <Authors>Reductech</Authors>
     <Company>Reductech</Company>
-    <Copyright>Copyright (c) 2020 Reductech Ltd</Copyright>
+    <Copyright>Copyright (c) 2021 Reductech Ltd</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.4.0-a.master.2101281052" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.4.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
