@@ -70,6 +70,8 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             await Task.CompletedTask;
             var yaml = Steps.Serialize();
 
+            testOutputHelper.WriteLine(yaml);
+
             var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(TStep));
 
             var deserializedStep = SCLParsing.ParseSequence(yaml);
