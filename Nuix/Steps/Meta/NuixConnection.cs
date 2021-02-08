@@ -74,12 +74,12 @@ public static class NuixConnectionHelper
         // TODO: Make this configurable
         var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
 
-        if (!stateMonad.FileSystemHelper.DoesFileExist(scriptPath))
+        if (!stateMonad.ExternalContext.FileSystemHelper.File.Exists(scriptPath))
             return new ErrorBuilder(ErrorCode.ExternalProcessNotFound, scriptPath);
 
         consoleArguments.Value.arguments.Add(scriptPath);
 
-        var r = stateMonad.ExternalProcessRunner.StartExternalProcess(
+        var r = stateMonad.ExternalContext.ExternalProcessRunner.StartExternalProcess(
             consoleArguments.Value.consolePath,
             consoleArguments.Value.arguments,
             Encoding.UTF8

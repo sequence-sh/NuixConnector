@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -48,9 +50,23 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }
 
         /// <inheritdoc />
-        public override IExternalProcessRunner GetExternalProcessRunner(
-            MockRepository mockRepository) =>
-            new ExternalProcessMock(1, ExternalProcessActions.ToArray());
+        public override StateMonad GetStateMonad(MockRepository mockRepository, ILogger logger)
+        {
+            var baseMonad = base.GetStateMonad(mockRepository, logger);
+
+            var externalProcessMock = new ExternalProcessMock(1, ExternalProcessActions.ToArray());
+
+            return new StateMonad(
+                baseMonad.Logger,
+                baseMonad.Settings,
+                baseMonad.StepFactoryStore,
+                new ExternalContext(
+                    baseMonad.ExternalContext.FileSystemHelper,
+                    externalProcessMock,
+                    baseMonad.ExternalContext.Console
+                )
+            );
+        }
     }
 }
 

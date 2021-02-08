@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Moq;
 using OneOf;
+using Reductech.EDR.Core;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Steps;
+using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
@@ -31,9 +35,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             ExternalProcessActions = externalProcessActions;
             IgnoreFinalState       = true;
 
-            AddFileSystemAction(
-                x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true)
-            );
+            this.WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
         }
 
         public NuixStepCase(
@@ -47,17 +49,29 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             ExternalProcessActions = externalProcessActions;
             IgnoreFinalState       = true;
 
-            AddFileSystemAction(
-                x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true)
-            );
+            this.WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
         }
 
         public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }
 
         /// <inheritdoc />
-        public override IExternalProcessRunner GetExternalProcessRunner(
-            MockRepository mockRepository) =>
-            new ExternalProcessMock(1, ExternalProcessActions.ToArray());
+        public override StateMonad GetStateMonad(MockRepository mockRepository, ILogger logger)
+        {
+            var baseMonad = base.GetStateMonad(mockRepository, logger);
+
+            var externalProcessMock = new ExternalProcessMock(1, ExternalProcessActions.ToArray());
+
+            return new StateMonad(
+                baseMonad.Logger,
+                baseMonad.Settings,
+                baseMonad.StepFactoryStore,
+                new ExternalContext(
+                    baseMonad.ExternalContext.FileSystemHelper,
+                    externalProcessMock,
+                    baseMonad.ExternalContext.Console
+                )
+            );
+        }
     }
 }
 

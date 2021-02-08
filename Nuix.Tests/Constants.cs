@@ -5,7 +5,6 @@ using System.Linq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Enums;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Util;
@@ -156,21 +155,22 @@ public static class Constants
 
     public static IStep<Unit> AssertCount(
         int expected,
-        string searchTerm) => new AssertTrue
-    {
-        Boolean = CompareItemsCount(expected, CompareOperator.Equals, searchTerm)
-    };
+        string searchTerm) => new AssertTrue { Boolean = ItemsCountEqual(expected, searchTerm) };
 
-    public static IStep<bool> CompareItemsCount(
+    public static IStep<bool> ItemsCountEqual(
         int right,
-        CompareOperator op,
         string searchTerm)
     {
-        return new Compare<int>
+        return new Equals<int>()
         {
-            Left     = Constant(right),
-            Operator = Constant(op),
-            Right    = new NuixCountItems { SearchTerm = Constant(searchTerm) }
+            Terms = new ArrayNew<int>()
+            {
+                Elements = new List<IStep<int>>()
+                {
+                    Constant(right),
+                    new NuixCountItems { SearchTerm = Constant(searchTerm) }
+                }
+            }
         };
     }
 

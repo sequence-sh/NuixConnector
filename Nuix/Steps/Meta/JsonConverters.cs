@@ -158,6 +158,7 @@ public static class JsonConverters
         public override bool CanConvert(Type objectType) => objectType == typeof(StringStream);
     }
 
+    /*
     /// <summary>
     /// Converts Entities to Json
     /// </summary>
@@ -213,7 +214,7 @@ public static class JsonConverters
             JsonSerializer serializer)
         {
             var objectDict = serializer.Deserialize<Dictionary<string, object>>(reader);
-            var entity     = Entity.Create(objectDict!.Select(x => (x.Key, x.Value))!);
+            var entity     = Entity.Create(objectDict!.Select(x => (x.Key, x.Value)).ToArray()!);
 
             return entity;
         }
@@ -221,6 +222,7 @@ public static class JsonConverters
         /// <inheritdoc />
         public override bool CanConvert(Type objectType) => objectType == typeof(Entity);
     }
+    */
 }
 
 }

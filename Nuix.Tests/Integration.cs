@@ -2,8 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -93,12 +96,21 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         }
 
         /// <inheritdoc />
-        public override IFileSystemHelper GetFileSystemHelper(MockRepository mockRepository) =>
-            FileSystemHelper.Instance;
+        public override StateMonad GetStateMonad(MockRepository mockRepository, ILogger logger)
+        {
+            var baseMonad = base.GetStateMonad(mockRepository, logger);
 
-        /// <inheritdoc />
-        public override IExternalProcessRunner GetExternalProcessRunner(
-            MockRepository mockRepository) => ExternalProcessRunner.Instance;
+            return new StateMonad(
+                baseMonad.Logger,
+                baseMonad.Settings,
+                baseMonad.StepFactoryStore,
+                new ExternalContext(
+                    FileSystemAdapter.Default,
+                    ExternalProcessRunner.Instance,
+                    baseMonad.ExternalContext.Console
+                )
+            );
+        }
     }
 }
 

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -81,9 +83,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                     },
                     "Log Message"
                 ).WithSettings(UnitTestSettings)
-                .WithFileSystemAction(
-                    x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true)
-                );
+                .WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
 
             yield return new RunScriptStepCase(
                     "Run Script with entity Stream",
@@ -120,9 +120,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                     },
                     "Log Message"
                 ).WithSettings(UnitTestSettings)
-                .WithFileSystemAction(
-                    x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true)
-                );
+                .WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
         }
     }
 
@@ -205,9 +203,23 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }
 
         /// <inheritdoc />
-        public override IExternalProcessRunner GetExternalProcessRunner(
-            MockRepository mockRepository) =>
-            new ExternalProcessMock(1, ExternalProcessActions.ToArray());
+        public override StateMonad GetStateMonad(MockRepository mockRepository, ILogger logger)
+        {
+            var externalProcessMock = new ExternalProcessMock(1, ExternalProcessActions.ToArray());
+
+            var baseMonad = base.GetStateMonad(mockRepository, logger);
+
+            return new StateMonad(
+                baseMonad.Logger,
+                baseMonad.Settings,
+                baseMonad.StepFactoryStore,
+                new ExternalContext(
+                    baseMonad.ExternalContext.FileSystemHelper,
+                    externalProcessMock,
+                    baseMonad.ExternalContext.Console
+                )
+            );
+        }
     }
 
     public record IntegrationTestCase : CaseThatExecutes
@@ -277,12 +289,21 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         }
 
         /// <inheritdoc />
-        public override IFileSystemHelper GetFileSystemHelper(MockRepository mockRepository) =>
-            FileSystemHelper.Instance;
+        public override StateMonad GetStateMonad(MockRepository mockRepository, ILogger logger)
+        {
+            var baseMonad = base.GetStateMonad(mockRepository, logger);
 
-        /// <inheritdoc />
-        public override IExternalProcessRunner GetExternalProcessRunner(
-            MockRepository mockRepository) => ExternalProcessRunner.Instance;
+            return new StateMonad(
+                baseMonad.Logger,
+                baseMonad.Settings,
+                baseMonad.StepFactoryStore,
+                new ExternalContext(
+                    FileSystemAdapter.Default,
+                    ExternalProcessRunner.Instance,
+                    baseMonad.ExternalContext.Console
+                )
+            );
+        }
     }
 }
 
