@@ -13,11 +13,15 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
+using Thinktecture;
+using Thinktecture.Adapters;
+using Thinktecture.IO;
 using Xunit;
 using Xunit.Sdk;
 using Entity = Reductech.EDR.Core.Entity;
@@ -29,16 +33,19 @@ public static class NuixConnectionTestsHelper
 {
     public static IStateMonad GetStateMonad(
         IExternalProcessRunner externalProcessRunner,
-        ITestLoggerFactory testLoggerFactory) => GetStateMonad(
+        ITestLoggerFactory testLoggerFactory,
+        IFileSystem fileSystem) => GetStateMonad(
         testLoggerFactory,
         externalProcessRunner,
-        FileSystemHelper.Instance
+        fileSystem,
+        new ConsoleAdapter()
     );
 
     public static IStateMonad GetStateMonad(
         ITestLoggerFactory testLoggerFactory,
         IExternalProcessRunner externalProcessRunner,
-        IFileSystemHelper fileSystemHelper)
+        IFileSystem fileSystem,
+        IConsole console)
     {
         var nuixSettings = NuixSettings.CreateSettings(
             Constants.NuixConsoleExe,
@@ -52,9 +59,8 @@ public static class NuixConnectionTestsHelper
         var monad = new StateMonad(
             testLoggerFactory.CreateLogger("Test"),
             nuixSettings,
-            externalProcessRunner,
-            fileSystemHelper,
-            sfs
+            sfs,
+            new ExternalContext(fileSystem, externalProcessRunner, console)
         );
 
         return monad;
@@ -92,11 +98,15 @@ public static class NuixConnectionTestsHelper
     {
         var fakeExternalProcess = new ExternalProcessMock(2, actions);
 
-        IStateMonad state = GetStateMonad(fakeExternalProcess, loggerFactory);
+        IStateMonad state = GetStateMonad(
+            fakeExternalProcess,
+            loggerFactory,
+            FileSystemAdapter.Default
+        );
 
         fakeExternalProcess.ProcessPath = Constants.NuixConsoleExe;
 
-        var process = state.ExternalProcessRunner.StartExternalProcess(
+        var process = state.ExternalContext.ExternalProcessRunner.StartExternalProcess(
             fakeExternalProcess.ProcessPath,
             fakeExternalProcess.ProcessArgs,
             fakeExternalProcess.ProcessEncoding
@@ -218,7 +228,11 @@ public class NuixConnectionHelperTests
         var loggerFactory = TestLoggerFactory.Create();
 
         IStateMonad state =
-            NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess, loggerFactory);
+            NuixConnectionTestsHelper.GetStateMonad(
+                fakeExternalProcess,
+                loggerFactory,
+                FileSystemAdapter.Default
+            );
 
         var createConnection = state.GetOrCreateNuixConnection(true);
 
@@ -240,7 +254,8 @@ public class NuixConnectionHelperTests
 
         IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(
             fakeExternalProcess,
-            TestLoggerFactory.Create()
+            TestLoggerFactory.Create(),
+            FileSystemAdapter.Default
         );
 
         var ct = new CancellationToken();
@@ -301,13 +316,14 @@ public class NuixConnectionHelperTests
             NuixConnectionTestsHelper.GetCreateCaseAction()
         );
 
-        var fakeFileSystemHelper =
-            Mock.Of<IFileSystemHelper>(f => f.DoesFileExist(It.IsAny<string>()) == false);
+        var fileMock =
+            Mock.Of<IFile>(f => f.Exists(It.IsAny<string>()) == false);
 
         IStateMonad state = NuixConnectionTestsHelper.GetStateMonad(
             TestLoggerFactory.Create(),
             fakeExternalProcess,
-            fakeFileSystemHelper
+            new FileSystemAdapter(Mock.Of<IDirectory>(), fileMock, Mock.Of<ICompression>()),
+            new ConsoleAdapter()
         );
 
         var connection = state.GetOrCreateNuixConnection(false);
@@ -336,8 +352,13 @@ public class NuixConnectionTests
 
         var logFactory = TestLoggerFactory.Create();
 
-        var state = NuixConnectionTestsHelper.GetStateMonad(fakeExternalProcess, logFactory);
-        var ct    = new CancellationToken();
+        var state = NuixConnectionTestsHelper.GetStateMonad(
+            fakeExternalProcess,
+            logFactory,
+            FileSystemAdapter.Default
+        );
+
+        var ct = new CancellationToken();
 
         await nuixConnection.SendDoneCommand(state, ct);
 

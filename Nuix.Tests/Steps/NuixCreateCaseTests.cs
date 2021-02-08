@@ -155,9 +155,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                         )
                     }
                 ).WithSettings(UnitTestSettings)
-                .WithFileSystemAction(
-                    x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true)
-                );
+                .WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
         }
     }
 

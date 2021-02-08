@@ -12,7 +12,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 
 public partial class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordance, Unit>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<StepCase> StepCases
     {
@@ -113,9 +112,7 @@ public partial class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordan
                         )
                     }
                 ).WithSettings(UnitTestSettings)
-                .WithFileSystemAction(
-                    x => x.Setup(f => f.DoesFileExist(It.IsAny<string>())).Returns(true)
-                );
+                .WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
         }
     }
 

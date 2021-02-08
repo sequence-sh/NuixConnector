@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
@@ -46,9 +46,8 @@ public class ExampleTests
         var monad = new StateMonad(
             logger,
             _nuixSettings,
-            ExternalProcessRunner.Instance,
-            FileSystemHelper.Instance,
-            sfs
+            sfs,
+            ExternalContext.Default
         );
 
         var r = await stepResult.Value.Run<Unit>(monad, CancellationToken.None);
