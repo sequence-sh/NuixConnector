@@ -45,6 +45,10 @@ public static class NuixSettings
     public const string LicenceTypeKey = "licencetype";
 
     public const string LicenceWorkersKey = "licenceworkers";
+
+    public const string NuixUsernameKey = "NUIX_USERNAME";
+
+    public const string NuixPasswordKey = "NUIX_PASSWORD";
     // ReSharper restore StringLiteralTypo
 
     /// <summary>

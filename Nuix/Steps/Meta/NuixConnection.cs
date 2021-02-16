@@ -134,6 +134,24 @@ public static class NuixConnectionHelper
         foreach (var ep in entity)
             dict.Add(ep.Name, ep.BestValue.GetString());
 
+        var username = sclSettings.Entity.TryGetNestedString(
+            SCLSettings.ConnectorsKey,
+            NuixSettings.NuixSettingsKey,
+            NuixSettings.NuixUsernameKey
+        );
+
+        if (username.HasValue)
+            dict.Add(NuixSettings.NuixUsernameKey, username.Value);
+
+        var password = sclSettings.Entity.TryGetNestedString(
+            SCLSettings.ConnectorsKey,
+            NuixSettings.NuixSettingsKey,
+            NuixSettings.NuixPasswordKey
+        );
+
+        if (password.HasValue)
+            dict.Add(NuixSettings.NuixPasswordKey, password.Value);
+
         return dict;
     }
 
