@@ -68,6 +68,7 @@ public static class NuixConnectionTestsHelper
 
     public static NuixConnection GetNuixConnection(
         ExternalProcessAction action,
+        ITestLoggerFactory loggerFactory,
         int expectedTimesStarted = 1)
     {
         var fakeExternalProcess = new ExternalProcessMock(expectedTimesStarted, action)
@@ -78,7 +79,9 @@ public static class NuixConnectionTestsHelper
         var process = fakeExternalProcess.StartExternalProcess(
             fakeExternalProcess.ProcessPath,
             fakeExternalProcess.ProcessArgs,
-            fakeExternalProcess.ProcessEncoding
+            new Dictionary<string, string>(),
+            fakeExternalProcess.ProcessEncoding,
+            loggerFactory.CreateLogger("NuixProcess")
         );
 
         if (process.IsFailure)
@@ -109,7 +112,9 @@ public static class NuixConnectionTestsHelper
         var process = state.ExternalContext.ExternalProcessRunner.StartExternalProcess(
             fakeExternalProcess.ProcessPath,
             fakeExternalProcess.ProcessArgs,
-            fakeExternalProcess.ProcessEncoding
+            new Dictionary<string, string>(),
+            fakeExternalProcess.ProcessEncoding,
+            loggerFactory.CreateLogger("NuixProcess")
         );
 
         if (process.IsFailure)
@@ -342,15 +347,14 @@ public class NuixConnectionTests
     [Fact]
     public async Task SendDoneCommand_WritesDoneToExternalProcess()
     {
+        var logFactory     = TestLoggerFactory.Create();
         var action         = NuixConnectionTestsHelper.GetDoneAction();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action, logFactory);
 
         var fakeExternalProcess = new ExternalProcessMock(
             1,
             NuixConnectionTestsHelper.GetCreateCaseAction()
         );
-
-        var logFactory = TestLoggerFactory.Create();
 
         var state = NuixConnectionTestsHelper.GetStateMonad(
             fakeExternalProcess,
@@ -369,7 +373,8 @@ public class NuixConnectionTests
     [Fact]
     public async Task RunFunctionAsync_WhenDisposed_Throws()
     {
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(null!);
+        var logFactory     = TestLoggerFactory.Create();
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(null!, logFactory);
 
         var ct = new CancellationToken();
 
@@ -389,9 +394,10 @@ public class NuixConnectionTests
     [Fact]
     public async Task RunFunctionAsync_WithTwoEntityStreamParameters_ReturnsError()
     {
+        var logFactory     = TestLoggerFactory.Create();
         var action         = NuixConnectionTestsHelper.GetDoneAction();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action, logFactory);
+        var logger         = logFactory.CreateLogger("Test");
         var ct             = new CancellationToken();
 
         var stream1 = new List<Entity>().ToAsyncEnumerable().ToSequence();
@@ -436,8 +442,9 @@ public class NuixConnectionTests
             }
         );
 
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
-        var logger         = TestLoggerFactory.Create().CreateLogger("Test");
+        var logFactory     = TestLoggerFactory.Create();
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action, logFactory);
+        var logger         = logFactory.CreateLogger("Test");
         var ct             = new CancellationToken();
 
         var entities = new List<Entity>
@@ -490,9 +497,10 @@ public class NuixConnectionTests
             output
         ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
 
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action);
         var loggerFactory  = TestLoggerFactory.Create();
-        var ct             = new CancellationToken();
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action, loggerFactory);
+
+        var ct = new CancellationToken();
 
         var dict = new Dictionary<RubyFunctionParameter, object>()
         {

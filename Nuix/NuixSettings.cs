@@ -17,8 +17,27 @@ public static class NuixSettings
 {
     // ReSharper disable StringLiteralTypo
     public const string NuixSettingsKey = "Nuix";
-    public const string ExtraArgumentsKey = "ConsoleArguments";
+
+    /// <summary>
+    /// Console arguments that come before other parameters
+    /// </summary>
+    public const string ConsoleArgumentsKey = "ConsoleArguments";
+
+    /// <summary>
+    /// Console arguments that come after other parameters
+    /// </summary>
+    public const string ConsoleArgumentsPostKey = "ConsoleArgumentsPost";
+
+    /// <summary>
+    /// Environment variables to send to the Nuix Console
+    /// </summary>
+    public const string EnvironmentVariablesKey = "EnvironmentVariables";
+
+    /// <summary>
+    /// The path to the Nuix Console application
+    /// </summary>
     public const string ConsolePathKey = "exeConsolePath";
+
     public const string SignoutKey = "signout";
     public const string ReleaseKey = "release";
     public const string LicenceSourceTypeKey = "licencesourcetype";
