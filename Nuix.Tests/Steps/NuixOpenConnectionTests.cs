@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.ExternalProcesses;
@@ -39,7 +40,9 @@ public partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, 
                                 a.StartExternalProcess(
                                     "TestPath",
                                     It.IsAny<IEnumerable<string>>(),
-                                    It.IsAny<Encoding>()
+                                    It.IsAny<IReadOnlyDictionary<string, string>>(),
+                                    It.IsAny<Encoding>(),
+                                    It.IsAny<ILogger>()
                                 )
                         )
                         .Returns(Result.Success<IExternalProcessReference, IErrorBuilder>(mock))

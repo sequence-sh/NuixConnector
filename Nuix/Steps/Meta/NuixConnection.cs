@@ -75,14 +75,21 @@ public static class NuixConnectionHelper
         var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
 
         if (!stateMonad.ExternalContext.FileSystemHelper.File.Exists(scriptPath))
-            return new ErrorBuilder(ErrorCode.ExternalProcessNotFound, scriptPath);
+            return ErrorCode.ExternalProcessNotFound.ToErrorBuilder(scriptPath);
 
         consoleArguments.Value.arguments.Add(scriptPath);
+
+        var environmentVariables = TryGetEnvironmentVariables(settings);
+
+        if (environmentVariables.IsFailure)
+            return environmentVariables.ConvertFailure<NuixConnection>();
 
         var r = stateMonad.ExternalContext.ExternalProcessRunner.StartExternalProcess(
             consoleArguments.Value.consolePath,
             consoleArguments.Value.arguments,
-            Encoding.UTF8
+            environmentVariables.Value,
+            Encoding.UTF8,
+            stateMonad.Logger
         );
 
         if (r.IsFailure)
@@ -97,6 +104,55 @@ public static class NuixConnectionHelper
                 .MapError(x => x.ToErrorBuilder);
 
         return connection;
+    }
+
+    private static Result<IReadOnlyDictionary<string, string>, IErrorBuilder>
+        TryGetEnvironmentVariables(SCLSettings sclSettings)
+    {
+        var ev =
+            sclSettings.Entity.TryGetValue(
+                new EntityPropertyKey(
+                    new[]
+                    {
+                        SCLSettings.ConnectorsKey, NuixSettings.NuixSettingsKey,
+                        NuixSettings.EnvironmentVariablesKey
+                    }
+                )
+            );
+
+        if (ev.HasNoValue)
+            return new Dictionary<string, string>();
+
+        if (!ev.Value.TryPickT7(out var entity, out _))
+            return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(
+                NuixSettings.NuixSettingsKey,
+                NuixSettings.EnvironmentVariablesKey
+            );
+
+        var dict = new Dictionary<string, string>();
+
+        foreach (var ep in entity)
+            dict.Add(ep.Name, ep.BestValue.GetString());
+
+        var username = sclSettings.Entity.TryGetNestedString(
+            SCLSettings.ConnectorsKey,
+            NuixSettings.NuixSettingsKey,
+            NuixSettings.NuixUsernameKey
+        );
+
+        if (username.HasValue)
+            dict.Add(NuixSettings.NuixUsernameKey, username.Value);
+
+        var password = sclSettings.Entity.TryGetNestedString(
+            SCLSettings.ConnectorsKey,
+            NuixSettings.NuixSettingsKey,
+            NuixSettings.NuixPasswordKey
+        );
+
+        if (password.HasValue)
+            dict.Add(NuixSettings.NuixPasswordKey, password.Value);
+
+        return dict;
     }
 
     /// <summary>
@@ -146,6 +202,16 @@ public static class NuixConnectionHelper
             }
         }
 
+        var extraConsoleArguments =
+            sclSettings.Entity.TryGetNestedList(
+                SCLSettings.ConnectorsKey,
+                NuixSettings.NuixSettingsKey,
+                NuixSettings.ConsoleArgumentsKey
+            );
+
+        if (extraConsoleArguments.HasValue)
+            argumentsList.AddRange(extraConsoleArguments.Value);
+
         MaybeAddBoolValue(NuixSettings.SignoutKey);
         MaybeAddBoolValue(NuixSettings.ReleaseKey);
         MaybeAddStringKey(NuixSettings.LicenceSourceTypeKey);
@@ -153,15 +219,15 @@ public static class NuixConnectionHelper
         MaybeAddStringKey(NuixSettings.LicenceTypeKey);
         MaybeAddStringKey(NuixSettings.LicenceWorkersKey);
 
-        var extraArguments =
+        var postConsoleArguments =
             sclSettings.Entity.TryGetNestedList(
                 SCLSettings.ConnectorsKey,
                 NuixSettings.NuixSettingsKey,
-                NuixSettings.ExtraArgumentsKey
+                NuixSettings.ConsoleArgumentsPostKey
             );
 
-        if (extraArguments.HasValue)
-            argumentsList.AddRange(extraArguments.Value);
+        if (postConsoleArguments.HasValue)
+            argumentsList.AddRange(postConsoleArguments.Value);
 
         return (pathResult.Value, argumentsList);
     }

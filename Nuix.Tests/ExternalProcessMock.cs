@@ -52,6 +52,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
         ILogger logger,
         IErrorHandler errorHandler,
         IEnumerable<string> arguments,
+        IReadOnlyDictionary<string, string> environmentVariables,
         Encoding encoding,
         CancellationToken cancellationToken)
     {
@@ -64,7 +65,9 @@ internal class ExternalProcessMock : IExternalProcessRunner
     public Result<IExternalProcessReference, IErrorBuilder> StartExternalProcess(
         string processPath,
         IEnumerable<string> arguments,
-        Encoding encoding)
+        IReadOnlyDictionary<string, string> environmentVariables,
+        Encoding encoding,
+        ILogger logger)
     {
         var args = arguments.ToList();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -10,11 +11,13 @@ using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
+using Reductech.EDR.Core.Internal.Serialization;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -38,14 +41,18 @@ public class ExampleTests
 
         var logger = new Microsoft.Extensions.Logging.Xunit.XunitLogger(TestOutputHelper, "Test");
 
-        var stepResult = SCLParsing.ParseSequence(yaml).Bind(x => x.TryFreeze(sfs));
+        var stepResult = SCLParsing.ParseSequence(yaml)
+            .Bind(x => x.TryFreeze(sfs));
+        //.Map(SCLRunner.ConvertToUnitStep);
 
         if (stepResult.IsFailure)
             errorAction.Invoke(stepResult);
 
+        var settings = CreateSettings();
+
         var monad = new StateMonad(
             logger,
-            _nuixSettings,
+            settings,
             sfs,
             ExternalContext.Default
         );
@@ -53,6 +60,52 @@ public class ExampleTests
         var r = await stepResult.Value.Run<Unit>(monad, CancellationToken.None);
 
         r.ShouldBeSuccessful(x => x.AsString);
+
+        static SCLSettings CreateSettings()
+        {
+            var dict = new Dictionary<string, object>
+            {
+                {
+                    NuixSettings.NuixSettingsKey, new Dictionary<string, object>
+                    {
+                        {
+                            NuixSettings.ConsolePathKey, Path.Combine(
+                                @"C:\Program Files\Nuix\Nuix 8.8",
+                                Constants.NuixConsoleExe
+                            )
+                        },
+                        { SCLSettings.VersionKey, new Version(8, 8).ToString() },
+                        { NuixSettings.LicenceSourceTypeKey, "server" },
+                        { NuixSettings.LicenceSourceLocationKey, "license location" },
+                        //{ NuixSettings.LicenceTypeKey, "enterprise-workstation" },
+                        {
+                            NuixSettings.ConsoleArgumentsKey,
+                            new List<string>()
+                            {
+                                "-Dnuix.licence.handlers=server",
+                                "-Dnuix.registry.servers=license server",
+                            }
+                        },
+                        {
+                            NuixSettings.EnvironmentVariablesKey,
+                            new Dictionary<string, string>()
+                            {
+                                { "NUIX_USERNAME", "user" }, { "NUIX_PASSWORD", "password" },
+                            }
+                        },
+                        {
+                            SCLSettings.FeaturesKey, Enum.GetNames(typeof(NuixFeature))
+                                .Select(x => x.ToString())
+                                .ToList()
+                        }
+                    }
+                }
+            };
+
+            var entity = Entity.Create((SCLSettings.ConnectorsKey, dict));
+
+            return new SCLSettings(entity);
+        }
     }
 
     [Theory(Skip = "Manual")]
@@ -75,21 +128,10 @@ public class ExampleTests
     }
 
     [Fact(Skip = "manual")]
+    //[Fact]
     public async Task RunYamlSequence()
     {
-        const string yaml = @"- <CurrentDir>   = 'D:\temp'
-- <CasePath>     = PathCombine [<CurrentDir>, 'case']
-- <SearchTagCSV> = PathCombine [<CurrentDir>, 'searchtag.csv']
-- NuixOpenConnection
-- ReadFile <SearchTagCSV>
-  | FromCsv
-  | EntityForEach
-    Action: (
-      NuixSearchAndTag
-        CasePath: <CasePath>
-        SearchTerm: (EntityGetValue <Entity> 'SearchTerm')
-        Tag: (EntityGetValue <Entity> 'Tag')
-    )";
+        const string yaml = @"NuixDoesCaseExist 'abc'";
 
         await RunYamlSequenceInternal(
             yaml,
