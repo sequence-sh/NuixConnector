@@ -127,8 +127,8 @@ public class ExampleTests
         );
     }
 
-    //[Fact(Skip = "manual")]
-    [Fact]
+    [Fact(Skip = "manual")]
+    //[Fact]
     public async Task RunYamlSequence()
     {
         const string yaml = @"NuixDoesCaseExist 'abc'";
