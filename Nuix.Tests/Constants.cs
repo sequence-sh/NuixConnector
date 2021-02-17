@@ -26,6 +26,7 @@ public static class Constants
     public static List<NuixFeature> AllNuixFeatures =>
         Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
 
+    // The latest version supported by this connector should always be the first one in this list
     public static IReadOnlyCollection<SCLSettings> NuixSettingsList => new List<SCLSettings>
     {
         NuixSettings.CreateSettings(
@@ -169,6 +170,14 @@ public static class Constants
                     Path = new PathCombine { Paths = Array(folderName, fileName) }
                 }
             }
+        };
+    }
+
+    public static IStep<Unit> AssertDirectoryDoesNotExist(IStep<StringStream> path)
+    {
+        return new AssertTrue
+        {
+            Boolean = new Not { Boolean = new DirectoryExists { Path = path } }
         };
     }
 
