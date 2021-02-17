@@ -87,7 +87,7 @@ public static class NuixConnectionTestsHelper
         if (process.IsFailure)
             throw new XunitException("Failed to create a mock Nuix process");
 
-        var connection = new NuixConnection(process.Value);
+        var connection = new NuixConnection(process.Value, NuixConnectionSettings.Default);
 
         return connection;
     }
@@ -120,7 +120,7 @@ public static class NuixConnectionTestsHelper
         if (process.IsFailure)
             throw new XunitException("Failed to create a mock Nuix process");
 
-        var connection = new NuixConnection(process.Value);
+        var connection = new NuixConnection(process.Value, NuixConnectionSettings.Default);
 
         var setResult = state.SetVariable(NuixConnectionHelper.NuixVariableName, connection);
 

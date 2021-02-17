@@ -168,7 +168,7 @@ public sealed class NuixAddToProductionSet : RubyCaseScriptStepBase<Unit>
     {
         if (ProductionProfileName != null && ProductionProfilePath != null)
             return new SingleError(
-                new StepErrorLocation(this),
+                new ErrorLocation(this),
                 ErrorCode.ConflictingParameters,
                 nameof(ProductionProfileName),
                 nameof(ProductionProfilePath)
@@ -176,7 +176,7 @@ public sealed class NuixAddToProductionSet : RubyCaseScriptStepBase<Unit>
 
         if (ProductionProfileName == null && ProductionProfilePath == null)
             return new SingleError(
-                new StepErrorLocation(this),
+                new ErrorLocation(this),
                 ErrorCode.MissingParameter,
                 nameof(ProductionProfileName),
                 nameof(ProductionProfilePath)

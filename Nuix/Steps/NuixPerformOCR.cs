@@ -113,7 +113,7 @@ public sealed class NuixPerformOCR : RubyCaseScriptStepBase<Unit>
     {
         if (OCRProfileName != null && OCRProfilePath != null)
             return new SingleError(
-                new StepErrorLocation(this),
+                new ErrorLocation(this),
                 ErrorCode.ConflictingParameters,
                 nameof(OCRProfileName),
                 nameof(OCRProfilePath)

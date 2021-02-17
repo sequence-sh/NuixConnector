@@ -11,7 +11,6 @@ using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
-using Reductech.EDR.Core.Internal.Serialization;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit;
@@ -108,7 +107,9 @@ public class ExampleTests
         }
     }
 
+    #pragma warning disable xUnit1004 // Test methods should not be skipped
     [Theory(Skip = "Manual")]
+    #pragma warning restore xUnit1004 // Test methods should not be skipped
     [InlineData(@"D:\temp\ExampleSequences\test.yml")]
     public async Task RunYamlSequenceFromFile(string path)
     {
@@ -121,13 +122,15 @@ public class ExampleTests
             result => throw new XunitException(
                 string.Join(
                     ", ",
-                    result.Error.GetAllErrors().Select(x => x.Message + " " + x.Location.AsString)
+                    result.Error.GetAllErrors().Select(x => x.Message + " " + x.Location.AsString())
                 )
             )
         );
     }
 
+    #pragma warning disable xUnit1004 // Test methods should not be skipped
     [Fact(Skip = "manual")]
+    #pragma warning restore xUnit1004 // Test methods should not be skipped
     //[Fact]
     public async Task RunYamlSequence()
     {
