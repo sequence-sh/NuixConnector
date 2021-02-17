@@ -15,6 +15,9 @@ namespace Reductech.EDR.Connectors.Nuix
 /// </summary>
 public static class NuixSettings
 {
+    /// <summary>
+    /// The key to use for the Nuix Connector in the settings file.
+    /// </summary>
     // ReSharper disable StringLiteralTypo
     public const string NuixSettingsKey = "Nuix";
 
@@ -38,16 +41,44 @@ public static class NuixSettings
     /// </summary>
     public const string ConsolePathKey = "exeConsolePath";
 
+    /// <summary>
+    /// Signs the user out at the end of the execution, also releasing the semi-offline licence if present.
+    /// </summary>
     public const string SignoutKey = "signout";
+
+    /// <summary>
+    /// Releases the semi-offline licence at the end of the execution.
+    /// </summary>
     public const string ReleaseKey = "release";
+
+    /// <summary>
+    /// Selects a licence source type (e.g. dongle, server, cloud-server) to use. 
+    /// </summary>
     public const string LicenceSourceTypeKey = "licencesourcetype";
+
+    /// <summary>
+    /// Selects a licence source if multiple are available. 
+    /// </summary>
     public const string LicenceSourceLocationKey = "licencesourcelocation";
+
+    /// <summary>
+    /// Selects a licence type to use if multiple are available.
+    /// </summary>
     public const string LicenceTypeKey = "licencetype";
 
+    /// <summary>
+    /// Selects the number of workers to use if the choice is available.
+    /// </summary>
     public const string LicenceWorkersKey = "licenceworkers";
 
+    /// <summary>
+    /// Nuix Username - will be passed as an environment variable
+    /// </summary>
     public const string NuixUsernameKey = "NUIX_USERNAME";
 
+    /// <summary>
+    /// Nuix password - will be passed as an environment variable
+    /// </summary>
     public const string NuixPasswordKey = "NUIX_PASSWORD";
     // ReSharper restore StringLiteralTypo
 
@@ -60,19 +91,17 @@ public static class NuixSettings
         bool useDongle,
         IReadOnlyCollection<NuixFeature> features)
     {
-        var dict = new Dictionary<string, object>
+        var settingsDict = new Dictionary<string, object>
         {
-            {
-                NuixSettingsKey,
-                new Dictionary<string, object>
-                {
-                    { ConsolePathKey, consolePath },
-                    { SCLSettings.VersionKey, version.ToString() },
-                    { LicenceSourceTypeKey, "dongle" },
-                    { SCLSettings.FeaturesKey, features.Select(x => x.ToString()).ToList() }
-                }
-            }
+            { ConsolePathKey, consolePath },
+            { SCLSettings.VersionKey, version.ToString() },
+            { SCLSettings.FeaturesKey, features.Select(x => x.ToString()).ToList() }
         };
+
+        if (useDongle)
+            settingsDict.Add(LicenceSourceTypeKey, "dongle");
+
+        var dict = new Dictionary<string, object> { { NuixSettingsKey, settingsDict } };
 
         var entity = Entity.Create((SCLSettings.ConnectorsKey, dict));
 
