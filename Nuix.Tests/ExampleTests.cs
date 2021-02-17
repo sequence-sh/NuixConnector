@@ -121,7 +121,7 @@ public class ExampleTests
             result => throw new XunitException(
                 string.Join(
                     ", ",
-                    result.Error.GetAllErrors().Select(x => x.Message + " " + x.Location.AsString)
+                    result.Error.GetAllErrors().Select(x => x.Message + " " + x.Location.AsString())
                 )
             )
         );

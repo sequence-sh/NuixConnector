@@ -243,7 +243,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
         if (ProcessingProfileName != null && ProcessingProfilePath != null)
         {
             return new SingleError(
-                new StepErrorLocation(this),
+                new ErrorLocation(this),
                 ErrorCode.ConflictingParameters,
                 nameof(ProcessingProfileName),
                 nameof(ProcessingProfilePath)
