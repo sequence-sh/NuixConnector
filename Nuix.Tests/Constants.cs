@@ -47,11 +47,23 @@ public static class Constants
             AllNuixFeatures
         ),
         NuixSettings.CreateSettings(
-            Path.Combine(Nuix70Path, NuixConsoleExe),
-            new Version(7, 0),
-            true,
-            AllNuixFeatures
-        )
+                Path.Combine(Nuix70Path, NuixConsoleExe),
+                new Version(7, 0),
+                true,
+                AllNuixFeatures
+            )
+            .WithProperty(
+                @"\Awarning\Z", //We don't need to catch any java warnings from Nuix7
+                SCLSettings.ConnectorsKey,
+                NuixSettings.NuixSettingsKey,
+                NuixSettings.IgnoreWarningsRegexKey
+            )
+            .WithProperty(
+                @"\Aerror\Z",
+                SCLSettings.ConnectorsKey,
+                NuixSettings.NuixSettingsKey,
+                NuixSettings.IgnoreErrorsRegexKey
+            )
     };
 
     public static readonly string GeneralDataFolder = Path.Combine(

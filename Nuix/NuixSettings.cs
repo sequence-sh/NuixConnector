@@ -5,6 +5,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Entities;
+using Reductech.EDR.Core.Internal;
 using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix
@@ -81,6 +82,31 @@ public static class NuixSettings
     /// </summary>
     public const string NuixPasswordKey = "NUIX_PASSWORD";
     // ReSharper restore StringLiteralTypo
+
+    /// <summary>
+    /// Regex used to ignore java warnings coming from the Nuix connection.
+    /// The default values ignores warnings from Nuix Version up to 9.
+    /// </summary>
+    public const string IgnoreWarningsRegexKey = "IgnoreWarningsRegex";
+
+    /// <summary>
+    /// Regex used to ignore java errors coming from the Nuix connection.
+    /// The default values ignores errors from Nuix Version up to 9.
+    /// </summary>
+    public const string IgnoreErrorsRegexKey = "IgnoreErrorsRegex";
+
+    /// <summary>
+    /// Returns a new SCLSettings object with a property added
+    /// </summary>
+    public static SCLSettings WithProperty(
+        this SCLSettings settings,
+        object? value,
+        params string[] pathComponents)
+    {
+        var e = Entity.Create(new[] { (new EntityPropertyKey(pathComponents), value) });
+
+        return new SCLSettings(settings.Entity.Combine(e));
+    }
 
     /// <summary>
     /// Create Nuix Settings
