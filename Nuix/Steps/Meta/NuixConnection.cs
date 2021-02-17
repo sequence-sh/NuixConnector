@@ -461,8 +461,8 @@ public sealed class NuixConnection : IDisposable
     }
 
     private static readonly Regex JavaWarningRegex = new(
-        @"\(eval\):9: warning:(?<text>.+)",
-        RegexOptions.Compiled
+        @"(?:(?:\(eval\):9: warning)|(?:OpenJDK 64-Bit Server VM warning)|(?:WARNING)):(?<text>.+)",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase
     );
 
     private static readonly Regex JavaErrorRegex = new(@"ERROR\s*(?<text>.+)");
