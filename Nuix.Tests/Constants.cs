@@ -19,6 +19,7 @@ public static class Constants
     public const string Nuix70Path = @"C:\Program Files\Nuix\Nuix 7.0";
     public const string Nuix7Path = @"C:\Program Files\Nuix\Nuix 7.8";
     public const string Nuix8Path = @"C:\Program Files\Nuix\Nuix 8.8";
+    public const string Nuix9Path = @"C:\Program Files\Nuix\Nuix 9.0";
 
     public const string NuixConsoleExe = "nuix_console.exe";
 
@@ -27,6 +28,12 @@ public static class Constants
 
     public static IReadOnlyCollection<SCLSettings> NuixSettingsList => new List<SCLSettings>
     {
+        NuixSettings.CreateSettings(
+            Path.Combine(Nuix9Path, NuixConsoleExe),
+            new Version(9, 0),
+            true,
+            AllNuixFeatures
+        ),
         NuixSettings.CreateSettings(
             Path.Combine(Nuix8Path, NuixConsoleExe),
             new Version(8, 8),
