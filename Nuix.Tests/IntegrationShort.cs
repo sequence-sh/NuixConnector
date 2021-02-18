@@ -159,7 +159,11 @@ public partial class IntegrationShortTests
                             ProductionSetName = Constant("ExportProduction"),
                             ExportPath        = Constant(ExportPath)
                         },
-                        AssertFileContains(ExportPath, "loadfile.dat", "DOC-000000001"),
+                        AssertFileContains(
+                            ExportPath,
+                            "loadfile.dat",
+                            "25858867143438cf972761a1e45249fa"
+                        ),
                         AssertFileContains(
                             ExportPath,
                             "loadfile.dat",
