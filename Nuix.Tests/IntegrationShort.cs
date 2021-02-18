@@ -127,6 +127,12 @@ public partial class IntegrationShortTests
                             ProductionProfilePath = TestProductionProfilePath
                         },
                         AssertCount(13, "production-set:ExportProduction"),
+                        new NuixRemoveFromProductionSet
+                        {
+                            ProductionSetName = Constant("ExportProduction"),
+                            SearchTerm = Constant("name:IMG_17*")
+                        },
+                        AssertCount(11, "production-set:ExportProduction"),
                         // Write out a file type report
                         new CreateDirectory { Path = Constant(ReportPath) },
                         new FileWrite
@@ -140,14 +146,24 @@ public partial class IntegrationShortTests
                         AssertFileContains(ReportPath, "file-types.txt", "*	kind	*	189"),
                         AssertFileContains(ReportPath, "file-types.txt", "EDRM Micro	kind	*	186"),
                         AssertFileContains(ReportPath, "file-types.txt", "Reductech EDR	kind	*	3"),
-                        
+                        // Write out a term list
+                        new FileWrite
+                        {
+                            Path = new PathCombine
+                            {
+                                Paths = Array(ReportPath, "terms-list.txt")
+                            },
+                            Stream = new NuixCreateTermList()
+                        },
+                        AssertFileContains(ReportPath, "terms-list.txt", "control	324"),
+                        AssertFileContains(ReportPath, "terms-list.txt", "email	253"),
                         // Export concordance from the production set
                         new NuixExportConcordance
                         {
                             ProductionSetName = Constant("ExportProduction"),
                             ExportPath        = Constant(ExportPath)
                         },
-                        AssertFileContains(ExportPath, "loadfile.dat", "DOC-000000013"),
+                        AssertFileContains(ExportPath, "loadfile.dat", "DOC-000000011"),
                         AssertFileContains(ExportPath, "loadfile.dat", "6b661c59b9cc39b84832e3b7ebee6e93"),
                         new NuixCloseConnection(),
                         // clean up
