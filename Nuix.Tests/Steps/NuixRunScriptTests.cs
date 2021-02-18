@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -136,6 +137,13 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         AllNuixFeatures
     );
 
+    public static SCLSettings IntegrationTestSettings => NuixSettings.CreateSettings(
+        Path.Combine(Constants.Nuix8Path, Constants.NuixConsoleExe),
+        new Version(8, 8),
+        true,
+        AllNuixFeatures
+    );
+
     [Fact]
     [Trait("Category", "Integration")]
     public async Task TestScriptWithStream_Integration()
@@ -159,7 +167,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             "{\"Foo\":\"a\"}",
             "{\"Foo\":\"b\"}",
             "Finished"
-        ).WithSettings(Constants.NuixSettingsList.First());
+        ).WithSettings(IntegrationTestSettings);
 
         await stepCase.RunAsync(TestOutputHelper);
     }
@@ -181,7 +189,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             "Starting",
             "ABC",
             "Finished"
-        ).WithSettings(Constants.NuixSettingsList.First());
+        ).WithSettings(IntegrationTestSettings);
 
         await stepCase.RunAsync(TestOutputHelper);
     }
