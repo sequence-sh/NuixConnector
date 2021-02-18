@@ -37,7 +37,7 @@ variables:
 
 test dev:
   script:
-    - dotnet test --no-build --configuration $CONFIG --filter "Category!=Integration"
+    - dotnet test --no-build --configuration $CONFIG -v normal --filter "Category!=Integration"
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
 
@@ -57,7 +57,7 @@ integration test:
     - dotnet nuget remove source reductech
   script:
     - dotnet restore --packages ./packages
-    - dotnet test --no-restore --configuration $CONFIG
+    - dotnet test --no-restore --configuration $CONFIG -v normal
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
     - |
