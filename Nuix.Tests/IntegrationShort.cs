@@ -53,7 +53,14 @@ public partial class IntegrationShortTests
                             CasePath     = Constant(CasePath),
                             Investigator = Constant("InvestigatorA")
                         },
-                        new NuixOpenCase() { CasePath = Constant(CasePath) },
+                        new AssertTrue
+                        {
+                            Boolean = new NuixDoesCaseExist
+                            {
+                                CasePath = Constant(CasePath)
+                            }
+                        },
+                        new NuixOpenCase { CasePath = Constant(CasePath) },
                         // Add loose items
                         new NuixAddItem
                         {
@@ -65,7 +72,8 @@ public partial class IntegrationShortTests
                                 CreateEntity(("mime_type", "application/pdf"), ("enabled", "true"))
                             )
                         },
-                        //AssertCount(2, "*.txt"),
+                        AssertCount(186, "custodian:\"EDRM Micro\""),
+                        AssertCount(2, "*.txt"),
                         // Add concordance file
                         new NuixAddConcordance
                         {
@@ -75,18 +83,21 @@ public partial class IntegrationShortTests
                             Custodian              = Constant("Reductech EDR"),
                             FolderName             = Constant("INT01B0002")
                         },
-                        //AssertCount(3, "*.txt"),
+                        AssertCount(3, "custodian:\"Reductech EDR\""),
+                        AssertCount(3, "*.txt"),
                         // OCR the data
-                        //AssertCount(1, "digital debris"),
-                        new NuixPerformOCR { OCRProfileName = Constant("Default") },
-                        //AssertCount(1, "digital debris"),
+                        AssertCount(0, "transparency"),
+                        new NuixPerformOCR {
+                            SearchTerm = Constant("mime-type:image/jpeg"),
+                            OCRProfileName = Constant("Default")
+                        },
+                        AssertCount(2, "transparency"),
                         // Run a search and tag
                         new ForEach<Entity>
                         {
                             Array = Array(
                                 CreateEntity(("SearchTerm", "*.jpg"), ("Tag", "image")),
-                                CreateEntity(("SearchTerm", "*.doc"), ("Tag", "document")),
-                                CreateEntity(("SearchTerm", "red"),   ("Tag", "colour"))
+                                CreateEntity(("SearchTerm", "blue"),   ("Tag", "colour"))
                             ),
                             Action = new NuixSearchAndTag
                             {
@@ -101,23 +112,23 @@ public partial class IntegrationShortTests
                                 }
                             }
                         },
-                        //AssertCount(1, "tag:charm"),
                         // Create an item set from the tagged items
                         new NuixAddToItemSet
                         {
                             SearchTerm  = Constant("tag:*"),
                             ItemSetName = Constant("TaggedItems")
                         },
-                        //AssertCount(1, "item-set:TaggedItems"),
+                        AssertCount(13, "item-set:TaggedItems"),
                         // Create a production set from the tagged items
                         new NuixAddToProductionSet
                         {
                             SearchTerm            = Constant("item-set:TaggedItems"),
-                            ProductionSetName     = Constant("ProductionSet1"),
+                            ProductionSetName     = Constant("ExportProduction"),
                             ProductionProfilePath = TestProductionProfilePath
                         },
-                        //AssertCount(1, "production-set:ProductionSet1"),
+                        AssertCount(13, "production-set:ExportProduction"),
                         // Write out a file type report
+                        new CreateDirectory { Path = Constant(ReportPath) },
                         new FileWrite
                         {
                             Path = new PathCombine
@@ -126,19 +137,18 @@ public partial class IntegrationShortTests
                             },
                             Stream = new NuixCreateReport()
                         },
-                        //AssertFileContains(ReportPath, "file-types.txt", ""),
+                        AssertFileContains(ReportPath, "file-types.txt", "*	kind	*	189"),
+                        AssertFileContains(ReportPath, "file-types.txt", "EDRM Micro	kind	*	186"),
+                        AssertFileContains(ReportPath, "file-types.txt", "Reductech EDR	kind	*	3"),
+                        
                         // Export concordance from the production set
                         new NuixExportConcordance
                         {
-                            ProductionSetName = Constant("ProductionSet1"),
+                            ProductionSetName = Constant("ExportProduction"),
                             ExportPath        = Constant(ExportPath)
                         },
-                        AssertFileContains(ExportPath, "loadfile.dat", "DOCID"),
-                        //AssertFileContains(
-                        //    ExportPath,
-                        //    "TEXT/000/000/DOC-000000001.txt",
-                        //    "Visible, invisible"
-                        //),
+                        AssertFileContains(ExportPath, "loadfile.dat", "DOC-000000013"),
+                        AssertFileContains(ExportPath, "loadfile.dat", "6b661c59b9cc39b84832e3b7ebee6e93"),
                         new NuixCloseConnection(),
                         // clean up
                         new DeleteItem { Path = Constant(CasePath) },
