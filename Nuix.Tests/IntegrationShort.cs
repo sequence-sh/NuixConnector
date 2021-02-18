@@ -55,10 +55,7 @@ public partial class IntegrationShortTests
                         },
                         new AssertTrue
                         {
-                            Boolean = new NuixDoesCaseExist
-                            {
-                                CasePath = Constant(CasePath)
-                            }
+                            Boolean = new NuixDoesCaseExist { CasePath = Constant(CasePath) }
                         },
                         new NuixOpenCase { CasePath = Constant(CasePath) },
                         // Add loose items
@@ -72,8 +69,7 @@ public partial class IntegrationShortTests
                                 CreateEntity(("mime_type", "application/pdf"), ("enabled", "true"))
                             )
                         },
-                        AssertCount(186, "custodian:\"EDRM Micro\""),
-                        AssertCount(2, "*.txt"),
+                        AssertCount(186, "custodian:\"EDRM Micro\""), AssertCount(2, "*.txt"),
                         // Add concordance file
                         new NuixAddConcordance
                         {
@@ -83,12 +79,12 @@ public partial class IntegrationShortTests
                             Custodian              = Constant("Reductech EDR"),
                             FolderName             = Constant("INT01B0002")
                         },
-                        AssertCount(3, "custodian:\"Reductech EDR\""),
-                        AssertCount(3, "*.txt"),
+                        AssertCount(3, "custodian:\"Reductech EDR\""), AssertCount(3, "*.txt"),
                         // OCR the data
                         AssertCount(0, "transparency"),
-                        new NuixPerformOCR {
-                            SearchTerm = Constant("mime-type:image/jpeg"),
+                        new NuixPerformOCR
+                        {
+                            SearchTerm     = Constant("mime-type:image/jpeg"),
                             OCRProfileName = Constant("Default")
                         },
                         AssertCount(2, "transparency"),
@@ -97,7 +93,7 @@ public partial class IntegrationShortTests
                         {
                             Array = Array(
                                 CreateEntity(("SearchTerm", "*.jpg"), ("Tag", "image")),
-                                CreateEntity(("SearchTerm", "blue"),   ("Tag", "colour"))
+                                CreateEntity(("SearchTerm", "blue"),  ("Tag", "colour"))
                             ),
                             Action = new NuixSearchAndTag
                             {
@@ -130,7 +126,7 @@ public partial class IntegrationShortTests
                         new NuixRemoveFromProductionSet
                         {
                             ProductionSetName = Constant("ExportProduction"),
-                            SearchTerm = Constant("name:IMG_17*")
+                            SearchTerm        = Constant("name:IMG_17*")
                         },
                         AssertCount(11, "production-set:ExportProduction"),
                         // Write out a file type report
@@ -164,7 +160,11 @@ public partial class IntegrationShortTests
                             ExportPath        = Constant(ExportPath)
                         },
                         AssertFileContains(ExportPath, "loadfile.dat", "DOC-000000011"),
-                        AssertFileContains(ExportPath, "loadfile.dat", "6b661c59b9cc39b84832e3b7ebee6e93"),
+                        AssertFileContains(
+                            ExportPath,
+                            "loadfile.dat",
+                            "6b661c59b9cc39b84832e3b7ebee6e93"
+                        ),
                         new NuixCloseConnection(),
                         // clean up
                         new DeleteItem { Path = Constant(CasePath) },
