@@ -62,7 +62,6 @@ integration test:
       --filter "Category=IntegrationShort"
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
-  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
     reports:
       cobertura: coverage.cobertura.xml
@@ -87,6 +86,7 @@ integration full:
           if ($_ -match 'caseName: "(.+?)\((\d+\.\d+)\)') {
             [pscustomobject]@{ Name = $Matches[1] ; Version = $Matches[2] }
         } } | group Version | select Name, Count
+  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
 
