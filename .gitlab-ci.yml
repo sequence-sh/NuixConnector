@@ -91,6 +91,12 @@ integration full:
   coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
+    - if: $CI_COMMIT_BRANCH == 'master'
+      when: manual
+      allow_failure: true
+    - if: *not_release
+      when: manual
+      allow_failure: true
 
 integration test release:
   extends:
