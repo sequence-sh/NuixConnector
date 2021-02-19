@@ -42,7 +42,7 @@ test dev:
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
 
-integration test:
+integration short:
   stage: integration
   extends:
     - .default_before_script
@@ -76,7 +76,7 @@ integration test:
 
 integration full:
   extends:
-    - integration test
+    - integration short
   script:
     - dotnet restore --packages ./packages
     - dotnet test --no-restore --configuration $CONFIG -v normal
@@ -98,9 +98,9 @@ integration full:
       when: manual
       allow_failure: true
 
-integration test release:
+integration short release:
   extends:
-    - integration test
+    - integration short
     - .rules_release
   variables:
     CONFIG: $CONFIG_RELEASE
