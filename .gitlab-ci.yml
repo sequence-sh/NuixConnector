@@ -37,7 +37,8 @@ variables:
 
 test dev:
   script:
-    - dotnet test --no-build --configuration $CONFIG --filter "Category!=Integration"
+    - dotnet test --no-build --configuration $CONFIG -v normal
+      --filter "Category!=Integration&Category!=IntegrationShort"
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
 
@@ -57,25 +58,37 @@ integration test:
     - dotnet nuget remove source reductech
   script:
     - dotnet restore --packages ./packages
-    - dotnet test --no-restore --configuration $CONFIG
+    - dotnet test --no-restore --configuration $CONFIG -v normal
+      --filter "Category=IntegrationShort"
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
     - *get_coverage
-    - |
-      dotnet test --no-restore --configuration $CONFIG --list-tests |
-      ForEach-Object {
-        if ($_ -match 'stepCaseName: "(.+?)\(Nuix (\d+\.\d+)\)') {
-          [pscustomobject]@{ Name = $Matches[1] ; Version = $Matches[2] }
-      } } | group Version
-  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
   artifacts:
     reports:
       cobertura: coverage.cobertura.xml
   rules:
     - if: $CI_COMMIT_BRANCH == 'master'
-    - if: $CI_PIPELINE_SOURCE == 'schedule'
     - if: &not_release $CI_COMMIT_TAG !~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/i
       when: manual
       allow_failure: true
+
+integration full:
+  extends:
+    - integration test
+  script:
+    - dotnet restore --packages ./packages
+    - dotnet test --no-restore --configuration $CONFIG -v normal
+      --filter "Category=Integration"
+      --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
+    - *get_coverage
+    - |
+      dotnet test --no-restore --configuration $CONFIG --list-tests |
+        ForEach-Object {
+          if ($_ -match 'caseName: "(.+?)\((\d+\.\d+)\)') {
+            [pscustomobject]@{ Name = $Matches[1] ; Version = $Matches[2] }
+        } } | group Version | select Name, Count
+  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
 
 integration test release:
   extends:

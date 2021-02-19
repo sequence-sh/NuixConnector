@@ -32,10 +32,10 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             NuixSettings.TryGetNuixVersion(settings).Value
         ) //&& false //uncomment to disable integration tests
         select new IntegrationTestCase(
-                nuixTestCase.Name + NuixSettings.TryGetNuixVersion(settings).Value,
-                nuixTestCase.Step
-            )
-            .WithSettings(settings);
+            // Name needs to have nuix version in parentheses for ci script to build summary
+            $"{nuixTestCase.Name} ({NuixSettings.TryGetNuixVersion(settings).Value})",
+            nuixTestCase.Step
+        ).WithSettings(settings);
 
     public class NuixIntegrationTestCase
     {
