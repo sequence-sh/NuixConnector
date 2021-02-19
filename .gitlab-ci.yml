@@ -67,6 +67,8 @@ integration test:
     reports:
       cobertura: coverage.cobertura.xml
   rules:
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+      when: never
     - if: $CI_COMMIT_BRANCH == 'master'
     - if: &not_release $CI_COMMIT_TAG !~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/i
       when: manual
