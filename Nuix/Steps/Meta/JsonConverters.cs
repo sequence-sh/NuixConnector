@@ -10,6 +10,7 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.Core.Util;
 using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -26,7 +27,7 @@ public static class JsonConverters
     public static readonly JsonConverter[] All =
     {
         StringStreamJsonConverter.Instance, EntityJsonConverter.Instance,
-        ArrayJsonConverter.Instance, new StringEnumConverter()
+        ArrayJsonConverter.Instance, StringEnumDisplayConverter.Instance
     };
 
     /// <summary>
@@ -158,71 +159,75 @@ public static class JsonConverters
         public override bool CanConvert(Type objectType) => objectType == typeof(StringStream);
     }
 
-    /*
-    /// <summary>
-    /// Converts Entities to Json
-    /// </summary>
-    private class EntityJsonConverter : JsonConverter
+    public class StringEnumDisplayConverter : JsonConverter
     {
-        private EntityJsonConverter() { }
-
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public static EntityJsonConverter Instance { get; } = new();
+        private StringEnumDisplayConverter() { }
+        public static JsonConverter Instance { get; } = new StringEnumDisplayConverter();
 
         /// <inheritdoc />
-        public override void WriteJson(
-            JsonWriter writer,
-            object? entityObject,
-            JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            if (entityObject is not Entity entity)
-                return;
-
-            var dictionary = new Dictionary<string, object?>();
-
-            foreach (var entityProperty in entity)
+            if (value is Enum e)
             {
-                var value = GetObject(entityProperty.BestValue);
-                dictionary.Add(entityProperty.Name, value);
-            }
-
-            serializer.Serialize(writer, dictionary);
-
-            static object? GetObject(EntityValue ev)
-            {
-                return ev.Match(
-                    _ => null as object,
-                    x => x,
-                    x => x,
-                    x => x,
-                    x => x,
-                    x => x.Value,
-                    x => x,
-                    x => x,
-                    x => x.Select(GetObject).ToList()
-                );
+                var s = e.GetDisplayName();
+                writer.WriteValue(s);
             }
         }
 
         /// <inheritdoc />
-        public override object ReadJson(
+        public override object? ReadJson(
             JsonReader reader,
             Type objectType,
             object? existingValue,
             JsonSerializer serializer)
         {
-            var objectDict = serializer.Deserialize<Dictionary<string, object>>(reader);
-            var entity     = Entity.Create(objectDict!.Select(x => (x.Key, x.Value)).ToArray()!);
+            var nullableObjectType = Nullable.GetUnderlyingType(objectType);
 
-            return entity;
+            if (reader.TokenType == JsonToken.Null)
+            {
+                if (nullableObjectType == null)
+                {
+                    throw new JsonSerializationException(
+                        $"Cannot convert null value to {objectType}."
+                    );
+                }
+
+                return null;
+            }
+
+            Type t = nullableObjectType ?? objectType;
+
+            try
+
+            {
+                var enumText = reader.Value?.ToString();
+
+                if (string.IsNullOrWhiteSpace(enumText) && nullableObjectType != null)
+                    return null;
+
+                return Enum.Parse(t, enumText!, true);
+            }
+            catch
+            {
+                throw new JsonSerializationException(
+                    $"Error converting value {reader.Value} to type '{{{objectType}}}'."
+                );
+            }
         }
 
-        /// <inheritdoc />
-        public override bool CanConvert(Type objectType) => objectType == typeof(Entity);
+        /// <summary>
+        /// Determines whether this instance can convert the specified object type.
+        /// </summary>
+        /// <param name="objectType">Type of the object.</param>
+        /// <returns>
+        /// <c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool CanConvert(Type objectType)
+        {
+            Type t = Nullable.GetUnderlyingType(objectType) ?? objectType;
+            return t.IsEnum;
+        }
     }
-    */
 }
 
 }
