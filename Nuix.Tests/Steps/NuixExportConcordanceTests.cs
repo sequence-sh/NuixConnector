@@ -8,9 +8,8 @@ using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixExportConcordanceTests : NuixStepTestBase<NuixExportConcordance, Unit>
+public partial class NuixExportConcordanceTests : NuixStepTestBase<NuixExportConcordance, Unit>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases
     {
@@ -45,8 +44,8 @@ public  partial class NuixExportConcordanceTests : NuixStepTestBase<NuixExportCo
                     "TEXT/000/000/DOC-000000001.txt",
                     "Visible, invisible"
                 ),
-                new DeleteItem { Path = Constant(ConcordanceFolder) },
                 new NuixCloseConnection(),
+                new DeleteItem { Path = Constant(ConcordanceFolder) },
                 DeleteCaseFolder
             );
         }
