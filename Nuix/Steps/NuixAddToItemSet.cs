@@ -53,6 +53,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
 
     if items.length == 0
       log 'No items found. Nothing to add to item set.'
+      return
     end
 
     log ""Items found: #{items.length}""
