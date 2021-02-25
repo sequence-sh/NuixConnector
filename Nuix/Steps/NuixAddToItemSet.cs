@@ -37,28 +37,48 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    itemSet = $current_case.findItemSetByName(itemSetNameArg)
-    if(itemSet == nil)
-        itemSetOptions = {}
-        itemSetOptions[:deduplication] = deduplicationArg if deduplicationArg != nil
-        itemSetOptions[:description] = descriptionArg if descriptionArg != nil
-        itemSetOptions[:deduplicateBy] = deduplicateByArg if deduplicateByArg != nil
-        itemSetOptions[:custodianRanking] = custodianRankingArg.split("","") if custodianRankingArg != nil
-        itemSet = $current_case.createItemSet(itemSetNameArg, itemSetOptions)
 
-        log ""Item Set Created""
+    log ""Searching for items to add: #{searchArg}""
+
+    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
+    log(""Search options: #{searchOptions}"", severity: :trace)
+
+    if sortArg.nil?
+      log('Search results will be unsorted', severity: :trace)
+      items = $current_case.search_unsorted(searchArg, searchOptions)
     else
-        log ""Item Set Found""
+      log('Search results will be sorted', severity: :trace)
+      items = $current_case.search(searchArg, searchOptions)
     end
 
-    log ""Searching""
-    searchOptions = {}
-    searchOptions[:order] = orderArg if orderArg != nil
-    searchOptions[:limit] = limitArg.to_i if limitArg != nil
-    items = $current_case.search(searchArg, searchOptions)
-    log ""#{items.length} found""
+    if items.length == 0
+      log 'No items found. Nothing to add to item set.'
+    end
+
+    log ""Items found: #{items.length}""
+
+    log(""Searching for item set: #{itemSetNameArg}"", severity: :debug)
+    itemSet = $current_case.findItemSetByName(itemSetNameArg)
+
+    if itemSet.nil?
+        log ""Item set '#{itemSetNameArg}' not found. Creating.""
+        itemSetOptions = {}
+        itemSetOptions[:deduplication] = deduplicationArg unless deduplicationArg.nil?
+        itemSetOptions[:description] = descriptionArg unless descriptionArg.nil?
+        itemSetOptions[:deduplicateBy] = deduplicateByArg unless deduplicateByArg.nil?
+        itemSetOptions[:custodianRanking] = custodianRankingArg.split(',') unless custodianRankingArg.nil?
+        log(""Item set options: #{itemSetOptions}"", severity: :trace)
+        itemSet = $current_case.create_item_set(itemSetNameArg, itemSetOptions)
+        log ""Successfully created '#{itemSetNameArg}' item set.""
+    else
+        log ""Existing item set '#{itemSetNameArg}' found""
+    end
+
+    log ""Adding #{items.length} items to item set '#{itemSetNameArg}'""
     itemSet.addItems(items)
-    log ""items added""";
+    log('Finished adding items', severity: :debug)
+
+";
 }
 
 /// <summary>
@@ -92,6 +112,8 @@ public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// The means of deduplicating items by key and prioritizing originals in a tie-break.
+    /// This parameter only has an effect if Item Set does not exist and is created by
+    /// this step.
     /// </summary>
     [StepProperty(3)]
     [RubyArgument("deduplicationArg")]
@@ -101,6 +123,8 @@ public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// The description of the item set.
+    /// This parameter only has an effect if Item Set does not exist and is created by
+    /// this step.
     /// </summary>
     [StepProperty(4)]
     [RubyArgument("descriptionArg")]
@@ -110,6 +134,8 @@ public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// Whether to deduplicate as a family or individual.
+    /// This parameter only has an effect if Item Set does not exist and is created by
+    /// this step.
     /// </summary>
     [StepProperty(5)]
     [RubyArgument("deduplicateByArg")]
@@ -118,7 +144,10 @@ public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// A list of custodian names ordered from highest ranked to lowest ranked.
-    /// If this parameter is present and the deduplication parameter has not been specified, MD5 Ranked Custodian is assumed.
+    /// If this parameter is present and the deduplication parameter has not been
+    /// specified, MD5 Ranked Custodian is assumed.
+    /// This parameter only has an effect if Item Set does not exist and is created by
+    /// this step.
     /// </summary>
     [StepProperty(6)]
     [RubyArgument("custodianRankingArg")]
@@ -126,21 +155,28 @@ public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
     public IStep<Array<StringStream>>? CustodianRanking { get; set; }
 
     /// <summary>
-    /// How to order the items to be added to the item set.
+    /// Pass additional search options to nuix. For an unsorted search (default)
+    /// the only available option is defaultFields. When using <code>SortSearch=true</code>
+    /// the options are defaultFields, order, and limit.
+    /// Please see the nuix API for <code>Case.search</code>
+    /// and <code>Case.searchUnsorted</code> for more details.
     /// </summary>
+    [RequiredVersion("Nuix", "7.0")]
     [StepProperty(7)]
-    [Example("name ASC, item-date DESC")]
-    [RubyArgument("orderArg")]
-    [DefaultValueExplanation("Do not reorder")]
-    public IStep<StringStream>? Order { get; set; }
+    [RubyArgument("searchOptionsArg")]
+    [DefaultValueExplanation("No search options provided")]
+    public IStep<Entity>? SearchOptions { get; set; }
 
     /// <summary>
-    /// The maximum number of items to add to the item set.
+    /// By default the search is not sorted by relevance which
+    /// increases performance. Set this to true to sort the
+    /// search by relevance.
     /// </summary>
+    [RequiredVersion("Nuix", "7.0")]
     [StepProperty(8)]
-    [RubyArgument("limitArg")]
-    [DefaultValueExplanation("No limit")]
-    public IStep<int>? Limit { get; set; }
+    [RubyArgument("sortArg")]
+    [DefaultValueExplanation("false")]
+    public IStep<bool>? SortSearch { get; set; }
 }
 
 }
