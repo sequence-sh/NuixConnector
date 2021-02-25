@@ -37,18 +37,24 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
     public override string RubyFunctionText => @"
     log ""Searching for '#{searchArg}'""
 
-    searchOptions = {}
-    items = $current_case.search(searchArg, searchOptions)
-    log ""#{items.length} found""
+    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
+    log(""Search options: #{searchOptions}"", severity: :trace)
 
-    j = 0
+    if sortArg.nil?
+      log('Search results will be unsorted', severity: :trace)
+      items = $current_case.search_unsorted(searchArg, searchOptions)
+    else
+      log('Search results will be sorted', severity: :trace)
+      items = $current_case.search(searchArg, searchOptions)
+    end
 
-    items.each {|i|
-       added = i.addTag(tagArg)
-       j += 1 if added
-    }
+    log ""Items found: #{items.length}""
+    
+    items_processed = 0
+    $utilities.get_bulk_annotater.add_tag(tagArg, items) {|item| items_processed += 1 }
 
-    log ""#{j} items tagged with #{tagArg}""";
+    log ""Items tagged: #{items_processed}""
+";
 }
 
 /// <summary>
@@ -77,6 +83,30 @@ public sealed class NuixSearchAndTag : RubyCaseScriptStepBase<Unit>
     [StepProperty(2)]
     [RubyArgument("tagArg")]
     public IStep<StringStream> Tag { get; set; } = null!;
+
+    /// <summary>
+    /// Pass additional search options to nuix. For an unsorted search (default)
+    /// the only available option is defaultFields. When using <code>SortSearch=true</code>
+    /// the options are defaultFields, order, and limit.
+    /// Please see the nuix API for <code>Case.search</code>
+    /// and <code>Case.searchUnsorted</code> for more details.
+    /// </summary>
+    [RequiredVersion("Nuix", "7.0")]
+    [StepProperty(3)]
+    [RubyArgument("searchOptionsArg")]
+    [DefaultValueExplanation("No search options provided")]
+    public IStep<Entity>? SearchOptions { get; set; }
+
+    /// <summary>
+    /// By default the search is not sorted by relevance which
+    /// increases performance. Set this to true to sort the
+    /// search by relevance.
+    /// </summary>
+    [RequiredVersion("Nuix", "7.0")]
+    [StepProperty(4)]
+    [RubyArgument("sortArg")]
+    [DefaultValueExplanation("false")]
+    public IStep<bool>? SortSearch { get; set; }
 }
 
 }
