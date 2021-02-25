@@ -3,6 +3,7 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
@@ -26,7 +27,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     Paths              = DataPaths,
                     FolderName         = Constant("New Folder"),
                     ProcessingSettings = Constant(Entity.Create(("Foo", "Bar"))),
-                    CasePath           = CasePath,
+                    CasePath           = CasePath
                 },
                 Unit.Default,
                 new List<ExternalProcessAction>
@@ -50,7 +51,8 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                                 {
                                     nameof(NuixAddItem.ProcessingSettings),
                                     Entity.Create(("Foo", "Bar"))
-                                }
+                                },
+                                { nameof(NuixAddItem.ProgressInterval), 5000 }
                             },
                             FunctionDefinition = ""
                         },
