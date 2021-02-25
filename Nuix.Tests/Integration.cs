@@ -98,9 +98,11 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         }
 
         /// <inheritdoc />
-        public override StateMonad GetStateMonad(MockRepository mockRepository, ILogger logger)
+        public override async Task<StateMonad> GetStateMonad(
+            MockRepository mockRepository,
+            ILogger logger)
         {
-            var baseMonad = base.GetStateMonad(mockRepository, logger);
+            var baseMonad = await base.GetStateMonad(mockRepository, logger);
 
             return new StateMonad(
                 baseMonad.Logger,
@@ -110,7 +112,8 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                     FileSystemAdapter.Default,
                     ExternalProcessRunner.Instance,
                     baseMonad.ExternalContext.Console
-                )
+                ),
+                baseMonad.SequenceMetadata
             );
         }
     }

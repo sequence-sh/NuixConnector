@@ -59,7 +59,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
         if (methodParameters.IsFailure)
             return methodParameters.ConvertFailure<T>();
 
-        var nuixConnection = stateMonad.GetOrCreateNuixConnection(false);
+        var nuixConnection = await stateMonad.GetOrCreateNuixConnection(this, false);
 
         if (nuixConnection.IsFailure)
             return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));
@@ -78,7 +78,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
         {
             //The channel has closed on us. Try reopening it and rerunning the function
 
-            nuixConnection = stateMonad.GetOrCreateNuixConnection(true);
+            nuixConnection = await stateMonad.GetOrCreateNuixConnection(this, true);
 
             if (nuixConnection.IsFailure)
                 return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));

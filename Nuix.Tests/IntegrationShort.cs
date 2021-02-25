@@ -61,12 +61,12 @@ public partial class IntegrationShortTests
                         // Add loose items
                         new NuixAddItem
                         {
-                            Custodian  = Constant("EDRM Micro"),
-                            Paths      = Array(DataPath),
+                            Custodian = Constant("EDRM Micro"),
+                            Paths = Array(DataPath),
                             FolderName = Constant("INT01B0001"),
                             MimeTypeSettings = Array(
-                                CreateEntity(("mime_type", "text/plain"),      ("enabled", "true")),
-                                CreateEntity(("mime_type", "application/pdf"), ("enabled", "true"))
+                                Entity.Create(("mime_type", "text/plain"), ("enabled", "true")),
+                                Entity.Create(("mime_type", "application/pdf"), ("enabled", "true"))
                             )
                         },
                         AssertCount(186, "custodian:\"EDRM Micro\""), AssertCount(2, "*.txt"),
@@ -92,8 +92,8 @@ public partial class IntegrationShortTests
                         new ForEach<Entity>
                         {
                             Array = Array(
-                                CreateEntity(("SearchTerm", "*.jpg"), ("Tag", "image")),
-                                CreateEntity(("SearchTerm", "blue"),  ("Tag", "colour"))
+                                Entity.Create(("SearchTerm", "*.jpg"), ("Tag", "image")),
+                                Entity.Create(("SearchTerm", "blue"),  ("Tag", "colour"))
                             ),
                             Action = new NuixSearchAndTag
                             {

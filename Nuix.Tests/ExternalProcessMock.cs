@@ -7,11 +7,12 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
@@ -49,11 +50,12 @@ internal class ExternalProcessMock : IExternalProcessRunner
     /// <inheritdoc />
     public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(
         string processPath,
-        ILogger logger,
         IErrorHandler errorHandler,
         IEnumerable<string> arguments,
         IReadOnlyDictionary<string, string> environmentVariables,
         Encoding encoding,
+        IStateMonad stateMonad,
+        IStep? callingStep,
         CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
@@ -67,7 +69,8 @@ internal class ExternalProcessMock : IExternalProcessRunner
         IEnumerable<string> arguments,
         IReadOnlyDictionary<string, string> environmentVariables,
         Encoding encoding,
-        ILogger logger)
+        IStateMonad stateMonad,
+        IStep? callingStep)
     {
         var args = arguments.ToList();
 

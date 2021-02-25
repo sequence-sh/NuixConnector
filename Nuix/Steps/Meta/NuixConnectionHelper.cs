@@ -28,8 +28,9 @@ public static class NuixConnectionHelper
     /// <summary>
     /// Gets or creates a connection to nuix.
     /// </summary>
-    public static Result<NuixConnection, IErrorBuilder> GetOrCreateNuixConnection(
+    public static async Task<Result<NuixConnection, IErrorBuilder>> GetOrCreateNuixConnection(
         this IStateMonad stateMonad,
+        IStep? callingStep,
         bool reopen)
     {
         var currentConnection = stateMonad.GetVariable<NuixConnection>(NuixVariableName);
@@ -83,7 +84,8 @@ public static class NuixConnectionHelper
             consoleArguments.Value.arguments,
             environmentVariables.Value,
             Encoding.UTF8,
-            stateMonad.Logger
+            stateMonad,
+            callingStep
         );
 
         if (r.IsFailure)
@@ -91,7 +93,12 @@ public static class NuixConnectionHelper
 
         var connection = new NuixConnection(r.Value, connectionSettings);
 
-        var setResult = stateMonad.SetVariable(NuixVariableName, connection);
+        var setResult = await stateMonad.SetVariableAsync(
+            NuixVariableName,
+            connection,
+            true,
+            callingStep
+        );
 
         if (setResult.IsFailure)
             return setResult.ConvertFailure<NuixConnection>()
@@ -231,6 +238,7 @@ public static class NuixConnectionHelper
     /// </summary>
     public static async Task<Result<Unit, IErrorBuilder>> CloseNuixConnectionAsync(
         this IStateMonad stateMonad,
+        IStep? callingStep,
         CancellationToken cancellationToken)
     {
         var currentConnection = stateMonad.GetVariable<NuixConnection>(NuixVariableName);
@@ -250,7 +258,7 @@ public static class NuixConnectionHelper
             return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
         }
 
-        stateMonad.RemoveVariable(NuixVariableName, false);
+        await stateMonad.RemoveVariableAsync(NuixVariableName, true, callingStep);
 
         return Unit.Default;
     }

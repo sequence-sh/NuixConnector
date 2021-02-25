@@ -60,11 +60,21 @@ public static class NuixConnectionTestsHelper
             testLoggerFactory.CreateLogger("Test"),
             nuixSettings,
             sfs,
-            new ExternalContext(fileSystem, externalProcessRunner, console)
+            new ExternalContext(fileSystem, externalProcessRunner, console),
+            new object()
         );
 
         return monad;
     }
+
+    public static IStateMonad GetStateMonadForProcess(ITestLoggerFactory testLoggerFactory) =>
+        new StateMonad(
+            testLoggerFactory.CreateLogger("NuixProcess"),
+            new SCLSettings(Entity.Create()),
+            null,
+            null,
+            new object()
+        );
 
     public static NuixConnection GetNuixConnection(
         ExternalProcessAction action,
@@ -81,7 +91,8 @@ public static class NuixConnectionTestsHelper
             fakeExternalProcess.ProcessArgs,
             new Dictionary<string, string>(),
             fakeExternalProcess.ProcessEncoding,
-            loggerFactory.CreateLogger("NuixProcess")
+            GetStateMonadForProcess(loggerFactory),
+            null
         );
 
         if (process.IsFailure)
@@ -114,7 +125,8 @@ public static class NuixConnectionTestsHelper
             fakeExternalProcess.ProcessArgs,
             new Dictionary<string, string>(),
             fakeExternalProcess.ProcessEncoding,
-            loggerFactory.CreateLogger("NuixProcess")
+            GetStateMonadForProcess(loggerFactory),
+            null
         );
 
         if (process.IsFailure)
@@ -122,7 +134,13 @@ public static class NuixConnectionTestsHelper
 
         var connection = new NuixConnection(process.Value, NuixConnectionSettings.Default);
 
-        var setResult = state.SetVariable(NuixConnectionHelper.NuixVariableName, connection);
+        var setResult = state.SetVariableAsync(
+                NuixConnectionHelper.NuixVariableName,
+                connection,
+                true,
+                null
+            )
+            .Result;
 
         if (setResult.IsFailure)
             throw new XunitException("Could not set existing connection on state monad.");
@@ -169,21 +187,21 @@ public static class NuixConnectionTestsHelper
 public class NuixConnectionHelperTests
 {
     [Fact]
-    public void GetOrCreateNuixConnection_WhenConnectionExists_ReturnsConnection()
+    public async Task GetOrCreateNuixConnection_WhenConnectionExists_ReturnsConnection()
     {
         var loggerFactory = TestLoggerFactory.Create();
         var state         = NuixConnectionTestsHelper.GetStateMonadWithConnection(loggerFactory);
 
         var expected = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
-        var createConnection = state.GetOrCreateNuixConnection(false);
+        var createConnection = await state.GetOrCreateNuixConnection(null, false);
 
         Assert.True(createConnection.IsSuccess);
         Assert.Same(expected.Value, createConnection.Value);
     }
 
     [Fact]
-    public void GetOrCreateNuixConnection_WhenReopenIsSet_DisposesOldConnection()
+    public async Task GetOrCreateNuixConnection_WhenReopenIsSet_DisposesOldConnection()
     {
         var loggerFactory = TestLoggerFactory.Create();
         var state         = NuixConnectionTestsHelper.GetStateMonadWithConnection(loggerFactory);
@@ -191,7 +209,7 @@ public class NuixConnectionHelperTests
         var originalConnection =
             state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
-        var createConnection = state.GetOrCreateNuixConnection(true);
+        var createConnection = await state.GetOrCreateNuixConnection(null, true);
 
         var processRef =
             originalConnection.Value.ExternalProcess as ExternalProcessMock.ProcessReferenceMock;
@@ -201,7 +219,7 @@ public class NuixConnectionHelperTests
     }
 
     [Fact]
-    public void GetOrCreateNuixConnection_WhenConnectionAlreadyDisposed_LogsMessage()
+    public async Task GetOrCreateNuixConnection_WhenConnectionAlreadyDisposed_LogsMessage()
     {
         var loggerFactory = TestLoggerFactory.Create();
         var state         = NuixConnectionTestsHelper.GetStateMonadWithConnection(loggerFactory);
@@ -211,7 +229,7 @@ public class NuixConnectionHelperTests
 
         originalConnection.Value.Dispose();
 
-        var createConnection = state.GetOrCreateNuixConnection(true);
+        var createConnection = await state.GetOrCreateNuixConnection(null, true);
 
         Assert.True(originalConnection.IsSuccess);
         Assert.True(createConnection.IsSuccess);
@@ -222,7 +240,7 @@ public class NuixConnectionHelperTests
     }
 
     [Fact]
-    public void GetOrCreateNuixConnection_OnStartExternalProcessFailure_ReturnsError()
+    public async Task GetOrCreateNuixConnection_OnStartExternalProcessFailure_ReturnsError()
     {
         var fakeExternalProcess =
             new ExternalProcessMock(1, NuixConnectionTestsHelper.GetCreateCaseAction())
@@ -239,7 +257,7 @@ public class NuixConnectionHelperTests
                 FileSystemAdapter.Default
             );
 
-        var createConnection = state.GetOrCreateNuixConnection(true);
+        var createConnection = await state.GetOrCreateNuixConnection(null, true);
 
         Assert.True(createConnection.IsFailure);
 
@@ -265,7 +283,7 @@ public class NuixConnectionHelperTests
 
         var ct = new CancellationToken();
 
-        var actual = await state.CloseNuixConnectionAsync(ct);
+        var actual = await state.CloseNuixConnectionAsync(null, ct);
 
         Assert.True(actual.IsSuccess);
         Assert.Equal(Unit.Default, actual);
@@ -279,7 +297,7 @@ public class NuixConnectionHelperTests
 
         var ct = new CancellationToken();
 
-        var actual     = await state.CloseNuixConnectionAsync(ct);
+        var actual     = await state.CloseNuixConnectionAsync(null, ct);
         var connection = state.GetVariable<NuixConnection>(NuixConnectionHelper.NuixVariableName);
 
         Assert.True(actual.IsSuccess);
@@ -303,7 +321,7 @@ public class NuixConnectionHelperTests
         Assert.True(originalConnection.IsSuccess);
         originalConnection.Value.Dispose();
 
-        var actual = await state.CloseNuixConnectionAsync(ct);
+        var actual = await state.CloseNuixConnectionAsync(null, ct);
 
         Assert.True(actual.IsFailure);
 
@@ -314,7 +332,7 @@ public class NuixConnectionHelperTests
     }
 
     [Fact]
-    public void GetOrCreateNuixConnection_WhenScriptFileDoesNotExist_ReturnsError()
+    public async Task GetOrCreateNuixConnection_WhenScriptFileDoesNotExist_ReturnsError()
     {
         var fakeExternalProcess = new ExternalProcessMock(
             1,
@@ -331,7 +349,7 @@ public class NuixConnectionHelperTests
             new ConsoleAdapter()
         );
 
-        var connection = state.GetOrCreateNuixConnection(false);
+        var connection = await state.GetOrCreateNuixConnection(null, false);
 
         Assert.True(connection.IsFailure);
 
