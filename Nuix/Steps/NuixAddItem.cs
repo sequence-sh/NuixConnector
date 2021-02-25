@@ -111,6 +111,11 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
     folder.description = folderDescriptionArg if folderDescriptionArg != nil
     folder.initial_custodian = folderCustodianArg
 
+    unless customMetadataArg.nil?
+      log(""Adding custom metadata to container #{folderNameArg}"", severity: :debug)
+      folder.set_custom_metadata(customMetadataArg)
+    end
+
     filePathsArgs.each do |path|
       folder.add_file(path)
       log ""Adding to Container: #{folderNameArg} Path: #{path}""
@@ -255,6 +260,14 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     [RubyArgument("progressIntervalArg")]
     [DefaultValueExplanation("Every 5000 items")]
     public IStep<int> ProgressInterval { get; set; } = new IntConstant(5000);
+
+    /// <summary>
+    /// Sets additional metadata on the folder/container.
+    /// </summary>
+    [StepProperty(12)]
+    [RubyArgument("customMetadataArg")]
+    [DefaultValueExplanation("No custom metadata will be added")]
+    public IStep<Core.Entity>? CustomMetadata { get; set; }
 
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)

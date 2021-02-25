@@ -151,7 +151,8 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     Custodian          = Constant("Mark"),
                     Paths              = DataPaths,
                     FolderName         = Constant("New Folder"),
-                    ProcessingSettings = Constant(Entity.Create(("processText", true)))
+                    ProcessingSettings = Constant(Entity.Create(("processText", true))),
+                    ProgressInterval   = Constant(100)
                 },
                 AssertCount(2, "*.txt"),
                 new NuixCloseConnection(),
@@ -195,9 +196,11 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                             ("enabled", "true")
                         ), //These don't really do anything, just tests that it works
                         Entity.Create(("mime_tye", "application/pdf"), ("enabled", "true"))
-                    )
+                    ),
+                    CustomMetadata = Constant(Entity.Create(("Origin", "File")))
                 },
                 AssertCount(2, "*.txt"),
+                AssertCount(4, "evidence-metadata:\"Origin: File\""),
                 new NuixCloseConnection(),
                 DeleteCaseFolder
             );
