@@ -21,7 +21,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 /// <summary>
 /// An open connection to our general script running in Nuix
 /// </summary>
-public sealed class NuixConnection : IDisposable
+public sealed class NuixConnection : IDisposable, IStateDisposable
 {
     /// <summary>
     /// Create a new NuixConnection
@@ -392,6 +392,17 @@ public sealed class NuixConnection : IDisposable
     {
         if (!IsDisposed)
         {
+            ExternalProcess.Dispose();
+            IsDisposed = true;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task DisposeAsync(IStateMonad state)
+    {
+        if (!IsDisposed)
+        {
+            await SendDoneCommand(state, CancellationToken.None);
             ExternalProcess.Dispose();
             IsDisposed = true;
         }

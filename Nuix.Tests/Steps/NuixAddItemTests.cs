@@ -25,7 +25,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     Custodian          = Constant("Mark"),
                     Paths              = DataPaths,
                     FolderName         = Constant("New Folder"),
-                    ProcessingSettings = Constant(CreateEntity(("Foo", "Bar"))),
+                    ProcessingSettings = Constant(Entity.Create(("Foo", "Bar"))),
                     CasePath           = CasePath,
                 },
                 Unit.Default,
@@ -49,7 +49,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                                 },
                                 {
                                     nameof(NuixAddItem.ProcessingSettings),
-                                    CreateEntity(("Foo", "Bar"))
+                                    Entity.Create(("Foo", "Bar"))
                                 }
                             },
                             FunctionDefinition = ""
@@ -190,11 +190,11 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     Paths      = DataPaths,
                     FolderName = Constant("New Folder"),
                     MimeTypeSettings = Array(
-                        CreateEntity(
+                        Entity.Create(
                             ("mime_tye", "text/plain"),
                             ("enabled", "true")
                         ), //These don't really do anything, just tests that it works
-                        CreateEntity(("mime_tye", "application/pdf"), ("enabled", "true"))
+                        Entity.Create(("mime_tye", "application/pdf"), ("enabled", "true"))
                     )
                 },
                 AssertCount(2, "*.txt"),

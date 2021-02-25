@@ -53,7 +53,8 @@ public class ExampleTests
             logger,
             settings,
             sfs,
-            ExternalContext.Default
+            ExternalContext.Default,
+            new object()
         );
 
         var r = await stepResult.Value.Run<Unit>(monad, CancellationToken.None);

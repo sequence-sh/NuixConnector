@@ -22,6 +22,7 @@ using Reductech.EDR.Core.Util;
 using Xunit;
 using Xunit.Abstractions;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
@@ -54,31 +55,31 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                         FunctionName          = Constant("Test Script"),
                         ScriptText            = Constant("Lorem Ipsum"),
                         EntityStreamParameter = null,
-                        Parameters            = Constant(CreateEntity(("param1", "ABC")))
+                        Parameters            = Constant(Entity.Create(("param1", "ABC")))
                     },
                     "Hello World",
-                    new List<ExternalProcessAction>()
+                    new List<ExternalProcessAction>
                     {
                         new(
-                            new ConnectionCommand()
+                            new ConnectionCommand
                             {
                                 Command            = "test_Script",
                                 FunctionDefinition = "Lorem Ipsum",
-                                Arguments = new Dictionary<string, object>()
+                                Arguments = new Dictionary<string, object>
                                 {
                                     { "param1", "ABC" }
                                 }
                             },
-                            new ConnectionOutput()
+                            new ConnectionOutput
                             {
-                                Log = new ConnectionOutputLog()
+                                Log = new ConnectionOutputLog
                                 {
                                     Message = "Log Message", Severity = "info"
                                 }
                             },
-                            new ConnectionOutput()
+                            new ConnectionOutput
                             {
-                                Result = new ConnectionOutputResult() { Data = "Hello World" }
+                                Result = new ConnectionOutputResult { Data = "Hello World" }
                             }
                         )
                     },
@@ -93,26 +94,26 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                         FunctionName = Constant("test_Script"),
                         ScriptText   = Constant("Lorem Ipsum"),
                         EntityStreamParameter =
-                            Array(CreateEntity(("Foo", "a")), CreateEntity(("Foo", "b"))),
-                        Parameters = Constant(CreateEntity(("param1", "ABC")))
+                            Array(Entity.Create(("Foo", "a")), Entity.Create(("Foo", "b"))),
+                        Parameters = Constant(Entity.Create(("param1", "ABC")))
                     },
                     @"[{""Foo"":""a""},{""Foo"":""b""}]",
-                    new List<ExternalProcessAction>()
+                    new List<ExternalProcessAction>
                     {
                         new(
-                            new ConnectionCommand()
+                            new ConnectionCommand
                             {
                                 Command            = "test_Script",
                                 FunctionDefinition = "Lorem Ipsum",
-                                Arguments = new Dictionary<string, object>()
+                                Arguments = new Dictionary<string, object>
                                 {
                                     { "param1", "ABC" }
                                 },
                                 IsStream = true
                             },
-                            new ConnectionOutput()
+                            new ConnectionOutput
                             {
-                                Log = new ConnectionOutputLog()
+                                Log = new ConnectionOutputLog
                                 {
                                     Message = "Log Message", Severity = "info"
                                 }
@@ -158,8 +159,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                         "log param1\r\nlog datastream.pop\r\nlog datastream.pop\r\nreturn param2"
                     ),
                 EntityStreamParameter =
-                    Array(CreateEntity(("Foo", "a")), CreateEntity(("Foo", "b"))),
-                Parameters = Constant(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
+                    Array(Entity.Create(("Foo", "a")), Entity.Create(("Foo", "b"))),
+                Parameters = Constant(Entity.Create(("param1", "ABC"), ("param2", "DEF")))
             },
             "DEF",
             "Starting",
@@ -180,10 +181,10 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             "Case without stream",
             new NuixRunScript
             {
-                FunctionName          = Constant("test_Script"),
-                ScriptText            = Constant("log param1\r\nreturn param2"),
+                FunctionName = Constant("test_Script"),
+                ScriptText = Constant("log param1\r\nreturn param2"),
                 EntityStreamParameter = null,
-                Parameters            = Constant(CreateEntity(("param1", "ABC"), ("param2", "DEF")))
+                Parameters = Constant(Entity.Create(("param1", "ABC"), ("param2", "DEF")))
             },
             "DEF",
             "Starting",
@@ -211,11 +212,13 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }
 
         /// <inheritdoc />
-        public override StateMonad GetStateMonad(MockRepository mockRepository, ILogger logger)
+        public override async Task<StateMonad> GetStateMonad(
+            MockRepository mockRepository,
+            ILogger logger)
         {
             var externalProcessMock = new ExternalProcessMock(1, ExternalProcessActions.ToArray());
 
-            var baseMonad = base.GetStateMonad(mockRepository, logger);
+            var baseMonad = await base.GetStateMonad(mockRepository, logger);
 
             return new StateMonad(
                 baseMonad.Logger,
@@ -225,7 +228,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                     baseMonad.ExternalContext.FileSystemHelper,
                     externalProcessMock,
                     baseMonad.ExternalContext.Console
-                )
+                ),
+                baseMonad.SequenceMetadata
             );
         }
     }
@@ -241,11 +245,11 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         {
             Name = name;
 
-            var sequence = new Sequence<StringStream>()
+            var sequence = new Sequence<StringStream>
             {
-                InitialSteps = new List<IStep<Unit>>()
+                InitialSteps = new List<IStep<Unit>>
                 {
-                    new SetVariable<StringStream>()
+                    new SetVariable<StringStream>
                     {
                         Variable = new VariableName("Output"), Value = step
                     },
@@ -297,9 +301,11 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         }
 
         /// <inheritdoc />
-        public override StateMonad GetStateMonad(MockRepository mockRepository, ILogger logger)
+        public override async Task<StateMonad> GetStateMonad(
+            MockRepository mockRepository,
+            ILogger logger)
         {
-            var baseMonad = base.GetStateMonad(mockRepository, logger);
+            var baseMonad = await base.GetStateMonad(mockRepository, logger);
 
             return new StateMonad(
                 baseMonad.Logger,
@@ -309,7 +315,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                     FileSystemAdapter.Default,
                     ExternalProcessRunner.Instance,
                     baseMonad.ExternalContext.Console
-                )
+                ),
+                baseMonad.SequenceMetadata
             );
         }
     }

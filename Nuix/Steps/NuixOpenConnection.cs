@@ -23,7 +23,7 @@ public sealed class NuixOpenConnection : CompoundStep<Unit>
     {
         await Task.CompletedTask;
 
-        var r = stateMonad.GetOrCreateNuixConnection(false);
+        var r = await stateMonad.GetOrCreateNuixConnection(this, false);
 
         if (r.IsFailure)
             return r.MapError(x => x.WithLocation(this)).ConvertFailure<Unit>();

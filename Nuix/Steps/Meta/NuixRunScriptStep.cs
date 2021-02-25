@@ -49,7 +49,7 @@ public class NuixRunScript : CompoundStep<StringStream>
         if (parameters.IsFailure)
             return parameters.ConvertFailure<StringStream>();
 
-        var nuixConnection = stateMonad.GetOrCreateNuixConnection(false);
+        var nuixConnection = await stateMonad.GetOrCreateNuixConnection(this, false);
 
         if (nuixConnection.IsFailure)
             return nuixConnection.ConvertFailure<StringStream>()

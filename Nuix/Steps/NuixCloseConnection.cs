@@ -24,7 +24,7 @@ public sealed class NuixCloseConnection : CompoundStep<Unit>
     {
         await Task.CompletedTask;
 
-        var r = await stateMonad.CloseNuixConnectionAsync(cancellationToken);
+        var r = await stateMonad.CloseNuixConnectionAsync(this, cancellationToken);
 
         return r.MapError(x => x.WithLocation(this));
     }
