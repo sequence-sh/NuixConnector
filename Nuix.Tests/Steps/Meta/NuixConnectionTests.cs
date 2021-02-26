@@ -71,8 +71,8 @@ public static class NuixConnectionTestsHelper
         new StateMonad(
             testLoggerFactory.CreateLogger("NuixProcess"),
             new SCLSettings(Entity.Create()),
-            null,
-            null,
+            null!,
+            null!,
             new Dictionary<string, object>()
         );
 
@@ -402,7 +402,7 @@ public class NuixConnectionTests
             () => nuixConnection.RunFunctionAsync<Unit>(
                 NuixConnectionTestsHelper.GetStateMonadForProcess(logFactory),
                 null!,
-                null,
+                null!,
                 new Dictionary<RubyFunctionParameter, object>(),
                 CasePathParameter.IgnoresOpenCase.Instance,
                 ct
