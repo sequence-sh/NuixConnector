@@ -169,7 +169,7 @@ public partial class IntegrationShortTests
                                 },
                                 Stream = new NuixCreateTermList()
                             },
-                            AssertFileContains(ReportPath, "terms-list.txt", "control	324"),
+                            AssertFileContains(ReportPath, "terms-list.txt", "garnethill    222"),
                             AssertFileContains(ReportPath, "terms-list.txt", "email	253"),
                             // Export concordance from the production set
                             new NuixExportConcordance
