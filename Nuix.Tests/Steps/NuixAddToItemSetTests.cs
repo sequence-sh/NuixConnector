@@ -82,7 +82,7 @@ public partial class NuixAddToItemSetTests : NuixStepTestBase<NuixAddToItemSet, 
                                 { nameof(NuixAddToItemSet.SortSearch), true },
                                 {
                                     nameof(NuixAddToItemSet.SearchOptions),
-                                    CreateEntity(("limit", 1))
+                                    Entity.Create(("limit", 1))
                                 }
                             }
                         },

@@ -73,7 +73,7 @@ public partial class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToPro
                                 { nameof(NuixAddToItemSet.SortSearch), true },
                                 {
                                     nameof(NuixAddToItemSet.SearchOptions),
-                                    CreateEntity(("limit", 1))
+                                    Core.Entity.Create(("limit", 1))
                                 }
                             }
                         },
