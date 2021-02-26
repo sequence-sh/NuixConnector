@@ -206,7 +206,7 @@ public partial class IntegrationShortTests
                     NuixSettingsList.First()
                 ); // Only run these tests on the latest version of nuix that we support.
 
-            stepTest.OutputLogLevel1 = LogLevel.Trace;
+            stepTest.OutputLogLevel1 = LogLevel.Debug;
             yield return stepTest;
         }
     }
