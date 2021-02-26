@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Util;
@@ -16,7 +18,7 @@ public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndE
         get
         {
             yield return new NuixIntegrationTestCase(
-                "Search and tag",
+                "Search and Exclude",
                 DeleteCaseFolder,
                 CreateCase,
                 AddData,
@@ -37,6 +39,68 @@ public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndE
                 },
                 AssertCount(1, "exclusion:color"),
                 AssertCount(0, "tag:yellow"),
+                new NuixCloseConnection(),
+                DeleteCaseFolder
+            );
+
+            yield return new NuixIntegrationTestCase(
+                "Search and Exclude with SearchType",
+                DeleteCaseFolder,
+                CreateCase,
+                new NuixAddItem
+                {
+                    Custodian = Constant("Mark"),
+                    Paths = Array(
+                        Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "AllData",
+                            "descendants.zip"
+                        )
+                    ),
+                    FolderName = Constant("SearchAndExcludeTest")
+                },
+                new NuixSearchAndExclude
+                {
+                    SearchTerm      = Constant("name:\"msnbc.data.zip\""),
+                    ExclusionReason = Constant("descendants"),
+                    SearchType      = Constant(SearchType.Descendants)
+                },
+                AssertCount(3, "exclusion:descendants"),
+                new NuixSearchAndExclude
+                {
+                    SearchTerm      = Constant("olympus"),
+                    ExclusionReason = Constant("families"),
+                    SearchType      = Constant(SearchType.Families)
+                },
+                AssertCount(1, "exclusion:families"),
+                new NuixSearchAndExclude
+                {
+                    SearchTerm      = Constant("name:\"msnbc.data.zip\""),
+                    ExclusionReason = Constant("itemsdescendants"),
+                    SearchType      = Constant(SearchType.ItemsAndDescendants)
+                },
+                AssertCount(4, "exclusion:itemsdescendants"),
+                new NuixSearchAndExclude
+                {
+                    SearchTerm      = Constant("name:\"description.txt\""),
+                    ExclusionReason = Constant("itemsduplicates"),
+                    SearchType      = Constant(SearchType.ItemsAndDuplicates)
+                },
+                AssertCount(2, "exclusion:itemsduplicates"),
+                new NuixSearchAndExclude
+                {
+                    SearchTerm      = Constant("olympus"),
+                    ExclusionReason = Constant("threads"),
+                    SearchType      = Constant(SearchType.ThreadItems)
+                },
+                AssertCount(1, "exclusion:threads"),
+                new NuixSearchAndExclude
+                {
+                    SearchTerm      = Constant("name:\"msnbc.html\""),
+                    ExclusionReason = Constant("toplevel"),
+                    SearchType      = Constant(SearchType.TopLevelItems)
+                },
+                AssertCount(1, "exclusion:toplevel"),
                 new NuixCloseConnection(),
                 DeleteCaseFolder
             );
