@@ -30,8 +30,6 @@ public class ExampleTests
 
     public ITestOutputHelper TestOutputHelper { get; }
 
-    private SCLSettings _nuixSettings => Constants.NuixSettingsList.First();
-
     private async Task RunYamlSequenceInternal(
         string yaml,
         Action<Result<IStep, IError>> errorAction)
@@ -54,7 +52,7 @@ public class ExampleTests
             settings,
             sfs,
             ExternalContext.Default,
-            new object()
+            new Dictionary<string, object>()
         );
 
         var r = await stepResult.Value.Run<Unit>(monad, CancellationToken.None);

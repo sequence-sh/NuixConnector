@@ -248,7 +248,7 @@ public static class NuixConnectionHelper
 
         try
         {
-            await currentConnection.Value.SendDoneCommand(stateMonad, cancellationToken);
+            await currentConnection.Value.SendDoneCommand(stateMonad, null, cancellationToken);
 
             currentConnection.Value.ExternalProcess.WaitForExit(1000);
             currentConnection.Value.Dispose();

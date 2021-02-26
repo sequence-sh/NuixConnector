@@ -61,7 +61,7 @@ public static class NuixConnectionTestsHelper
             nuixSettings,
             sfs,
             new ExternalContext(fileSystem, externalProcessRunner, console),
-            new object()
+            new Dictionary<string, object>()
         );
 
         return monad;
@@ -73,7 +73,7 @@ public static class NuixConnectionTestsHelper
             new SCLSettings(Entity.Create()),
             null,
             null,
-            new object()
+            new Dictionary<string, object>()
         );
 
     public static NuixConnection GetNuixConnection(
@@ -382,7 +382,7 @@ public class NuixConnectionTests
 
         var ct = new CancellationToken();
 
-        await nuixConnection.SendDoneCommand(state, ct);
+        await nuixConnection.SendDoneCommand(state, null, ct);
 
         logFactory.Sink.LogEntries.Should()
             .Contain(x => x.Message != null && x.Message.Equals("Finished"));
@@ -400,9 +400,10 @@ public class NuixConnectionTests
 
         await Assert.ThrowsAsync<ObjectDisposedException>(
             () => nuixConnection.RunFunctionAsync<Unit>(
-                TestLoggerFactory.Create().CreateLogger("Test"),
+                NuixConnectionTestsHelper.GetStateMonadForProcess(logFactory),
                 null!,
-                null!,
+                null,
+                new Dictionary<RubyFunctionParameter, object>(),
                 CasePathParameter.IgnoresOpenCase.Instance,
                 ct
             )
@@ -432,7 +433,8 @@ public class NuixConnectionTests
         var step = new FakeNuixTwoStreamFunction();
 
         var result = await nuixConnection.RunFunctionAsync(
-            logger,
+            NuixConnectionTestsHelper.GetStateMonadForProcess(logFactory),
+            null,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
             CasePathParameter.IgnoresOpenCase.Instance,
@@ -482,7 +484,8 @@ public class NuixConnectionTests
         var step = new FakeNuixStreamFunction();
 
         var result = await nuixConnection.RunFunctionAsync(
-            logger,
+            NuixConnectionTestsHelper.GetStateMonadForProcess(logFactory),
+            null,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
             CasePathParameter.IgnoresOpenCase.Instance,
@@ -533,7 +536,8 @@ public class NuixConnectionTests
         var step = new NuixMigrateCase();
 
         var result = await nuixConnection.RunFunctionAsync(
-            loggerFactory.CreateLogger("Test"),
+            NuixConnectionTestsHelper.GetStateMonadForProcess(loggerFactory),
+            null,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
             CasePathParameter.IgnoresOpenCase.Instance,
