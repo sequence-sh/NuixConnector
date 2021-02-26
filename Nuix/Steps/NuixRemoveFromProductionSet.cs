@@ -37,28 +37,33 @@ public sealed class NuixRemoveFromProductionSetStepFactory
     /// <inheritdoc />
     public override string RubyFunctionText => @"
 
-    log ""Searching""
+    log ""Searching for production set '#{productionSetNameArg}'""
+    production_set = $current_case.findProductionSetByName(productionSetNameArg)
 
-    productionSet = $current_case.findProductionSetByName(productionSetNameArg)
-    if(productionSet == nil)
-        log ""Production Set Not Found""
+    if production_set.nil?
+      log(""Could not find production set '#{productionSetNameArg}'"", severity: :warn)
+      return
+    end
+
+    if searchArg.nil?
+      items_count = production_set.get_items.length
+      production_set.remove_all_items
+      log ""Removed all items: #{items_count}""
     else
-        log ""Production Set Found""
-
-        if searchArg != nil
-            items = $current_case.searchUnsorted(searchArg)
-            productionSetItems = productionSet.getItems();
-            itemsToRemove = items.to_a & productionSetItems
-            productionSet.removeItems(itemsToRemove)
-            log ""#{itemsToRemove.length} removed""
-
-        else
-            previousTotal = getItems().length
-
-            productionSet.removeAllItems()
-            log ""All items (#{previousTotal}) removed""
-        end
-    end";
+      searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
+      log(""Search options: #{searchOptions}"", severity: :trace)
+      items = $current_case.search_unsorted(searchArg, searchOptions)
+      log(""Search '#{searchArg}' returned #{items.length} items"", severity: :debug)
+      to_remove = $utilities.get_item_utility.intersection(items, production_set.get_items)
+      log(""Intersection of search results and production set is #{to_remove.length} items"", severity: :debug)
+      if to_remove.length == 0
+        log ""No items found to remove.""
+      else
+        production_set.remove_items(to_remove)
+        log ""Removed items: #{to_remove.length}""
+      end
+    end
+";
 }
 
 /// <summary>
@@ -88,6 +93,16 @@ public sealed class NuixRemoveFromProductionSet : RubyCaseScriptStepBase<Unit>
     [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream>? SearchTerm { get; set; }
+
+    /// <summary>
+    /// Pass additional search options to nuix. Options available:
+    ///   - defaultFields: field(s) to query against when not present in the search string.
+    /// Please see the nuix API for <code>Case.searchUnsorted</code> for more details.
+    /// </summary>
+    [StepProperty(3)]
+    [RubyArgument("searchOptionsArg")]
+    [DefaultValueExplanation("No search options provided")]
+    public IStep<Entity>? SearchOptions { get; set; }
 }
 
 }

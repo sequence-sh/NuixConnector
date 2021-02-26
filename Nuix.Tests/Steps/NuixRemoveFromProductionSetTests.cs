@@ -7,9 +7,9 @@ using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixRemoveFromProductionSetTests : NuixStepTestBase<NuixRemoveFromProductionSet, Unit>
+public partial class
+    NuixRemoveFromProductionSetTests : NuixStepTestBase<NuixRemoveFromProductionSet, Unit>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases
     {
@@ -37,6 +37,23 @@ public  partial class NuixRemoveFromProductionSetTests : NuixStepTestBase<NuixRe
                     SearchTerm = Constant("Charm"), ProductionSetName = Constant("fullset")
                 },
                 AssertCount(1, "production-set:fullset"),
+                new NuixAddToProductionSet
+                {
+                    SearchTerm            = Constant("\"and\""),
+                    ProductionSetName     = Constant("conjunction"),
+                    ProductionProfilePath = TestProductionProfilePath
+                },
+                new NuixRemoveFromProductionSet
+                {
+                    ProductionSetName = Constant("conjunction"),
+                    SearchTerm        = Constant("jellyfish"),
+                    SearchOptions = Constant(
+                        Core.Entity.Create(("defaultFields", new[] { "name" }))
+                    )
+                },
+                AssertCount(1, "production-set:conjunction"),
+                new NuixRemoveFromProductionSet { ProductionSetName = Constant("conjunction") },
+                AssertCount(0, "production-set:conjunction"),
                 new NuixCloseConnection(),
                 DeleteCaseFolder
             );
