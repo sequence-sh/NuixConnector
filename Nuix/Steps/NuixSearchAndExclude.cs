@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -52,16 +53,42 @@ public sealed class
     log ""Items found: #{items.length}""
 
     return unless items.length > 0
+
+    if searchTypeArg.eql? 'items'
+      all_items = items
+    else
+      iutil = $utilities.get_item_utility
+      case searchTypeArg
+        when 'descendants'
+          all_items = iutil.find_descendants(items)
+          log ""Descendants found: #{all_items.count}""
+        when 'families'
+          all_items = iutil.find_families(items)
+          log ""Family items found: #{all_items.count}""
+        when 'items_descendants'
+          all_items = iutil.find_items_and_descendants(items)
+          log ""Items and descendants found: #{all_items.count}""
+        when 'items_duplicates'
+          all_items = iutil.find_items_and_duplicates(items)
+          log ""Items and duplicates found: #{all_items.count}""
+        when 'thread_items'
+          all_items = iutil.find_thread_items(items)
+          log ""Thread items found: #{all_items.count}""
+        when 'toplevel_items'
+          all_items = iutil.find_top_level_items(items)
+          log ""Top-level items found: #{all_items.count}""
+      end
+    end
     
     unless tagArg.nil?
       items_tagged = 0
-      $utilities.get_bulk_annotater.add_tag(tagArg, items) { items_tagged += 1 }
+      $utilities.get_bulk_annotater.add_tag(tagArg, all_items) { items_tagged += 1 }
       log ""Items tagged: #{items_tagged}""
     end
 
     exclude_reason = exclusionArg.nil? ? searchArg : exclusionArg
     items_excluded = 0
-    $utilities.get_bulk_annotater.exclude(exclude_reason, items) { items_excluded += 1 }
+    $utilities.get_bulk_annotater.exclude(exclude_reason, all_items) { items_excluded += 1 }
     log ""Items excluded: #{items_excluded}""
 ";
 }
@@ -123,6 +150,17 @@ public sealed class NuixSearchAndExclude : RubyCaseScriptStepBase<Unit>
     [RubyArgument("sortArg")]
     [DefaultValueExplanation("false")]
     public IStep<bool>? SortSearch { get; set; }
+
+    /// <summary>
+    /// Defines the type of search that is done. By default only the items
+    /// responsive to the search terms are excluded, but the result set
+    /// can be augmented using this parameter.
+    /// </summary>
+    [StepProperty(6)]
+    [RubyArgument("searchTypeArg")]
+    [DefaultValueExplanation("ItemsOnly")]
+    public IStep<SearchType> SearchType { get; set; } =
+        new EnumConstant<SearchType>(Enums.SearchType.ItemsOnly);
 }
 
 }
