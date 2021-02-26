@@ -62,6 +62,11 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             IgnoreLoggedValues = true;
         }
 
+        /// <inheritdoc />
+        public override LogLevel OutputLogLevel => OutputLogLevel1;
+
+        public LogLevel OutputLogLevel1 { get; set; } = LogLevel.Debug;
+
         public IStep<Unit> Steps { get; }
 
         /// <inheritdoc />
