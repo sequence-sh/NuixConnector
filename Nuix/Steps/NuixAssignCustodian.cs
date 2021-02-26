@@ -24,7 +24,7 @@ public sealed class NuixAssignCustodianFactory : RubyScriptStepFactory<NuixAssig
         new NuixAssignCustodianFactory();
 
     /// <inheritdoc />
-    public override Version RequiredNuixVersion { get; } = new(3, 6);
+    public override Version RequiredNuixVersion { get; } = new(5, 0);
 
     /// <inheritdoc />
     public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
@@ -35,22 +35,32 @@ public sealed class NuixAssignCustodianFactory : RubyScriptStepFactory<NuixAssig
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    log ""Searching for '#{searchArg}'""
 
-    searchOptions = {}
-    items = $current_case.search(searchArg, searchOptions)
-    log ""#{items.length} found""
+    log ""Searching for items: #{searchArg}""
 
-    j = 0
+    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
+    log(""Search options: #{searchOptions}"", severity: :trace)
 
-    items.each {|i|
-        if i.getCustodian != custodianArg
-            added = i.assignCustodian(custodianArg)
-            j += 1
-        end
-    }
+    if sortArg.nil?
+      log('Using unsorted search', severity: :trace)
+      items = $current_case.search_unsorted(searchArg, searchOptions)
+    else
+      log('Using sorted search', severity: :trace)
+      items = $current_case.search(searchArg, searchOptions)
+    end
 
-    log ""#{j} items assigned to custodian #{custodianArg}""";
+    if items.length == 0
+      log 'No items found. Nothing to assign to custodian.'
+      return
+    end
+
+    log ""Items found: #{items.length}""
+
+    items_processed = 0
+    $utilities.get_bulk_annotater.assign_custodian(custodianArg, items) {|item| items_processed += 1 }
+
+    log ""#{items_processed} items assigned to custodian #{custodianArg}""
+";
 }
 
 /// <summary>
@@ -79,6 +89,30 @@ public sealed class NuixAssignCustodian : RubyCaseScriptStepBase<Unit>
     [StepProperty(2)]
     [RubyArgument("custodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
+
+    /// <summary>
+    /// Pass additional search options to nuix. For an unsorted search (default)
+    /// the only available option is defaultFields. When using <code>SortSearch=true</code>
+    /// the options are defaultFields, order, and limit.
+    /// Please see the nuix API for <code>Case.search</code>
+    /// and <code>Case.searchUnsorted</code> for more details.
+    /// </summary>
+    [RequiredVersion("Nuix", "7.0")]
+    [StepProperty(3)]
+    [RubyArgument("searchOptionsArg")]
+    [DefaultValueExplanation("No search options provided")]
+    public IStep<Entity>? SearchOptions { get; set; }
+
+    /// <summary>
+    /// By default the search is not sorted by relevance which
+    /// increases performance. Set this to true to sort the
+    /// search by relevance.
+    /// </summary>
+    [RequiredVersion("Nuix", "7.0")]
+    [StepProperty(4)]
+    [RubyArgument("sortArg")]
+    [DefaultValueExplanation("false")]
+    public IStep<bool>? SortSearch { get; set; }
 }
 
 }
