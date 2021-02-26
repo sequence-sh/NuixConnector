@@ -43,7 +43,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
     searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
     log(""Search options: #{searchOptions}"", severity: :trace)
 
-    if sortArg.nil?
+    if sortArg.nil? || !sortArg
       log('Search results will be unsorted', severity: :trace)
       items = $current_case.search_unsorted(searchArg, searchOptions)
     else

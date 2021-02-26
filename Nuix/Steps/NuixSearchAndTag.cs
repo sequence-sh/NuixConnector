@@ -40,7 +40,7 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
     searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
     log(""Search options: #{searchOptions}"", severity: :trace)
 
-    if sortArg.nil?
+    if sortArg.nil? || !sortArg
       log('Search results will be unsorted', severity: :trace)
       items = $current_case.search_unsorted(searchArg, searchOptions)
     else
@@ -50,6 +50,8 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
 
     log ""Items found: #{items.length}""
     
+    return unless items.length > 0
+
     items_processed = 0
     $utilities.get_bulk_annotater.add_tag(tagArg, items) {|item| items_processed += 1 }
 

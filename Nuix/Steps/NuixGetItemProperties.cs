@@ -43,7 +43,7 @@ public sealed class
     searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
     log(""Search options: #{searchOptions}"", severity: :trace)
 
-    if sortArg.nil?
+    if sortArg.nil? || !sortArg
       log('Using unsorted search', severity: :trace)
       items = $current_case.search_unsorted(searchArg, searchOptions)
     else
