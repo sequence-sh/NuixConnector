@@ -4,15 +4,8 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
+public partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
 {
-
-    /// <inheritdoc />
-    protected override IEnumerable<DeserializeCase> DeserializeCases
-    {
-        get { yield break; }
-    }
-
     /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases { get { yield break; } }
 }
