@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
@@ -159,9 +158,16 @@ public static class JsonConverters
         public override bool CanConvert(Type objectType) => objectType == typeof(StringStream);
     }
 
+    /// <summary>
+    /// Convert Enums to their display strings
+    /// </summary>
     public class StringEnumDisplayConverter : JsonConverter
     {
         private StringEnumDisplayConverter() { }
+
+        /// <summary>
+        /// The instance
+        /// </summary>
         public static JsonConverter Instance { get; } = new StringEnumDisplayConverter();
 
         /// <inheritdoc />

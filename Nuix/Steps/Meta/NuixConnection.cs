@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Errors;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
 using Entity = Reductech.EDR.Core.Entity;
@@ -58,6 +57,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
     /// </summary>
     public async Task SendDoneCommand(
         IStateMonad state,
+        IStep? step,
         CancellationToken cancellation)
     {
         if (IsDisposed)
@@ -71,14 +71,15 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
         await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
 
         // Log the ack
-        await GetOutputTyped<Unit>(state.Logger, cancellation, true);
+        await GetOutputTyped<Unit>(state, step, cancellation, true);
     }
 
     /// <summary>
     /// Run a nuix function on this connection
     /// </summary>
     public async Task<Result<T, IErrorBuilder>> RunFunctionAsync<T>(
-        ILogger logger,
+        IStateMonad stateMonad,
+        IStep? step,
         RubyFunction<T> function,
         IReadOnlyDictionary<RubyFunctionParameter, object> parameters,
         CasePathParameter casePathParameter,
@@ -214,7 +215,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                 await ExternalProcess.InputChannel.WriteAsync(key, cancellationToken);
             }
 
-            var result = await GetOutputTyped<T>(logger, cancellationToken);
+            var result = await GetOutputTyped<T>(stateMonad, step, cancellationToken);
 
             return result;
         }
@@ -229,7 +230,8 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
     }
 
     private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(
-        ILogger logger,
+        IStateMonad stateMonad,
+        IStep? callingStep,
         CancellationToken cancellationToken,
         bool returnOnLog = false)
     {
@@ -324,28 +326,9 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                 if (severity.IsFailure)
                     return severity.ConvertFailure<T>();
 
-                switch (severity.Value) //TODO replace with enumerated log messages
-                {
-                    case LogSeverity.Trace:
-                        logger.LogTrace(connectionOutput.Log.Message);
-                        break;
-                    case LogSeverity.Information:
-                        logger.LogInformation(connectionOutput.Log.Message);
-                        break;
-                    case LogSeverity.Warning:
-                        logger.LogWarning(connectionOutput.Log.Message);
-                        break;
-                    case LogSeverity.Error:
-                        logger.LogError(connectionOutput.Log.Message);
-                        break;
-                    case LogSeverity.Critical:
-                        logger.LogCritical(connectionOutput.Log.Message);
-                        break;
-                    case LogSeverity.Debug:
-                        logger.LogDebug(connectionOutput.Log.Message);
-                        break;
-                    default: throw new InvalidEnumArgumentException();
-                }
+                var logLevel = severity.Value.ToLogLevel();
+
+                stateMonad.Log(logLevel, connectionOutput.Log.Message, callingStep);
 
                 if (returnOnLog)
                     return new Result<T, IErrorBuilder>();
@@ -402,7 +385,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
     {
         if (!IsDisposed)
         {
-            await SendDoneCommand(state, CancellationToken.None);
+            await SendDoneCommand(state, null, CancellationToken.None);
             ExternalProcess.Dispose();
             IsDisposed = true;
         }

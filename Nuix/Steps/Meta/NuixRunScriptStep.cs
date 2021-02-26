@@ -97,7 +97,8 @@ public class NuixRunScript : CompoundStep<StringStream>
         );
 
         var runResult = await nuixConnection.Value.RunFunctionAsync(
-                stateMonad.Logger,
+                stateMonad,
+                this,
                 function,
                 parameterDict,
                 CasePathParameter.IgnoresOpenCase.Instance,

@@ -65,7 +65,8 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
             return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));
 
         var runResult = await nuixConnection.Value.RunFunctionAsync(
-            stateMonad.Logger,
+            stateMonad,
+            this,
             RubyScriptStepFactory.RubyFunction,
             methodParameters.Value,
             CasePathParameter,
@@ -84,7 +85,8 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
                 return nuixConnection.ConvertFailure<T>().MapError(x => x.WithLocation(this));
 
             runResult = await nuixConnection.Value.RunFunctionAsync(
-                stateMonad.Logger,
+                stateMonad,
+                this,
                 RubyScriptStepFactory.RubyFunction,
                 methodParameters.Value,
                 CasePathParameter,
