@@ -34,8 +34,7 @@ public partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
                                     SearchTerm = Constant("jellyfish"),
                                     SearchOptions = Constant(
                                         Core.Entity.Create(
-                                            ("defaultFields",
-                                             new[] { "name" })
+                                            ("defaultFields", new[] { "name" })
                                         )
                                     )
                                 }

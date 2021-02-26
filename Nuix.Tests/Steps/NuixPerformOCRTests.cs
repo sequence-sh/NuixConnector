@@ -7,9 +7,8 @@ using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit>
+public partial class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases
     {

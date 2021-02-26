@@ -5,9 +5,9 @@ using Reductech.EDR.Core.Util;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixAnnotateDocumentIdListTests : NuixStepTestBase<NuixAnnotateDocumentIdList, Unit>
+public partial class
+    NuixAnnotateDocumentIdListTests : NuixStepTestBase<NuixAnnotateDocumentIdList, Unit>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases
     {

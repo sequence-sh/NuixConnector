@@ -62,23 +62,22 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
     itemSet = $current_case.findItemSetByName(itemSetNameArg)
 
     if itemSet.nil?
-        log ""Item set '#{itemSetNameArg}' not found. Creating.""
-        itemSetOptions = {}
-        itemSetOptions[:deduplication] = deduplicationArg unless deduplicationArg.nil?
-        itemSetOptions[:description] = descriptionArg unless descriptionArg.nil?
-        itemSetOptions[:deduplicateBy] = deduplicateByArg unless deduplicateByArg.nil?
-        itemSetOptions[:custodianRanking] = custodianRankingArg.split(',') unless custodianRankingArg.nil?
-        log(""Item set options: #{itemSetOptions}"", severity: :trace)
-        itemSet = $current_case.create_item_set(itemSetNameArg, itemSetOptions)
-        log ""Successfully created '#{itemSetNameArg}' item set.""
+      log ""Item set '#{itemSetNameArg}' not found. Creating.""
+      itemSetOptions = {}
+      itemSetOptions[:deduplication] = deduplicationArg unless deduplicationArg.nil?
+      itemSetOptions[:description] = descriptionArg unless descriptionArg.nil?
+      itemSetOptions[:deduplicateBy] = deduplicateByArg unless deduplicateByArg.nil?
+      itemSetOptions[:custodianRanking] = custodianRankingArg.split(',') unless custodianRankingArg.nil?
+      log(""Item set options: #{itemSetOptions}"", severity: :trace)
+      itemSet = $current_case.create_item_set(itemSetNameArg, itemSetOptions)
+      log ""Successfully created '#{itemSetNameArg}' item set.""
     else
-        log ""Existing item set '#{itemSetNameArg}' found""
+      log ""Existing item set '#{itemSetNameArg}' found""
     end
 
     log ""Adding #{items.length} items to item set '#{itemSetNameArg}'""
     itemSet.addItems(items)
     log('Finished adding items', severity: :debug)
-
 ";
 }
 

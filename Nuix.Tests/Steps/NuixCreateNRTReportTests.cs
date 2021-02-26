@@ -9,9 +9,8 @@ using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Unit>
+public partial class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Unit>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases
     {
