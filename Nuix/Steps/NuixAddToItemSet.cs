@@ -58,7 +58,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
 
     log ""Items found: #{items.length}""
 
-    log(""Searching for item set: #{itemSetNameArg}"", severity: :debug)
+    log(""Searching for item set #{itemSetNameArg}"", severity: :debug)
     itemSet = $current_case.findItemSetByName(itemSetNameArg)
 
     if itemSet.nil?
@@ -70,7 +70,7 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
       itemSetOptions[:custodianRanking] = custodianRankingArg.split(',') unless custodianRankingArg.nil?
       log(""Item set options: #{itemSetOptions}"", severity: :trace)
       itemSet = $current_case.create_item_set(itemSetNameArg, itemSetOptions)
-      log ""Successfully created '#{itemSetNameArg}' item set.""
+      log ""Successfully created item set '#{itemSetNameArg}'""
     else
       log ""Existing item set '#{itemSetNameArg}' found""
     end
