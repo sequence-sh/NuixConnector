@@ -105,7 +105,10 @@ public static class Constants
         Path.Combine(Directory.GetCurrentDirectory(), "AllData", "Passwords.txt")
     );
 
-    //public static readonly string DefaultOCRProfilePath = Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultOCRProfile.xml");
+    public static readonly IStep<StringStream> DefaultOCRProfilePath = Constant(
+        Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultOCRProfile.xml")
+    );
+
     public static readonly IStep<StringStream> DefaultProcessingProfilePath = Constant(
         Path.Combine(Directory.GetCurrentDirectory(), "AllData", "DefaultProcessingProfile.xml")
     );

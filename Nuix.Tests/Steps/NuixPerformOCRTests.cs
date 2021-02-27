@@ -21,16 +21,16 @@ public partial class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit
         get
         {
             yield return new NuixIntegrationTestCase(
-                "Perform OCR",
+                "Perform OCR using Default profile",
                 DeleteCaseFolder,
                 CreateCase,
-                AssertCount(0, "sheep"),
                 new NuixAddItem
                 {
                     Custodian  = Constant("Mark"),
                     Paths      = PoemTextImagePaths,
                     FolderName = Constant("New Folder")
                 },
+                AssertCount(0, "sheep"),
                 new NuixPerformOCR { SearchTerm = Constant("*.png") },
                 AssertCount(1, "sheep"),
                 new NuixCloseConnection(),
@@ -41,18 +41,43 @@ public partial class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit
                 "Perform OCR with named profile",
                 DeleteCaseFolder,
                 CreateCase,
-                AssertCount(0, "sheep"),
                 new NuixAddItem
                 {
                     Custodian  = Constant("Mark"),
                     Paths      = PoemTextImagePaths,
                     FolderName = Constant("New Folder")
                 },
+                AssertCount(0, "sheep OR ghost"),
                 new NuixPerformOCR
                 {
-                    SearchTerm = Constant("*.png"), OCRProfileName = Constant("Default")
+                    SearchTerm     = Constant("*.png"),
+                    OCRProfileName = Constant("Default"),
+                    SortSearch     = Constant(true),
+                    SearchOptions  = Constant(Core.Entity.Create(("limit", 1)))
                 },
-                AssertCount(1, "sheep"),
+                AssertCount(1, "sheep OR ghost"),
+                new NuixCloseConnection(),
+                DeleteCaseFolder
+            );
+
+            yield return new NuixIntegrationTestCase(
+                "Perform OCR with profile from path",
+                DeleteCaseFolder,
+                CreateCase,
+                new NuixAddItem
+                {
+                    Custodian  = Constant("Mark"),
+                    Paths      = PoemTextImagePaths,
+                    FolderName = Constant("New Folder")
+                },
+                AssertCount(0, "sheep OR ghost"),
+                new NuixPerformOCR
+                {
+                    SearchTerm     = Constant("*.png"),
+                    OCRProfilePath = DefaultOCRProfilePath,
+                    SortSearch     = Constant(false)
+                },
+                AssertCount(2, "sheep OR ghost"),
                 new NuixCloseConnection(),
                 DeleteCaseFolder
             );
