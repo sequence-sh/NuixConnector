@@ -8,44 +8,52 @@ using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixGetItemPropertiesTests : NuixStepTestBase<NuixGetItemProperties, StringStream>
+public partial class
+    NuixGetItemPropertiesTests : NuixStepTestBase<NuixGetItemProperties, StringStream>
 {
-
-    /// <inheritdoc />
-    protected override IEnumerable<DeserializeCase> DeserializeCases
-    {
-        get { yield break; }
-    }
-
     /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
     {
         get
         {
             yield return new NuixIntegrationTestCase(
-                "Get Item Properties",
+                "Get item properties",
                 DeleteCaseFolder,
-                DeleteOutputFolder,
-                CreateOutputFolder,
                 CreateCase,
                 AddData,
-                new FileWrite
+                new AssertTrue
                 {
-                    Path =
-                        new PathCombine { Paths = Array(OutputFolder, "ItemProperties.txt") },
-                    Stream = new NuixGetItemProperties
+                    Boolean = new StringContains
                     {
-                        PropertyRegex = Constant("(.+)"), SearchTerm = Constant("*")
+                        IgnoreCase = Constant(true),
+                        Substring =
+                            Constant("Character Set	UTF-8	New Folder/data/Theme in Yellow.txt"),
+                        String = new NuixGetItemProperties
+                        {
+                            PropertyRegex = Constant("(.+)"), SearchTerm = Constant("*")
+                        }
                     }
                 },
-                AssertFileContains(
-                    OutputFolder,
-                    "ItemProperties.txt",
-                    "Character Set	UTF-8	New Folder/data/Jellyfish.txt"
-                ),
+                new AssertTrue
+                {
+                    Boolean = new StringContains
+                    {
+                        Substring =
+                            Constant("Name	Jellyfish.txt	New Folder/data/Jellyfish.txt"),
+                        String = new NuixGetItemProperties
+                        {
+                            PropertyRegex = Constant("(.+)"),
+                            ValueRegex    = Constant("(.+fish.+)"),
+                            SearchTerm    = Constant("jellyfish"),
+                            SortSearch    = Constant(true),
+                            SearchOptions = Constant(
+                                Entity.Create(("defaultFields", new[] { "name" }))
+                            )
+                        }
+                    }
+                },
                 new NuixCloseConnection(),
-                DeleteCaseFolder,
-                DeleteOutputFolder
+                DeleteCaseFolder
             );
         }
     }

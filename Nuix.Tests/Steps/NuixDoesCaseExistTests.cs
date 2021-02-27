@@ -4,9 +4,8 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixDoesCaseExistTests : NuixStepTestBase<NuixDoesCaseExist, bool>
+public partial class NuixDoesCaseExistTests : NuixStepTestBase<NuixDoesCaseExist, bool>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases
     {

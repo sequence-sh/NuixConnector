@@ -7,15 +7,8 @@ using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixAssignCustodianTests : NuixStepTestBase<NuixAssignCustodian, Unit>
+public partial class NuixAssignCustodianTests : NuixStepTestBase<NuixAssignCustodian, Unit>
 {
-
-    /// <inheritdoc />
-    protected override IEnumerable<DeserializeCase> DeserializeCases
-    {
-        get { yield break; }
-    }
-
     /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
     {
@@ -29,9 +22,17 @@ public  partial class NuixAssignCustodianTests : NuixStepTestBase<NuixAssignCust
                 AssertCount(0, "custodian:\"Jason\""),
                 new NuixAssignCustodian()
                 {
-                    Custodian = Constant("Jason"), SearchTerm = Constant("*")
+                    Custodian = Constant("Jason"), SearchTerm = Constant("charm")
                 },
-                AssertCount(4, "custodian:\"Jason\""),
+                AssertCount(1, "custodian:\"Jason\""),
+                new NuixAssignCustodian()
+                {
+                    Custodian     = Constant("John"),
+                    SearchTerm    = Constant("*.txt"),
+                    SortSearch    = Constant(true),
+                    SearchOptions = Constant(Core.Entity.Create(("limit", 1)))
+                },
+                AssertCount(1, "custodian:\"John\""),
                 new NuixCloseConnection(),
                 DeleteCaseFolder
             );

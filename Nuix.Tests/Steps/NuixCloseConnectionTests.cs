@@ -6,9 +6,8 @@ using Reductech.EDR.Core.Util;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection, Unit>
+public partial class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection, Unit>
 {
-
     protected override IEnumerable<StepCase> StepCases
     {
         get

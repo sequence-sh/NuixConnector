@@ -56,7 +56,8 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                                 {
                                     nameof(NuixAddItem.Paths),
                                     new List<string> { DataPathString }
-                                }
+                                },
+                                { nameof(NuixAddItem.ProgressInterval), 5000 }
                             }
                         },
                         new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
@@ -146,6 +147,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                                         nameof(NuixAddItem.Paths),
                                         new List<string> { dataPath }
                                     },
+                                    { nameof(NuixAddItem.ProgressInterval), 5000 }
                                 }
                             },
                             new ConnectionOutput

@@ -70,8 +70,8 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
 
         await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
 
-        // Log the ack
-        await GetOutputTyped<Unit>(state, step, cancellation, true);
+        // Log any remaining messages
+        await GetOutputTyped<string>(state, step, cancellation);
     }
 
     /// <summary>

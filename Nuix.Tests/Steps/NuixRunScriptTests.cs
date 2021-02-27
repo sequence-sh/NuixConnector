@@ -163,11 +163,11 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                 Parameters = Constant(Entity.Create(("param1", "ABC"), ("param2", "DEF")))
             },
             "DEF",
-            "Starting",
+            "NuixConnectorScript starting",
             "ABC",
             "{\"Foo\":\"a\"}",
             "{\"Foo\":\"b\"}",
-            "Finished"
+            "NuixConnectorScript finished"
         ).WithSettings(IntegrationTestSettings);
 
         await stepCase.RunAsync(TestOutputHelper);
@@ -187,9 +187,9 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                 Parameters = Constant(Entity.Create(("param1", "ABC"), ("param2", "DEF")))
             },
             "DEF",
-            "Starting",
+            "NuixConnectorScript starting",
             "ABC",
-            "Finished"
+            "NuixConnectorScript finished"
         ).WithSettings(IntegrationTestSettings);
 
         await stepCase.RunAsync(TestOutputHelper);

@@ -23,7 +23,7 @@ public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountI
         new NuixCountItemsStepFactory();
 
     /// <inheritdoc />
-    public override Version RequiredNuixVersion { get; } = new(3, 4);
+    public override Version RequiredNuixVersion { get; } = new(7, 0);
 
     /// <inheritdoc />
     public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
@@ -34,10 +34,18 @@ public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountI
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    searchOptions = {}
+
+    log ""Searching for items: #{searchArg}""
+
+    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
+    log(""Search options: #{searchOptions}"", severity: :trace)
+
     count = $current_case.count(searchArg, searchOptions)
-    log ""#{count} found matching '#{searchArg}'""
-    return count";
+
+    log ""Items found: #{count}""
+
+    return count
+";
 }
 
 /// <summary>
@@ -58,6 +66,16 @@ public sealed class NuixCountItems : RubyCaseScriptStepBase<int>
     [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = null!;
+
+    /// <summary>
+    /// Pass additional search options to nuix. Options available:
+    ///   - defaultFields: field(s) to query against when not present in the search string.
+    /// Please see the nuix API for <code>Case.searchUnsorted</code> for more details.
+    /// </summary>
+    [StepProperty(2)]
+    [RubyArgument("searchOptionsArg")]
+    [DefaultValueExplanation("No search options provided")]
+    public IStep<Entity>? SearchOptions { get; set; }
 }
 
 }

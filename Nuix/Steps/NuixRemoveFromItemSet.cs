@@ -13,53 +13,56 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 /// <summary>
 /// Removes particular items from a Nuix production set.
 /// </summary>
-public sealed class NuixRemoveFromProductionSetStepFactory
-    : RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit>
+public sealed class
+    NuixRemoveFromItemSetStepFactory : RubyScriptStepFactory<NuixRemoveFromItemSet, Unit>
 {
-    private NuixRemoveFromProductionSetStepFactory() { }
+    private NuixRemoveFromItemSetStepFactory() { }
 
     /// <summary>
     /// The instance.
     /// </summary>
-    public static RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit> Instance { get; } =
-        new NuixRemoveFromProductionSetStepFactory();
+    public static RubyScriptStepFactory<NuixRemoveFromItemSet, Unit> Instance { get; } =
+        new NuixRemoveFromItemSetStepFactory();
 
     /// <inheritdoc />
-    public override Version RequiredNuixVersion { get; } = new(4, 2);
+    public override Version RequiredNuixVersion { get; } = new(7, 0);
 
     /// <inheritdoc />
     public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
-        new List<NuixFeature>() { NuixFeature.PRODUCTION_SET };
+        new List<NuixFeature>() { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
-    public override string FunctionName => "RemoveFromProductionSet";
+    public override string FunctionName => "RemoveFromItemSet";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
 
-    log ""Searching for production set '#{productionSetNameArg}'""
-    production_set = $current_case.findProductionSetByName(productionSetNameArg)
+    log ""Searching for item set '#{itemSetNameArg}'""
+    item_set = $current_case.findItemSetByName(itemSetNameArg)
 
-    if production_set.nil?
-      log(""Could not find production set '#{productionSetNameArg}'"", severity: :warn)
+    if item_set.nil?
+      log(""Could not find item set '#{itemSetNameArg}'"", severity: :warn)
       return
     end
 
+    remove_opts = { 'removeDuplicates' => removeDuplicatesArg }
+
     if searchArg.nil?
-      items_count = production_set.get_items.length
-      production_set.remove_all_items
+      all_items = item_set.get_items
+      items_count = all_items.length
+      item_set.remove_items(all_items, remove_opts)
       log ""Removed all items: #{items_count}""
     else
       searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
       log(""Search options: #{searchOptions}"", severity: :trace)
       items = $current_case.search_unsorted(searchArg, searchOptions)
       log(""Search '#{searchArg}' returned #{items.length} items"", severity: :debug)
-      to_remove = $utilities.get_item_utility.intersection(items, production_set.get_items)
-      log(""Intersection of search results and production set is #{to_remove.length} items"", severity: :debug)
+      to_remove = $utilities.get_item_utility.intersection(items, item_set.get_items)
+      log(""Intersection of search results and item set is #{to_remove.length} items"", severity: :debug)
       if to_remove.length == 0
         log ""No items found to remove.""
       else
-        production_set.remove_items(to_remove)
+        item_set.remove_items(to_remove, remove_opts)
         log ""Removed items: #{to_remove.length}""
       end
     end
@@ -67,30 +70,30 @@ public sealed class NuixRemoveFromProductionSetStepFactory
 }
 
 /// <summary>
-/// Removes particular items from a Nuix production set.
+/// Removes particular items from a Nuix item set.
 /// </summary>
-public sealed class NuixRemoveFromProductionSet : RubyCaseScriptStepBase<Unit>
+public sealed class NuixRemoveFromItemSet : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
-        NuixRemoveFromProductionSetStepFactory.Instance;
+        NuixRemoveFromItemSetStepFactory.Instance;
 
     /// <summary>
-    /// The production set to remove results from.
+    /// The name of the item set to remove results from.
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("productionSetNameArg")]
-    [Alias("ProductionSet")]
-    public IStep<StringStream> ProductionSetName { get; set; } = null!;
+    [RubyArgument("itemSetNameArg")]
+    [Alias("ItemSet")]
+    public IStep<StringStream> ItemSetName { get; set; } = null!;
 
     /// <summary>
     /// The search term to use for choosing which items to remove.
     /// </summary>
     [StepProperty(2)]
+    [RubyArgument("searchArg")]
     [DefaultValueExplanation("All items will be removed.")]
     [Example("Tag:sushi")]
-    [RubyArgument("searchArg")]
     [Alias("Search")]
     public IStep<StringStream>? SearchTerm { get; set; }
 
@@ -103,6 +106,16 @@ public sealed class NuixRemoveFromProductionSet : RubyCaseScriptStepBase<Unit>
     [RubyArgument("searchOptionsArg")]
     [DefaultValueExplanation("No search options provided")]
     public IStep<Entity>? SearchOptions { get; set; }
+
+    /// <summary>
+    /// If true (default), duplicates of (top-level and above-top-level) originals are
+    /// removed. When false, only the found items are removed causing new originals
+    /// to be chosen from the remaining duplicates.
+    /// </summary>
+    [StepProperty(4)]
+    [RubyArgument("removeDuplicatesArg")]
+    [DefaultValueExplanation("true")]
+    public IStep<bool> RemoveDuplicates { get; set; } = new BoolConstant(true);
 }
 
 }

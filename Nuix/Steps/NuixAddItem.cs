@@ -38,93 +38,109 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
 
-    ds = args[""datastream""]
+    ds = args['datastream']
 
     processor = $current_case.create_processor
 
     #Read special mime type settings from data stream
     if ds != nil
+      log 'Mime Type Data stream reading started'
+      mimeTypes = []
 
-        log ""Mime Type Data stream reading started""
-        mimeTypes = []
+      while !ds.closed? or !ds.empty?
+        data = ds.pop
+        break if ds.closed? and data.nil?
+        mimeTypes << data
+      end
+      log ""Mime Type Data stream reading finished (#{mimeTypes.count} elements)""
 
-        while !ds.closed? or !ds.empty?
-            data = ds.pop
-            break if ds.closed? and data.nil?
-            mimeTypes << data
+      version_mimes = []
+      $utilities.getItemTypeUtility().getAllTypes().each do |mime|
+        version_mimes << mime.to_s
+      end
+
+      mimeTypes.each do |mime_type|
+        mimeTypeString = mime_type['mimeType'].to_s
+        if (version_mimes.include?(mimeTypeString) == true)
+          mime_type.delete('mimeType') #remove this value from the hash as it isn't part of the settings
+          nuix_processor.setMimeTypeProcessingSettings(mimeTypeString, mime_type)
         end
-        log ""Mime Type Data stream reading finished (#{mimeTypes.count} elements)""
-
-
-        version_mimes = []
-        $utilities.getItemTypeUtility().getAllTypes().each do |mime|
-            version_mimes << mime.to_s
-        end
-
-
-        mimeTypes.each do |mime_type|
-            mimeTypeString = mime_type[""mimeType""].to_s
-            if (version_mimes.include?(mimeTypeString) == true)
-                mime_type.delete(""mimeType"") #remove this value from the hash as it isn't part of the settings
-                nuix_processor.setMimeTypeProcessingSettings(mimeTypeString, mime_type)
-            end
-        end
+      end
     end
-
 
     #This only works in 7.6 or later
     if processingProfileNameArg != nil
-        processor.setProcessingProfile(processingProfileNameArg)
+      processor.setProcessingProfile(processingProfileNameArg)
     elsif processingProfilePathArg != nil
-        profileBuilder = $utilities.getProcessingProfileBuilder()
-        profileBuilder.load(processingProfilePathArg)
-        profile = profileBuilder.build()
+      profileBuilder = $utilities.getProcessingProfileBuilder()
+      profileBuilder.load(processingProfilePathArg)
+      profile = profileBuilder.build()
 
-        if profile == nil
-            raise ""Could not find processing profile at #{processingProfilePathArg}""
-            exit
-        end
+      if profile == nil
+        raise ""Could not find processing profile at #{processingProfilePathArg}""
+        exit
+      end
 
-        processor.setProcessingProfileObject(profile)
+      processor.setProcessingProfileObject(profile)
     end
 
     if processingSettingsArg != nil
-        processor.setProcessingSettings(processingSettingsArg)
+      processor.setProcessingSettings(processingSettingsArg)
     end
 
     if parallelProcessingSettingsArg != nil
-        processor.setParallelProcessingSettings(parallelProcessingSettingsArg)
+      processor.setParallelProcessingSettings(parallelProcessingSettingsArg)
     end
-
 
     #This only works in 7.2 or later
     if passwordFilePathArg != nil
-        lines = File.read(passwordFilePathArg, mode: 'r:bom|utf-8').split
-
-        passwords = lines.map {|p| p.chars.to_java(:char)}
-        listName = 'MyPasswordList'
-
-        processor.addPasswordList(listName, passwords)
-        processor.setPasswordDiscoverySettings({'mode' => ""word-list"", 'word-list' => listName })
+      lines = File.read(passwordFilePathArg, mode: 'r:bom|utf-8').split
+      passwords = lines.map {|p| p.chars.to_java(:char)}
+      listName = 'MyPasswordList'
+      processor.addPasswordList(listName, passwords)
+      processor.setPasswordDiscoverySettings({'mode' => 'word-list', 'word-list' => listName })
     end
 
+    log ""Creating new evidence container '#{folderNameArg}'""
 
     folder = processor.new_evidence_container(folderNameArg)
 
+    log(""Container description: #{folderDescriptionArg}"", severity: :trace)
+    log(""Container custodian: '#{folderCustodianArg}'"", severity: :trace)
+    
     folder.description = folderDescriptionArg if folderDescriptionArg != nil
     folder.initial_custodian = folderCustodianArg
 
-    filePathsArgs.each do |path|
-        folder.add_file(path)
-        log ""Added Evidence from Path: #{path} to Container: #{folderNameArg}""
+    unless customMetadataArg.nil?
+      log(""Adding custom metadata to container #{folderNameArg}"", severity: :debug)
+      folder.set_custom_metadata(customMetadataArg)
     end
 
+    filePathsArgs.each do |path|
+      folder.add_file(path)
+      log ""Adding to Container: #{folderNameArg} Path: #{path}""
+    end
 
     folder.save
 
-    log 'Adding items'
+	processor.when_cleaning_up do
+      log 'Processor cleaning up'
+	end
+
+    semaphore = Mutex.new
+    item_count = 0
+
+    processor.when_item_processed do |item|
+	  semaphore.synchronize do
+		item_count += 1
+        log(""Processor items processed: #{item_count}"") if item_count % progressIntervalArg == 0
+      end
+    end
+
+    log 'Processor starting'
     processor.process
-    log 'Items added'";
+    log ""Processor finished. Total items processed: #{item_count}""
+";
 }
 
 /// <summary>
@@ -236,6 +252,22 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     [RubyArgument("mimeTypeDataStreamArg")]
     [DefaultValueExplanation("Use default settings for all MIME types")]
     public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
+
+    /// <summary>
+    /// The number of items at which the Nuix processor logs a progress message.
+    /// </summary>
+    [StepProperty(11)]
+    [RubyArgument("progressIntervalArg")]
+    [DefaultValueExplanation("Every 5000 items")]
+    public IStep<int> ProgressInterval { get; set; } = new IntConstant(5000);
+
+    /// <summary>
+    /// Sets additional metadata on the folder/container.
+    /// </summary>
+    [StepProperty(12)]
+    [RubyArgument("customMetadataArg")]
+    [DefaultValueExplanation("No custom metadata will be added")]
+    public IStep<Core.Entity>? CustomMetadata { get; set; }
 
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)

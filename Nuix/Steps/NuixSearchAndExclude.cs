@@ -14,15 +14,16 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 /// <summary>
 /// Searches a NUIX case with a particular search string and tags all files it finds.
 /// </summary>
-public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSearchAndTag, Unit>
+public sealed class
+    NuixSearchAndExcludeStepFactory : RubyScriptStepFactory<NuixSearchAndExclude, Unit>
 {
-    private NuixSearchAndTagStepFactory() { }
+    private NuixSearchAndExcludeStepFactory() { }
 
     /// <summary>
     /// The instance.
     /// </summary>
-    public static RubyScriptStepFactory<NuixSearchAndTag, Unit> Instance { get; } =
-        new NuixSearchAndTagStepFactory();
+    public static RubyScriptStepFactory<NuixSearchAndExclude, Unit> Instance { get; } =
+        new NuixSearchAndExcludeStepFactory();
 
     /// <inheritdoc />
     public override Version RequiredNuixVersion { get; } = new(7, 0);
@@ -32,7 +33,7 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
         = new List<NuixFeature> { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
-    public override string FunctionName => "SearchAndTag";
+    public override string FunctionName => "SearchAndExclude";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
@@ -50,7 +51,7 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
     end
 
     log ""Items found: #{items.length}""
-    
+
     return unless items.length > 0
 
     if searchTypeArg.eql? 'items'
@@ -78,22 +79,28 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
           log ""Top-level items found: #{all_items.count}""
       end
     end
+    
+    unless tagArg.nil?
+      items_tagged = 0
+      $utilities.get_bulk_annotater.add_tag(tagArg, all_items) { items_tagged += 1 }
+      log ""Items tagged: #{items_tagged}""
+    end
 
-    items_processed = 0
-    $utilities.get_bulk_annotater.add_tag(tagArg, all_items) { items_processed += 1 }
-
-    log ""Items tagged: #{items_processed}""
+    exclude_reason = exclusionArg.nil? ? searchArg : exclusionArg
+    items_excluded = 0
+    $utilities.get_bulk_annotater.exclude(exclude_reason, all_items) { items_excluded += 1 }
+    log ""Items excluded: #{items_excluded}""
 ";
 }
 
 /// <summary>
 /// Searches a NUIX case with a particular search string and tags all files it finds.
 /// </summary>
-public sealed class NuixSearchAndTag : RubyCaseScriptStepBase<Unit>
+public sealed class NuixSearchAndExclude : RubyCaseScriptStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
-        NuixSearchAndTagStepFactory.Instance;
+        NuixSearchAndExcludeStepFactory.Instance;
 
     /// <summary>
     /// The term to search for.
@@ -106,12 +113,21 @@ public sealed class NuixSearchAndTag : RubyCaseScriptStepBase<Unit>
     public IStep<StringStream> SearchTerm { get; set; } = null!;
 
     /// <summary>
-    /// The tag to assign to found results.
+    /// The exclusion reason
     /// </summary>
-    [Required]
     [StepProperty(2)]
+    [RubyArgument("exclusionArg")]
+    [DefaultValueExplanation("The SearchTerm is used as the exclusion reason")]
+    [Alias("Exclusion")]
+    public IStep<StringStream>? ExclusionReason { get; set; }
+
+    /// <summary>
+    /// The tag to assign to the excluded items
+    /// </summary>
+    [StepProperty(3)]
     [RubyArgument("tagArg")]
-    public IStep<StringStream> Tag { get; set; } = null!;
+    [DefaultValueExplanation("Items will not be tagged")]
+    public IStep<StringStream>? Tag { get; set; }
 
     /// <summary>
     /// Pass additional search options to nuix. For an unsorted search (default)
@@ -120,7 +136,7 @@ public sealed class NuixSearchAndTag : RubyCaseScriptStepBase<Unit>
     /// Please see the nuix API for <code>Case.search</code>
     /// and <code>Case.searchUnsorted</code> for more details.
     /// </summary>
-    [StepProperty(3)]
+    [StepProperty(4)]
     [RubyArgument("searchOptionsArg")]
     [DefaultValueExplanation("No search options provided")]
     public IStep<Entity>? SearchOptions { get; set; }
@@ -130,17 +146,17 @@ public sealed class NuixSearchAndTag : RubyCaseScriptStepBase<Unit>
     /// increases performance. Set this to true to sort the
     /// search by relevance.
     /// </summary>
-    [StepProperty(4)]
+    [StepProperty(5)]
     [RubyArgument("sortArg")]
     [DefaultValueExplanation("false")]
     public IStep<bool>? SortSearch { get; set; }
 
     /// <summary>
     /// Defines the type of search that is done. By default only the items
-    /// responsive to the search terms are tagged, but the result set
+    /// responsive to the search terms are excluded, but the result set
     /// can be augmented using this parameter.
     /// </summary>
-    [StepProperty(5)]
+    [StepProperty(6)]
     [RubyArgument("searchTypeArg")]
     [DefaultValueExplanation("ItemsOnly")]
     public IStep<SearchType> SearchType { get; set; } =

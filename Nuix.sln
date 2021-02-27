@@ -17,35 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		coverlet.runsettings = coverlet.runsettings
 		documentation.md = documentation.md
 		LICENSE = LICENSE
+		Nuix.sln.DotSettings = Nuix.sln.DotSettings
 		README.md = README.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{2F057313-34E3-47F6-A7D6-E68F23D13FCB}"
-	ProjectSection(SolutionItems) = preProject
-		Scripts\AddConcordanceToCase.rb = Scripts\AddConcordanceToCase.rb
-		Scripts\AddToCase.rb = Scripts\AddToCase.rb
-		Scripts\AddToItemSet.rb = Scripts\AddToItemSet.rb
-		Scripts\AddToProductionSet.rb = Scripts\AddToProductionSet.rb
-		Scripts\AnnotateDocumentIds.rb = Scripts\AnnotateDocumentIds.rb
-		Scripts\AssignCustodian.rb = Scripts\AssignCustodian.rb
-		Scripts\CountItems.rb = Scripts\CountItems.rb
-		Scripts\CreateCase.rb = Scripts\CreateCase.rb
-		Scripts\CreateIrregularItemsReport.rb = Scripts\CreateIrregularItemsReport.rb
-		Scripts\CreateNRTReport.rb = Scripts\CreateNRTReport.rb
-		Scripts\CreateReport.rb = Scripts\CreateReport.rb
-		Scripts\CreateTermList.rb = Scripts\CreateTermList.rb
-		Scripts\DoesCaseExist.rb = Scripts\DoesCaseExist.rb
-		Scripts\ExportConcordance.rb = Scripts\ExportConcordance.rb
-		Scripts\ExtractEntities.rb = Scripts\ExtractEntities.rb
-		Scripts\GeneratePrintPreviews.rb = Scripts\GeneratePrintPreviews.rb
-		Scripts\GetParticularProperties.rb = Scripts\GetParticularProperties.rb
-		Scripts\GetPrintPreviewState.rb = Scripts\GetPrintPreviewState.rb
-		Scripts\ImportDocumentIds.rb = Scripts\ImportDocumentIds.rb
-		Scripts\MigrateCase.rb = Scripts\MigrateCase.rb
-		Scripts\RemoveFromProductionSet.rb = Scripts\RemoveFromProductionSet.rb
-		Scripts\RenumberProductionSet.rb = Scripts\RenumberProductionSet.rb
-		Scripts\RunOCR.rb = Scripts\RunOCR.rb
-		Scripts\SearchAndTag.rb = Scripts\SearchAndTag.rb
 	EndProjectSection
 EndProject
 Global
@@ -65,9 +38,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2F057313-34E3-47F6-A7D6-E68F23D13FCB} = {74B1B4BD-D3BB-4210-99C1-7E577ED3E18C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9E6A88F-DECD-4E36-8006-D0AE8496EAC3}

@@ -26,7 +26,7 @@ public class RequirementsTest
                  new List<NuixFeature>()
              )
             ),
-            ("Requirement 'Nuix Version 5.0 Features: ANALYSIS' not met.",
+            ("Requirement 'Nuix Version 7.0 Features: ANALYSIS' not met.",
              NuixSettings.CreateSettings(
                  FakeConstantPath,
                  new Version(8, 0),

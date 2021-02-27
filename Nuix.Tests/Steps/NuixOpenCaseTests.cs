@@ -6,9 +6,8 @@ using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public  partial class NuixOpenCaseTests : NuixStepTestBase<NuixOpenCase, Unit>
+public partial class NuixOpenCaseTests : NuixStepTestBase<NuixOpenCase, Unit>
 {
-
     /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
     {

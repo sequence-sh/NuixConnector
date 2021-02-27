@@ -39,49 +39,59 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    log ""Searching""
 
-    searchOptions = {}
-    searchOptions[:order] = orderArg if orderArg != nil
-    searchOptions[:limit] = limitArg.to_i if limitArg != nil
+    log ""Searching for items to add: #{searchArg}""
 
-    items = $current_case.search(searchArg, searchOptions)
-    log ""#{items.length} items found""
+    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
+    log(""Search options: #{searchOptions}"", severity: :trace)
 
-    productionSet = $current_case.findProductionSetByName(productionSetNameArg)
-    if(productionSet == nil)
-        options = {}
-        options[:description] = descriptionArg.to_i if descriptionArg != nil
-        productionSet = $current_case.newProductionSet(productionSetNameArg, options)
-
-        if productionProfileNameArg != nil
-            productionSet.setProductionProfile(productionProfileNameArg)
-        elsif productionProfilePathArg != nil
-            profileBuilder = $utilities.getProductionProfileBuilder()
-            profile = profileBuilder.load(productionProfilePathArg)
-
-            if profile == nil
-                log ""Could not find processing profile at #{productionProfilePathArg}""
-                exit
-            end
-
-            productionSet.setProductionProfileObject(profile)
-        else
-            log 'No production profile set'
-            exit
-        end
-
-        log ""Production Set Created""
+    if sortArg.nil? || !sortArg
+      log('Search results will be unsorted', severity: :trace)
+      items = $current_case.search_unsorted(searchArg, searchOptions)
     else
-        log ""Production Set Found""
+      log('Search results will be sorted', severity: :trace)
+      items = $current_case.search(searchArg, searchOptions)
     end
 
-    if items.length > 0
-        productionSet.addItems(items)
-        log ""Items added to production set""
+    if items.length == 0
+      log 'No items found. Nothing to add to production set.'
+      return
+    end
+
+    log ""Items found: #{items.length}""
+
+    productionSet = $current_case.findProductionSetByName(productionSetNameArg)
+
+    if productionSet.nil?
+      log ""Production set '#{productionSetNameArg}' not found. Creating.""
+      options = {}
+      options[:description] = descriptionArg.to_i if descriptionArg != nil
+      log(""Production set options: #{options}"", severity: :trace)
+      productionSet = $current_case.newProductionSet(productionSetNameArg, options)
+
+      if productionProfileNameArg != nil
+        log(""Setting production profile: #{productionProfileNameArg}"", severity: :debug)
+        productionSet.setProductionProfile(productionProfileNameArg)
+      elsif productionProfilePathArg != nil
+        log(""Loading production profile from #{productionProfilePathArg}"", severity: :debug)
+        profileBuilder = $utilities.getProductionProfileBuilder()
+        profile = profileBuilder.load(productionProfilePathArg)
+        if profile.nil?
+          write_error(""Could not find processing profile: #{productionProfilePathArg}"", terminating: true)
+        end
+        productionSet.setProductionProfileObject(profile)
+      else
+        write_error(""No production profile set"", terminating: true)
+      end
+      log ""Successfully created '#{productionSetNameArg}' production set.""
     else
-        log ""No items to add to production Set""
-    end";
+      log ""Existing production set '#{productionSetNameArg}' found""
+    end
+
+    log ""Adding #{items.length} items to production set '#{productionSetNameArg}'""
+    productionSet.addItems(items)
+    log('Finished adding items', severity: :debug)
+";
 }
 
 /// <summary>
@@ -119,17 +129,17 @@ public sealed class NuixAddToProductionSet : RubyCaseScriptStepBase<Unit>
     [StepProperty(3)]
     [RubyArgument("descriptionArg")]
     [DefaultValueExplanation("No description")]
-    public IStep<StringStream>? Description { get; set; }
+    [Alias("Description")]
+    public IStep<StringStream>? ProductionSetDescription { get; set; }
 
     /// <summary>
     /// The name of the Production profile to use.
     /// Either this or the ProductionProfilePath must be set
     /// </summary>
-
     [RequiredVersion("Nuix", "7.2")]
     [StepProperty(4)]
     [Example("MyProcessingProfile")]
-    [DefaultValueExplanation("The default processing profile will be used.")]
+    [DefaultValueExplanation("If not set, the profile path will be used.")]
     [RubyArgument("productionProfileNameArg")]
     [Alias("Profile")]
     public IStep<StringStream>? ProductionProfileName { get; set; }
@@ -141,27 +151,34 @@ public sealed class NuixAddToProductionSet : RubyCaseScriptStepBase<Unit>
     [RequiredVersion("Nuix", "7.6")]
     [StepProperty(5)]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
-    [DefaultValueExplanation("The default processing profile will be used.")]
+    [DefaultValueExplanation("If not set, the profile name will be used.")]
     [RubyArgument("productionProfilePathArg")]
     [Alias("ProfilePath")]
     public IStep<StringStream>? ProductionProfilePath { get; set; }
 
     /// <summary>
-    /// How to order the items to be added to the production set.
+    /// Pass additional search options to nuix. For an unsorted search (default)
+    /// the only available option is defaultFields. When using <code>SortSearch=true</code>
+    /// the options are defaultFields, order, and limit.
+    /// Please see the nuix API for <code>Case.search</code>
+    /// and <code>Case.searchUnsorted</code> for more details.
     /// </summary>
+    [RequiredVersion("Nuix", "7.0")]
     [StepProperty(6)]
-    [Example("name ASC, item-date DESC")]
-    [RubyArgument("orderArg")]
-    [DefaultValueExplanation("Default order")]
-    public IStep<StringStream>? Order { get; set; }
+    [RubyArgument("searchOptionsArg")]
+    [DefaultValueExplanation("No search options provided")]
+    public IStep<Core.Entity>? SearchOptions { get; set; }
 
     /// <summary>
-    /// The maximum number of items to add to the production set.
+    /// By default the search is not sorted by relevance which
+    /// increases performance. Set this to true to sort the
+    /// search by relevance.
     /// </summary>
+    [RequiredVersion("Nuix", "7.0")]
     [StepProperty(7)]
-    [RubyArgument("limitArg")]
-    [DefaultValueExplanation("No limit")]
-    public IStep<int>? Limit { get; set; }
+    [RubyArgument("sortArg")]
+    [DefaultValueExplanation("false")]
+    public IStep<bool>? SortSearch { get; set; }
 
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)

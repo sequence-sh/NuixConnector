@@ -204,6 +204,9 @@ internal class ExternalProcessMock : IExternalProcessRunner
                         var json = JsonConvert.SerializeObject(connectionOutput);
                         await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                     }
+
+                    if (commandResult.Value.Command.Equals("done"))
+                        output.Complete();
                 }
                 catch (Exception e)
                 {
