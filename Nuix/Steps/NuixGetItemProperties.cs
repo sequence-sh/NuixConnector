@@ -69,7 +69,7 @@ public sealed class
         begin
           if propertyRegex =~ k
             if valueRegex != nil
-              if match = valueRegex.match(k) #Only output if the value regex actually matches
+              if match = valueRegex.match(v) #Only output if the value regex actually matches
                 valueString = match.captures[0]
                 text << ""\n#{k}\t#{valueString}\t#{i.getPathNames().join(""/"")}\t#{i.getGuid()}""
               end
