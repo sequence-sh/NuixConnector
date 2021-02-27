@@ -119,7 +119,10 @@ public static class Constants
     );
 
     public static readonly IStep<Array<StringStream>> PoemTextImagePaths =
-        Array(Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png"));
+        Array(
+            Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText.png"),
+            Path.Combine(Directory.GetCurrentDirectory(), "AllData", "PoemText2.png")
+        );
 
     public static readonly string ConcordancePathString = Path.Combine(
         Directory.GetCurrentDirectory(),
