@@ -19,8 +19,6 @@ public partial class
             yield return new NuixIntegrationTestCase(
                 "Get item properties",
                 DeleteCaseFolder,
-                DeleteOutputFolder,
-                CreateOutputFolder,
                 CreateCase,
                 AddData,
                 new AssertTrue
@@ -40,21 +38,22 @@ public partial class
                 {
                     Boolean = new StringContains
                     {
-                        IgnoreCase = Constant(true),
                         Substring =
-                            Constant("Character Set	UTF-8	New Folder/data/Jellyfish.txt"),
+                            Constant("Name	Jellyfish.txt	New Folder/data/Jellyfish.txt"),
                         String = new NuixGetItemProperties
                         {
                             PropertyRegex = Constant("(.+)"),
-                            SearchTerm    = Constant("*"),
+                            ValueRegex    = Constant("(.+fish.+)"),
+                            SearchTerm    = Constant("jellyfish"),
                             SortSearch    = Constant(true),
-                            SearchOptions = Constant(Entity.Create(("limit", 1)))
+                            SearchOptions = Constant(
+                                Entity.Create(("defaultFields", new[] { "name" }))
+                            )
                         }
                     }
                 },
                 new NuixCloseConnection(),
-                DeleteCaseFolder,
-                DeleteOutputFolder
+                DeleteCaseFolder
             );
         }
     }
