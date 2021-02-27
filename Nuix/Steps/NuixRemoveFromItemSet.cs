@@ -45,7 +45,7 @@ public sealed class
       return
     end
 
-    remove_opts = { 'removeDuplicates': removeDuplicatesArg }
+    remove_opts = { 'removeDuplicates' => removeDuplicatesArg }
 
     if searchArg.nil?
       all_items = item_set.get_items
