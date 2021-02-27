@@ -14,6 +14,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 /// <summary>
 /// Performs optical character recognition on files in a NUIX case.
 /// </summary>
+[Alias("NuixRunOCR")]
 public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerformOCR, Unit>
 {
     private NuixPerformOCRStepFactory() { }
