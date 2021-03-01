@@ -1,3 +1,47 @@
+# v0.5.0 (2021-03-01)
+
+## Summary of Changes
+
+### Steps
+
+- Added `RemoveFromItemSet` step
+- Added `SearchAndExclude` step
+- Added `SearchType` parameter to `SearchAndTag` and `SearchAndExclude` steps which allows users to search for item descendants, duplicates, families and threads
+
+### Connector Updates
+
+- Connector is now compatible with Nuix 9.0
+- Steps that search for items (e.g. `AddToItemSet`, `CountItems`, etc.) now take parameters with search options. Performance has been optimised to use unsorted search by default, with the option to use a sorted search if required
+- The arguments sent to the Nuix console function are now fully configurable. This allows you to use any type of authentication.
+
+## Issues Closed in this Release
+
+### New Features
+
+- Add additional logging to steps #153
+- Allow AddItem step to add custom metadata to evidence containers #156
+- Add the ability to pass search options to steps #157
+- Add step to remove items from an item set #159
+- Add step to search for items and exclude them from a case #160
+- Allow technicians to perform descendant and family searches #161
+- Add details to messages logged from NuixConnection #158
+- Disable Trace Logging for integration testing to prevent exposure of secrets #149
+- Allow error and warning messages received from nuix to be ignored #148
+- Allow License Server Authentication #147
+
+### Bug Fixes
+
+- Nuix connection not closed on exit #155
+- NuixReorderProductionSet should convert enum to ruby value #150
+- Export Concordance (9.0) integration test fails trying to delete concordance directory #152
+
+### Maintenance
+
+- Update nuix connector script to v0.2.1 #163
+- Run unit tests along with integration #151
+- Split integration testing into two pipelines - full and short #145
+- Ensure compatibility and add integration testing for Nuix 9 #144
+
 ## v0.4.0 (2021-01-29)
 
 - Upgrade to Core v0.4.0 and the new SCL configuration language
