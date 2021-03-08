@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Enums;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -32,25 +33,15 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
         = new List<NuixFeature> { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper> { NuixSearch.Instance };
+
+    /// <inheritdoc />
     public override string FunctionName => "SearchAndTag";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    log ""Searching for '#{searchArg}'""
-
-    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
-    log(""Search options: #{searchOptions}"", severity: :trace)
-
-    if sortArg.nil? || !sortArg
-      log('Search results will be unsorted', severity: :trace)
-      items = $current_case.search_unsorted(searchArg, searchOptions)
-    else
-      log('Search results will be sorted', severity: :trace)
-      items = $current_case.search(searchArg, searchOptions)
-    end
-
-    log ""Items found: #{items.length}""
-    
+    items = search(searchArg, searchOptionsArg, sortArg)
     return unless items.length > 0
 
     if searchTypeArg.eql? 'items'
