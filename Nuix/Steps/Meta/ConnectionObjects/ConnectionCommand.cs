@@ -43,6 +43,12 @@ public class ConnectionCommand
     // ReSharper disable once StringLiteralTypo
     [JsonProperty("isstream")]
     public bool? IsStream { get; set; }
+
+    /// <summary>
+    /// True if this function is a helper and does not need to be executed.
+    /// </summary>
+    [JsonProperty("ishelper")]
+    public bool? IsHelper { get; set; }
 }
 
 }
