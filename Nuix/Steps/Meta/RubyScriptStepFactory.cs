@@ -43,7 +43,8 @@ public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<
                     RubyFunctionText,
                     RubyFunctionParameter.GetRubyFunctionParameters<TStep>(),
                     RequiredNuixVersion,
-                    RequiredFeatures
+                    RequiredFeatures,
+                    RequiredHelpers!
                 )
             );
     }
@@ -74,6 +75,11 @@ public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<
     /// The Required Nuix Features.
     /// </summary>
     public abstract IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
+
+    /// <summary>
+    /// Any helper functions required for this Step to execute.
+    /// </summary>
+    public virtual IReadOnlyCollection<IRubyHelper>? RequiredHelpers { get; } = null;
 }
 
 }
