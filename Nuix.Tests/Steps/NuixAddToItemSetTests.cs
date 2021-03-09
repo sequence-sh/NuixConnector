@@ -57,6 +57,16 @@ public partial class NuixAddToItemSetTests : NuixStepTestBase<NuixAddToItemSet, 
                     new(
                         new ConnectionCommand
                         {
+                            Command = "Search", FunctionDefinition = "", IsHelper = true
+                        },
+                        new ConnectionOutput
+                        {
+                            Result = new ConnectionOutputResult { Data = "helper_success" }
+                        }
+                    ),
+                    new(
+                        new ConnectionCommand
+                        {
                             Command            = "AddToItemSet",
                             FunctionDefinition = "",
                             Arguments = new Dictionary<string, object>

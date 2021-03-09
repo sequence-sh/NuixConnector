@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -32,6 +33,10 @@ public sealed class
         new List<NuixFeature>() { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper> { NuixSearch.Instance };
+
+    /// <inheritdoc />
     public override string FunctionName => "RemoveFromItemSet";
 
     /// <inheritdoc />
@@ -53,10 +58,7 @@ public sealed class
       item_set.remove_items(all_items, remove_opts)
       log ""Removed all items: #{items_count}""
     else
-      searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
-      log(""Search options: #{searchOptions}"", severity: :trace)
-      items = $current_case.search_unsorted(searchArg, searchOptions)
-      log(""Search '#{searchArg}' returned #{items.length} items"", severity: :debug)
+      items = search(searchArg, searchOptionsArg, false)
       to_remove = $utilities.get_item_utility.intersection(items, item_set.get_items)
       log(""Intersection of search results and item set is #{to_remove.length} items"", severity: :debug)
       if to_remove.length == 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -36,6 +37,10 @@ public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerfor
         new List<NuixFeature>() { NuixFeature.OCR_PROCESSING };
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper> { NuixSearch.Instance };
+
+    /// <inheritdoc />
     public override string FunctionName => "PerformOCR";
 
     /// <inheritdoc />
@@ -57,23 +62,8 @@ public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerfor
 
     log ""Searching for items to OCR: #{searchArg}""
 
-    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
-    log(""Search options: #{searchOptions}"", severity: :trace)
-
-    if sortArg.nil? || !sortArg
-      log('Search results will be unsorted', severity: :trace)
-      items = $current_case.search_unsorted(searchArg, searchOptions)
-    else
-      log('Search results will be sorted', severity: :trace)
-      items = $current_case.search(searchArg, searchOptions)
-    end
-
-    if items.length == 0
-      log 'No items found to OCR.'
-      return
-    end
-
-    log ""Items found: #{items.length}""
+    items = search(searchArg, searchOptionsArg, sortArg)
+    return unless items.length > 0
 
     ocr_processor = $utilities.create_ocr_processor
 

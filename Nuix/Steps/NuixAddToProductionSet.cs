@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -35,30 +36,17 @@ public sealed class
         new List<NuixFeature>() { NuixFeature.PRODUCTION_SET };
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper> { NuixSearch.Instance };
+
+    /// <inheritdoc />
     public override string FunctionName => "AddToProductionSet";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
 
-    log ""Searching for items to add: #{searchArg}""
-
-    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
-    log(""Search options: #{searchOptions}"", severity: :trace)
-
-    if sortArg.nil? || !sortArg
-      log('Search results will be unsorted', severity: :trace)
-      items = $current_case.search_unsorted(searchArg, searchOptions)
-    else
-      log('Search results will be sorted', severity: :trace)
-      items = $current_case.search(searchArg, searchOptions)
-    end
-
-    if items.length == 0
-      log 'No items found. Nothing to add to production set.'
-      return
-    end
-
-    log ""Items found: #{items.length}""
+    items = search(searchArg, searchOptionsArg, sortArg)
+    return unless items.length > 0
 
     productionSet = $current_case.findProductionSetByName(productionSetNameArg)
 
