@@ -52,12 +52,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ErrorMessages-EN.resx</DependentUpon>
     </Compile>
+    <Compile Update="Logging\LogMessages-EN.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LogMessages-EN.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Errors\ErrorMessages-EN.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ErrorMessages-EN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Logging\LogMessages-EN.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LogMessages-EN.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
