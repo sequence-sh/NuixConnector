@@ -34,7 +34,7 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
 
     /// <inheritdoc />
     public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
-        = new List<IRubyHelper> { NuixSearch.Instance };
+        = new List<IRubyHelper> { NuixSearch.Instance, NuixExpandSearch.Instance };
 
     /// <inheritdoc />
     public override string FunctionName => "SearchAndTag";
@@ -44,31 +44,7 @@ public sealed class NuixSearchAndTagStepFactory : RubyScriptStepFactory<NuixSear
     items = search(searchArg, searchOptionsArg, sortArg)
     return unless items.length > 0
 
-    if searchTypeArg.eql? 'items'
-      all_items = items
-    else
-      iutil = $utilities.get_item_utility
-      case searchTypeArg
-        when 'descendants'
-          all_items = iutil.find_descendants(items)
-          log ""Descendants found: #{all_items.count}""
-        when 'families'
-          all_items = iutil.find_families(items)
-          log ""Family items found: #{all_items.count}""
-        when 'items_descendants'
-          all_items = iutil.find_items_and_descendants(items)
-          log ""Items and descendants found: #{all_items.count}""
-        when 'items_duplicates'
-          all_items = iutil.find_items_and_duplicates(items)
-          log ""Items and duplicates found: #{all_items.count}""
-        when 'thread_items'
-          all_items = iutil.find_thread_items(items)
-          log ""Thread items found: #{all_items.count}""
-        when 'toplevel_items'
-          all_items = iutil.find_top_level_items(items)
-          log ""Top-level items found: #{all_items.count}""
-      end
-    end
+    all_items = expand_search(items, searchTypeArg)
 
     items_processed = 0
     $utilities.get_bulk_annotater.add_tag(tagArg, all_items) { items_processed += 1 }

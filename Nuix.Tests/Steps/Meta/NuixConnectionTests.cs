@@ -509,8 +509,16 @@ public class NuixConnectionTests
         const string? search   = "*.png";
         const string? tag      = "image";
 
-        var helperAction = new ExternalProcessAction(
+        var searchHelperAction = new ExternalProcessAction(
             new ConnectionCommand { Command = "Search", FunctionDefinition = "", IsHelper = true },
+            new ConnectionOutput { Result = new ConnectionOutputResult { Data = "helper_success" } }
+        ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
+
+        var expandHelperAction = new ExternalProcessAction(
+            new ConnectionCommand
+            {
+                Command = "ExpandSearch", FunctionDefinition = "", IsHelper = true
+            },
             new ConnectionOutput { Result = new ConnectionOutputResult { Data = "helper_success" } }
         ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
 
@@ -532,7 +540,12 @@ public class NuixConnectionTests
         var loggerFactory = TestLoggerFactory.Create();
 
         var nuixConnection =
-            NuixConnectionTestsHelper.GetNuixConnection(loggerFactory, helperAction, action);
+            NuixConnectionTestsHelper.GetNuixConnection(
+                loggerFactory,
+                searchHelperAction,
+                expandHelperAction,
+                action
+            );
 
         var ct = new CancellationToken();
 
