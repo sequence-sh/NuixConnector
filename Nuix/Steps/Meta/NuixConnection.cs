@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Errors;
+using Reductech.EDR.Connectors.Nuix.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
@@ -137,6 +138,43 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
             throw new ObjectDisposedException(nameof(NuixConnection));
 
         await _semaphore.WaitAsync(cancellationToken);
+
+        if (function.RequiredHelpers != null && function.RequiredHelpers.Count > 0)
+        {
+            foreach (var helper in function.RequiredHelpers)
+            {
+                if (_evaluatedFunctions.Add(helper.FunctionName))
+                {
+                    var helperCommand = new ConnectionCommand
+                    {
+                        Command            = helper.FunctionName,
+                        FunctionDefinition = helper.FunctionText,
+                        IsHelper           = true
+                    };
+
+                    // ReSharper disable once MethodHasAsyncOverload
+                    var helperCommandJson = JsonConvert.SerializeObject(
+                        helperCommand,
+                        Formatting.None,
+                        JsonConverters.All
+                    );
+
+                    await ExternalProcess.InputChannel.WriteAsync(
+                        helperCommandJson,
+                        cancellationToken
+                    );
+
+                    var helperResult = await GetOutputTyped<T>(stateMonad, step, cancellationToken);
+
+                    if (helperResult.IsFailure)
+                        return helperResult.ConvertFailure<T>();
+                }
+                else
+                {
+                    LogSituationNuix.HelperExists.Log(stateMonad, step, helper.FunctionName);
+                }
+            }
+        }
 
         try
         {

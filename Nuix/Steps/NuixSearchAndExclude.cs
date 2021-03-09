@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Enums;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -33,52 +34,18 @@ public sealed class
         = new List<NuixFeature> { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper> { NuixSearch.Instance, NuixExpandSearch.Instance };
+
+    /// <inheritdoc />
     public override string FunctionName => "SearchAndExclude";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    log ""Searching for '#{searchArg}'""
-
-    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
-    log(""Search options: #{searchOptions}"", severity: :trace)
-
-    if sortArg.nil? || !sortArg
-      log('Search results will be unsorted', severity: :trace)
-      items = $current_case.search_unsorted(searchArg, searchOptions)
-    else
-      log('Search results will be sorted', severity: :trace)
-      items = $current_case.search(searchArg, searchOptions)
-    end
-
-    log ""Items found: #{items.length}""
-
+    items = search(searchArg, searchOptionsArg, sortArg)
     return unless items.length > 0
 
-    if searchTypeArg.eql? 'items'
-      all_items = items
-    else
-      iutil = $utilities.get_item_utility
-      case searchTypeArg
-        when 'descendants'
-          all_items = iutil.find_descendants(items)
-          log ""Descendants found: #{all_items.count}""
-        when 'families'
-          all_items = iutil.find_families(items)
-          log ""Family items found: #{all_items.count}""
-        when 'items_descendants'
-          all_items = iutil.find_items_and_descendants(items)
-          log ""Items and descendants found: #{all_items.count}""
-        when 'items_duplicates'
-          all_items = iutil.find_items_and_duplicates(items)
-          log ""Items and duplicates found: #{all_items.count}""
-        when 'thread_items'
-          all_items = iutil.find_thread_items(items)
-          log ""Thread items found: #{all_items.count}""
-        when 'toplevel_items'
-          all_items = iutil.find_top_level_items(items)
-          log ""Top-level items found: #{all_items.count}""
-      end
-    end
+    all_items = expand_search(items, searchTypeArg)
     
     unless tagArg.nil?
       items_tagged = 0

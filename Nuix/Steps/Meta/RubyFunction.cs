@@ -19,12 +19,14 @@ public record RubyFunction<T> : RubyFunction
         string functionText,
         IReadOnlyCollection<RubyFunctionParameter> arguments,
         Version requiredNuixVersion,
-        IReadOnlyCollection<NuixFeature> requiredNuixFeatures) : base(
+        IReadOnlyCollection<NuixFeature> requiredNuixFeatures,
+        IReadOnlyCollection<IRubyHelper>? requiredHelpers = null) : base(
         functionName,
         functionText,
         arguments,
         requiredNuixVersion,
-        requiredNuixFeatures
+        requiredNuixFeatures,
+        requiredHelpers
     ) { }
 }
 
@@ -41,13 +43,15 @@ public abstract record RubyFunction
         string functionText,
         IReadOnlyCollection<RubyFunctionParameter> arguments,
         Version requiredNuixVersion,
-        IReadOnlyCollection<NuixFeature> requiredNuixFeatures)
+        IReadOnlyCollection<NuixFeature> requiredNuixFeatures,
+        IReadOnlyCollection<IRubyHelper>? requiredHelpers = null)
     {
         FunctionName         = functionName;
         FunctionText         = functionText;
         Arguments            = arguments;
         RequiredNuixVersion  = requiredNuixVersion;
         RequiredNuixFeatures = requiredNuixFeatures;
+        RequiredHelpers      = requiredHelpers;
     }
 
     /// <summary>
@@ -74,6 +78,11 @@ public abstract record RubyFunction
     /// Required nuix features.
     /// </summary>
     public IReadOnlyCollection<NuixFeature> RequiredNuixFeatures { get; }
+
+    /// <summary>
+    /// Any helper functions required for this Step to execute.
+    /// </summary>
+    public IReadOnlyCollection<IRubyHelper>? RequiredHelpers { get; }
 
     /// <summary>
     /// Compiles the text of a function

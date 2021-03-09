@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -33,30 +34,16 @@ public sealed class
         new List<NuixFeature>();
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper> { NuixSearch.Instance };
+
+    /// <inheritdoc />
     public override string FunctionName => "GetItemProperties";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-
-    log ""Searching for items: #{searchArg}""
-
-    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
-    log(""Search options: #{searchOptions}"", severity: :trace)
-
-    if sortArg.nil? || !sortArg
-      log('Using unsorted search', severity: :trace)
-      items = $current_case.search_unsorted(searchArg, searchOptions)
-    else
-      log('Using sorted search', severity: :trace)
-      items = $current_case.search(searchArg, searchOptions)
-    end
-
-    if items.length == 0
-      log 'No items found.'
-      return
-    end
-
-    log ""Items found: #{items.length}""
+    items = search(searchArg, searchOptionsArg, sortArg)
+    return unless items.length > 0
 
     propertyRegex = Regexp.new(propertyRegexArg)
     valueRegex = nil

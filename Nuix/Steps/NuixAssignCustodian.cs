@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -31,30 +32,16 @@ public sealed class NuixAssignCustodianFactory : RubyScriptStepFactory<NuixAssig
         = new List<NuixFeature> { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper> { NuixSearch.Instance };
+
+    /// <inheritdoc />
     public override string FunctionName => "AssignCustodian";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-
-    log ""Searching for items: #{searchArg}""
-
-    searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
-    log(""Search options: #{searchOptions}"", severity: :trace)
-
-    if sortArg.nil? || !sortArg
-      log('Using unsorted search', severity: :trace)
-      items = $current_case.search_unsorted(searchArg, searchOptions)
-    else
-      log('Using sorted search', severity: :trace)
-      items = $current_case.search(searchArg, searchOptions)
-    end
-
-    if items.length == 0
-      log 'No items found. Nothing to assign to custodian.'
-      return
-    end
-
-    log ""Items found: #{items.length}""
+    items = search(searchArg, searchOptionsArg, sortArg)
+    return unless items.length > 0
 
     items_processed = 0
     $utilities.get_bulk_annotater.assign_custodian(custodianArg, items) {|item| items_processed += 1 }

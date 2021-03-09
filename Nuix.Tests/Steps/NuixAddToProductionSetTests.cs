@@ -53,6 +53,16 @@ public partial class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToPro
                     new(
                         new ConnectionCommand
                         {
+                            Command = "Search", FunctionDefinition = "", IsHelper = true
+                        },
+                        new ConnectionOutput
+                        {
+                            Result = new ConnectionOutputResult { Data = "helper_success" }
+                        }
+                    ),
+                    new(
+                        new ConnectionCommand
+                        {
                             Command            = "AddToProductionSet",
                             FunctionDefinition = "",
                             Arguments = new Dictionary<string, object>

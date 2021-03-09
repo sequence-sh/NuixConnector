@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -32,6 +33,10 @@ public sealed class NuixRemoveFromProductionSetStepFactory
         new List<NuixFeature>() { NuixFeature.PRODUCTION_SET };
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper> { NuixSearch.Instance };
+
+    /// <inheritdoc />
     public override string FunctionName => "RemoveFromProductionSet";
 
     /// <inheritdoc />
@@ -50,10 +55,7 @@ public sealed class NuixRemoveFromProductionSetStepFactory
       production_set.remove_all_items
       log ""Removed all items: #{items_count}""
     else
-      searchOptions = searchOptionsArg.nil? ? {} : searchOptionsArg
-      log(""Search options: #{searchOptions}"", severity: :trace)
-      items = $current_case.search_unsorted(searchArg, searchOptions)
-      log(""Search '#{searchArg}' returned #{items.length} items"", severity: :debug)
+      items = search(searchArg, searchOptionsArg, false)
       to_remove = $utilities.get_item_utility.intersection(items, production_set.get_items)
       log(""Intersection of search results and production set is #{to_remove.length} items"", severity: :debug)
       if to_remove.length == 0

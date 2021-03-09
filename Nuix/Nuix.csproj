@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
     <AssemblyName>Reductech.EDR.Connectors.Nuix</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.5.0$(VersionSuffix)</Version>
+    <Version>0.6.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -52,12 +52,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ErrorMessages-EN.resx</DependentUpon>
     </Compile>
+    <Compile Update="Logging\LogMessages-EN.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LogMessages-EN.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Errors\ErrorMessages-EN.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ErrorMessages-EN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Logging\LogMessages-EN.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LogMessages-EN.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

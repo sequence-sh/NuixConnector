@@ -77,11 +77,15 @@ public static class NuixConnectionTestsHelper
         );
 
     public static NuixConnection GetNuixConnection(
-        ExternalProcessAction action,
         ITestLoggerFactory loggerFactory,
-        int expectedTimesStarted = 1)
+        params ExternalProcessAction[] actions) => GetNuixConnection(loggerFactory, 1, actions);
+
+    public static NuixConnection GetNuixConnection(
+        ITestLoggerFactory loggerFactory,
+        int expectedTimesStarted,
+        params ExternalProcessAction[] actions)
     {
-        var fakeExternalProcess = new ExternalProcessMock(expectedTimesStarted, action)
+        var fakeExternalProcess = new ExternalProcessMock(expectedTimesStarted, actions)
         {
             ProcessPath = Constants.NuixConsoleExe
         };
@@ -367,7 +371,7 @@ public class NuixConnectionTests
     {
         var logFactory     = TestLoggerFactory.Create();
         var action         = NuixConnectionTestsHelper.GetDoneAction();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action, logFactory);
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(logFactory, action);
 
         var fakeExternalProcess = new ExternalProcessMock(
             1,
@@ -392,7 +396,7 @@ public class NuixConnectionTests
     public async Task RunFunctionAsync_WhenDisposed_Throws()
     {
         var logFactory     = TestLoggerFactory.Create();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(null!, logFactory);
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(logFactory);
 
         var ct = new CancellationToken();
 
@@ -415,8 +419,7 @@ public class NuixConnectionTests
     {
         var logFactory     = TestLoggerFactory.Create();
         var action         = NuixConnectionTestsHelper.GetDoneAction();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action, logFactory);
-        var logger         = logFactory.CreateLogger("Test");
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(logFactory, action);
         var ct             = new CancellationToken();
 
         var stream1 = new List<Entity>().ToAsyncEnumerable().ToSequence();
@@ -463,8 +466,7 @@ public class NuixConnectionTests
         );
 
         var logFactory     = TestLoggerFactory.Create();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action, logFactory);
-        var logger         = logFactory.CreateLogger("Test");
+        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(logFactory, action);
         var ct             = new CancellationToken();
 
         var entities = new List<Entity>
@@ -504,36 +506,65 @@ public class NuixConnectionTests
             string[]? stdErr)
     {
         const string? casePath = @"d:\case";
+        const string? search   = "*.png";
+        const string? tag      = "image";
+
+        var searchHelperAction = new ExternalProcessAction(
+            new ConnectionCommand { Command = "Search", FunctionDefinition = "", IsHelper = true },
+            new ConnectionOutput { Result = new ConnectionOutputResult { Data = "helper_success" } }
+        ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
+
+        var expandHelperAction = new ExternalProcessAction(
+            new ConnectionCommand
+            {
+                Command = "ExpandSearch", FunctionDefinition = "", IsHelper = true
+            },
+            new ConnectionOutput { Result = new ConnectionOutputResult { Data = "helper_success" } }
+        ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
 
         var action = new ExternalProcessAction(
             new ConnectionCommand
             {
-                Command            = "MigrateCase",
+                Command            = "SearchAndTag",
                 FunctionDefinition = "",
                 Arguments = new Dictionary<string, object>
                 {
-                    { nameof(NuixMigrateCase.CasePath), casePath }
+                    { nameof(NuixSearchAndTag.CasePath), casePath },
+                    { nameof(NuixSearchAndTag.SearchTerm), search },
+                    { nameof(NuixSearchAndTag.Tag), tag }
                 }
             },
             output
         ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
 
-        var loggerFactory  = TestLoggerFactory.Create();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(action, loggerFactory);
+        var loggerFactory = TestLoggerFactory.Create();
+
+        var nuixConnection =
+            NuixConnectionTestsHelper.GetNuixConnection(
+                loggerFactory,
+                searchHelperAction,
+                expandHelperAction,
+                action
+            );
 
         var ct = new CancellationToken();
 
         var dict = new Dictionary<RubyFunctionParameter, object>()
         {
             {
-                new RubyFunctionParameter("pathArg", nameof(NuixMigrateCase.CasePath), false),
+                new RubyFunctionParameter("pathArg", nameof(NuixSearchAndTag.CasePath), false),
                 casePath
-            }
+            },
+            {
+                new RubyFunctionParameter("searchArg", nameof(NuixSearchAndTag.SearchTerm), false),
+                search
+            },
+            { new RubyFunctionParameter("tagArg", nameof(NuixSearchAndTag.Tag), false), tag }
         };
 
         var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
 
-        var step = new NuixMigrateCase();
+        var step = new NuixSearchAndTag();
 
         var result = await nuixConnection.RunFunctionAsync(
             NuixConnectionTestsHelper.GetStateMonadForProcess(loggerFactory),
