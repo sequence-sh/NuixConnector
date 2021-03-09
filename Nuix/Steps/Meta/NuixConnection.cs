@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Errors;
+using Reductech.EDR.Connectors.Nuix.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
@@ -171,12 +171,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                 }
                 else
                 {
-                    // TODO: is it the right way to log this?
-                    stateMonad.Log(
-                        LogLevel.Trace,
-                        $"Helper function {helper.FunctionName} already exists.",
-                        step
-                    );
+                    LogSituationNuix.HelperExists.Log(stateMonad, step, helper.FunctionName);
                 }
             }
         }
