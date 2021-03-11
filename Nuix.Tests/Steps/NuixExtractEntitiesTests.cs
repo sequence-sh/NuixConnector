@@ -31,7 +31,7 @@ public partial class NuixExtractEntitiesTests : NuixStepTestBase<NuixExtractEnti
                 {
                     Custodian             = Constant("Mark"),
                     Paths                 = DataPaths,
-                    FolderName            = Constant("New Folder"),
+                    Container             = Constant("New Folder"),
                     ProcessingProfileName = Constant("ExtractEntities")
                 },
                 new NuixExtractEntities { OutputFolder = Constant(OutputFolder) },

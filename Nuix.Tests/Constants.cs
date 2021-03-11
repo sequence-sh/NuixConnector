@@ -212,7 +212,7 @@ public static class Constants
 
     public static readonly IStep<Unit> AddData = new NuixAddItem
     {
-        Custodian = Constant("Mark"), Paths = DataPaths, FolderName = Constant("New Folder")
+        Custodian = Constant("Mark"), Paths = DataPaths, Container = Constant("New Folder")
     };
 }
 

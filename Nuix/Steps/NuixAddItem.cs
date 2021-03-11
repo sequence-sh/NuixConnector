@@ -101,45 +101,45 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
       processor.setPasswordDiscoverySettings({'mode' => 'word-list', 'word-list' => listName })
     end
 
-    log ""Creating new evidence container '#{folderNameArg}'""
-    folder = processor.new_evidence_container(folderNameArg)
+    log ""Creating new evidence container '#{containerNameArg}'""
+    container = processor.new_evidence_container(containerNameArg)
 
-    unless folderDescriptionArg.nil?
-      log(""Container description: #{folderDescriptionArg}"", severity: :debug)
-      folder.description = folderDescriptionArg
+    unless containerDescriptionArg.nil?
+      log(""Container description: #{containerDescriptionArg}"", severity: :debug)
+      container.description = containerDescriptionArg
     end
 
-    unless folderCustodianArg.nil?
-      log(""Container custodian: '#{folderCustodianArg}'"", severity: :debug)
-      folder.initial_custodian = folderCustodianArg
+    unless containerCustodianArg.nil?
+      log(""Container custodian: '#{containerCustodianArg}'"", severity: :debug)
+      container.initial_custodian = containerCustodianArg
     end
 
     unless customMetadataArg.nil?
-      log(""Adding custom metadata to container #{folderNameArg}"", severity: :debug)
-      folder.set_custom_metadata(customMetadataArg)
+      log(""Adding custom metadata to container #{containerNameArg}"", severity: :debug)
+      container.set_custom_metadata(customMetadataArg)
     end
 
-    unless folderEncodingArg.nil?
-      log(""Container encoding: '#{folderEncodingArg}'"", severity: :debug)
-      folder.set_encoding(folderEncodingArg)
+    unless containerEncodingArg.nil?
+      log(""Container encoding: '#{containerEncodingArg}'"", severity: :debug)
+      container.set_encoding(containerEncodingArg)
     end
 
-    unless folderLocaleArg.nil?
-      log(""Container locale: '#{folderLocaleArg}'"", severity: :debug)
-      folder.set_locale(folderLocaleArg)
+    unless containerLocaleArg.nil?
+      log(""Container locale: '#{containerLocaleArg}'"", severity: :debug)
+      container.set_locale(containerLocaleArg)
     end
 
-    unless folderTimeZoneArg.nil?
-      log(""Container time zone: '#{folderTimeZoneArg}'"", severity: :debug)
-      folder.set_time_zone(folderTimeZoneArg)
+    unless containerTimeZoneArg.nil?
+      log(""Container time zone: '#{containerTimeZoneArg}'"", severity: :debug)
+      container.set_time_zone(containerTimeZoneArg)
     end
 
     filePathsArgs.each do |path|
-      folder.add_file(path)
-      log ""Adding to Container: #{folderNameArg} Path: #{path}""
+      container.add_file(path)
+      log ""Adding to Container: #{containerNameArg} Path: #{path}""
     end
 
-    folder.save
+    container.save
 
 	processor.when_cleaning_up do
       log 'Processor cleaning up'
@@ -184,29 +184,29 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     public IStep<Array<StringStream>> Paths { get; set; } = null!;
 
     /// <summary>
-    /// The name of the folder to create.
+    /// The name of the evidence container to add items to.
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("folderNameArg")]
-    [Alias("Container")]
+    [RubyArgument("containerNameArg")]
     [Alias("ToContainer")]
-    public IStep<StringStream> FolderName { get; set; } = null!;
+    public IStep<StringStream> Container { get; set; } = null!;
 
     /// <summary>
-    /// The description of the new folder.
+    /// The description of the evidence container.
     /// </summary>
     [StepProperty(3)]
-    [RubyArgument("folderDescriptionArg")]
+    [RubyArgument("containerDescriptionArg")]
     [DefaultValueExplanation("No Description")]
     [Alias("ContainerDescription")]
     public IStep<StringStream>? Description { get; set; }
 
     /// <summary>
-    /// The custodian to assign to the new folder/container.
+    /// The custodian to assign to the new evidence container.
     /// </summary>
     [StepProperty]
-    [RubyArgument("folderCustodianArg")]
+    [RubyArgument("containerCustodianArg")]
+    [Alias("ContainerCustodian")]
     public IStep<StringStream> Custodian { get; set; } = null!;
 
     /// <summary>
@@ -282,7 +282,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     public IStep<int> ProgressInterval { get; set; } = new IntConstant(5000);
 
     /// <summary>
-    /// Sets additional metadata on the folder/container.
+    /// Sets additional metadata on the evidence container.
     /// </summary>
     [StepProperty]
     [RubyArgument("customMetadataArg")]
@@ -290,36 +290,36 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     public IStep<Core.Entity>? CustomMetadata { get; set; }
 
     /// <summary>
-    /// Set the encoding for the folder/container.
+    /// Set the encoding for the evidence container.
     /// </summary>
     [StepProperty]
     [Example("UTF-8")]
-    [RubyArgument("folderEncodingArg")]
+    [RubyArgument("containerEncodingArg")]
     [DefaultValueExplanation("Default system encoding")]
-    [Alias("ContainerEncoding")]
-    public IStep<StringStream>? FolderEncoding { get; set; }
+    [Alias("Encoding")]
+    public IStep<StringStream>? ContainerEncoding { get; set; }
 
     /// <summary>
-    /// Set the locale for the folder/container.
+    /// Set the locale for the evidence container.
     /// </summary>
     [RequiredVersion("Nuix", "7.2")]
     [StepProperty]
     [Example("en_GB")]
-    [RubyArgument("folderLocaleArg")]
+    [RubyArgument("containerLocaleArg")]
     [DefaultValueExplanation("Default system locale")]
-    [Alias("ContainerLocale")]
-    public IStep<StringStream>? FolderLocale { get; set; }
+    [Alias("Locale")]
+    public IStep<StringStream>? ContainerLocale { get; set; }
 
     /// <summary>
-    /// Set the time zone for the folder/container.
+    /// Set the time zone for the evidence container.
     /// If the time zone given is not known to Nuix, the GMT time zone will be used.
     /// </summary>
     [StepProperty]
     [Example("UTC")]
-    [RubyArgument("folderTimeZoneArg")]
+    [RubyArgument("containerTimeZoneArg")]
     [DefaultValueExplanation("Default system time zone")]
-    [Alias("ContainerTimeZone")]
-    public IStep<StringStream>? FolderTimeZone { get; set; }
+    [Alias("TimeZone")]
+    public IStep<StringStream>? ContainerTimeZone { get; set; }
 
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)
