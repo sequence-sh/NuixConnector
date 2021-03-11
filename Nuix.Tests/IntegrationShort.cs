@@ -90,13 +90,17 @@ public partial class IntegrationShortTests
                             },
                             AssertCount(3, "custodian:\"Reductech EDR\""), AssertCount(3, "*.txt"),
                             // OCR the data
-                            AssertCount(0, "transparency"),
-                            new NuixPerformOCR
+                            AssertCount(1, "deluge"), new NuixPerformOCR
                             {
-                                SearchTerm     = Constant("mime-type:image/jpeg"),
-                                OCRProfileName = Constant("Default")
+                                SearchTerm =
+                                    Constant(
+                                        "mime-type:image/tiff AND \"Disposing-of-Digital-Debris\""
+                                    ),
+                                OCRProfileName = Constant("Default"),
+                                SortSearch     = Constant(true),
+                                SearchOptions  = Constant(Entity.Create(("limit", 10)))
                             },
-                            AssertCount(2, "transparency"),
+                            AssertCount(2, "deluge"),
                             // Run a search and tag
                             new ForEach<Entity>
                             {
@@ -149,16 +153,16 @@ public partial class IntegrationShortTests
                                 },
                                 Stream = new NuixCreateReport()
                             },
-                            AssertFileContains(ReportPath, "file-types.txt", "*	kind	*	189"),
+                            AssertFileContains(ReportPath, "file-types.txt", "*\tkind\t*\t189"),
                             AssertFileContains(
                                 ReportPath,
                                 "file-types.txt",
-                                "EDRM Micro	kind	*	186"
+                                "EDRM Micro\tkind\t*\t186"
                             ),
                             AssertFileContains(
                                 ReportPath,
                                 "file-types.txt",
-                                "Reductech EDR	kind	*	3"
+                                "Reductech EDR\tkind\t*\t3"
                             ),
                             // Write out a term list
                             new FileWrite
@@ -170,7 +174,7 @@ public partial class IntegrationShortTests
                                 Stream = new NuixCreateTermList()
                             },
                             AssertFileContains(ReportPath, "terms-list.txt", "garnethill\t222"),
-                            AssertFileContains(ReportPath, "terms-list.txt", "email\t253"),
+                            AssertFileContains(ReportPath, "terms-list.txt", "cindyloh3333\t116"),
                             // Export concordance from the production set
                             new NuixExportConcordance
                             {
