@@ -106,12 +106,12 @@ public partial class IntegrationShortTests
                                 ),
                                 Action = new NuixSearchAndTag
                                 {
-                                    SearchTerm = new EntityGetValue
+                                    SearchTerm = new EntityGetValue<StringStream>
                                     {
                                         Entity   = GetEntityVariable,
                                         Property = Constant("SearchTerm")
                                     },
-                                    Tag = new EntityGetValue
+                                    Tag = new EntityGetValue<StringStream>
                                     {
                                         Entity   = GetEntityVariable,
                                         Property = Constant("Tag")

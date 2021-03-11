@@ -13,9 +13,9 @@ using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
-using Reductech.EDR.Core.Util;
 using Xunit;
 using Xunit.Abstractions;
+using Unit = Reductech.EDR.Core.Util.Unit;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -83,7 +83,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             deserializedStep.ShouldBeSuccessful(x => x.AsString);
 
-            var unfrozenStep = deserializedStep.Value.TryFreeze(sfs);
+            var unfrozenStep = deserializedStep.Value.TryFreeze(TypeReference.Any.Instance, sfs);
 
             unfrozenStep.ShouldBeSuccessful(x => x.AsString);
 

@@ -39,8 +39,7 @@ public class ExampleTests
         var logger = new Microsoft.Extensions.Logging.Xunit.XunitLogger(TestOutputHelper, "Test");
 
         var stepResult = SCLParsing.ParseSequence(yaml)
-            .Bind(x => x.TryFreeze(sfs));
-        //.Map(SCLRunner.ConvertToUnitStep);
+            .Bind(x => x.TryFreeze(TypeReference.Any.Instance, sfs));
 
         if (stepResult.IsFailure)
             errorAction.Invoke(stepResult);
