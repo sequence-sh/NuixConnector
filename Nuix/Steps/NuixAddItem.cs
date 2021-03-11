@@ -206,8 +206,9 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// </summary>
     [StepProperty]
     [RubyArgument("containerCustodianArg")]
+    [DefaultValueExplanation("No custodian assigned")]
     [Alias("ContainerCustodian")]
-    public IStep<StringStream> Custodian { get; set; } = null!;
+    public IStep<StringStream>? Custodian { get; set; }
 
     /// <summary>
     /// The name of the Processing profile to use.
