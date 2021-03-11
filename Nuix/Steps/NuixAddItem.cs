@@ -104,17 +104,34 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
     log ""Creating new evidence container '#{folderNameArg}'""
     folder = processor.new_evidence_container(folderNameArg)
 
-    log(""Container description: #{folderDescriptionArg}"", severity: :trace)
-    folder.description = folderDescriptionArg if folderDescriptionArg != nil
+    unless folderDescriptionArg.nil?
+      log(""Container description: #{folderDescriptionArg}"", severity: :debug)
+      folder.description = folderDescriptionArg
+    end
 
     unless folderCustodianArg.nil?
-      log(""Container custodian: '#{folderCustodianArg}'"", severity: :trace)
+      log(""Container custodian: '#{folderCustodianArg}'"", severity: :debug)
       folder.initial_custodian = folderCustodianArg
     end
 
     unless customMetadataArg.nil?
       log(""Adding custom metadata to container #{folderNameArg}"", severity: :debug)
       folder.set_custom_metadata(customMetadataArg)
+    end
+
+    unless folderEncodingArg.nil?
+      log(""Container encoding: '#{folderEncodingArg}'"", severity: :debug)
+      folder.set_encoding(folderEncodingArg)
+    end
+
+    unless folderLocaleArg.nil?
+      log(""Container locale: '#{folderLocaleArg}'"", severity: :debug)
+      folder.set_locale(folderLocaleArg)
+    end
+
+    unless folderTimeZoneArg.nil?
+      log(""Container time zone: '#{folderTimeZoneArg}'"", severity: :debug)
+      folder.set_time_zone(folderTimeZoneArg)
     end
 
     filePathsArgs.each do |path|
@@ -182,6 +199,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     [StepProperty(3)]
     [RubyArgument("folderDescriptionArg")]
     [DefaultValueExplanation("No Description")]
+    [Alias("ContainerDescription")]
     public IStep<StringStream>? Description { get; set; }
 
     /// <summary>
@@ -270,6 +288,38 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     [RubyArgument("customMetadataArg")]
     [DefaultValueExplanation("No custom metadata will be added")]
     public IStep<Core.Entity>? CustomMetadata { get; set; }
+
+    /// <summary>
+    /// Set the encoding for the folder/container.
+    /// </summary>
+    [StepProperty]
+    [Example("UTF-8")]
+    [RubyArgument("folderEncodingArg")]
+    [DefaultValueExplanation("Default system encoding")]
+    [Alias("ContainerEncoding")]
+    public IStep<StringStream>? FolderEncoding { get; set; }
+
+    /// <summary>
+    /// Set the locale for the folder/container.
+    /// </summary>
+    [RequiredVersion("Nuix", "7.2")]
+    [StepProperty]
+    [Example("en_GB")]
+    [RubyArgument("folderLocaleArg")]
+    [DefaultValueExplanation("Default system locale")]
+    [Alias("ContainerLocale")]
+    public IStep<StringStream>? FolderLocale { get; set; }
+
+    /// <summary>
+    /// Set the time zone for the folder/container.
+    /// If the time zone given is not known to Nuix, the GMT time zone will be used.
+    /// </summary>
+    [StepProperty]
+    [Example("UTC")]
+    [RubyArgument("folderTimeZoneArg")]
+    [DefaultValueExplanation("Default system time zone")]
+    [Alias("ContainerTimeZone")]
+    public IStep<StringStream>? FolderTimeZone { get; set; }
 
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)
