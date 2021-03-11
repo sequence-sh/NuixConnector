@@ -187,7 +187,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// The custodian to assign to the new folder/container.
     /// </summary>
-    [StepProperty(4)]
+    [StepProperty]
     [RubyArgument("folderCustodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
 
@@ -195,7 +195,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// The name of the Processing profile to use.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(5)]
+    [StepProperty]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("The default processing profile will be used.")]
     [RubyArgument("processingProfileNameArg")]
@@ -206,7 +206,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// The path to the Processing profile to use
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(6)]
+    [StepProperty]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("The default processing profile will be used.")]
     [RubyArgument("processingProfilePathArg")]
@@ -218,7 +218,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// These settings correspond to the same settings in the desktop application,
     /// however the user's preferences are not used to derive the defaults.
     /// </summary>
-    [StepProperty(7)]
+    [StepProperty]
     [DefaultValueExplanation("Processing settings will not be changed")]
     [RubyArgument("processingSettingsArg")]
     [Alias("Settings")]
@@ -229,7 +229,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// These settings correspond to the same settings in the desktop application,
     /// however the user's preferences are not used to derive the defaults.
     /// </summary>
-    [StepProperty(8)]
+    [StepProperty]
     [DefaultValueExplanation("Parallel processing settings will not be changed")]
     [RubyArgument("parallelProcessingSettingsArg")]
     public IStep<Core.Entity>? ParallelProcessingSettings { get; set; }
@@ -238,7 +238,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// The path of a file containing passwords to use for decryption.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(9)]
+    [StepProperty]
     [Example("C:/Data/Passwords.txt")]
     [RubyArgument("passwordFilePathArg")]
     [DefaultValueExplanation("Do not attempt decryption")]
@@ -250,7 +250,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// Should have a 'mime_type' property and then any other special properties.
     /// </summary>
     [RequiredVersion("Nuix", "8.2")]
-    [StepProperty(10)]
+    [StepProperty]
     [RubyArgument("mimeTypeDataStreamArg")]
     [DefaultValueExplanation("Use default settings for all MIME types")]
     public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
@@ -258,7 +258,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// The number of items at which the Nuix processor logs a progress message.
     /// </summary>
-    [StepProperty(11)]
+    [StepProperty]
     [RubyArgument("progressIntervalArg")]
     [DefaultValueExplanation("Every 5000 items")]
     public IStep<int> ProgressInterval { get; set; } = new IntConstant(5000);
@@ -266,7 +266,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// Sets additional metadata on the folder/container.
     /// </summary>
-    [StepProperty(12)]
+    [StepProperty]
     [RubyArgument("customMetadataArg")]
     [DefaultValueExplanation("No custom metadata will be added")]
     public IStep<Core.Entity>? CustomMetadata { get; set; }
