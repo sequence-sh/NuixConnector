@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Connectors.Nuix.Enums;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -33,6 +35,13 @@ public sealed class
     /// <inheritdoc />
     public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
         new List<NuixFeature>() { NuixFeature.PRODUCTION_SET };
+
+    /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper>
+        {
+            NuixSearch.Instance, NuixExpandSearch.Instance, NuixSortItems.Instance
+        };
 
     /// <inheritdoc />
     public override string FunctionName => "AddToProductionSet";
@@ -72,6 +81,7 @@ public sealed class
     end
 
     all_items = expand_search(items, searchTypeArg)
+    all_items = sort_items(all_items, itemSortOrderArg) unless itemSortOrderArg.nil?
 
     log ""Adding #{all_items.length} items to production set '#{productionSetNameArg}'""
     productionSet.addItems(all_items)
@@ -113,7 +123,7 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
     /// Either this or the ProductionProfilePath must be set
     /// </summary>
     [RequiredVersion("Nuix", "7.2")]
-    [StepProperty(4)]
+    [StepProperty]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("If not set, the profile path will be used.")]
     [RubyArgument("productionProfileNameArg")]
@@ -125,12 +135,21 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
     /// Either this or the ProductionProfileName must be set.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(5)]
+    [StepProperty]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("If not set, the profile name will be used.")]
     [RubyArgument("productionProfilePathArg")]
     [Alias("ProfilePath")]
     public IStep<StringStream>? ProductionProfilePath { get; set; }
+
+    /// <summary>
+    /// Sort items before adding them to the production set.
+    /// </summary>
+    [StepProperty]
+    [DefaultValueExplanation("Unsorted or by relevance. See SortSearch.")]
+    [RubyArgument("itemSortOrderArg")]
+    [Alias("SortItemsBy")]
+    public IStep<ItemSortOrder>? ItemSortOrder { get; set; }
 
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)

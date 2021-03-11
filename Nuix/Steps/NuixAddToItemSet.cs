@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Enums;
+using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -33,6 +34,13 @@ public sealed class NuixAddToItemSetStepFactory : RubySearchStepFactory<NuixAddT
         new List<NuixFeature> { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
+    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
+        = new List<IRubyHelper>
+        {
+            NuixSearch.Instance, NuixExpandSearch.Instance, NuixSortItems.Instance
+        };
+
+    /// <inheritdoc />
     public override string FunctionName => "AddToItemSet";
 
     /// <inheritdoc />
@@ -59,6 +67,7 @@ public sealed class NuixAddToItemSetStepFactory : RubySearchStepFactory<NuixAddT
     end
 
     all_items = expand_search(items, searchTypeArg)
+    all_items = sort_items(all_items, itemSortOrderArg) unless itemSortOrderArg.nil?
 
     log ""Adding #{all_items.length} items to item set '#{itemSetNameArg}'""
     itemSet.addItems(all_items)
@@ -129,6 +138,15 @@ public sealed class NuixAddToItemSet : RubySearchStepBase<Unit>
     [RubyArgument("custodianRankingArg")]
     [DefaultValueExplanation("Do not rank custodians")]
     public IStep<Array<StringStream>>? CustodianRanking { get; set; }
+
+    /// <summary>
+    /// Sort items before adding them to the production set.
+    /// </summary>
+    [StepProperty]
+    [DefaultValueExplanation("Unsorted or by relevance. See SortSearch.")]
+    [RubyArgument("itemSortOrderArg")]
+    [Alias("SortItemsBy")]
+    public IStep<ItemSortOrder>? ItemSortOrder { get; set; }
 }
 
 }
