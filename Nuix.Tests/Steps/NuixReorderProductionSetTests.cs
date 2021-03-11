@@ -33,7 +33,7 @@ public partial class
                 new NuixReorderProductionSet()
                 {
                     ProductionSetName = Constant("fullset"),
-                    SortOrder         = Constant(ProductionSetSortOrder.TopLevelItemDate)
+                    SortOrder         = Constant(ItemSortOrder.TopLevelItemDate)
                 },
                 AssertCount(2, "production-set:fullset"),
                 new NuixCloseConnection(),
