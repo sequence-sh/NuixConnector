@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Reductech.EDR.Connectors.Nuix.Enums;
-using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -42,8 +41,6 @@ public sealed class NuixAddToItemSetStepFactory : RubySearchStepFactory<NuixAddT
     items = search(searchArg, searchOptionsArg, sortArg)
     return unless items.length > 0
 
-    all_items = expand_search(items, searchTypeArg)
-
     log(""Searching for item set #{itemSetNameArg}"", severity: :debug)
     itemSet = $current_case.findItemSetByName(itemSetNameArg)
 
@@ -60,6 +57,8 @@ public sealed class NuixAddToItemSetStepFactory : RubySearchStepFactory<NuixAddT
     else
       log ""Existing item set '#{itemSetNameArg}' found""
     end
+
+    all_items = expand_search(items, searchTypeArg)
 
     log ""Adding #{all_items.length} items to item set '#{itemSetNameArg}'""
     itemSet.addItems(all_items)
