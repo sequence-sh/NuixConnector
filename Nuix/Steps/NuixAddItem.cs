@@ -177,19 +177,19 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     public IStep<StringStream> FolderName { get; set; } = null!;
 
     /// <summary>
-    /// The custodian to assign to the new folder/container.
-    /// </summary>
-    [StepProperty(3)]
-    [RubyArgument("folderCustodianArg")]
-    public IStep<StringStream> Custodian { get; set; } = null!;
-
-    /// <summary>
     /// The description of the new folder.
     /// </summary>
-    [StepProperty(4)]
+    [StepProperty(3)]
     [RubyArgument("folderDescriptionArg")]
     [DefaultValueExplanation("No Description")]
     public IStep<StringStream>? Description { get; set; }
+
+    /// <summary>
+    /// The custodian to assign to the new folder/container.
+    /// </summary>
+    [StepProperty(4)]
+    [RubyArgument("folderCustodianArg")]
+    public IStep<StringStream> Custodian { get; set; } = null!;
 
     /// <summary>
     /// The name of the Processing profile to use.
