@@ -24,7 +24,7 @@ public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T>
     [Example("*.txt")]
     [RubyArgument("searchArg")]
     [Alias("Search")]
-    public IStep<StringStream> SearchTerm { get; set; } = null!;
+    public virtual IStep<StringStream> SearchTerm { get; set; } = null!;
 
     /// <summary>
     /// Pass additional search options to nuix.
@@ -36,7 +36,7 @@ public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T>
     [StepProperty]
     [RubyArgument("searchOptionsArg")]
     [DefaultValueExplanation("No search options provided")]
-    public IStep<Entity>? SearchOptions { get; set; }
+    public virtual IStep<Entity>? SearchOptions { get; set; }
 
     /// <summary>
     /// By default the search is not sorted by relevance which increases performance.
@@ -45,7 +45,7 @@ public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T>
     [StepProperty]
     [RubyArgument("sortArg")]
     [DefaultValueExplanation("false")]
-    public IStep<bool>? SortSearch { get; set; }
+    public virtual IStep<bool>? SortSearch { get; set; }
 
     /// <summary>
     /// Defines the type of search that is done. By default only the items responsive to
@@ -54,7 +54,7 @@ public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T>
     [StepProperty]
     [RubyArgument("searchTypeArg")]
     [DefaultValueExplanation("ItemsOnly")]
-    public IStep<SearchType> SearchType { get; set; } =
+    public virtual IStep<SearchType> SearchType { get; set; } =
         new EnumConstant<SearchType>(Enums.SearchType.ItemsOnly);
 }
 
