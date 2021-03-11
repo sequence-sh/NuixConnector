@@ -102,14 +102,15 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
     end
 
     log ""Creating new evidence container '#{folderNameArg}'""
-
     folder = processor.new_evidence_container(folderNameArg)
 
     log(""Container description: #{folderDescriptionArg}"", severity: :trace)
-    log(""Container custodian: '#{folderCustodianArg}'"", severity: :trace)
-    
     folder.description = folderDescriptionArg if folderDescriptionArg != nil
-    folder.initial_custodian = folderCustodianArg
+
+    unless folderCustodianArg.nil?
+      log(""Container custodian: '#{folderCustodianArg}'"", severity: :trace)
+      folder.initial_custodian = folderCustodianArg
+    end
 
     unless customMetadataArg.nil?
       log(""Adding custom metadata to container #{folderNameArg}"", severity: :debug)
@@ -178,7 +179,6 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// The custodian to assign to the new folder/container.
     /// </summary>
-    [Required]
     [StepProperty(3)]
     [RubyArgument("folderCustodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
@@ -215,7 +215,8 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// Sets the processing settings to use.
-    /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
+    /// These settings correspond to the same settings in the desktop application,
+    /// however the user's preferences are not used to derive the defaults.
     /// </summary>
     [StepProperty(7)]
     [DefaultValueExplanation("Processing settings will not be changed")]
@@ -225,7 +226,8 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// Sets the parallel processing settings to use.
-    /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
+    /// These settings correspond to the same settings in the desktop application,
+    /// however the user's preferences are not used to derive the defaults.
     /// </summary>
     [StepProperty(8)]
     [DefaultValueExplanation("Parallel processing settings will not be changed")]
