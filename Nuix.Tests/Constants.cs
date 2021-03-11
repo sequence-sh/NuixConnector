@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
@@ -214,6 +215,11 @@ public static class Constants
     {
         Custodian = Constant("Mark"), Paths = DataPaths, Container = Constant("New Folder")
     };
+
+    public static ExternalProcessAction HelperAction(string name) => new(
+        new ConnectionCommand { Command = name, FunctionDefinition = "", IsHelper = true },
+        new ConnectionOutput { Result   = new ConnectionOutputResult { Data = "helper_success" } }
+    );
 }
 
 }
