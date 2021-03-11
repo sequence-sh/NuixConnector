@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -16,7 +15,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
 public sealed class
-    NuixGetItemPropertiesStepFactory : RubyScriptStepFactory<NuixGetItemProperties, StringStream>
+    NuixGetItemPropertiesStepFactory : RubySearchStepFactory<NuixGetItemProperties, StringStream>
 {
     private NuixGetItemPropertiesStepFactory() { }
 
@@ -34,10 +33,6 @@ public sealed class
         new List<NuixFeature>();
 
     /// <inheritdoc />
-    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
-        = new List<IRubyHelper> { NuixSearch.Instance };
-
-    /// <inheritdoc />
     public override string FunctionName => "GetItemProperties";
 
     /// <inheritdoc />
@@ -45,13 +40,15 @@ public sealed class
     items = search(searchArg, searchOptionsArg, sortArg)
     return unless items.length > 0
 
+    all_items = expand_search(items, searchTypeArg)
+
     propertyRegex = Regexp.new(propertyRegexArg)
     valueRegex = nil
     valueRegex = Regexp.new(valueRegexArg) if valueRegexArg != nil
 
     text = ""Key\tValue\tPath\tGuid""
 
-    items.each do |i|
+    all_items.each do |i|
       i.getProperties().each do |k,v|
         begin
           if propertyRegex =~ k
@@ -78,21 +75,11 @@ public sealed class
 /// The report is in CSV format. The headers are 'Key', 'Value', 'Path' and 'Guid'
 /// Use this inside a WriteFile step to write it to a file.
 /// </summary>
-public sealed class NuixGetItemProperties : RubyCaseScriptStepBase<StringStream>
+public sealed class NuixGetItemProperties : RubySearchStepBase<StringStream>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixGetItemPropertiesStepFactory.Instance;
-
-    /// <summary>
-    /// The term to search for.
-    /// </summary>
-    [Required]
-    [Example("*.txt")]
-    [StepProperty(1)]
-    [RubyArgument("searchArg")]
-    [Alias("Search")]
-    public IStep<StringStream> SearchTerm { get; set; } = null!;
 
     /// <summary>
     /// The regex to search the property for.
@@ -114,30 +101,6 @@ public sealed class NuixGetItemProperties : RubyCaseScriptStepBase<StringStream>
     [DefaultValueExplanation("All values will be returned")]
     [Alias("ValueFilter")]
     public IStep<StringStream>? ValueRegex { get; set; }
-
-    /// <summary>
-    /// Pass additional search options to nuix. For an unsorted search (default)
-    /// the only available option is defaultFields. When using <code>SortSearch=true</code>
-    /// the options are defaultFields, order, and limit.
-    /// Please see the nuix API for <code>Case.search</code>
-    /// and <code>Case.searchUnsorted</code> for more details.
-    /// </summary>
-    [RequiredVersion("Nuix", "7.0")]
-    [StepProperty(4)]
-    [RubyArgument("searchOptionsArg")]
-    [DefaultValueExplanation("No search options provided")]
-    public IStep<Entity>? SearchOptions { get; set; }
-
-    /// <summary>
-    /// By default the search is not sorted by relevance which
-    /// increases performance. Set this to true to sort the
-    /// search by relevance.
-    /// </summary>
-    [RequiredVersion("Nuix", "7.0")]
-    [StepProperty(5)]
-    [RubyArgument("sortArg")]
-    [DefaultValueExplanation("false")]
-    public IStep<bool>? SortSearch { get; set; }
 }
 
 }
