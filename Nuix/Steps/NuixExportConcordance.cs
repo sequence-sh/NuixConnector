@@ -39,19 +39,14 @@ public sealed class
     /// <inheritdoc />
     public override string RubyFunctionText => @"
     production_set = $current_case.findProductionSetByName(productionSetNameArg)
-
-    if productionSet.nil?
-      write_error(""Could not find production set '#{productionSetNameArg}'"", terminating: true)
+    if production_set.nil?
+      write_error(""Could not find production set '#{productionSetNameArg}'"")
+      return
     end
-
-    if productionSet == nil
-      log ""Could not find production set '#{productionSetNameArg}'""
-    elsif productionSet.getProductionProfile == nil
-      log ""Production set '#{productionSetNameArg.to_s}' did not have a production profile set.""
+    if exportOptionsArg.nil? and production_set.get_production_profile.nil?
+      write_error('No ExportOptions or Production Profile has been set.')
+      return
     end
-
-    exporter = $utilities.create_batch_exporter(exportPathArg)
-
     traversal_options = {}
     unless traversalStrategyArg.nil?
       log(""Traversal strategy: '#{traversalStrategyArg}'"", severity: :debug)
@@ -69,10 +64,17 @@ public sealed class
       log(""Traversal export descendant containers: '#{exportDescendantContainersArg}'"", severity: :debug)
       traversal_options[:exportDescendantContainers] = exportDescendantContainersArg
     end
+    exporter = $utilities.create_batch_exporter(exportPathArg)
     exporter.set_traversal_options(traversal_options) unless traversal_options.empty?
     exporter.setSkipNativesSlipsheetedItems(skipSlipsheetedItemsArg) unless skipSlipsheetedItemsArg.nil?
     exporter.setNumberingOptions(numberingOptionsArg) unless numberingOptionsArg.nil?
     exporter.setParallelProcessingSettings(parallelProcessingSettingsArg) unless parallelProcessingSettingsArg.nil?
+    unless exportOptionsArg.nil?
+      exportOptionsArg.each do |product, options|
+        log(""Adding #{product} to export with options: '#{options}'"", severity: :debug)
+        exporter.add_product(product, options)
+      end
+    end
     exporter.before_export { log 'Starting export' }
     exporter.export_items(production_set)
     log 'Export finished'
@@ -107,12 +109,26 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
 
     /// <summary>
+    /// An array of file types and associated options to produce.
+    /// If this is not set, the ProductionSet must have a production profile.
+    /// See Nuix API <code>BatchExporter.addProduct()</code>
+    /// for more details on the available options.
+    /// </summary>
+    [StepProperty(3)]
+    [RubyArgument("exportOptionsArg")]
+    [DefaultValueExplanation("The ProductionSet profile is used")]
+    [Example(
+        "[(native: (path: 'NATIVE' naming: 'document_id')) (text: (path: 'TEXT' naming: 'document_id'))]"
+    )]
+    public IStep<Array<Core.Entity>>? ExportOptions { get; set; }
+
+    /// <summary>
     /// Set the numbering options for the export.
     /// This setting has no effect if the production set has numbering options defined.
     /// See Nuix API <code>NumberingConfigurable.setNumberingOptions()</code>
     /// for more details on the available options.
     /// </summary>
-    [StepProperty]
+    [StepProperty(4)]
     [RubyArgument("numberingOptionsArg")]
     [DefaultValueExplanation("Document ID numbering, starting with DOC-000000001")]
     [Example("(createProductionSet: false prefix: 'ABC' documentId: (startAt: 1 minWidth: 4))")]
