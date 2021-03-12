@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
@@ -30,13 +31,22 @@ public partial class NuixGetAuditedSizeTests : NuixStepTestBase<NuixGetAuditedSi
                 },
                 new AssertTrue
                 {
-                    Boolean = new Equals<double>()
+                    // TODO: Comparing the two as a string is a hack and will need to be
+                    // reverted back to double once the upstream bug in Core has been fixed
+                    Boolean = new Equals<StringStream>()
                     {
-                        Terms = new ArrayNew<double>()
+                        Terms = new ArrayNew<StringStream>()
                         {
-                            Elements = new List<IStep<double>>()
+                            Elements = new List<IStep<StringStream>>()
                             {
-                                Constant(2.5), new NuixGetAuditedSize()
+                                Constant("799"),
+                                new StringInterpolate
+                                {
+                                    Strings = new List<IStep>
+                                    {
+                                        new NuixGetAuditedSize()
+                                    }
+                                }
                             }
                         }
                     }

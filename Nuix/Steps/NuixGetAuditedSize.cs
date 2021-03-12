@@ -12,6 +12,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 /// Calculate the total audited size for a case.
 /// For this to work, the case material needs to have been ingested
 /// with the calculateAuditedSize=true processing setting.
+/// Nuix uses 1000 base for kb/mb/gb, not 1024.
 /// </summary>
 public sealed class
     NuixGetAuditedSizeStepFactory : RubyScriptStepFactory<NuixGetAuditedSize, double>
@@ -49,6 +50,7 @@ public sealed class
 /// Calculate the total audited size for a case.
 /// For this to work, the case material needs to have been ingested
 /// with the calculateAuditedSize=true processing setting.
+/// Nuix uses 1000 base for kb/mb/gb, not 1024.
 /// </summary>
 [Alias("NuixCalculateAuditedSize")]
 public sealed class NuixGetAuditedSize : RubyCaseScriptStepBase<double>
