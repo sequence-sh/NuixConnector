@@ -72,6 +72,7 @@ public sealed class
     exporter.set_traversal_options(traversal_options) unless traversal_options.empty?
     exporter.setSkipNativesSlipsheetedItems(skipSlipsheetedItemsArg) unless skipSlipsheetedItemsArg.nil?
     exporter.setNumberingOptions(numberingOptionsArg) unless numberingOptionsArg.nil?
+    exporter.setParallelProcessingSettings(parallelProcessingSettingsArg) unless parallelProcessingSettingsArg.nil?
     exporter.before_export { log 'Starting export' }
     exporter.export_items(production_set)
     log 'Export finished'
@@ -116,6 +117,15 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation("Document ID numbering, starting with DOC-000000001")]
     [Example("(createProductionSet: false prefix: 'ABC' documentId: (startAt: 1 minWidth: 4))")]
     public IStep<Core.Entity>? NumberingOptions { get; set; }
+
+    /// <summary>
+    /// Sets the parallel processing settings to use.
+    /// </summary>
+    [StepProperty]
+    [DefaultValueExplanation("Default processing settings used")]
+    [RubyArgument("parallelProcessingSettingsArg")]
+    [Example("(workerCount: 2 workerMemory: 4096)")]
+    public IStep<Core.Entity>? ParallelProcessingSettings { get; set; }
 
     /// <summary>
     /// The method of selecting which items to export.
