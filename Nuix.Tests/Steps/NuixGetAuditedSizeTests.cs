@@ -21,9 +21,9 @@ public partial class NuixGetAuditedSizeTests : NuixStepTestBase<NuixGetAuditedSi
                 CreateCase,
                 new NuixAddItem
                 {
-                    Custodian  = Constant("Mark"),
-                    Paths      = DataPaths,
-                    FolderName = Constant("New Folder"),
+                    Custodian = Constant("Mark"),
+                    Paths     = DataPaths,
+                    Container = Constant("New Folder"),
                     ProcessingSettings = Constant(
                         Core.Entity.Create(("calculateAuditedSize", true))
                     )
