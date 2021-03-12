@@ -38,19 +38,16 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-
     production_set = $current_case.findProductionSetByName(productionSetNameArg)
 
     if productionSet.nil?
       write_error(""Could not find production set '#{productionSetNameArg}'"", terminating: true)
     end
 
-    
-
     if productionSet == nil
-        log ""Could not find production set '#{productionSetNameArg}'""
+      log ""Could not find production set '#{productionSetNameArg}'""
     elsif productionSet.getProductionProfile == nil
-        log ""Production set '#{productionSetNameArg.to_s}' did not have a production profile set.""
+      log ""Production set '#{productionSetNameArg.to_s}' did not have a production profile set.""
     end
 
     exporter = $utilities.create_batch_exporter(exportPathArg)
@@ -73,9 +70,8 @@ public sealed class
       traversal_options[:exportDescendantContainers] = exportDescendantContainersArg
     end
     exporter.set_traversal_options(traversal_options) unless traversal_options.empty?
-
     exporter.setSkipNativesSlipsheetedItems(skipSlipsheetedItemsArg) unless skipSlipsheetedItemsArg.nil?
-
+    exporter.setNumberingOptions(numberingOptionsArg) unless numberingOptionsArg.nil?
     exporter.before_export { log 'Starting export' }
     exporter.export_items(production_set)
     log 'Export finished'
@@ -108,6 +104,18 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
+
+    /// <summary>
+    /// Set the numbering options for the export.
+    /// This setting has no effect if the production set has numbering options defined.
+    /// See Nuix API <code>NumberingConfigurable.setNumberingOptions()</code>
+    /// for more details on the available options.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("numberingOptionsArg")]
+    [DefaultValueExplanation("Document ID numbering, starting with DOC-000000001")]
+    [Example("(createProductionSet: false prefix: 'ABC' documentId: (startAt: 1 minWidth: 4))")]
+    public IStep<Core.Entity>? NumberingOptions { get; set; }
 
     /// <summary>
     /// The method of selecting which items to export.
