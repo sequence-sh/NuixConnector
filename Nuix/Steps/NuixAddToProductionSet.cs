@@ -52,18 +52,17 @@ public sealed class
     items = search(searchArg, searchOptionsArg, sortArg)
     return unless items.length > 0
 
-    productionSet = $current_case.findProductionSetByName(productionSetNameArg)
+    production_set = $current_case.findProductionSetByName(productionSetNameArg)
 
-    if productionSet.nil?
+    if production_set.nil?
       log ""Production set '#{productionSetNameArg}' not found. Creating.""
-      options = {}
-      options[:description] = descriptionArg.to_i if descriptionArg != nil
+      options = descriptionArg.nil? ? {} : { :description => descriptionArg }
       log(""Production set options: #{options}"", severity: :trace)
-      productionSet = $current_case.newProductionSet(productionSetNameArg, options)
+      production_set = $current_case.newProductionSet(productionSetNameArg, options)
 
       if productionProfileNameArg != nil
         log(""Setting production profile: #{productionProfileNameArg}"", severity: :debug)
-        productionSet.setProductionProfile(productionProfileNameArg)
+        production_set.setProductionProfile(productionProfileNameArg)
       elsif productionProfilePathArg != nil
         log(""Loading production profile from #{productionProfilePathArg}"", severity: :debug)
         profileBuilder = $utilities.getProductionProfileBuilder()
@@ -71,10 +70,29 @@ public sealed class
         if profile.nil?
           write_error(""Could not find processing profile: #{productionProfilePathArg}"", terminating: true)
         end
-        productionSet.setProductionProfileObject(profile)
-      else
-        write_error(""No production profile set"", terminating: true)
+        production_set.setProductionProfileObject(profile)
       end
+
+      unless numberingOptionsArg.nil?
+        log(""Numbering options: #{numberingOptionsArg}"", severity: :debug)
+        production_set.set_numbering_options(numberingOptionsArg)
+      end
+
+      unless imagingOptionsArg.nil?
+        log(""Imaging settings: #{imagingOptionsArg}"", severity: :debug)
+        production_set.set_imaging_options(imagingOptionsArg)
+      end
+
+      unless stampingOptionsArg.nil?
+        log(""Stamping options: #{stampingOptionsArg}"", severity: :debug)
+        production_set.set_stamping_options(stampingOptionsArg)
+      end
+
+      unless textOptionsArg.nil?
+        log(""Text settings: #{textOptionsArg}"", severity: :debug)
+        production_set.set_text_settings(textOptionsArg)
+      end
+
       log ""Successfully created '#{productionSetNameArg}' production set.""
     else
       log ""Existing production set '#{productionSetNameArg}' found""
@@ -84,7 +102,7 @@ public sealed class
     all_items = sort_items(all_items, itemSortOrderArg) unless itemSortOrderArg.nil?
 
     log ""Adding #{all_items.length} items to production set '#{productionSetNameArg}'""
-    productionSet.addItems(all_items)
+    production_set.addItems(all_items)
     log('Finished adding items', severity: :debug)
 ";
 }
@@ -120,24 +138,26 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
 
     /// <summary>
     /// The name of the Production profile to use.
-    /// Either this or the ProductionProfilePath must be set
+    /// Cannot be used at the same time as ProductionProfilePath.
+    /// This option only works if the ProductionSet is created by this Step.
     /// </summary>
     [RequiredVersion("Nuix", "7.2")]
     [StepProperty]
     [Example("MyProcessingProfile")]
-    [DefaultValueExplanation("If not set, the profile path will be used.")]
+    [DefaultValueExplanation("No profile set")]
     [RubyArgument("productionProfileNameArg")]
     [Alias("Profile")]
     public IStep<StringStream>? ProductionProfileName { get; set; }
 
     /// <summary>
     /// The path to the Production profile to use.
-    /// Either this or the ProductionProfileName must be set.
+    /// Cannot be used at the same time as ProductionProfileName.
+    /// This option only works if the ProductionSet is created by this Step.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
     [StepProperty]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
-    [DefaultValueExplanation("If not set, the profile name will be used.")]
+    [DefaultValueExplanation("No profile set")]
     [RubyArgument("productionProfilePathArg")]
     [Alias("ProfilePath")]
     public IStep<StringStream>? ProductionProfilePath { get; set; }
@@ -151,6 +171,59 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
     [Alias("SortItemsBy")]
     public IStep<ItemSortOrder>? ItemSortOrder { get; set; }
 
+    /// <summary>
+    /// Sets the imaging options for a production set.
+    /// This option only works if the ProductionSet is created by this Step.
+    /// Cannot be used at the same time as using a profile.
+    /// See Nuix API <code>ImagingConfigurable.setImagingOptions()</code>
+    /// for more details on the available options.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("imagingOptionsArg")]
+    [DefaultValueExplanation("None")]
+    [Example(
+        "(imageExcelSpreadsheets: true slipSheetContainers: true tiffFormat: 'GREYSCALE_LZW')"
+    )]
+    public IStep<Core.Entity>? ImagingOptions { get; set; }
+
+    /// <summary>
+    /// Set the numbering options for the production set.
+    /// This option only works if the ProductionSet is created by this Step.
+    /// See Nuix API <code>NumberingConfigurable.setNumberingOptions()</code>
+    /// for more details on the available options.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("numberingOptionsArg")]
+    [DefaultValueExplanation("Document ID numbering, starting with DOC-000000001")]
+    [Example("(createProductionSet: false prefix: 'ABC' documentId: (startAt: 1 minWidth: 4))")]
+    public IStep<Core.Entity>? NumberingOptions { get; set; }
+
+    /// <summary>
+    /// Sets the stamping options to use when exporting a production set.
+    /// This option only works if the ProductionSet is created by this Step.
+    /// Cannot be used at the same time as using a profile.
+    /// See Nuix API <code>StampingConfigurable.setStampingOptions()</code>
+    /// for more details on the available options.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("stampingOptionsArg")]
+    [DefaultValueExplanation("None")]
+    [Example("(footerCentre: (type: 'document_number'))")]
+    public IStep<Core.Entity>? StampingOptions { get; set; }
+
+    /// <summary>
+    /// Sets the text settings for a production set.
+    /// This option only works if the ProductionSet is created by this Step.
+    /// Cannot be used at the same time as using a profile.
+    /// See Nuix API <code>ProductionSet.setTextSettings()</code>
+    /// for more details on the available options.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("textOptionsArg")]
+    [DefaultValueExplanation("None")]
+    [Example("(lineSeparator: '\\n' encoding: 'UTF-8')")]
+    public IStep<Core.Entity>? TextOptions { get; set; }
+
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)
     {
@@ -162,13 +235,16 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
                 nameof(ProductionProfilePath)
             );
 
-        if (ProductionProfileName == null && ProductionProfilePath == null)
+        if ((ProductionProfileName != null || ProductionProfilePath != null) &&
+            (ImagingOptions != null || StampingOptions != null || TextOptions != null))
+        {
             return new SingleError(
                 new ErrorLocation(this),
-                ErrorCode.MissingParameter,
-                nameof(ProductionProfileName),
-                nameof(ProductionProfilePath)
+                ErrorCode.ConflictingParameters,
+                $"({nameof(ProductionProfileName)} or {nameof(ProductionProfilePath)})",
+                $"({nameof(ImagingOptions)}, {StampingOptions}, or {nameof(TextOptions)})"
             );
+        }
 
         return base.VerifyThis(settings);
     }
