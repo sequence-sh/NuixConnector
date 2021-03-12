@@ -89,7 +89,6 @@ public sealed class NuixRemoveFromProductionSet : RubySearchStepBase<Unit>
     [DefaultValueExplanation("All items removed.")]
     [Example("Tag:sushi")]
     [RubyArgument("searchArg")]
-    [Alias("Search")]
     public override IStep<StringStream> SearchTerm { get; set; } = new StringConstant(string.Empty);
 }
 

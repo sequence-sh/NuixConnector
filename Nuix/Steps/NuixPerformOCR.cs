@@ -102,7 +102,6 @@ public sealed class NuixPerformOCR : RubySearchStepBase<Unit>
     [StepProperty(1)]
     [DefaultValueExplanation(DefaultSearchTerm)]
     [RubyArgument("searchArg")]
-    [Alias("Search")]
     public override IStep<StringStream> SearchTerm { get; set; } =
         new StringConstant(DefaultSearchTerm);
 
