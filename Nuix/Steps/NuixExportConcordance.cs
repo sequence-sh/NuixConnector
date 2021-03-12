@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -26,7 +27,7 @@ public sealed class
 
     /// <inheritdoc />
     public override Version RequiredNuixVersion { get; } =
-        new(7, 2); //I'm checking the production profile here
+        new(7, 2); // Minimum version required to use a production set
 
     /// <inheritdoc />
     public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
@@ -38,25 +39,49 @@ public sealed class
     /// <inheritdoc />
     public override string RubyFunctionText => @"
 
-    productionSet = $current_case.findProductionSetByName(productionSetNameArg)
+    production_set = $current_case.findProductionSetByName(productionSetNameArg)
+
+    if productionSet.nil?
+      write_error(""Could not find production set '#{productionSetNameArg}'"", terminating: true)
+    end
+
+    
 
     if productionSet == nil
-        log ""Could not find production set with name '#{productionSetNameArg.to_s}'""
+        log ""Could not find production set '#{productionSetNameArg}'""
     elsif productionSet.getProductionProfile == nil
         log ""Production set '#{productionSetNameArg.to_s}' did not have a production profile set.""
-    else
-        batchExporter = $utilities.createBatchExporter(exportPathArg)
+    end
 
+    exporter = $utilities.create_batch_exporter(exportPathArg)
 
-        log 'Starting export.'
-        batchExporter.exportItems(productionSet)
-        log 'Export complete.'
+    traversal_options = {}
+    unless traversalStrategyArg.nil?
+      log(""Traversal strategy: '#{traversalStrategyArg}'"", severity: :debug)
+      traversal_options[:strategy] = traversalStrategyArg
+    end
+    unless deduplicationArg.nil?
+      log(""Traversal deduplication: '#{deduplicationArg}'"", severity: :debug)
+      traversal_options[:deduplication] = deduplicationArg
+    end
+    unless sortArg.nil?
+      log(""Traversal sort order: '#{sortArg}'"", severity: :debug)
+      traversal_options[:sortOrder] = sortArg
+    end
+    unless exportDescendantContainersArg.nil?
+      log(""Traversal export descendant containers: '#{exportDescendantContainersArg}'"", severity: :debug)
+      traversal_options[:exportDescendantContainers] = exportDescendantContainersArg
+    end
+    exporter.set_traversal_options(traversal_options) unless traversal_options.empty?
 
-    end";
+    exporter.before_export { log 'Starting export' }
+    exporter.export_items(production_set)
+    log 'Export finished'
+";
 }
 
 /// <summary>
-/// Exports Concordance for a particular production set.
+/// Exports a production set in Concorfance format
 /// </summary>
 public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
 {
@@ -65,7 +90,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
         NuixExportConcordanceStepFactory.Instance;
 
     /// <summary>
-    /// Where to export the Concordance to.
+    /// The directory where the export will be created
     /// </summary>
     [Required]
     [StepProperty(1)]
@@ -81,6 +106,39 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
+
+    /// <summary>
+    /// The method of selecting which items to export.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("traversalStrategyArg")]
+    [DefaultValueExplanation(nameof(ExportTraversalStrategy.Items))]
+    public IStep<ExportTraversalStrategy>? TraversalStrategy { get; set; }
+
+    /// <summary>
+    /// Method of deduplication when top-level item export is used.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("deduplicationArg")]
+    [DefaultValueExplanation(nameof(ExportDeduplication.None))]
+    public IStep<ExportDeduplication>? Deduplication { get; set; }
+
+    /// <summary>
+    /// Method of sorting items during the export.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("sortArg")]
+    [DefaultValueExplanation(nameof(ExportSortOrder.None))]
+    public IStep<ExportSortOrder>? SortOrder { get; set; }
+
+    /// <summary>
+    /// Export descendant containers.
+    /// Only works when TraversalStrategy includes descendants.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("exportDescendantContainersArg")]
+    [DefaultValueExplanation("false")]
+    public IStep<bool>? ExportDescendantContainers { get; set; }
 }
 
 }
