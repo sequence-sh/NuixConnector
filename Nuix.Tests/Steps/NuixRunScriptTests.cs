@@ -279,7 +279,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
             deserializedStep.ShouldBeSuccessful(x => x.AsString);
 
-            var unfrozenStep = deserializedStep.Value.TryFreeze(sfs);
+            var unfrozenStep = deserializedStep.Value.TryFreeze(TypeReference.Any.Instance, sfs);
 
             unfrozenStep.ShouldBeSuccessful(x => x.AsString);
 

@@ -37,21 +37,17 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    productionSet = $current_case.findProductionSetByName(productionSetNameArg)
+    production_set = $current_case.find_production_set_by_name(productionSetNameArg)
 
-    if(productionSet == nil)
-        log ""Production Set Not Found""
+    if production_set.nil?
+      log(""Production set '#{productionSetNameArg}' not found."", severity: :warn)
     else
-        log ""Production Set Found""
-
-        options =
-        {
-            sortOrder: sortOrderArg
-        }
-
-        resultMap = productionSet.renumber(options)
-        log resultMap
-    end";
+      log ""Renumbering production set '#{productionSetNameArg}' using '#{sortOrderArg.gsub('_',' ')}'""
+      options = { :sortOrder => sortOrderArg }
+      production_set.renumber(options)
+      log('Renumbering finished', severity: :debug)
+    end
+";
 }
 
 /// <summary>
@@ -77,11 +73,12 @@ public sealed class NuixReorderProductionSet : RubyCaseScriptStepBase<Unit>
     /// The method of sorting items during the renumbering.
     /// </summary>
     [StepProperty(2)]
-    [DefaultValueExplanation(nameof(ProductionSetSortOrder.Position))]
+    [DefaultValueExplanation(nameof(ItemSortOrder.Position))]
     [RubyArgument("sortOrderArg")]
     [Alias("Order")]
-    public IStep<ProductionSetSortOrder> SortOrder { get; set; } =
-        new EnumConstant<ProductionSetSortOrder>(ProductionSetSortOrder.Position);
+    [Alias("ItemSort")]
+    public IStep<ItemSortOrder> SortOrder { get; set; } =
+        new EnumConstant<ItemSortOrder>(ItemSortOrder.Position);
 }
 
 }

@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Enums;
-using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -13,10 +10,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 {
 
 /// <summary>
-/// Searches a NUIX case with a particular search string and tags all files it finds.
+/// Run a search query in Nuix and exclude all items found.
 /// </summary>
 public sealed class
-    NuixSearchAndExcludeStepFactory : RubyScriptStepFactory<NuixSearchAndExclude, Unit>
+    NuixSearchAndExcludeStepFactory : RubySearchStepFactory<NuixSearchAndExclude, Unit>
 {
     private NuixSearchAndExcludeStepFactory() { }
 
@@ -32,10 +29,6 @@ public sealed class
     /// <inheritdoc />
     public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; }
         = new List<NuixFeature> { NuixFeature.ANALYSIS };
-
-    /// <inheritdoc />
-    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
-        = new List<IRubyHelper> { NuixSearch.Instance, NuixExpandSearch.Instance };
 
     /// <inheritdoc />
     public override string FunctionName => "SearchAndExclude";
@@ -61,23 +54,13 @@ public sealed class
 }
 
 /// <summary>
-/// Searches a NUIX case with a particular search string and tags all files it finds.
+/// Run a search query in Nuix and exclude all items found.
 /// </summary>
-public sealed class NuixSearchAndExclude : RubyCaseScriptStepBase<Unit>
+public sealed class NuixSearchAndExclude : RubySearchStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixSearchAndExcludeStepFactory.Instance;
-
-    /// <summary>
-    /// The term to search for.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [Example("*.txt")]
-    [RubyArgument("searchArg")]
-    [Alias("Search")]
-    public IStep<StringStream> SearchTerm { get; set; } = null!;
 
     /// <summary>
     /// The exclusion reason
@@ -95,39 +78,6 @@ public sealed class NuixSearchAndExclude : RubyCaseScriptStepBase<Unit>
     [RubyArgument("tagArg")]
     [DefaultValueExplanation("Items will not be tagged")]
     public IStep<StringStream>? Tag { get; set; }
-
-    /// <summary>
-    /// Pass additional search options to nuix. For an unsorted search (default)
-    /// the only available option is defaultFields. When using <code>SortSearch=true</code>
-    /// the options are defaultFields, order, and limit.
-    /// Please see the nuix API for <code>Case.search</code>
-    /// and <code>Case.searchUnsorted</code> for more details.
-    /// </summary>
-    [StepProperty(4)]
-    [RubyArgument("searchOptionsArg")]
-    [DefaultValueExplanation("No search options provided")]
-    public IStep<Entity>? SearchOptions { get; set; }
-
-    /// <summary>
-    /// By default the search is not sorted by relevance which
-    /// increases performance. Set this to true to sort the
-    /// search by relevance.
-    /// </summary>
-    [StepProperty(5)]
-    [RubyArgument("sortArg")]
-    [DefaultValueExplanation("false")]
-    public IStep<bool>? SortSearch { get; set; }
-
-    /// <summary>
-    /// Defines the type of search that is done. By default only the items
-    /// responsive to the search terms are excluded, but the result set
-    /// can be augmented using this parameter.
-    /// </summary>
-    [StepProperty(6)]
-    [RubyArgument("searchTypeArg")]
-    [DefaultValueExplanation("ItemsOnly")]
-    public IStep<SearchType> SearchType { get; set; } =
-        new EnumConstant<SearchType>(Enums.SearchType.ItemsOnly);
 }
 
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -13,10 +12,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 {
 
 /// <summary>
-/// Performs optical character recognition on files in a NUIX case.
+/// Performs optical character recognition on items in a NUIX case.
 /// </summary>
 [Alias("NuixRunOCR")]
-public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerformOCR, Unit>
+public sealed class NuixPerformOCRStepFactory : RubySearchStepFactory<NuixPerformOCR, Unit>
 {
     private NuixPerformOCRStepFactory() { }
 
@@ -35,10 +34,6 @@ public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerfor
     /// <inheritdoc />
     public override IReadOnlyCollection<NuixFeature> RequiredFeatures { get; } =
         new List<NuixFeature>() { NuixFeature.OCR_PROCESSING };
-
-    /// <inheritdoc />
-    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
-        = new List<IRubyHelper> { NuixSearch.Instance };
 
     /// <inheritdoc />
     public override string FunctionName => "PerformOCR";
@@ -81,16 +76,18 @@ public sealed class NuixPerformOCRStepFactory : RubyScriptStepFactory<NuixPerfor
       end
     end
 
+    all_items = expand_search(items, searchTypeArg)
+
     log ""OCR starting using profile: #{ocr_profile.get_name}""
-    ocr_processor.process(items.to_a, ocr_profile)
+    ocr_processor.process(all_items.to_a, ocr_profile)
     log ""OCR finished. OK: #{ocr_count} Failed: #{ocr_fail}""
 ";
 }
 
 /// <summary>
-/// Performs optical character recognition on files in a NUIX case.
+/// Performs optical character recognition on items in a NUIX case.
 /// </summary>
-public sealed class NuixPerformOCR : RubyCaseScriptStepBase<Unit>
+public sealed class NuixPerformOCR : RubySearchStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -100,20 +97,19 @@ public sealed class NuixPerformOCR : RubyCaseScriptStepBase<Unit>
         "NOT flag:encrypted AND ((mime-type:application/pdf AND NOT content:*) OR (mime-type:image/* AND ( flag:text_not_indexed OR content:( NOT * ) )))";
 
     /// <summary>
-    /// The term to use for searching for files to OCR.
+    /// The search query used for searching for items to OCR.
     /// </summary>
     [StepProperty(1)]
     [DefaultValueExplanation(DefaultSearchTerm)]
     [RubyArgument("searchArg")]
-    [Alias("Search")]
-    public IStep<StringStream> SearchTerm { get; set; } =
+    public override IStep<StringStream> SearchTerm { get; set; } =
         new StringConstant(DefaultSearchTerm);
 
     /// <summary>
     /// The name of the OCR profile to use.
     /// This cannot be set at the same time as OCRProfilePath.
     /// </summary>
-    [StepProperty(2)]
+    [StepProperty]
     [DefaultValueExplanation("The Default profile will be used.")]
     [Example("MyOcrProfile")]
     [RubyArgument("ocrProfileArg")]
@@ -124,35 +120,13 @@ public sealed class NuixPerformOCR : RubyCaseScriptStepBase<Unit>
     /// Path to the OCR profile to use.
     /// This cannot be set at the same times as OCRProfileName.
     /// </summary>
-    [StepProperty(3)]
+    [StepProperty]
     [RequiredVersion("Nuix", "7.6")]
     [DefaultValueExplanation("The Default profile will be used.")]
     [Example("C:\\Profiles\\MyProfile.xml")]
     [RubyArgument("ocrProfilePathArg")]
     [Alias("ProfilePath")]
     public IStep<StringStream>? OCRProfilePath { get; set; }
-
-    /// <summary>
-    /// Pass additional search options to nuix. For an unsorted search (default)
-    /// the only available option is defaultFields. When using <code>SortSearch=true</code>
-    /// the options are defaultFields, order, and limit.
-    /// Please see the nuix API for <code>Case.search</code>
-    /// and <code>Case.searchUnsorted</code> for more details.
-    /// </summary>
-    [StepProperty(4)]
-    [RubyArgument("searchOptionsArg")]
-    [DefaultValueExplanation("No search options provided")]
-    public IStep<Core.Entity>? SearchOptions { get; set; }
-
-    /// <summary>
-    /// By default the search is not sorted by relevance which
-    /// increases performance. Set this to true to sort the
-    /// search by relevance.
-    /// </summary>
-    [StepProperty(5)]
-    [RubyArgument("sortArg")]
-    [DefaultValueExplanation("false")]
-    public IStep<bool>? SortSearch { get; set; }
 
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)

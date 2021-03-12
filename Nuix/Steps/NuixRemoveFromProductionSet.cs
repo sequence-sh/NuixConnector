@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
@@ -15,7 +14,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 /// Removes particular items from a Nuix production set.
 /// </summary>
 public sealed class NuixRemoveFromProductionSetStepFactory
-    : RubyScriptStepFactory<NuixRemoveFromProductionSet, Unit>
+    : RubySearchStepFactory<NuixRemoveFromProductionSet, Unit>
 {
     private NuixRemoveFromProductionSetStepFactory() { }
 
@@ -33,10 +32,6 @@ public sealed class NuixRemoveFromProductionSetStepFactory
         new List<NuixFeature>() { NuixFeature.PRODUCTION_SET };
 
     /// <inheritdoc />
-    public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
-        = new List<IRubyHelper> { NuixSearch.Instance };
-
-    /// <inheritdoc />
     public override string FunctionName => "RemoveFromProductionSet";
 
     /// <inheritdoc />
@@ -50,12 +45,13 @@ public sealed class NuixRemoveFromProductionSetStepFactory
       return
     end
 
-    if searchArg.nil?
+    if searchArg.nil? or searchArg.to_s.empty?
       items_count = production_set.get_items.length
       production_set.remove_all_items
       log ""Removed all items: #{items_count}""
     else
-      items = search(searchArg, searchOptionsArg, false)
+      items = search(searchArg, searchOptionsArg, sortArg)
+      items = expand_search(items, searchTypeArg)
       to_remove = $utilities.get_item_utility.intersection(items, production_set.get_items)
       log(""Intersection of search results and production set is #{to_remove.length} items"", severity: :debug)
       if to_remove.length == 0
@@ -71,7 +67,7 @@ public sealed class NuixRemoveFromProductionSetStepFactory
 /// <summary>
 /// Removes particular items from a Nuix production set.
 /// </summary>
-public sealed class NuixRemoveFromProductionSet : RubyCaseScriptStepBase<Unit>
+public sealed class NuixRemoveFromProductionSet : RubySearchStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
@@ -90,21 +86,10 @@ public sealed class NuixRemoveFromProductionSet : RubyCaseScriptStepBase<Unit>
     /// The search term to use for choosing which items to remove.
     /// </summary>
     [StepProperty(2)]
-    [DefaultValueExplanation("All items will be removed.")]
+    [DefaultValueExplanation("All items removed.")]
     [Example("Tag:sushi")]
     [RubyArgument("searchArg")]
-    [Alias("Search")]
-    public IStep<StringStream>? SearchTerm { get; set; }
-
-    /// <summary>
-    /// Pass additional search options to nuix. Options available:
-    ///   - defaultFields: field(s) to query against when not present in the search string.
-    /// Please see the nuix API for <code>Case.searchUnsorted</code> for more details.
-    /// </summary>
-    [StepProperty(3)]
-    [RubyArgument("searchOptionsArg")]
-    [DefaultValueExplanation("No search options provided")]
-    public IStep<Entity>? SearchOptions { get; set; }
+    public override IStep<StringStream> SearchTerm { get; set; } = new StringConstant(string.Empty);
 }
 
 }

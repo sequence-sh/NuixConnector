@@ -13,10 +13,10 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 {
 
 /// <summary>
-/// Searches a case with a particular search string and adds all items it finds to a particular item set.
+/// Run a search query in Nuix and add all items found to an item set.
 /// Will create a new item set if one doesn't already exist.
 /// </summary>
-public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddToItemSet, Unit>
+public sealed class NuixAddToItemSetStepFactory : RubySearchStepFactory<NuixAddToItemSet, Unit>
 {
     private NuixAddToItemSetStepFactory() { }
 
@@ -35,7 +35,10 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
 
     /// <inheritdoc />
     public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
-        = new List<IRubyHelper> { NuixSearch.Instance };
+        = new List<IRubyHelper>
+        {
+            NuixSearch.Instance, NuixExpandSearch.Instance, NuixSortItems.Instance
+        };
 
     /// <inheritdoc />
     public override string FunctionName => "AddToItemSet";
@@ -63,31 +66,25 @@ public sealed class NuixAddToItemSetStepFactory : RubyScriptStepFactory<NuixAddT
       log ""Existing item set '#{itemSetNameArg}' found""
     end
 
-    log ""Adding #{items.length} items to item set '#{itemSetNameArg}'""
-    itemSet.addItems(items)
+    all_items = expand_search(items, searchTypeArg)
+    all_items = sort_items(all_items, itemSortOrderArg) unless itemSortOrderArg.nil?
+
+    log ""Adding #{all_items.length} items to item set '#{itemSetNameArg}'""
+    itemSet.addItems(all_items)
     log('Finished adding items', severity: :debug)
 ";
 }
 
 /// <summary>
-/// Searches a case with a particular search string and adds all items it finds to a particular item set.
+/// Run a search query in Nuix and add all items found to an item set.
 /// Will create a new item set if one doesn't already exist.
 /// </summary>
 [Alias("NuixCreateItemSet")]
-public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
+public sealed class NuixAddToItemSet : RubySearchStepBase<Unit>
 {
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Unit> RubyScriptStepFactory =>
         NuixAddToItemSetStepFactory.Instance;
-
-    /// <summary>
-    /// The term to search for.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [RubyArgument("searchArg")]
-    [Alias("Search")]
-    public IStep<StringStream> SearchTerm { get; set; } = null!;
 
     /// <summary>
     /// The item set to add results to. Will be created if it doesn't already exist.
@@ -105,7 +102,7 @@ public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
     /// </summary>
     [StepProperty(3)]
     [RubyArgument("deduplicationArg")]
-    [DefaultValueExplanation("No deduplication")]
+    [DefaultValueExplanation("MD5")]
     [Alias("DeduplicateUsing")]
     public IStep<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
 
@@ -127,7 +124,7 @@ public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
     /// </summary>
     [StepProperty(5)]
     [RubyArgument("deduplicateByArg")]
-    [DefaultValueExplanation("Neither")]
+    [DefaultValueExplanation("Individual")]
     public IStep<DeduplicateBy>? DeduplicateBy { get; set; }
 
     /// <summary>
@@ -143,28 +140,13 @@ public sealed class NuixAddToItemSet : RubyCaseScriptStepBase<Unit>
     public IStep<Array<StringStream>>? CustodianRanking { get; set; }
 
     /// <summary>
-    /// Pass additional search options to nuix. For an unsorted search (default)
-    /// the only available option is defaultFields. When using <code>SortSearch=true</code>
-    /// the options are defaultFields, order, and limit.
-    /// Please see the nuix API for <code>Case.search</code>
-    /// and <code>Case.searchUnsorted</code> for more details.
+    /// Sort items before adding them to the production set.
     /// </summary>
-    [RequiredVersion("Nuix", "7.0")]
-    [StepProperty(7)]
-    [RubyArgument("searchOptionsArg")]
-    [DefaultValueExplanation("No search options provided")]
-    public IStep<Entity>? SearchOptions { get; set; }
-
-    /// <summary>
-    /// By default the search is not sorted by relevance which
-    /// increases performance. Set this to true to sort the
-    /// search by relevance.
-    /// </summary>
-    [RequiredVersion("Nuix", "7.0")]
-    [StepProperty(8)]
-    [RubyArgument("sortArg")]
-    [DefaultValueExplanation("false")]
-    public IStep<bool>? SortSearch { get; set; }
+    [StepProperty]
+    [DefaultValueExplanation("Unsorted or by relevance. See SortSearch.")]
+    [RubyArgument("itemSortOrderArg")]
+    [Alias("SortItemsBy")]
+    public IStep<ItemSortOrder>? ItemSortOrder { get; set; }
 }
 
 }
