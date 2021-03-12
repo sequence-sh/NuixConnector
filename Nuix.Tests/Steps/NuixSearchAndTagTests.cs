@@ -51,7 +51,7 @@ public partial class NuixSearchAndTagTests : NuixStepTestBase<NuixSearchAndTag, 
                             "descendants.zip"
                         )
                     ),
-                    FolderName = Constant("SearchAndTagTest")
+                    Container = Constant("SearchAndTagTest")
                 },
                 new NuixSearchAndTag
                 {

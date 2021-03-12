@@ -26,9 +26,9 @@ public partial class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit
                 CreateCase,
                 new NuixAddItem
                 {
-                    Custodian  = Constant("Mark"),
-                    Paths      = PoemTextImagePaths,
-                    FolderName = Constant("New Folder")
+                    Custodian = Constant("Mark"),
+                    Paths     = PoemTextImagePaths,
+                    Container = Constant("New Folder")
                 },
                 AssertCount(0, "sheep"),
                 new NuixPerformOCR { SearchTerm = Constant("*.png") },
@@ -43,9 +43,9 @@ public partial class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit
                 CreateCase,
                 new NuixAddItem
                 {
-                    Custodian  = Constant("Mark"),
-                    Paths      = PoemTextImagePaths,
-                    FolderName = Constant("New Folder")
+                    Custodian = Constant("Mark"),
+                    Paths     = PoemTextImagePaths,
+                    Container = Constant("New Folder")
                 },
                 AssertCount(0, "sheep OR ghost"),
                 new NuixPerformOCR
@@ -66,9 +66,9 @@ public partial class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit
                 CreateCase,
                 new NuixAddItem
                 {
-                    Custodian  = Constant("Mark"),
-                    Paths      = PoemTextImagePaths,
-                    FolderName = Constant("New Folder")
+                    Custodian = Constant("Mark"),
+                    Paths     = PoemTextImagePaths,
+                    Container = Constant("New Folder")
                 },
                 AssertCount(0, "sheep OR ghost"),
                 new NuixPerformOCR

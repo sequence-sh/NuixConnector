@@ -51,7 +51,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                             FunctionDefinition = "",
                             Arguments = new Dictionary<string, object>
                             {
-                                { nameof(NuixAddItem.FolderName), "New Folder" },
+                                { nameof(NuixAddItem.Container), "New Folder" },
                                 { nameof(NuixAddItem.Custodian), "Mark" },
                                 {
                                     nameof(NuixAddItem.Paths),
@@ -115,7 +115,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
             yield return new NuixDeserializeTest(
                     "Create Case then add item",
                     $@"- NuixCreateCase CaseName: '{caseName}' CasePath: '{CasePathString}' Investigator: '{investigator}'
-- NuixAddItem Custodian: '{custodian}' FolderName: '{folderName}' Paths: ['{dataPath}']",
+- NuixAddItem Custodian: '{custodian}' Container: '{folderName}' Paths: ['{dataPath}']",
                     Unit.Default,
                     new List<ExternalProcessAction>
                     {
@@ -142,7 +142,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                                 Arguments = new Dictionary<string, object>
                                 {
                                     { nameof(NuixAddItem.Custodian), custodian },
-                                    { nameof(NuixAddItem.FolderName), folderName },
+                                    { nameof(NuixAddItem.Container), folderName },
                                     {
                                         nameof(NuixAddItem.Paths),
                                         new List<string> { dataPath }

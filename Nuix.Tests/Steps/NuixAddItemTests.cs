@@ -25,7 +25,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 {
                     Custodian          = Constant("Mark"),
                     Paths              = DataPaths,
-                    FolderName         = Constant("New Folder"),
+                    Container          = Constant("New Folder"),
                     ProcessingSettings = Constant(Entity.Create(("Foo", "Bar"))),
                     CasePath           = CasePath
                 },
@@ -42,7 +42,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                                     nameof(RubyCaseScriptStepBase<bool>.CasePath),
                                     CasePathString
                                 },
-                                { nameof(NuixAddItem.FolderName), "New Folder" },
+                                { nameof(NuixAddItem.Container), "New Folder" },
                                 { nameof(NuixAddItem.Custodian), "Mark" },
                                 {
                                     nameof(NuixAddItem.Paths),
@@ -76,9 +76,9 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
-                    Custodian  = Constant("Mark"),
-                    Paths      = DataPaths,
-                    FolderName = Constant("New Folder")
+                    Custodian = Constant("Mark"),
+                    Paths     = DataPaths,
+                    Container = Constant("New Folder")
                 },
                 AssertCount(2, "*.txt"),
                 new NuixCloseConnection(),
@@ -95,7 +95,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 {
                     Custodian        = Constant("Mark"),
                     Paths            = EncryptedDataPaths,
-                    FolderName       = Constant("New Folder"),
+                    Container        = Constant("New Folder"),
                     PasswordFilePath = (PasswordFilePath)
                 },
                 AssertCount(1, "princess"),
@@ -114,7 +114,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 {
                     Custodian             = Constant("Mark"),
                     Paths                 = DataPaths,
-                    FolderName            = Constant("New Folder"),
+                    Container             = Constant("New Folder"),
                     ProcessingProfileName = Constant("Default")
                 },
                 AssertCount(2, "*.txt"),
@@ -133,7 +133,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 {
                     Custodian             = Constant("Mark"),
                     Paths                 = DataPaths,
-                    FolderName            = Constant("New Folder"),
+                    Container             = Constant("New Folder"),
                     ProcessingProfilePath = DefaultProcessingProfilePath
                 },
                 AssertCount(2, "*.txt"),
@@ -152,7 +152,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 {
                     Custodian          = Constant("Mark"),
                     Paths              = DataPaths,
-                    FolderName         = Constant("New Folder"),
+                    Container          = Constant("New Folder"),
                     ProcessingSettings = Constant(Entity.Create(("processText", true))),
                     ProgressInterval   = Constant(100)
                 },
@@ -172,7 +172,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 {
                     Custodian                  = Constant("Mark"),
                     Paths                      = DataPaths,
-                    FolderName                 = Constant("New Folder"),
+                    Container                  = Constant("New Folder"),
                     ParallelProcessingSettings = Constant(Entity.Create(("workerCount", 1)))
                 },
                 AssertCount(2, "*.txt"),
@@ -189,9 +189,9 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                 AssertCount(0, "*.txt"),
                 new NuixAddItem
                 {
-                    Custodian  = Constant("Mark"),
-                    Paths      = DataPaths,
-                    FolderName = Constant("New Folder"),
+                    Custodian = Constant("Mark"),
+                    Paths     = DataPaths,
+                    Container = Constant("New Folder"),
                     MimeTypeSettings = Array(
                         Entity.Create(
                             ("mime_tye", "text/plain"),

@@ -57,7 +57,7 @@ public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndE
                             "descendants.zip"
                         )
                     ),
-                    FolderName = Constant("SearchAndExcludeTest")
+                    Container = Constant("SearchAndExcludeTest")
                 },
                 new NuixSearchAndExclude
                 {

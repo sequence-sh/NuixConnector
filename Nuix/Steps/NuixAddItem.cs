@@ -101,27 +101,45 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
       processor.setPasswordDiscoverySettings({'mode' => 'word-list', 'word-list' => listName })
     end
 
-    log ""Creating new evidence container '#{folderNameArg}'""
+    log ""Creating new evidence container '#{containerNameArg}'""
+    container = processor.new_evidence_container(containerNameArg)
 
-    folder = processor.new_evidence_container(folderNameArg)
+    unless containerDescriptionArg.nil?
+      log(""Container description: #{containerDescriptionArg}"", severity: :debug)
+      container.description = containerDescriptionArg
+    end
 
-    log(""Container description: #{folderDescriptionArg}"", severity: :trace)
-    log(""Container custodian: '#{folderCustodianArg}'"", severity: :trace)
-    
-    folder.description = folderDescriptionArg if folderDescriptionArg != nil
-    folder.initial_custodian = folderCustodianArg
+    unless containerCustodianArg.nil?
+      log(""Container custodian: '#{containerCustodianArg}'"", severity: :debug)
+      container.initial_custodian = containerCustodianArg
+    end
 
     unless customMetadataArg.nil?
-      log(""Adding custom metadata to container #{folderNameArg}"", severity: :debug)
-      folder.set_custom_metadata(customMetadataArg)
+      log(""Adding custom metadata to container #{containerNameArg}"", severity: :debug)
+      container.set_custom_metadata(customMetadataArg)
+    end
+
+    unless containerEncodingArg.nil?
+      log(""Container encoding: '#{containerEncodingArg}'"", severity: :debug)
+      container.set_encoding(containerEncodingArg)
+    end
+
+    unless containerLocaleArg.nil?
+      log(""Container locale: '#{containerLocaleArg}'"", severity: :debug)
+      container.set_locale(containerLocaleArg)
+    end
+
+    unless containerTimeZoneArg.nil?
+      log(""Container time zone: '#{containerTimeZoneArg}'"", severity: :debug)
+      container.set_time_zone(containerTimeZoneArg)
     end
 
     filePathsArgs.each do |path|
-      folder.add_file(path)
-      log ""Adding to Container: #{folderNameArg} Path: #{path}""
+      container.add_file(path)
+      log ""Adding to Container: #{containerNameArg} Path: #{path}""
     end
 
-    folder.save
+    container.save
 
 	processor.when_cleaning_up do
       log 'Processor cleaning up'
@@ -166,36 +184,37 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     public IStep<Array<StringStream>> Paths { get; set; } = null!;
 
     /// <summary>
-    /// The name of the folder to create.
+    /// The name of the evidence container to add items to.
     /// </summary>
     [Required]
     [StepProperty(2)]
-    [RubyArgument("folderNameArg")]
-    [Alias("Container")]
+    [RubyArgument("containerNameArg")]
     [Alias("ToContainer")]
-    public IStep<StringStream> FolderName { get; set; } = null!;
+    public IStep<StringStream> Container { get; set; } = null!;
 
     /// <summary>
-    /// The custodian to assign to the new folder/container.
+    /// The description of the evidence container.
     /// </summary>
-    [Required]
     [StepProperty(3)]
-    [RubyArgument("folderCustodianArg")]
-    public IStep<StringStream> Custodian { get; set; } = null!;
+    [RubyArgument("containerDescriptionArg")]
+    [DefaultValueExplanation("No Description")]
+    [Alias("ContainerDescription")]
+    public IStep<StringStream>? Description { get; set; }
 
     /// <summary>
-    /// The description of the new folder.
+    /// The custodian to assign to the new evidence container.
     /// </summary>
-    [StepProperty(4)]
-    [RubyArgument("folderDescriptionArg")]
-    [DefaultValueExplanation("No Description")]
-    public IStep<StringStream>? Description { get; set; }
+    [StepProperty]
+    [RubyArgument("containerCustodianArg")]
+    [DefaultValueExplanation("No custodian assigned")]
+    [Alias("ContainerCustodian")]
+    public IStep<StringStream>? Custodian { get; set; }
 
     /// <summary>
     /// The name of the Processing profile to use.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(5)]
+    [StepProperty]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("The default processing profile will be used.")]
     [RubyArgument("processingProfileNameArg")]
@@ -206,7 +225,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// The path to the Processing profile to use
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(6)]
+    [StepProperty]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("The default processing profile will be used.")]
     [RubyArgument("processingProfilePathArg")]
@@ -215,9 +234,10 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// Sets the processing settings to use.
-    /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
+    /// These settings correspond to the same settings in the desktop application,
+    /// however the user's preferences are not used to derive the defaults.
     /// </summary>
-    [StepProperty(7)]
+    [StepProperty]
     [DefaultValueExplanation("Processing settings will not be changed")]
     [RubyArgument("processingSettingsArg")]
     [Alias("Settings")]
@@ -225,9 +245,10 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// Sets the parallel processing settings to use.
-    /// These settings correspond to the same settings in the desktop application, however the user's preferences are not used to derive the defaults.
+    /// These settings correspond to the same settings in the desktop application,
+    /// however the user's preferences are not used to derive the defaults.
     /// </summary>
-    [StepProperty(8)]
+    [StepProperty]
     [DefaultValueExplanation("Parallel processing settings will not be changed")]
     [RubyArgument("parallelProcessingSettingsArg")]
     public IStep<Core.Entity>? ParallelProcessingSettings { get; set; }
@@ -236,7 +257,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// The path of a file containing passwords to use for decryption.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
-    [StepProperty(9)]
+    [StepProperty]
     [Example("C:/Data/Passwords.txt")]
     [RubyArgument("passwordFilePathArg")]
     [DefaultValueExplanation("Do not attempt decryption")]
@@ -248,7 +269,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// Should have a 'mime_type' property and then any other special properties.
     /// </summary>
     [RequiredVersion("Nuix", "8.2")]
-    [StepProperty(10)]
+    [StepProperty]
     [RubyArgument("mimeTypeDataStreamArg")]
     [DefaultValueExplanation("Use default settings for all MIME types")]
     public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
@@ -256,18 +277,50 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// The number of items at which the Nuix processor logs a progress message.
     /// </summary>
-    [StepProperty(11)]
+    [StepProperty]
     [RubyArgument("progressIntervalArg")]
     [DefaultValueExplanation("Every 5000 items")]
     public IStep<int> ProgressInterval { get; set; } = new IntConstant(5000);
 
     /// <summary>
-    /// Sets additional metadata on the folder/container.
+    /// Sets additional metadata on the evidence container.
     /// </summary>
-    [StepProperty(12)]
+    [StepProperty]
     [RubyArgument("customMetadataArg")]
     [DefaultValueExplanation("No custom metadata will be added")]
     public IStep<Core.Entity>? CustomMetadata { get; set; }
+
+    /// <summary>
+    /// Set the encoding for the evidence container.
+    /// </summary>
+    [StepProperty]
+    [Example("UTF-8")]
+    [RubyArgument("containerEncodingArg")]
+    [DefaultValueExplanation("Default system encoding")]
+    [Alias("Encoding")]
+    public IStep<StringStream>? ContainerEncoding { get; set; }
+
+    /// <summary>
+    /// Set the locale for the evidence container.
+    /// </summary>
+    [RequiredVersion("Nuix", "7.2")]
+    [StepProperty]
+    [Example("en_GB")]
+    [RubyArgument("containerLocaleArg")]
+    [DefaultValueExplanation("Default system locale")]
+    [Alias("Locale")]
+    public IStep<StringStream>? ContainerLocale { get; set; }
+
+    /// <summary>
+    /// Set the time zone for the evidence container.
+    /// If the time zone given is not known to Nuix, the GMT time zone will be used.
+    /// </summary>
+    [StepProperty]
+    [Example("UTC")]
+    [RubyArgument("containerTimeZoneArg")]
+    [DefaultValueExplanation("Default system time zone")]
+    [Alias("TimeZone")]
+    public IStep<StringStream>? ContainerTimeZone { get; set; }
 
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)

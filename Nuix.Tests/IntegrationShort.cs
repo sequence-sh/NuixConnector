@@ -67,9 +67,9 @@ public partial class IntegrationShortTests
                             // Add loose items
                             new NuixAddItem
                             {
-                                Custodian  = Constant("EDRM Micro"),
-                                Paths      = Array(DataPath),
-                                FolderName = Constant("INT01B0001"),
+                                Custodian = Constant("EDRM Micro"),
+                                Paths     = Array(DataPath),
+                                Container = Constant("INT01B0001"),
                                 MimeTypeSettings = Array(
                                     Entity.Create(("mime_type", "text/plain"), ("enabled", "true")),
                                     Entity.Create(
