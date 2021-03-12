@@ -74,6 +74,8 @@ public sealed class
     end
     exporter.set_traversal_options(traversal_options) unless traversal_options.empty?
 
+    exporter.setSkipNativesSlipsheetedItems(skipSlipsheetedItemsArg) unless skipSlipsheetedItemsArg.nil?
+
     exporter.before_export { log 'Starting export' }
     exporter.export_items(production_set)
     log 'Export finished'
@@ -139,6 +141,15 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("exportDescendantContainersArg")]
     [DefaultValueExplanation("false")]
     public IStep<bool>? ExportDescendantContainers { get; set; }
+
+    /// <summary>
+    /// Skip export of slipsheeted items.
+    /// </summary>
+    [StepProperty]
+    [RequiredVersion("Nuix", "7.6")]
+    [RubyArgument("skipSlipsheetedItemsArg")]
+    [DefaultValueExplanation("false")]
+    public IStep<bool>? SkipSlipsheetedNatives { get; set; }
 }
 
 }
