@@ -71,8 +71,6 @@ public sealed class
           write_error(""Could not find processing profile: #{productionProfilePathArg}"", terminating: true)
         end
         production_set.setProductionProfileObject(profile)
-      else
-        write_error(""No production profile set"", terminating: true)
       end
 
       unless numberingOptionsArg.nil?
@@ -140,26 +138,26 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
 
     /// <summary>
     /// The name of the Production profile to use.
-    /// Either this or the ProductionProfilePath must be set
+    /// Cannot be used at the same time as ProductionProfilePath.
     /// This option only works if the ProductionSet is created by this Step.
     /// </summary>
     [RequiredVersion("Nuix", "7.2")]
     [StepProperty]
     [Example("MyProcessingProfile")]
-    [DefaultValueExplanation("If not set, the profile path will be used.")]
+    [DefaultValueExplanation("No profile set")]
     [RubyArgument("productionProfileNameArg")]
     [Alias("Profile")]
     public IStep<StringStream>? ProductionProfileName { get; set; }
 
     /// <summary>
     /// The path to the Production profile to use.
-    /// Either this or the ProductionProfileName must be set.
+    /// Cannot be used at the same time as ProductionProfileName.
     /// This option only works if the ProductionSet is created by this Step.
     /// </summary>
     [RequiredVersion("Nuix", "7.6")]
     [StepProperty]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
-    [DefaultValueExplanation("If not set, the profile name will be used.")]
+    [DefaultValueExplanation("No profile set")]
     [RubyArgument("productionProfilePathArg")]
     [Alias("ProfilePath")]
     public IStep<StringStream>? ProductionProfilePath { get; set; }
@@ -237,13 +235,16 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
                 nameof(ProductionProfilePath)
             );
 
-        if (ProductionProfileName == null && ProductionProfilePath == null)
+        if ((ProductionProfileName != null || ProductionProfilePath != null) &&
+            (ImagingOptions != null || StampingOptions != null || TextOptions != null))
+        {
             return new SingleError(
                 new ErrorLocation(this),
-                ErrorCode.MissingParameter,
-                nameof(ProductionProfileName),
-                nameof(ProductionProfilePath)
+                ErrorCode.ConflictingParameters,
+                $"({nameof(ProductionProfileName)} or {nameof(ProductionProfilePath)})",
+                $"({nameof(ImagingOptions)}, {StampingOptions}, or {nameof(TextOptions)})"
             );
+        }
 
         return base.VerifyThis(settings);
     }
