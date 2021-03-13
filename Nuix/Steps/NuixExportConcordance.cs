@@ -67,19 +67,19 @@ public sealed class
     end
     exporter = $utilities.create_batch_exporter(exportPathArg)
     unless traversal_options.empty?
-      log(""Setting traversal options: '#{traversal_options}'"", severity: :trace)
+      log(""Setting traversal options: '#{traversal_options}'"", severity: :debug)
       exporter.set_traversal_options(traversal_options)
     end
     unless skipSlipsheetedItemsArg.nil?
-      log(""Setting Skip Natives Slipsheeted Items: '#{skipSlipsheetedItemsArg}'"", severity: :trace)
+      log(""Setting Skip Natives Slipsheeted Items: '#{skipSlipsheetedItemsArg}'"", severity: :debug)
       exporter.setSkipNativesSlipsheetedItems(skipSlipsheetedItemsArg)
     end
     unless numberingOptionsArg.nil?
-      log(""Setting numbering options: '#{numberingOptionsArg}'"", severity: :trace)
+      log(""Setting numbering options: '#{numberingOptionsArg}'"", severity: :debug)
       exporter.setNumberingOptions(numberingOptionsArg)
     end
     unless parallelProcessingSettingsArg.nil?
-      log(""Setting parallel processing settings: '#{parallelProcessingSettingsArg}'"", severity: :trace)
+      log(""Setting parallel processing settings: '#{parallelProcessingSettingsArg}'"", severity: :debug)
       exporter.setParallelProcessingSettings(parallelProcessingSettingsArg)
     end
     unless exportOptionsArg.nil?
@@ -93,7 +93,7 @@ public sealed class
       if loadFileOptionsArg.nil?
         exporter.add_load_file(loadFileTypeArg)
       else
-        log(""Load file options: '#{loadFileOptionsArg}'"", severity: :trace)
+        log(""Load file options: '#{loadFileOptionsArg}'"", severity: :debug)
         exporter.add_load_file(loadFileTypeArg, loadFileOptionsArg)
       end
     end
