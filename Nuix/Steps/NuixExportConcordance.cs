@@ -97,7 +97,7 @@ public sealed class
         exporter.add_load_file(loadFileTypeArg, loadFileOptionsArg)
       end
     end
-    exporter.before_export { log 'Starting export' }
+    log 'Starting export'
     exporter.export_items(production_set)
     log 'Export finished'
 ";
