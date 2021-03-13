@@ -43,7 +43,8 @@ public sealed class
       write_error(""Could not find production set '#{productionSetNameArg}'"")
       return
     end
-    if exportOptionsArg.nil? and production_set.get_production_profile.nil?
+    prod_profile = production_set.get_production_profile
+    if exportOptionsArg.nil? and prod_profile.nil?
       write_error('No ExportOptions or Production Profile has been set.')
       return
     end
@@ -65,20 +66,36 @@ public sealed class
       traversal_options[:exportDescendantContainers] = exportDescendantContainersArg
     end
     exporter = $utilities.create_batch_exporter(exportPathArg)
-    exporter.set_traversal_options(traversal_options) unless traversal_options.empty?
-    exporter.setSkipNativesSlipsheetedItems(skipSlipsheetedItemsArg) unless skipSlipsheetedItemsArg.nil?
-    exporter.setNumberingOptions(numberingOptionsArg) unless numberingOptionsArg.nil?
-    exporter.setParallelProcessingSettings(parallelProcessingSettingsArg) unless parallelProcessingSettingsArg.nil?
+    unless traversal_options.empty?
+      log(""Setting traversal options: '#{traversal_options}'"", severity: :trace)
+      exporter.set_traversal_options(traversal_options)
+    end
+    unless skipSlipsheetedItemsArg.nil?
+      log(""Setting Skip Natives Slipsheeted Items: '#{skipSlipsheetedItemsArg}'"", severity: :trace)
+      exporter.setSkipNativesSlipsheetedItems(skipSlipsheetedItemsArg)
+    end
+    unless numberingOptionsArg.nil?
+      log(""Setting numbering options: '#{numberingOptionsArg}'"", severity: :trace)
+      exporter.setNumberingOptions(numberingOptionsArg)
+    end
+    unless parallelProcessingSettingsArg.nil?
+      log(""Setting parallel processing settings: '#{parallelProcessingSettingsArg}'"", severity: :trace)
+      exporter.setParallelProcessingSettings(parallelProcessingSettingsArg)
+    end
     unless exportOptionsArg.nil?
       exportOptionsArg.each do |product, options|
         log(""Adding #{product} to export with options: '#{options}'"", severity: :debug)
         exporter.add_product(product, options)
       end
     end
-    if loadFileOptionsArg.nil?
-      exporter.add_load_file(loadFileTypeArg)
-    else
-      exporter.add_load_file(loadFileTypeArg, loadFileOptionsArg)
+    if prod_profile.nil? and !loadFileTypeArg.eql?('none')
+        log(""Adding load file to export: '#{loadFileTypeArg}'"", severity: :debug)
+      if loadFileOptionsArg.nil?
+        exporter.add_load_file(loadFileTypeArg)
+      else
+        log(""Load file options: '#{loadFileOptionsArg}'"", severity: :trace)
+        exporter.add_load_file(loadFileTypeArg, loadFileOptionsArg)
+      end
     end
     exporter.before_export { log 'Starting export' }
     exporter.export_items(production_set)
@@ -141,6 +158,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// The options to use for creating the load file.
+    /// This parameter has no effect if the production set has a production profile.
     /// See Nuix API <code>BatchExporter.addLoadFile()</code>
     /// for more details on the available options.
     /// </summary>
@@ -152,6 +170,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// The type of load file to export.
+    /// This parameter has no effect if the production set has a production profile.
     /// </summary>
     [StepProperty]
     [RubyArgument("loadFileTypeArg")]
