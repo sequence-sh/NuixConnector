@@ -140,9 +140,9 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("exportOptionsArg")]
     [DefaultValueExplanation("The ProductionSet profile is used")]
     [Example(
-        "[(native: (path: 'NATIVE' naming: 'document_id')) (text: (path: 'TEXT' naming: 'document_id'))]"
+        "(native: (path: 'NATIVE' naming: 'document_id'), text: (path: 'TEXT' naming: 'document_id'))"
     )]
-    public IStep<Array<Core.Entity>>? ExportOptions { get; set; }
+    public IStep<Core.Entity>? ExportOptions { get; set; }
 
     /// <summary>
     /// Set the numbering options for the export.
