@@ -40,13 +40,11 @@ public sealed class
     public override string RubyFunctionText => @"
     production_set = $current_case.findProductionSetByName(productionSetNameArg)
     if production_set.nil?
-      write_error(""Could not find production set '#{productionSetNameArg}'"")
-      return
+      write_error(""Could not find production set '#{productionSetNameArg}'"", terminating: true)
     end
     prod_profile = production_set.get_production_profile
     if exportOptionsArg.nil? and prod_profile.nil?
-      write_error('No ExportOptions or Production Profile has been set.')
-      return
+      write_error('No ExportOptions or Production Profile has been set.', terminating: true)
     end
     traversal_options = {}
     unless traversalStrategyArg.nil?
