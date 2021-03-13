@@ -48,10 +48,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AllData\Concordance\IMAGE\00\000\SET-00000001.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="AllData\Concordance\loadfile.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="AllData\Concordance\loadfile.opt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Concordance\NATIVE\00\000\SET-00000001.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="AllData\Concordance\Native\DOC-\000000001\DOC-0000000010001.txt">
@@ -61,6 +67,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="AllData\Concordance\summary-report.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Concordance\TEXT\00\000\SET-00000001.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="AllData\Concordance\Text\DOC-\000000001\DOC-0000000010001.txt">
