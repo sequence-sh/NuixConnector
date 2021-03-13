@@ -75,6 +75,11 @@ public sealed class
         exporter.add_product(product, options)
       end
     end
+    if loadFileOptionsArg.nil?
+      exporter.add_load_file(loadFileTypeArg)
+    else
+      exporter.add_load_file(loadFileTypeArg, loadFileOptionsArg)
+    end
     exporter.before_export { log 'Starting export' }
     exporter.export_items(production_set)
     log 'Export finished'
@@ -133,6 +138,26 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation("Document ID numbering, starting with DOC-000000001")]
     [Example("(createProductionSet: false prefix: 'ABC' documentId: (startAt: 1 minWidth: 4))")]
     public IStep<Core.Entity>? NumberingOptions { get; set; }
+
+    /// <summary>
+    /// The options to use for creating the load file.
+    /// See Nuix API <code>BatchExporter.addLoadFile()</code>
+    /// for more details on the available options.
+    /// </summary>
+    [StepProperty(5)]
+    [RubyArgument("loadFileOptionsArg")]
+    [DefaultValueExplanation("Default options are used")]
+    [Example("(metadataProfile: 'Profile' loadFileEntryLimit: 5000)")]
+    public IStep<Core.Entity>? LoadFileOptions { get; set; }
+
+    /// <summary>
+    /// The type of load file to export.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("loadFileTypeArg")]
+    [DefaultValueExplanation(nameof(Enums.LoadFileType.Concordance))]
+    public IStep<LoadFileType> LoadFileType { get; set; } =
+        new EnumConstant<LoadFileType>(Enums.LoadFileType.Concordance);
 
     /// <summary>
     /// Sets the parallel processing settings to use.
