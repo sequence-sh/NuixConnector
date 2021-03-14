@@ -88,7 +88,7 @@ public partial class IntegrationShortTests
                                 Custodian              = Constant("Reductech EDR"),
                                 FolderName             = Constant("INT01B0002")
                             },
-                            AssertCount(3, "custodian:\"Reductech EDR\""), AssertCount(3, "*.txt"),
+                            AssertCount(3, "custodian:\"Reductech EDR\""), AssertCount(4, "*.txt"),
                             // OCR the data
                             AssertCount(1, "deluge"), new NuixPerformOCR
                             {
@@ -128,7 +128,7 @@ public partial class IntegrationShortTests
                                 SearchTerm  = Constant("tag:*"),
                                 ItemSetName = Constant("TaggedItems")
                             },
-                            AssertCount(13, "item-set:TaggedItems"),
+                            AssertCount(14, "item-set:TaggedItems"),
                             // Create a production set from the tagged items
                             new NuixAddToProductionSet
                             {
@@ -136,13 +136,13 @@ public partial class IntegrationShortTests
                                 ProductionSetName     = Constant("ExportProduction"),
                                 ProductionProfilePath = TestProductionProfilePath
                             },
-                            AssertCount(13, "production-set:ExportProduction"),
+                            AssertCount(14, "production-set:ExportProduction"),
                             new NuixRemoveFromProductionSet
                             {
                                 ProductionSetName = Constant("ExportProduction"),
                                 SearchTerm        = Constant("name:IMG_17*")
                             },
-                            AssertCount(11, "production-set:ExportProduction"),
+                            AssertCount(12, "production-set:ExportProduction"),
                             // Write out a file type report
                             new CreateDirectory { Path = Constant(ReportPath) },
                             new FileWrite
