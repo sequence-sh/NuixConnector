@@ -1,3 +1,32 @@
+# v0.6.0 (2021-03-14)
+
+## Summary of Changes
+
+### Steps
+
+- Added
+  - `NuixExcludeDecryptedItems`
+  - `NuixGetAuditedSize`
+- Updated
+  - NuixAddItem - added Encoding, TimeZone and Locale parameters
+  - NuixAddToProductionSet - production profile is now optional and can be specified using a step Parameter
+  - NuixExportConcordance - the export file types and concordance type can now be configured using Step parameters
+
+## Issues Closed in this Release
+
+### New Features
+
+- Add additional configuration to NuixExportConcordance #174
+- Pass profile configuration as an Entity to AddToProductionSet #173
+- Add a step to exclude decrypted items #170
+- Add a step to calculate the total size for a case #169
+- Add ItemSort parameter to AddToProductionSet #172
+- Add SearchType parameter to AddToProductionSet and AddToItemSet #171
+- NuixAddItem Custodian parameter should be optional #167
+- Add Encoding, TimeZone and Locale parameters to NuixAddItem #168
+- Add helper ruby functions to improve maintanability #162
+- Add log localization #166
+
 # v0.5.0 (2021-03-01)
 
 ## Summary of Changes
