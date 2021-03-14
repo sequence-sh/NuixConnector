@@ -135,7 +135,7 @@ public partial class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordan
                     Custodian              = Constant("Mark"),
                     FolderName             = Constant("New Folder")
                 },
-                AssertCount(1, "*.txt"),
+                AssertCount(2, "*.txt"),
                 new NuixCloseConnection(),
                 DeleteCaseFolder
             );
