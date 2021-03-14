@@ -1,3 +1,17 @@
+# v0.6.0 (2021-03-14)
+
+## Issues Closed in this Release
+
+### New Features
+
+- Add additional configuration to NuixExportConcordance #174
+- Pass profile configuration as an Entity to AddToProductionSet #173
+- NuixAddItem Custodian parameter should be optional #167
+- Add Encoding, TimeZone and Locale parameters to NuixAddItem #168
+- Add helper ruby functions to improve maintanability #162
+- Add log localization #166
+- Resolve "Add SearchType parameter to AddToProductionSet and AddToItemSet" !126
+
 # v0.5.0 (2021-03-01)
 
 ## Summary of Changes
