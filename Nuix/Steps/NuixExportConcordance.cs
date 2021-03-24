@@ -48,56 +48,66 @@ public sealed class
     end
     traversal_options = {}
     unless traversalStrategyArg.nil?
-      log(""Traversal strategy: '#{traversalStrategyArg}'"", severity: :debug)
+      log(""Traversal strategy: #{traversalStrategyArg}"", severity: :debug)
       traversal_options[:strategy] = traversalStrategyArg
     end
     unless deduplicationArg.nil?
-      log(""Traversal deduplication: '#{deduplicationArg}'"", severity: :debug)
+      log(""Traversal deduplication: #{deduplicationArg}"", severity: :debug)
       traversal_options[:deduplication] = deduplicationArg
     end
     unless sortArg.nil?
-      log(""Traversal sort order: '#{sortArg}'"", severity: :debug)
+      log(""Traversal sort order: #{sortArg}"", severity: :debug)
       traversal_options[:sortOrder] = sortArg
     end
     unless exportDescendantContainersArg.nil?
-      log(""Traversal export descendant containers: '#{exportDescendantContainersArg}'"", severity: :debug)
+      log(""Traversal export descendant containers: #{exportDescendantContainersArg}"", severity: :debug)
       traversal_options[:exportDescendantContainers] = exportDescendantContainersArg
     end
     exporter = $utilities.create_batch_exporter(exportPathArg)
     unless traversal_options.empty?
-      log(""Setting traversal options: '#{traversal_options}'"", severity: :debug)
+      log(""Setting traversal options: #{traversal_options}"", severity: :debug)
       exporter.set_traversal_options(traversal_options)
     end
     unless skipSlipsheetedItemsArg.nil?
-      log(""Setting Skip Natives Slipsheeted Items: '#{skipSlipsheetedItemsArg}'"", severity: :debug)
+      log(""Setting Skip Natives Slipsheeted Items: #{skipSlipsheetedItemsArg}"", severity: :debug)
       exporter.setSkipNativesSlipsheetedItems(skipSlipsheetedItemsArg)
     end
     unless numberingOptionsArg.nil?
-      log(""Setting numbering options: '#{numberingOptionsArg}'"", severity: :debug)
+      log(""Setting numbering options: #{numberingOptionsArg}"", severity: :debug)
       exporter.setNumberingOptions(numberingOptionsArg)
     end
     unless parallelProcessingSettingsArg.nil?
-      log(""Setting parallel processing settings: '#{parallelProcessingSettingsArg}'"", severity: :debug)
+      log(""Setting parallel processing settings: #{parallelProcessingSettingsArg}"", severity: :debug)
       exporter.setParallelProcessingSettings(parallelProcessingSettingsArg)
     end
     unless exportOptionsArg.nil?
       exportOptionsArg.each do |product, options|
-        log(""Adding #{product} to export with options: '#{options}'"", severity: :debug)
+        log(""Adding #{product} to export with options: #{options}"", severity: :debug)
         exporter.add_product(product, options)
       end
     end
     if prod_profile.nil? and !loadFileTypeArg.eql?('none')
-        log(""Adding load file to export: '#{loadFileTypeArg}'"", severity: :debug)
+        log(""Adding load file to export: #{loadFileTypeArg}"", severity: :debug)
       if loadFileOptionsArg.nil?
         exporter.add_load_file(loadFileTypeArg)
       else
-        log(""Load file options: '#{loadFileOptionsArg}'"", severity: :debug)
+        log(""Load file options: #{loadFileOptionsArg}"", severity: :debug)
         exporter.add_load_file(loadFileTypeArg, loadFileOptionsArg)
+      end
+    end
+    exporter.after_export do |details|
+      log 'Export finished'
+      log(""Details: #{details}'"", severity: :trace)
+      log ""Total exported: #{details.get_items.size}""
+      failed = details.get_failed_items
+      log ""Total failed: #{failed.size}""
+      if !failedItemsTagArg.nil? and failed.size > 0
+        log ""Tagging #{failed.size} failed items with '#{failedItemsTagArg}'.""
+        $utilities.get_bulk_annotater.add_tag(failedItemsTagArg, failed)
       end
     end
     log 'Starting export'
     exporter.export_items(production_set)
-    log 'Export finished'
 ";
 }
 
@@ -226,6 +236,14 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("skipSlipsheetedItemsArg")]
     [DefaultValueExplanation("false")]
     public IStep<bool>? SkipSlipsheetedNatives { get; set; }
+
+    /// <summary>
+    /// Tag items that fail to export with this tag.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("failedItemsTagArg")]
+    [DefaultValueExplanation("Failed items are not tagged")]
+    public IStep<StringStream>? FailedItemsTag { get; set; }
 }
 
 }

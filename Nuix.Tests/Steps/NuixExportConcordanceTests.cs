@@ -81,7 +81,8 @@ public partial class NuixExportConcordanceTests : NuixStepTestBase<NuixExportCon
                     TraversalStrategy      = Constant(ExportTraversalStrategy.Items),
                     Deduplication          = Constant(ExportDeduplication.None),
                     SortOrder              = Constant(ExportSortOrder.DocumentId),
-                    SkipSlipsheetedNatives = Constant(true)
+                    SkipSlipsheetedNatives = Constant(true),
+                    FailedItemsTag         = Constant("FailedExport")
                 },
                 new AssertTrue
                 {
