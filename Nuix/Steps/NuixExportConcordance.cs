@@ -238,7 +238,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     public IStep<bool>? SkipSlipsheetedNatives { get; set; }
 
     /// <summary>
-    /// 
+    /// Tag items that fail to export with this tag.
     /// </summary>
     [StepProperty]
     [RubyArgument("failedItemsTagArg")]
