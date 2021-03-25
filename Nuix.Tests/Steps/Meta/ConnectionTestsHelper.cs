@@ -15,7 +15,7 @@ using Xunit.Sdk;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 {
 
-public static class NuixConnectionTestsHelper
+public static class ConnectionTestsHelper
 {
     public static IStateMonad GetStateMonad(
         IExternalProcessRunner externalProcessRunner,
