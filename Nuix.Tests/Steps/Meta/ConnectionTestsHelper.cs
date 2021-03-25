@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using MELT;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -172,6 +173,52 @@ public static class ConnectionTestsHelper
             }
         );
     }
+
+    public static readonly ExternalProcessAction SearchHelperAction = new(
+        new ConnectionCommand { Command = "Search", FunctionDefinition = "", IsHelper = true },
+        new ConnectionOutput { Result   = new ConnectionOutputResult { Data = "helper_success" } }
+    );
+
+    public static readonly ExternalProcessAction ExpandHelperAction = new(
+        new ConnectionCommand
+        {
+            Command = "ExpandSearch", FunctionDefinition = "", IsHelper = true
+        },
+        new ConnectionOutput { Result = new ConnectionOutputResult { Data = "helper_success" } }
+    );
+
+    public static ExternalProcessAction
+        SearchAndTagAction(string casePath, string search, string tag, ConnectionOutput output) =>
+        new(
+            new ConnectionCommand
+            {
+                Command            = "SearchAndTag",
+                FunctionDefinition = "",
+                Arguments = new Dictionary<string, object>
+                {
+                    { nameof(NuixSearchAndTag.CasePath), casePath },
+                    { nameof(NuixSearchAndTag.SearchTerm), search },
+                    { nameof(NuixSearchAndTag.Tag), tag }
+                }
+            },
+            output
+        );
+
+    public static ReadOnlyDictionary<RubyFunctionParameter, object>
+        SearchAndTagParams(string casePath, string search, string tag) => new(
+        new Dictionary<RubyFunctionParameter, object>
+        {
+            {
+                new RubyFunctionParameter("pathArg", nameof(NuixSearchAndTag.CasePath), false),
+                casePath
+            },
+            {
+                new RubyFunctionParameter("searchArg", nameof(NuixSearchAndTag.SearchTerm), false),
+                search
+            },
+            { new RubyFunctionParameter("tagArg", nameof(NuixSearchAndTag.Tag), false), tag }
+        }
+    );
 }
 
 }

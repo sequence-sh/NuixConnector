@@ -28,15 +28,15 @@ public class NuixConnectionTests
     public async Task SendDoneCommand_WritesDoneToExternalProcess()
     {
         var logFactory     = TestLoggerFactory.Create();
-        var action         = NuixConnectionTestsHelper.GetDoneAction();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(logFactory, action);
+        var action         = ConnectionTestsHelper.GetDoneAction();
+        var nuixConnection = ConnectionTestsHelper.GetNuixConnection(logFactory, action);
 
         var fakeExternalProcess = new ExternalProcessMock(
             1,
-            NuixConnectionTestsHelper.GetCreateCaseAction()
+            ConnectionTestsHelper.GetCreateCaseAction()
         );
 
-        var state = NuixConnectionTestsHelper.GetStateMonad(
+        var state = ConnectionTestsHelper.GetStateMonad(
             fakeExternalProcess,
             logFactory,
             FileSystemAdapter.Default
@@ -54,7 +54,7 @@ public class NuixConnectionTests
     public async Task RunFunctionAsync_WhenDisposed_Throws()
     {
         var logFactory     = TestLoggerFactory.Create();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(logFactory);
+        var nuixConnection = ConnectionTestsHelper.GetNuixConnection(logFactory);
 
         var ct = new CancellationToken();
 
@@ -62,7 +62,7 @@ public class NuixConnectionTests
 
         await Assert.ThrowsAsync<ObjectDisposedException>(
             () => nuixConnection.RunFunctionAsync<Unit>(
-                NuixConnectionTestsHelper.GetStateMonadForProcess(logFactory),
+                ConnectionTestsHelper.GetStateMonadForProcess(logFactory),
                 null!,
                 null!,
                 new Dictionary<RubyFunctionParameter, object>(),
@@ -76,8 +76,8 @@ public class NuixConnectionTests
     public async Task RunFunctionAsync_WithTwoEntityStreamParameters_ReturnsError()
     {
         var logFactory     = TestLoggerFactory.Create();
-        var action         = NuixConnectionTestsHelper.GetDoneAction();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(logFactory, action);
+        var action         = ConnectionTestsHelper.GetDoneAction();
+        var nuixConnection = ConnectionTestsHelper.GetNuixConnection(logFactory, action);
         var ct             = new CancellationToken();
 
         var stream1 = new List<Entity>().ToAsyncEnumerable().ToSequence();
@@ -94,7 +94,7 @@ public class NuixConnectionTests
         var step = new FakeNuixTwoStreamFunction();
 
         var result = await nuixConnection.RunFunctionAsync(
-            NuixConnectionTestsHelper.GetStateMonadForProcess(logFactory),
+            ConnectionTestsHelper.GetStateMonadForProcess(logFactory),
             null,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
@@ -124,7 +124,7 @@ public class NuixConnectionTests
         );
 
         var logFactory     = TestLoggerFactory.Create();
-        var nuixConnection = NuixConnectionTestsHelper.GetNuixConnection(logFactory, action);
+        var nuixConnection = ConnectionTestsHelper.GetNuixConnection(logFactory, action);
         var ct             = new CancellationToken();
 
         var entities = new List<Entity>
@@ -144,7 +144,7 @@ public class NuixConnectionTests
         var step = new FakeNuixStreamFunction();
 
         var result = await nuixConnection.RunFunctionAsync(
-            NuixConnectionTestsHelper.GetStateMonadForProcess(logFactory),
+            ConnectionTestsHelper.GetStateMonadForProcess(logFactory),
             null,
             step.RubyScriptStepFactory.RubyFunction,
             stepParams,
@@ -167,70 +167,29 @@ public class NuixConnectionTests
         const string? search   = "*.png";
         const string? tag      = "image";
 
-        var searchHelperAction = new ExternalProcessAction(
-            new ConnectionCommand { Command = "Search", FunctionDefinition = "", IsHelper = true },
-            new ConnectionOutput { Result = new ConnectionOutputResult { Data = "helper_success" } }
-        ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
+        var searchHelperAction = ConnectionTestsHelper.SearchHelperAction;
+        var expandHelperAction = ConnectionTestsHelper.ExpandHelperAction;
 
-        var expandHelperAction = new ExternalProcessAction(
-            new ConnectionCommand
-            {
-                Command = "ExpandSearch", FunctionDefinition = "", IsHelper = true
-            },
-            new ConnectionOutput { Result = new ConnectionOutputResult { Data = "helper_success" } }
-        ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
-
-        var action = new ExternalProcessAction(
-            new ConnectionCommand
-            {
-                Command            = "SearchAndTag",
-                FunctionDefinition = "",
-                Arguments = new Dictionary<string, object>
-                {
-                    { nameof(NuixSearchAndTag.CasePath), casePath },
-                    { nameof(NuixSearchAndTag.SearchTerm), search },
-                    { nameof(NuixSearchAndTag.Tag), tag }
-                }
-            },
-            output
-        ) { WriteToStdOut = stdOut, WriteToStdErr = stdErr };
+        var action = ConnectionTestsHelper.SearchAndTagAction(casePath, search, tag, output);
+        action.WriteToStdOut = stdOut;
+        action.WriteToStdErr = stdErr;
 
         var loggerFactory = TestLoggerFactory.Create();
 
-        var nuixConnection =
-            NuixConnectionTestsHelper.GetNuixConnection(
-                loggerFactory,
-                searchHelperAction,
-                expandHelperAction,
-                action
-            );
-
-        var ct = new CancellationToken();
-
-        var dict = new Dictionary<RubyFunctionParameter, object>()
-        {
-            {
-                new RubyFunctionParameter("pathArg", nameof(NuixSearchAndTag.CasePath), false),
-                casePath
-            },
-            {
-                new RubyFunctionParameter("searchArg", nameof(NuixSearchAndTag.SearchTerm), false),
-                search
-            },
-            { new RubyFunctionParameter("tagArg", nameof(NuixSearchAndTag.Tag), false), tag }
-        };
-
-        var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
-
-        var step = new NuixSearchAndTag();
+        var nuixConnection = ConnectionTestsHelper.GetNuixConnection(
+            loggerFactory,
+            searchHelperAction,
+            expandHelperAction,
+            action
+        );
 
         var result = await nuixConnection.RunFunctionAsync(
-            NuixConnectionTestsHelper.GetStateMonadForProcess(loggerFactory),
+            ConnectionTestsHelper.GetStateMonadForProcess(loggerFactory),
             null,
-            step.RubyScriptStepFactory.RubyFunction,
-            stepParams,
+            new NuixSearchAndTag().RubyScriptStepFactory.RubyFunction,
+            ConnectionTestsHelper.SearchAndTagParams(casePath, search, tag),
             CasePathParameter.IgnoresOpenCase.Instance,
-            ct
+            new CancellationToken()
         );
 
         return (loggerFactory, result);
@@ -314,6 +273,69 @@ public class NuixConnectionTests
             result.Error.AsString
         );
     }
+
+    //[Fact]
+    //public async Task RunFunctionAsync_WhenResponseIsEntity_ReturnsEntity()
+    //{
+    //    var action = new ExternalProcessAction(
+    //        new ConnectionCommand
+    //        {
+    //            Command            = "EntityStream",
+    //            FunctionDefinition = "doesn't matter",
+    //            Arguments          = new Dictionary<string, object>(),
+    //            IsStream           = true
+    //        }
+    //    );
+
+    //    var logFactory     = TestLoggerFactory.Create();
+    //    var nuixConnection = ConnectionTestsHelper.GetNuixConnection(logFactory, action);
+    //    var ct             = new CancellationToken();
+
+    //    var entities = new List<Entity>
+    //    {
+    //        Entity.Create(("Property1", "Value1")), Entity.Create(("Property2", "Value2"))
+    //    };
+
+    //    var stream1 = entities.ToAsyncEnumerable().ToSequence();
+
+    //    var dict = new Dictionary<RubyFunctionParameter, object>()
+    //    {
+    //        { new RubyFunctionParameter("entityStream", "EntityStream", false), stream1 }
+    //    };
+
+    //    var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
+
+    //    var step = new FakeNuixStreamFunction();
+
+    //    var result = await nuixConnection.RunFunctionAsync(
+    //        ConnectionTestsHelper.GetStateMonadForProcess(logFactory),
+    //        null,
+    //        step.RubyScriptStepFactory.RubyFunction,
+    //        stepParams,
+    //        CasePathParameter.IgnoresOpenCase.Instance,
+    //        ct
+    //    );
+
+    //    result.ShouldBeSuccessful(x => x.AsString);
+
+    //    var output = new ConnectionOutput
+    //    {
+    //        Result = new ConnectionOutputResult
+    //        {
+    //            Data = Entity.Create(("Prop1", "Value1"), ("Prop2", 2), ("Prop3", 12.3))
+    //        }
+    //    };
+
+    //    var (_, result) = await GetActionResult(
+    //        output,
+    //        new[] { "{\"Prop1\":\"Value1\",\"Prop2\":2,\"Prop3\":12.3}" },
+    //        null
+    //    );
+
+    //    Assert.True(result.IsSuccess);
+
+    //    var entity = result.Value.As<Entity>();
+    //}
 }
 
 }
