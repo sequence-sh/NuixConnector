@@ -201,7 +201,12 @@ internal class ExternalProcessMock : IExternalProcessRunner
                                 "Stream functions cannot have 'Result' set in ConnectionOutput"
                             );
 
-                        var json = JsonConvert.SerializeObject(connectionOutput);
+                        var json = JsonConvert.SerializeObject(
+                            connectionOutput,
+                            Formatting.None,
+                            JsonConverters.All
+                        );
+
                         await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                     }
 
