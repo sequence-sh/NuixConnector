@@ -167,9 +167,6 @@ public class NuixConnectionTests
         const string? search   = "*.png";
         const string? tag      = "image";
 
-        var searchHelperAction = ConnectionTestsHelper.SearchHelperAction;
-        var expandHelperAction = ConnectionTestsHelper.ExpandHelperAction;
-
         var action = ConnectionTestsHelper.SearchAndTagAction(casePath, search, tag, output);
         action.WriteToStdOut = stdOut;
         action.WriteToStdErr = stdErr;
@@ -178,8 +175,8 @@ public class NuixConnectionTests
 
         var nuixConnection = ConnectionTestsHelper.GetNuixConnection(
             loggerFactory,
-            searchHelperAction,
-            expandHelperAction,
+            ConnectionTestsHelper.SearchHelperAction,
+            ConnectionTestsHelper.ExpandHelperAction,
             action
         );
 
@@ -274,68 +271,40 @@ public class NuixConnectionTests
         );
     }
 
-    //[Fact]
-    //public async Task RunFunctionAsync_WhenResponseIsEntity_ReturnsEntity()
-    //{
-    //    var action = new ExternalProcessAction(
-    //        new ConnectionCommand
-    //        {
-    //            Command            = "EntityStream",
-    //            FunctionDefinition = "doesn't matter",
-    //            Arguments          = new Dictionary<string, object>(),
-    //            IsStream           = true
-    //        }
-    //    );
+    [Fact]
+    public async Task RunFunctionAsync_WhenResponseIsEntity_ReturnsEntity()
+    {
+        var outputData = Entity.Create(("Name", "workstation"), ("Description", "license"));
 
-    //    var logFactory     = TestLoggerFactory.Create();
-    //    var nuixConnection = ConnectionTestsHelper.GetNuixConnection(logFactory, action);
-    //    var ct             = new CancellationToken();
+        var action = new ExternalProcessAction(
+            new ConnectionCommand
+            {
+                Command = "GetLicenseDetails", FunctionDefinition = "", Arguments = new()
+            },
+            new ConnectionOutput { Result = new ConnectionOutputResult { Data = outputData } }
+        );
 
-    //    var entities = new List<Entity>
-    //    {
-    //        Entity.Create(("Property1", "Value1")), Entity.Create(("Property2", "Value2"))
-    //    };
+        var lf = TestLoggerFactory.Create();
 
-    //    var stream1 = entities.ToAsyncEnumerable().ToSequence();
+        var nuixConnection = ConnectionTestsHelper.GetNuixConnection(lf, action);
 
-    //    var dict = new Dictionary<RubyFunctionParameter, object>()
-    //    {
-    //        { new RubyFunctionParameter("entityStream", "EntityStream", false), stream1 }
-    //    };
+        var rubyParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(
+            new Dictionary<RubyFunctionParameter, object>()
+        );
 
-    //    var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
+        var result = await nuixConnection.RunFunctionAsync(
+            ConnectionTestsHelper.GetStateMonadForProcess(lf),
+            null,
+            new NuixGetLicenseDetails().RubyScriptStepFactory.RubyFunction,
+            rubyParams,
+            CasePathParameter.IgnoresOpenCase.Instance,
+            new CancellationToken()
+        );
 
-    //    var step = new FakeNuixStreamFunction();
-
-    //    var result = await nuixConnection.RunFunctionAsync(
-    //        ConnectionTestsHelper.GetStateMonadForProcess(logFactory),
-    //        null,
-    //        step.RubyScriptStepFactory.RubyFunction,
-    //        stepParams,
-    //        CasePathParameter.IgnoresOpenCase.Instance,
-    //        ct
-    //    );
-
-    //    result.ShouldBeSuccessful(x => x.AsString);
-
-    //    var output = new ConnectionOutput
-    //    {
-    //        Result = new ConnectionOutputResult
-    //        {
-    //            Data = Entity.Create(("Prop1", "Value1"), ("Prop2", 2), ("Prop3", 12.3))
-    //        }
-    //    };
-
-    //    var (_, result) = await GetActionResult(
-    //        output,
-    //        new[] { "{\"Prop1\":\"Value1\",\"Prop2\":2,\"Prop3\":12.3}" },
-    //        null
-    //    );
-
-    //    Assert.True(result.IsSuccess);
-
-    //    var entity = result.Value.As<Entity>();
-    //}
+        Assert.True(result.IsSuccess);
+        Assert.IsType<Entity>(result.Value);
+        Assert.Equal("workstation", result.Value.TryGetValue("Name").Value.ToString());
+    }
 }
 
 }
