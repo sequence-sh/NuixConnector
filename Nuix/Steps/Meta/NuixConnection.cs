@@ -5,6 +5,7 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Reductech.EDR.Connectors.Nuix.Errors;
 using Reductech.EDR.Connectors.Nuix.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
@@ -295,11 +296,10 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
 
             try
             {
-                connectionOutput =
-                    JsonConvert.DeserializeObject<ConnectionOutput>(
-                        jsonString,
-                        JsonConverters.All
-                    )!;
+                connectionOutput = JsonConvert.DeserializeObject<ConnectionOutput>(
+                    jsonString,
+                    JsonConverters.All
+                )!;
             }
             catch (Exception)
             {
@@ -390,10 +390,21 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                         return typedStringStream;
                 }
 
-                var convertedResult = Convert.ChangeType(connectionOutput.Result.Data, typeof(T));
+                if (typeof(T) == typeof(Entity) && connectionOutput.Result.Data is JObject jo)
+                {
+                    if (Entity.Create(jo) is T entity)
+                        return entity;
+                }
+                else
+                {
+                    var convertedResult = Convert.ChangeType(
+                        connectionOutput.Result.Data,
+                        typeof(T)
+                    );
 
-                if (convertedResult is T tConverted)
-                    return tConverted;
+                    if (convertedResult is T tConverted)
+                        return tConverted;
+                }
 
                 return new ErrorBuilder(
                     ErrorCode.CouldNotParse,

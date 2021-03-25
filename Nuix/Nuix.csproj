@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
     <AssemblyName>Reductech.EDR.Connectors.Nuix</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.6.0$(VersionSuffix)</Version>
+    <Version>0.7.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -31,7 +31,7 @@
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.14.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Reductech.EDR.Core" Version="0.6.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.6.0-a.master.2103251425" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
