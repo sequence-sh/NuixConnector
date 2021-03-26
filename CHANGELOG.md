@@ -1,3 +1,23 @@
+# v0.7.0 (2021-03-26)
+
+## Summary of Changes
+
+### Steps
+
+- Added
+  - `NuixGetCaseDetails`
+  - `NuixGetLicenseDetails`
+- Updated
+  - `NuixCreateNRTReport` to support additional report context options
+
+## Issues Closed in this Release
+
+### New Features
+
+- Pass report options to CreateNRTReport as an Entity #181
+- Create process to check license details, so Technicians can set the number of workers dynamically #68
+- Add before and after export callbacks to ExportConcordance #180
+
 # v0.6.0 (2021-03-14)
 
 ## Summary of Changes
