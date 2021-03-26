@@ -12,12 +12,6 @@ namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 public partial class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Unit>
 {
     /// <inheritdoc />
-    protected override IEnumerable<DeserializeCase> DeserializeCases
-    {
-        get { yield break; }
-    }
-
-    /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
     {
         get
@@ -37,17 +31,17 @@ public partial class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTRe
                 new NuixCreateNRTReport
                 {
                     CasePath = CasePath,
-                    NRTPath = Constant(Path.Join(Nuix8Path, @"user-data\Reports\Case Summary.nrt")),
-                    OutputFormat = Constant("PDF"),
-                    LocalResourcesURL =
-                        Constant(
-                            Path.Join(Nuix8Path, @"user-data\Reports\Case Summary\Resources\")
-                        ),
-                    OutputPath = NRTFolder
+                    NRTPath =
+                        Constant(Path.Join(Nuix8Path, @"user-data\Reports\Case Summary.nrt")),
+                    OutputPath      = NRTFolder,
+                    OutputFormat    = Constant("PDF"),
+                    Title           = Constant("A report"),
+                    User            = Constant("Investigator"),
+                    ApplicationName = Constant("NuixApp")
                 },
                 AssertFileContains(GeneralDataFolder, "NRT", "PDF-1.4"),
-                new DeleteItem { Path = NRTFolder },
                 new NuixCloseConnection(),
+                new DeleteItem { Path = NRTFolder },
                 DeleteCaseFolder
             );
         }

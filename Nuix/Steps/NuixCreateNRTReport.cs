@@ -36,26 +36,27 @@ public sealed class
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-    log 'Generating NRT Report:'
-
-    reportGenerator =$utilities.getReportGenerator();
-    reportContext = {
-    'NUIX_USER' => 'Mark',
-    'NUIX_APP_NAME' => 'AppName',
-    'NUIX_REPORT_TITLE' => 'ReportTitle',
-    'NUIX_APP_VERSION' => NUIX_VERSION,
-    'LOCAL_RESOURCES_URL' => localResourcesUrlArg,
-    'currentCase' => $current_case,
-    'utilities' => $utilities,
-    'dedupeEnabled' => true
+    context = {
+      'NUIX_USER' => userArg.nil? ? $current_case.get_investigator : userArg,
+      'NUIX_APP_NAME' => appNameArg.nil? ? 'Nuix' : appNameArg,
+      'NUIX_REPORT_TITLE' => titleArg.nil? ? ""#{$current_case.get_name} Report"" : titleArg,
+      'NUIX_APP_VERSION' => NUIX_VERSION,
+      'currentCase' => $current_case,
+      'utilities' => $utilities,
+      'dedupeEnabled' => true
     }
-
-    reportGenerator.generateReport(
-    nrtPathArg,
-    reportContext.to_java,
-    outputFormatArg,
-    outputPathArg
-    )";
+    context['LOCAL_RESOURCES_URL'] = localResourcesUrlArg.nil? ?
+      nrtPathArg.sub(/(?i)\.nrt$/,'') + '\\resources\\' :
+      localResourcesUrlArg
+    context['GLOBAL_RESOURCES_URL'] = globalResourcesUrlArg unless globalResourcesUrlArg.nil?
+    log(""Report context: #{context}"", severity: :debug)
+    $utilities.get_report_generator.generate_report(
+      nrtPathArg,
+      context.to_java,
+      outputFormatArg,
+      outputPathArg
+    )
+";
 }
 
 /// <summary>
@@ -73,38 +74,78 @@ public sealed class NuixCreateNRTReport : RubyCaseScriptStepBase<Unit>
     [Required]
     [StepProperty(1)]
     [RubyArgument("nrtPathArg")]
+    [Alias("Template")]
     public IStep<StringStream> NRTPath { get; set; } = null!;
 
     /// <summary>
-    /// The format of the report file that will be created.
+    /// The output path.
     /// </summary>
     [Required]
-    [Example("PDF")]
     [StepProperty(2)]
-    [RubyArgument("outputFormatArg")]
-    [Alias("Format")]
-    public IStep<StringStream> OutputFormat { get; set; } = null!;
-
-    /// <summary>
-    /// The path to output the file at.
-    /// </summary>
-    [Required]
-    [Example("C:/Temp/report.pdf")]
-    [StepProperty(3)]
     [RubyArgument("outputPathArg")]
+    [Example("C:/Temp/report.pdf")]
     [Alias("ReportPath")]
     public IStep<StringStream> OutputPath { get; set; } = null!;
 
     /// <summary>
-    /// The path to the local resources folder.
-    /// To load the logos etc.
+    /// The format of the report file that will be created.
     /// </summary>
-    [Required]
-    [Example(@"C:\Program Files\Nuix\Nuix 8.4\user-data\Reports\Case Summary\Resources\")]
-    [StepProperty(4)]
+    [StepProperty(3)]
+    [RubyArgument("outputFormatArg")]
+    [DefaultValueExplanation("PDF")]
+    [Alias("Format")]
+    public IStep<StringStream> OutputFormat { get; set; } = new StringConstant("PDF");
+
+    /// <summary>
+    /// The report title.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("titleArg")]
+    [DefaultValueExplanation("<Case Name> Report")]
+    [Alias("ReportTitle")]
+    [Alias("NUIX_REPORT_TITLE")]
+    public IStep<StringStream>? Title { get; set; }
+
+    /// <summary>
+    /// The report user.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("userArg")]
+    [DefaultValueExplanation("The case investigator property.")]
+    [Alias("NuixUser")]
+    [Alias("NUIX_USER")]
+    public IStep<StringStream>? User { get; set; }
+
+    /// <summary>
+    /// The application name generating the report.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("appNameArg")]
+    [DefaultValueExplanation("Nuix")]
+    [Alias("NuixAppName")]
+    [Alias("NUIX_APP_NAME")]
+    public IStep<StringStream>? ApplicationName { get; set; }
+
+    /// <summary>
+    /// The path to the local resources folder. Must have a trailing '\'.
+    /// </summary>
+    [StepProperty]
     [RubyArgument("localResourcesUrlArg")]
-    [Alias("Resources")]
-    public IStep<StringStream> LocalResourcesURL { get; set; } = null!;
+    [Example(@"C:\ProgramData\Nuix\Reports\Resources\")]
+    [DefaultValueExplanation("NRTPath with extension removed and \\resources appended.")]
+    [Alias("LocalResourcesUrl")]
+    [Alias("LOCAL_RESOURCES_URL")]
+    public IStep<StringStream>? LocalResourcesPath { get; set; }
+
+    /// <summary>
+    /// The path to the global resources folder. Must have a trailing '\'.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("globalResourcesUrlArg")]
+    [DefaultValueExplanation("No global resource path set")]
+    [Alias("GlobalResourcesUrl")]
+    [Alias("GLOBAL_RESOURCES_URL")]
+    public IStep<StringStream>? GlobalResourcesPath { get; set; }
 }
 
 }
