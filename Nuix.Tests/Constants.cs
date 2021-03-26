@@ -209,6 +209,29 @@ public static class Constants
         };
     }
 
+    public static AssertTrue AssertPropertyValueEquals<T>(string property, IStep<T> expected)
+        where T : IComparable<T> => new()
+    {
+        Boolean = new Equals<T>
+        {
+            Terms = new ArrayNew<T>
+            {
+                Elements = new List<IStep<T>>
+                {
+                    expected,
+                    new EntityGetValue<T>
+                    {
+                        Entity = new GetVariable<Entity>
+                        {
+                            Variable = VariableName.Entity
+                        },
+                        Property = Constant(property)
+                    }
+                }
+            }
+        }
+    };
+
     public static readonly IStep<Unit> OpenCase = new NuixOpenCase() { CasePath = CasePath };
 
     public static readonly IStep<Unit> AddData = new NuixAddItem
