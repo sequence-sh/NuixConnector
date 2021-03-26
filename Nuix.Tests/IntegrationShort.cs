@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps;
@@ -191,11 +192,25 @@ public partial class IntegrationShortTests
                                 "loadfile.dat",
                                 "6b661c59b9cc39b84832e3b7ebee6e93"
                             ),
+                            new NuixCreateNRTReport
+                            {
+                                CasePath = Constant(CasePath),
+                                NRTPath = Constant(
+                                    Path.Join(Nuix8Path, @"user-data\Reports\Case Summary.nrt")
+                                ),
+                                OutputPath      = NRTFolder,
+                                OutputFormat    = Constant("PDF"),
+                                Title           = Constant("A report"),
+                                User            = Constant("Investigator"),
+                                ApplicationName = Constant("NuixApp")
+                            },
+                            AssertFileContains(GeneralDataFolder, "NRT", "PDF-1.4"),
                             new NuixCloseConnection(),
                             // clean up
                             new DeleteItem { Path = Constant(CasePath) },
                             new DeleteItem { Path = Constant(ReportPath) },
                             new DeleteItem { Path = Constant(ExportPath) },
+                            new DeleteItem { Path = NRTFolder },
                             new ForEach<StringStream>
                             {
                                 Array = Array(CasePath, ReportPath, ExportPath),
