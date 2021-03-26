@@ -11,7 +11,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps
 {
 
 /// <summary>
-/// Creates a report using an NRT file.
+/// Create a case report using an NRT file.
 /// </summary>
 public sealed class
     NuixCreateNRTReportStepFactory : RubyScriptStepFactory<NuixCreateNRTReport, Unit>
@@ -60,7 +60,7 @@ public sealed class
 }
 
 /// <summary>
-/// Creates a report using an NRT file.
+/// Create a case report using an NRT file.
 /// </summary>
 public sealed class NuixCreateNRTReport : RubyCaseScriptStepBase<Unit>
 {
@@ -128,6 +128,7 @@ public sealed class NuixCreateNRTReport : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// The path to the local resources folder. Must have a trailing '\'.
+    /// The resources folder can be obtained by unzipping the NRT file.
     /// </summary>
     [StepProperty]
     [RubyArgument("localResourcesUrlArg")]
