@@ -243,8 +243,6 @@ public static class Constants
         new ConnectionCommand { Command = name, FunctionDefinition = "", IsHelper = true },
         new ConnectionOutput { Result   = new ConnectionOutputResult { Data = "helper_success" } }
     );
-
-    //public static 
 }
 
 }
