@@ -4,9 +4,11 @@
 
 ### Steps
 
-- Added `NuixGetCaseDetails` step
-- Updated `NuixCreateNRTReport` to support additional report context options
-- Added NuixGetLicenseDetails step
+- Added
+  - `NuixGetCaseDetails`
+  - `NuixGetLicenseDetails`
+- Updated
+  - `NuixCreateNRTReport` to support additional report context options
 
 ## Issues Closed in this Release
 
