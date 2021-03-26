@@ -49,7 +49,7 @@ public sealed class
       nrtPathArg.sub(/(?i)\.nrt$/,'') + '\\resources\\' :
       localResourcesUrlArg
     context['GLOBAL_RESOURCES_URL'] = globalResourcesUrlArg unless globalResourcesUrlArg.nil?
-    log(""Report context: #{context}"", severity: :debug)
+    log(""Report context: #{context}"", severity: :trace)
     $utilities.get_report_generator.generate_report(
       nrtPathArg,
       context.to_java,
