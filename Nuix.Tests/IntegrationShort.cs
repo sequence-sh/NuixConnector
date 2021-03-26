@@ -198,19 +198,18 @@ public partial class IntegrationShortTests
                                 NRTPath = Constant(
                                     Path.Join(Nuix8Path, @"user-data\Reports\Case Summary.nrt")
                                 ),
-                                OutputPath      = NRTFolder,
+                                OutputPath      = Constant(Path.Join(ReportPath, "NRT.pdf")),
                                 OutputFormat    = Constant("PDF"),
                                 Title           = Constant("A report"),
                                 User            = Constant("Investigator"),
                                 ApplicationName = Constant("NuixApp")
                             },
-                            AssertFileContains(GeneralDataFolder, "NRT", "PDF-1.4"),
+                            AssertFileContains(ReportPath, "NRT.pdf", "PDF-1.4"),
                             new NuixCloseConnection(),
                             // clean up
                             new DeleteItem { Path = Constant(CasePath) },
                             new DeleteItem { Path = Constant(ReportPath) },
                             new DeleteItem { Path = Constant(ExportPath) },
-                            new DeleteItem { Path = NRTFolder },
                             new ForEach<StringStream>
                             {
                                 Array = Array(CasePath, ReportPath, ExportPath),
