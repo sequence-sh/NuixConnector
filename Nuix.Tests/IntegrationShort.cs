@@ -65,6 +65,19 @@ public partial class IntegrationShortTests
                                 }
                             },
                             new NuixOpenCase { CasePath = Constant(CasePath) },
+                            // Check license and case details
+                            new SetVariable<Entity>
+                            {
+                                Variable = VariableName.Entity,
+                                Value    = new NuixGetLicenseDetails()
+                            },
+                            AssertPropertyValueEquals("Name", Constant("enterprise-workstation")),
+                            new SetVariable<Entity>
+                            {
+                                Variable = VariableName.Entity, Value = new NuixGetCaseDetails()
+                            },
+                            AssertPropertyValueEquals("Name",         Constant("IntegrationShort")),
+                            AssertPropertyValueEquals("Investigator", Constant("InvestigatorA")),
                             // Add loose items
                             new NuixAddItem
                             {
