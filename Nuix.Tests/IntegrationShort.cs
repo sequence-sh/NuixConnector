@@ -31,7 +31,6 @@ public partial class IntegrationShortTests
         get
         {
             var stepTest = new NuixStepTestBase<NuixCreateCase, Unit>.IntegrationTestCase(
-                    // Testing this workflow: https://docs.reductech.io/edr/examples/create-ingest-export.html
                     "Sequence - create, add, ocr, search&tag, report, export",
                     new Sequence<Unit>
                     {
@@ -68,16 +67,29 @@ public partial class IntegrationShortTests
                             // Check license and case details
                             new SetVariable<Entity>
                             {
-                                Variable = VariableName.Entity,
+                                Variable = new VariableName("LicenseDetails"),
                                 Value    = new NuixGetLicenseDetails()
                             },
-                            AssertPropertyValueEquals("Name", Constant("enterprise-workstation")),
+                            AssertPropertyValueEquals(
+                                "LicenseDetails",
+                                "Name",
+                                Constant("enterprise-workstation")
+                            ),
                             new SetVariable<Entity>
                             {
-                                Variable = VariableName.Entity, Value = new NuixGetCaseDetails()
+                                Variable = new VariableName("CaseDetails"),
+                                Value    = new NuixGetCaseDetails()
                             },
-                            AssertPropertyValueEquals("Name",         Constant("IntegrationShort")),
-                            AssertPropertyValueEquals("Investigator", Constant("InvestigatorA")),
+                            AssertPropertyValueEquals(
+                                "CaseDetails",
+                                "Name",
+                                Constant("IntegrationShort")
+                            ),
+                            AssertPropertyValueEquals(
+                                "CaseDetails",
+                                "Investigator",
+                                Constant("InvestigatorA")
+                            ),
                             // Add loose items
                             new NuixAddItem
                             {
