@@ -30,7 +30,7 @@ public sealed class NuixGetCaseDetailsFactory : RubyScriptStepFactory<NuixGetCas
         new List<NuixFeature>();
 
     /// <inheritdoc />
-    public override string FunctionName => "GetLicenseDetails";
+    public override string FunctionName => "GetCaseDetails";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
