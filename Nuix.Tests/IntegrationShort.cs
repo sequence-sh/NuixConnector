@@ -97,14 +97,36 @@ public partial class IntegrationShortTests
                                 Paths     = Array(DataPath),
                                 Container = Constant("INT01B0001"),
                                 MimeTypeSettings = Array(
-                                    Entity.Create(("mime_type", "text/plain"), ("enabled", "true")),
+                                    Entity.Create(("mimeType", "text/plain"), ("enabled", true)),
+                                    // Disable or this extracts a whole bunch of 'application/x-database-table-row'
                                     Entity.Create(
-                                        ("mime_type", "application/pdf"),
-                                        ("enabled", "true")
+                                        ("mimeType", "text/tab-separated-values"),
+                                        ("enabled", true),
+                                        ("processEmbedded", false),
+                                        ("processText", true)
                                     )
+                                ),
+                                // Upstream bug in Core. reductech/edr/core#225
+                                //CustomMetadata = new CreateEntityStep(
+                                //    new ReadOnlyDictionary<EntityPropertyKey, IStep>(
+                                //        new Dictionary<EntityPropertyKey, IStep>
+                                //        {
+                                //            {
+                                //                new EntityPropertyKey("EDRVersion"),
+                                //                new GetApplicationVersion()
+                                //            }
+                                //        }
+                                //    )
+                                //),
+                                ProcessingProfileName = Constant("Default"),
+                                ProcessingSettings = Constant(
+                                    Entity.Create(("calculateAuditedSize", true))
                                 )
                             },
                             AssertCount(186, "custodian:\"EDRM Micro\""), AssertCount(2, "*.txt"),
+                            //AssertCount(186, "custom-metadata:\"EDRVersion\":*"),
+                            // Check audited size
+                            AssertEquals(Constant(76858334.0), new NuixGetAuditedSize()),
                             // Add concordance file
                             new NuixAddConcordance
                             {
