@@ -237,6 +237,20 @@ public partial class IntegrationShortTests
                             },
                             AssertFileContains(ReportPath, "terms-list.txt", "garnethill\t222"),
                             AssertFileContains(ReportPath, "terms-list.txt", "cindyloh3333\t116"),
+                            // Create an irregular items report
+                            new FileWrite
+                            {
+                                Path = new PathCombine
+                                {
+                                    Paths = Array(ReportPath, "irregular-items.txt")
+                                },
+                                Stream = new NuixCreateIrregularItemsReport()
+                            },
+                            AssertFileContains(
+                                ReportPath,
+                                "irregular-items.txt",
+                                "Unrecognised\tINT01B0001/Data/Disposing-of-Digital-Debris-Information-Governance-Practice-and-Strategy - Accessible.txt"
+                            ),
                             // Create NRT Report
                             new NuixCreateNRTReport
                             {
@@ -267,6 +281,15 @@ public partial class IntegrationShortTests
                                 "loadfile.dat",
                                 "6b661c59b9cc39b84832e3b7ebee6e93"
                             ),
+                            // Change custodian
+                            new NuixAssignCustodian
+                            {
+                                Custodian     = Constant("InvestigatorB"),
+                                SearchTerm    = Constant("blue"),
+                                SortSearch    = Constant(true),
+                                SearchOptions = Constant(Entity.Create(("limit", 1)))
+                            },
+                            AssertCount(1, "custodian:\"InvestigatorB\""),
                             new NuixCloseConnection(),
                             // clean up
                             new DeleteItem { Path = Constant(CasePath) },
