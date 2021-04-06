@@ -33,7 +33,7 @@ public sealed class
         = new List<NuixFeature> { NuixFeature.ANALYSIS };
 
     /// <inheritdoc />
-    public override string FunctionName => "GetAuditedSize";
+    public override string FunctionName => "ExcludeDecryptedItems";
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
