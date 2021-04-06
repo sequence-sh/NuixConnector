@@ -22,31 +22,20 @@ public partial class NuixGetAuditedSizeTests : NuixStepTestBase<NuixGetAuditedSi
                 CreateCase,
                 new NuixAddItem
                 {
-                    Custodian = Constant("Mark"),
-                    Paths     = DataPaths,
-                    Container = Constant("New Folder"),
-                    ProcessingSettings = Constant(
-                        Core.Entity.Create(("calculateAuditedSize", true))
-                    )
+                    Custodian          = Constant("Mark"),
+                    Paths              = DataPaths,
+                    Container          = Constant("New Folder"),
+                    ProcessingSettings = Constant(Entity.Create(("calculateAuditedSize", true)))
                 },
                 new AssertTrue
                 {
-                    // TODO: Comparing the two as a string is a hack and will need to be
-                    // reverted back to double once the upstream bug in Core has been fixed
-                    Boolean = new Equals<StringStream>()
+                    Boolean = new Equals<double>
                     {
-                        Terms = new ArrayNew<StringStream>()
+                        Terms = new ArrayNew<double>
                         {
-                            Elements = new List<IStep<StringStream>>()
+                            Elements = new List<IStep<double>>
                             {
-                                Constant("799"),
-                                new StringInterpolate
-                                {
-                                    Strings = new List<IStep>
-                                    {
-                                        new NuixGetAuditedSize()
-                                    }
-                                }
+                                Constant(799.0), new NuixGetAuditedSize()
                             }
                         }
                     }

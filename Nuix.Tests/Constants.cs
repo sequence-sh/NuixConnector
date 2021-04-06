@@ -209,7 +209,26 @@ public static class Constants
         };
     }
 
+    public static AssertTrue AssertEquals<T>(IStep<T> expected, IStep<T> actual)
+        where T : IComparable<T> => new()
+    {
+        Boolean = new Equals<T>
+        {
+            Terms = new ArrayNew<T> { Elements = new List<IStep<T>> { expected, actual } }
+        }
+    };
+
     public static AssertTrue AssertPropertyValueEquals<T>(string property, IStep<T> expected)
+        where T : IComparable<T> => AssertPropertyValueEquals(
+        VariableName.Entity.Name,
+        property,
+        expected
+    );
+
+    public static AssertTrue AssertPropertyValueEquals<T>(
+        string variable,
+        string property,
+        IStep<T> expected)
         where T : IComparable<T> => new()
     {
         Boolean = new Equals<T>
@@ -223,7 +242,7 @@ public static class Constants
                     {
                         Entity = new GetVariable<Entity>
                         {
-                            Variable = VariableName.Entity
+                            Variable = new VariableName(variable)
                         },
                         Property = Constant(property)
                     }

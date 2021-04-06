@@ -37,36 +37,7 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
-
-    ds = args['datastream']
-
     processor = $current_case.create_processor
-
-    #Read special mime type settings from data stream
-    if ds != nil
-      log 'Mime Type Data stream reading started'
-      mimeTypes = []
-
-      while !ds.closed? or !ds.empty?
-        data = ds.pop
-        break if ds.closed? and data.nil?
-        mimeTypes << data
-      end
-      log ""Mime Type Data stream reading finished (#{mimeTypes.count} elements)""
-
-      version_mimes = []
-      $utilities.getItemTypeUtility().getAllTypes().each do |mime|
-        version_mimes << mime.to_s
-      end
-
-      mimeTypes.each do |mime_type|
-        mimeTypeString = mime_type['mimeType'].to_s
-        if (version_mimes.include?(mimeTypeString) == true)
-          mime_type.delete('mimeType') #remove this value from the hash as it isn't part of the settings
-          nuix_processor.setMimeTypeProcessingSettings(mimeTypeString, mime_type)
-        end
-      end
-    end
 
     #This only works in 7.6 or later
     if processingProfileNameArg != nil
@@ -90,6 +61,38 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 
     if parallelProcessingSettingsArg != nil
       processor.setParallelProcessingSettings(parallelProcessingSettingsArg)
+    end
+
+    ds = args['datastream']
+
+    #Read special mime type settings from data stream
+    unless ds.nil?
+      log 'Mime Type Data stream reading started'
+      mime_types = []
+
+      while !ds.closed? or !ds.empty?
+        data = ds.pop
+        break if ds.closed? and data.nil?
+        mime_types << JSON.parse(data)
+      end
+      log ""Mime Type Data stream reading finished (#{mime_types.count} entities)""
+
+      supported_mimes = []
+      $utilities.get_item_type_utility.get_all_types.each do |mime|
+        supported_mimes << mime.to_s
+      end
+      log(""Current Nuix version supports #{supported_mimes.count} mime types"", severity: :debug)
+
+      mime_types.each do |mt|
+        type_name = mt['mimeType']
+        if supported_mimes.include?(type_name)
+          mt.delete('mimeType') # remove this value from the hash as it isn't part of the settings
+          log(""Settings for '#{type_name}': #{mt}"", severity: :debug)
+          processor.setMimeTypeProcessingSettings(type_name, mt)
+        else
+          log(""The mime type #{type_name} is not supported by the current Nuix version"", severity: :warning)
+        end
+      end
     end
 
     #This only works in 7.2 or later
@@ -266,12 +269,15 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
 
     /// <summary>
     /// Special settings for individual mime types.
-    /// Should have a 'mime_type' property and then any other special properties.
+    /// Should have a 'mimeType' property and then any other special properties.
     /// </summary>
     [RequiredVersion("Nuix", "8.2")]
     [StepProperty]
     [RubyArgument("mimeTypeDataStreamArg")]
     [DefaultValueExplanation("Use default settings for all MIME types")]
+    [Example(
+        "(\"mimeType\": \"application/pdf\" \"enabled\": \"true\" \"processEmbedded\": false)"
+    )]
     public IStep<Array<Core.Entity>>? MimeTypeSettings { get; set; }
 
     /// <summary>

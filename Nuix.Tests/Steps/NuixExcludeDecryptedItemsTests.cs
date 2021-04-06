@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
@@ -34,7 +32,7 @@ public partial class
                         )
                     ),
                     Container        = Constant("EncryptedItems"),
-                    PasswordFilePath = (PasswordFilePath)
+                    PasswordFilePath = PasswordFilePath
                 },
                 AssertCount(2, "has-exclusion:0 AND \"encrypted\""),
                 new NuixExcludeDecryptedItems(),
