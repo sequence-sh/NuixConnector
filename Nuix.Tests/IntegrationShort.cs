@@ -122,12 +122,13 @@ public partial class IntegrationShortTests
                                 ProcessingProfileName = Constant("Default"),
                                 ProcessingSettings = Constant(
                                     Entity.Create(("calculateAuditedSize", true))
-                                )
+                                ),
+                                PasswordFilePath = PasswordFilePath
                             },
-                            AssertCount(186, "custodian:\"EDRM Micro\""), AssertCount(2, "*.txt"),
-                            //AssertCount(186, "custom-metadata:\"EDRVersion\":*"),
+                            AssertCount(188, "custodian:\"EDRM Micro\""), AssertCount(2, "*.txt"),
+                            //AssertCount(188, "custom-metadata:\"EDRVersion\":*"),
                             // Check audited size
-                            AssertEquals(Constant(76858334.0), new NuixGetAuditedSize()),
+                            AssertEquals(Constant(76924230.0), new NuixGetAuditedSize()),
                             // Add concordance file
                             new NuixAddConcordance
                             {
@@ -179,6 +180,10 @@ public partial class IntegrationShortTests
                             },
                             AssertCount(2, "tag:notrelevant"),
                             AssertCount(2, "exclusion:notrelevant"),
+                            // Exclude decrypted files
+                            AssertCount(6, "has-exclusion:0 AND \"encrypted\""),
+                            new NuixExcludeDecryptedItems(),
+                            AssertCount(5, "has-exclusion:0 AND \"encrypted\""),
                             // Create an item set from the tagged items
                             new NuixAddToItemSet
                             {
@@ -223,11 +228,11 @@ public partial class IntegrationShortTests
                                 },
                                 Stream = new NuixCreateReport()
                             },
-                            AssertFileContains(ReportPath, "file-types.txt", "*\tkind\t*\t189"),
+                            AssertFileContains(ReportPath, "file-types.txt", "*\tkind\t*\t191"),
                             AssertFileContains(
                                 ReportPath,
                                 "file-types.txt",
-                                "EDRM Micro\tkind\t*\t186"
+                                "EDRM Micro\tkind\t*\t188"
                             ),
                             AssertFileContains(
                                 ReportPath,
