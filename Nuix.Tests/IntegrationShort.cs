@@ -170,13 +170,27 @@ public partial class IntegrationShortTests
                                     }
                                 }
                             },
+                            new NuixSearchAndExclude
+                            {
+                                SearchTerm      = Constant("material"),
+                                ExclusionReason = Constant("notrelevant"),
+                                Tag             = Constant("notrelevant")
+                            },
+                            AssertCount(2, "tag:notrelevant"),
+                            AssertCount(2, "exclusion:notrelevant"),
                             // Create an item set from the tagged items
                             new NuixAddToItemSet
                             {
-                                SearchTerm  = Constant("tag:*"),
+                                SearchTerm  = Constant("has-exclusion:0 AND tag:*"),
                                 ItemSetName = Constant("TaggedItems")
                             },
                             AssertCount(14, "item-set:TaggedItems"),
+                            new NuixRemoveFromItemSet
+                            {
+                                ItemSetName = Constant("TaggedItems"),
+                                SearchTerm  = Constant("blue")
+                            },
+                            AssertCount(11, "item-set:TaggedItems"),
                             // Create a production set from the tagged items
                             new NuixAddToProductionSet
                             {
@@ -184,13 +198,13 @@ public partial class IntegrationShortTests
                                 ProductionSetName     = Constant("ExportProduction"),
                                 ProductionProfilePath = TestProductionProfilePath
                             },
-                            AssertCount(14, "production-set:ExportProduction"),
+                            AssertCount(11, "production-set:ExportProduction"),
                             new NuixRemoveFromProductionSet
                             {
                                 ProductionSetName = Constant("ExportProduction"),
                                 SearchTerm        = Constant("name:IMG_17*")
                             },
-                            AssertCount(12, "production-set:ExportProduction"),
+                            AssertCount(9, "production-set:ExportProduction"),
                             // Write out a file type report
                             new CreateDirectory { Path = Constant(ReportPath) },
                             new FileWrite
