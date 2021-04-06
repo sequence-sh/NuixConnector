@@ -193,14 +193,15 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     Container = Constant("New Folder"),
                     MimeTypeSettings = Array(
                         Entity.Create(
-                            ("mime_type", "text/plain"),
-                            ("enabled", "true")
-                        ), //These don't really do anything, just tests that it works
-                        Entity.Create(("mime_type", "application/pdf"), ("enabled", "true"))
+                            ("mimeType", "text/plain"),
+                            ("enabled", false)
+                        ),
+                        Entity.Create(("mimeType", "application/pdf"), ("enabled", true))
                     ),
                     CustomMetadata = Constant(Entity.Create(("Origin", "File")))
                 },
                 AssertCount(2, "*.txt"),
+                AssertCount(0, "amethyst"),
                 AssertCount(4, "evidence-metadata:\"Origin: File\""),
                 new NuixCloseConnection(),
                 DeleteCaseFolder
