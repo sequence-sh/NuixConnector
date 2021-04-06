@@ -43,8 +43,7 @@ public sealed class
       log(""Production set '#{productionSetNameArg}' not found."", severity: :warn)
     else
       log ""Renumbering production set '#{productionSetNameArg}' using '#{sortOrderArg.gsub('_',' ')}'""
-      options = { :sortOrder => sortOrderArg }
-      production_set.renumber(options)
+      production_set.renumber({ 'sortOrder' => sortOrderArg })
       log('Renumbering finished', severity: :debug)
     end
 ";

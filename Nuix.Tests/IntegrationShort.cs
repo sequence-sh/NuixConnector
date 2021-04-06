@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
@@ -205,6 +206,13 @@ public partial class IntegrationShortTests
                                 SearchTerm        = Constant("name:IMG_17*")
                             },
                             AssertCount(9, "production-set:ExportProduction"),
+                            new NuixReorderProductionSet
+                            {
+                                ProductionSetName = Constant("ExportProduction"),
+                                // Upstream bug in Nuix - unable to delete temp directory in case if
+                                // the sort order is TopLevelItemDate or TopLevelItemDateDescending
+                                SortOrder = Constant(ItemSortOrder.Position)
+                            },
                             // Write out a file type report
                             new CreateDirectory { Path = Constant(ReportPath) },
                             new FileWrite
