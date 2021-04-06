@@ -37,10 +37,33 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
 
     /// <inheritdoc />
     public override string RubyFunctionText => @"
+    processor = $current_case.create_processor
+
+    #This only works in 7.6 or later
+    if processingProfileNameArg != nil
+      processor.setProcessingProfile(processingProfileNameArg)
+    elsif processingProfilePathArg != nil
+      profileBuilder = $utilities.getProcessingProfileBuilder()
+      profileBuilder.load(processingProfilePathArg)
+      profile = profileBuilder.build()
+
+      if profile == nil
+        raise ""Could not find processing profile at #{processingProfilePathArg}""
+        exit
+      end
+
+      processor.setProcessingProfileObject(profile)
+    end
+
+    if processingSettingsArg != nil
+      processor.setProcessingSettings(processingSettingsArg)
+    end
+
+    if parallelProcessingSettingsArg != nil
+      processor.setParallelProcessingSettings(parallelProcessingSettingsArg)
+    end
 
     ds = args['datastream']
-
-    processor = $current_case.create_processor
 
     #Read special mime type settings from data stream
     unless ds.nil?
@@ -70,30 +93,6 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
           log(""The mime type #{type_name} is not supported by the current Nuix version"", severity: :warning)
         end
       end
-    end
-
-    #This only works in 7.6 or later
-    if processingProfileNameArg != nil
-      processor.setProcessingProfile(processingProfileNameArg)
-    elsif processingProfilePathArg != nil
-      profileBuilder = $utilities.getProcessingProfileBuilder()
-      profileBuilder.load(processingProfilePathArg)
-      profile = profileBuilder.build()
-
-      if profile == nil
-        raise ""Could not find processing profile at #{processingProfilePathArg}""
-        exit
-      end
-
-      processor.setProcessingProfileObject(profile)
-    end
-
-    if processingSettingsArg != nil
-      processor.setProcessingSettings(processingSettingsArg)
-    end
-
-    if parallelProcessingSettingsArg != nil
-      processor.setParallelProcessingSettings(parallelProcessingSettingsArg)
     end
 
     #This only works in 7.2 or later
