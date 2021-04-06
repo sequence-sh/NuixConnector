@@ -3,7 +3,6 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
@@ -194,10 +193,10 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                     Container = Constant("New Folder"),
                     MimeTypeSettings = Array(
                         Entity.Create(
-                            ("mime_tye", "text/plain"),
+                            ("mime_type", "text/plain"),
                             ("enabled", "true")
                         ), //These don't really do anything, just tests that it works
-                        Entity.Create(("mime_tye", "application/pdf"), ("enabled", "true"))
+                        Entity.Create(("mime_type", "application/pdf"), ("enabled", "true"))
                     ),
                     CustomMetadata = Constant(Entity.Create(("Origin", "File")))
                 },
