@@ -237,6 +237,20 @@ public partial class IntegrationShortTests
                             },
                             AssertFileContains(ReportPath, "terms-list.txt", "garnethill\t222"),
                             AssertFileContains(ReportPath, "terms-list.txt", "cindyloh3333\t116"),
+                            // Create NRT Report
+                            new NuixCreateNRTReport
+                            {
+                                CasePath = Constant(CasePath),
+                                NRTPath = Constant(
+                                    Path.Join(Nuix8Path, @"user-data\Reports\Case Summary.nrt")
+                                ),
+                                OutputPath      = Constant(Path.Join(ReportPath, "NRT.pdf")),
+                                OutputFormat    = Constant("PDF"),
+                                Title           = Constant("A report"),
+                                User            = Constant("Investigator"),
+                                ApplicationName = Constant("NuixApp")
+                            },
+                            AssertFileContains(ReportPath, "NRT.pdf", "PDF-1.4"),
                             // Export concordance from the production set
                             new NuixExportConcordance
                             {
@@ -253,19 +267,6 @@ public partial class IntegrationShortTests
                                 "loadfile.dat",
                                 "6b661c59b9cc39b84832e3b7ebee6e93"
                             ),
-                            new NuixCreateNRTReport
-                            {
-                                CasePath = Constant(CasePath),
-                                NRTPath = Constant(
-                                    Path.Join(Nuix8Path, @"user-data\Reports\Case Summary.nrt")
-                                ),
-                                OutputPath      = Constant(Path.Join(ReportPath, "NRT.pdf")),
-                                OutputFormat    = Constant("PDF"),
-                                Title           = Constant("A report"),
-                                User            = Constant("Investigator"),
-                                ApplicationName = Constant("NuixApp")
-                            },
-                            AssertFileContains(ReportPath, "NRT.pdf", "PDF-1.4"),
                             new NuixCloseConnection(),
                             // clean up
                             new DeleteItem { Path = Constant(CasePath) },
