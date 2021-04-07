@@ -39,8 +39,10 @@ public class LogSituationNuixTests
             var msg = LogMessages_EN.ResourceManager.GetString(situation.Code);
             Assert.NotNull(msg);
 
+            // ReSharper disable once RemoveToList.1
             var msgParams = Regex.Matches(msg!, "\\{(.+?)\\}")
                 .Select(m => m.Groups[1].Value)
+                .ToList()
                 .ToArray();
 
             var counter = 0;

@@ -124,7 +124,7 @@ public static class NuixConnectionHelper
         if (ev.HasNoValue)
             return new Dictionary<string, string>();
 
-        if (!ev.Value.TryPickT7(out var entity, out _))
+        if (ev.Value is not EntityValue.NestedEntity entity)
             return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(
                 NuixSettings.NuixSettingsKey,
                 NuixSettings.EnvironmentVariablesKey
@@ -132,8 +132,8 @@ public static class NuixConnectionHelper
 
         var dict = new Dictionary<string, string>();
 
-        foreach (var ep in entity)
-            dict.Add(ep.Name, ep.BestValue.GetString());
+        foreach (var ep in entity.Value.Dictionary.Values)
+            dict.Add(ep.Name, ep.BestValue.GetPrimitiveString() ?? ep.BestValue.Serialize());
 
         var username = sclSettings.Entity.TryGetNestedString(
             SCLSettings.ConnectorsKey,

@@ -216,7 +216,11 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             MockRepository mockRepository,
             ILogger logger)
         {
-            var externalProcessMock = new ExternalProcessMock(1, ExternalProcessActions.ToArray());
+            // ReSharper disable once RemoveToList.1
+            var externalProcessMock = new ExternalProcessMock(
+                1,
+                ExternalProcessActions.ToList().ToArray()
+            );
 
             var baseMonad = await base.GetStateMonad(mockRepository, logger);
 

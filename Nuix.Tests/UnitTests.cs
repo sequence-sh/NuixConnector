@@ -61,7 +61,11 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         {
             var baseMonad = await base.GetStateMonad(mockRepository, logger);
 
-            var externalProcessMock = new ExternalProcessMock(1, ExternalProcessActions.ToArray());
+            // ReSharper disable once RemoveToList.1
+            var externalProcessMock = new ExternalProcessMock(
+                1,
+                ExternalProcessActions.ToList().ToArray()
+            );
 
             return new StateMonad(
                 baseMonad.Logger,
