@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Entity = Reductech.EDR.Core.Entity;
@@ -63,7 +62,7 @@ public class NuixRunScript : CompoundStep<StringStream>
             .ToDictionary(
                 x =>
                     new RubyFunctionParameter(ConvertString(x.Name), x.Name, true),
-                x => GetObject(x.BestValue)
+                x => x.BestValue.ObjectValue
             )
             .Where(x => x.Value != null)
             .ToDictionary(x => x.Key, x => x.Value!);
@@ -110,21 +109,6 @@ public class NuixRunScript : CompoundStep<StringStream>
             return runResult.MapError(x => x.WithLocation(this)).ConvertFailure<StringStream>();
 
         return runResult.Value;
-
-        static object? GetObject(EntityValue ev)
-        {
-            return ev.Match(
-                _ => null as object,
-                x => x,
-                x => x,
-                x => x,
-                x => x,
-                x => x.Value,
-                x => x,
-                x => x,
-                x => x.Select(GetObject).ToList()
-            );
-        }
     }
 
     private static string ConvertString(string s)

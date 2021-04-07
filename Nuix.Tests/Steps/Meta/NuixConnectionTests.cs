@@ -80,8 +80,8 @@ public class NuixConnectionTests
         var nuixConnection = ConnectionTestsHelper.GetNuixConnection(logFactory, action);
         var ct             = new CancellationToken();
 
-        var stream1 = new List<Entity>().ToAsyncEnumerable().ToSequence();
-        var stream2 = new List<Entity>().ToAsyncEnumerable().ToSequence();
+        var stream1 = new List<Entity>().ToAsyncEnumerable().ToSCLArray();
+        var stream2 = new List<Entity>().ToAsyncEnumerable().ToSCLArray();
 
         var dict = new Dictionary<RubyFunctionParameter, object>
         {
@@ -132,7 +132,7 @@ public class NuixConnectionTests
             Entity.Create(("Property1", "Value1")), Entity.Create(("Property2", "Value2"))
         };
 
-        var stream1 = entities.ToAsyncEnumerable().ToSequence();
+        var stream1 = entities.ToAsyncEnumerable().ToSCLArray();
 
         var dict = new Dictionary<RubyFunctionParameter, object>()
         {
@@ -303,7 +303,7 @@ public class NuixConnectionTests
 
         Assert.True(result.IsSuccess);
         Assert.IsType<Entity>(result.Value);
-        Assert.Equal("workstation", result.Value.TryGetValue("Name").Value.ToString());
+        Assert.Equal("workstation", result.Value.TryGetValue("Name").Value.GetPrimitiveString());
     }
 }
 

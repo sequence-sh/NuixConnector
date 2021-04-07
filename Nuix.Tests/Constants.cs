@@ -209,46 +209,29 @@ public static class Constants
         };
     }
 
-    public static AssertTrue AssertEquals<T>(IStep<T> expected, IStep<T> actual)
-        where T : IComparable<T> => new()
-    {
-        Boolean = new Equals<T>
-        {
-            Terms = new ArrayNew<T> { Elements = new List<IStep<T>> { expected, actual } }
-        }
-    };
+    public static IStep<Unit> AssertEquals<T>(IStep<T> expected, IStep<T> actual)
+        where T : IComparable<T> => new AssertEqual<T>() { Left = expected, Right = actual };
 
-    public static AssertTrue AssertPropertyValueEquals<T>(string property, IStep<T> expected)
+    public static IStep<Unit> AssertPropertyValueEquals<T>(string property, IStep<T> expected)
         where T : IComparable<T> => AssertPropertyValueEquals(
         VariableName.Entity.Name,
         property,
         expected
     );
 
-    public static AssertTrue AssertPropertyValueEquals<T>(
+    public static IStep<Unit> AssertPropertyValueEquals<T>(
         string variable,
         string property,
         IStep<T> expected)
-        where T : IComparable<T> => new()
+        where T : IComparable<T> => new AssertEqual<T>()
     {
-        Boolean = new Equals<T>
-        {
-            Terms = new ArrayNew<T>
+        Left = expected,
+        Right =
+            new EntityGetValue<T>
             {
-                Elements = new List<IStep<T>>
-                {
-                    expected,
-                    new EntityGetValue<T>
-                    {
-                        Entity = new GetVariable<Entity>
-                        {
-                            Variable = new VariableName(variable)
-                        },
-                        Property = Constant(property)
-                    }
-                }
+                Entity   = new GetVariable<Entity> { Variable = new VariableName(variable) },
+                Property = Constant(property)
             }
-        }
     };
 
     public static readonly IStep<Unit> OpenCase = new NuixOpenCase() { CasePath = CasePath };

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
@@ -81,11 +82,11 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             var deserializedStep = SCLParsing.ParseSequence(yaml);
 
-            deserializedStep.ShouldBeSuccessful(x => x.AsString);
+            deserializedStep.ShouldBeSuccessful(FormatError);
 
             var unfrozenStep = deserializedStep.Value.TryFreeze(TypeReference.Any.Instance, sfs);
 
-            unfrozenStep.ShouldBeSuccessful(x => x.AsString);
+            unfrozenStep.ShouldBeSuccessful(FormatError);
 
             return unfrozenStep.Value;
         }
@@ -93,13 +94,25 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         /// <inheritdoc />
         public override void CheckUnitResult(Result<Unit, IError> result)
         {
-            result.ShouldBeSuccessful(x => x.AsString);
+            result.ShouldBeSuccessful(FormatError);
         }
 
         /// <inheritdoc />
         public override void CheckOutputResult(Result<TOutput, IError> result)
         {
-            result.ShouldBeSuccessful(x => x.AsString);
+            result.ShouldBeSuccessful(FormatError);
+        }
+
+        private static string FormatError(IError error)
+        {
+            StringBuilder sb = new();
+
+            foreach (var singleError in error.GetAllErrors())
+            {
+                sb.AppendLine(singleError.ToString());
+            }
+
+            return sb.ToString();
         }
 
         /// <inheritdoc />
