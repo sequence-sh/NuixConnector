@@ -25,7 +25,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
 {
     public string ProcessPath { get; set; } = "TestPath";
 
-    public List<string> ProcessArgs { get; set; } = new List<string>
+    public List<string> ProcessArgs { get; set; } = new()
     {
         "-licencesourcetype", "dongle", NuixConnectionHelper.NuixGeneralScriptName
     };
