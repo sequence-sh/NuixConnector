@@ -87,7 +87,7 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
 
     unless opticonPathArg.nil?
       log(""Adding opticon file: '#{opticonPathArg}'"", severity: :debug)
-      load_options['useOpticonFile'] = true,
+      load_options['useOpticonFile'] = true
 	  load_options['opticonFile'] = opticonPathArg
     end
     
