@@ -80,10 +80,18 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
       container.set_time_zone(containerTimeZoneArg)
     end
 
-    container.addLoadFile({
+    load_options = {
       :concordanceFile => filePathArg,
       :concordanceDateFormat => dateFormatArg.nil? ? ""yyyy-MM-dd'T'HH:mm:ss.SSSZ"" : dateFormatArg
-    })
+    }
+
+    unless opticonPathArg.nil?
+      log(""Adding opticon file: '#{opticonPathArg}'"", severity: :debug)
+      load_options['useOpticonFile'] = true,
+	  load_options['opticonFile'] = opticonPathArg
+    end
+    
+    container.addLoadFile(load_options)
     container.setMetadataImportProfileName(profileNameArg)
     container.save
 
@@ -156,6 +164,15 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
     [Alias("DateFormat")]
     public IStep<StringStream>? ConcordanceDateFormat { get; set; }
+
+    /// <summary>
+    /// Path to the opticon file
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("opticonPathArg")]
+    [DefaultValueExplanation("No opticon file will be processed")]
+    [Alias("OpticonFile")]
+    public IStep<StringStream>? OpticonPath { get; set; }
 
     /// <summary>
     /// The description of the evidence container.
