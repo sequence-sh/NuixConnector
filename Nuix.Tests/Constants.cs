@@ -132,6 +132,15 @@ public static class Constants
 
     public static readonly IStep<StringStream> ConcordancePath = Constant(ConcordancePathString);
 
+    public static readonly string OpticonPathString = Path.Combine(
+        Directory.GetCurrentDirectory(),
+        "AllData",
+        "Concordance",
+        "loadfile.opt"
+    );
+
+    public static readonly IStep<StringStream> OpticonPath = Constant(OpticonPathString);
+
     public static readonly IStep<StringStream> MigrationPath = Constant(
         Path.Combine(Directory.GetCurrentDirectory(), "AllData", "MigrationTest.zip")
     );

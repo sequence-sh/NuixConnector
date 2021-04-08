@@ -311,7 +311,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// </summary>
     [RequiredVersion("Nuix", "7.2")]
     [StepProperty]
-    [Example("en_GB")]
+    [Example("en-GB")]
     [RubyArgument("containerLocaleArg")]
     [DefaultValueExplanation("Default system locale")]
     [Alias("Locale")]
