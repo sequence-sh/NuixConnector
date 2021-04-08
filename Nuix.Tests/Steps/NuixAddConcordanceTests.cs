@@ -2,6 +2,7 @@
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
@@ -124,17 +125,54 @@ public partial class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordan
             yield return new NuixIntegrationTestCase(
                 "Add concordance to case",
                 DeleteCaseFolder,
-                AssertCaseDoesNotExist,
                 CreateCase,
-                AssertCount(0, "*.txt"),
                 new NuixAddConcordance
                 {
+                    FilePath               = ConcordancePath,
+                    Container              = Constant("New Folder"),
                     ConcordanceProfileName = Constant("IntegrationTestProfile"),
                     ConcordanceDateFormat  = Constant("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
-                    FilePath               = ConcordancePath,
                     Custodian              = Constant("Mark"),
-                    Container              = Constant("New Folder")
+                    Description            = Constant("Container description"),
+                    ContainerEncoding      = Constant("UTF-8"),
+                    ContainerLocale        = Constant("en_GB"),
+                    ContainerTimeZone      = Constant("UTC")
                 },
+                AssertCount(2, "*.txt"),
+                new NuixCloseConnection(),
+                DeleteCaseFolder
+            );
+
+            yield return new NuixIntegrationTestCase(
+                "Add concordance to case with custom ProcessingSettings",
+                DeleteCaseFolder,
+                CreateCase,
+                new NuixAddConcordance
+                {
+                    FilePath               = ConcordancePath,
+                    Container              = Constant("New Folder"),
+                    ConcordanceProfileName = Constant("IntegrationTestProfile"),
+                    ProcessingSettings     = Constant(Entity.Create(("create_thumbnails", false))),
+                    CustomMetadata         = Constant(Entity.Create(("CustomMeta", "value")))
+                },
+                AssertCount(2, "*.txt"),
+                AssertCount(2, "custom-metadata:\"CustomMeta\":*"),
+                new NuixCloseConnection(),
+                DeleteCaseFolder
+            );
+
+            yield return new NuixIntegrationTestCase(
+                "Add concordance to case with opticon file",
+                DeleteCaseFolder,
+                CreateCase,
+                new NuixAddConcordance
+                {
+                    FilePath               = ConcordancePath,
+                    Container              = Constant("New Folder"),
+                    ConcordanceProfileName = Constant("IntegrationTestProfile"),
+                    OpticonPath            = OpticonPath
+                },
+                AssertCount(2, "*"),
                 AssertCount(2, "*.txt"),
                 new NuixCloseConnection(),
                 DeleteCaseFolder
