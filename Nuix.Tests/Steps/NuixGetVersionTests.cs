@@ -26,7 +26,8 @@ public partial class NuixGetVersionTests : NuixStepTestBase<NuixGetVersion, Stri
                         String = new NuixGetVersion(),
                         Substring = new EntityGetValue<StringStream>
                         {
-                            Entity = new GetSettings(), Property = Constant("Version")
+                            Entity   = new GetSettings(),
+                            Property = Constant("Connectors.Nuix.Version")
                         }
                     }
                 },
