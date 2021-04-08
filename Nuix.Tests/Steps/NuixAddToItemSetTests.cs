@@ -17,9 +17,7 @@ public partial class NuixAddToItemSetTests : NuixStepTestBase<NuixAddToItemSet, 
         {
             yield return new NuixIntegrationTestCase(
                 "Add To Item Set",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixAddToItemSet
                 {
                     SearchTerm = Constant("charm"), ItemSetName = Constant("charmset")
@@ -33,8 +31,7 @@ public partial class NuixAddToItemSetTests : NuixStepTestBase<NuixAddToItemSet, 
                     SearchOptions = Constant(Entity.Create(("limit", 1)))
                 },
                 AssertCount(1, "item-set:conjunction"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

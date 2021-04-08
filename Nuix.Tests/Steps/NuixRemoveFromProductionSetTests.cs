@@ -17,9 +17,7 @@ public partial class
         {
             yield return new NuixIntegrationTestCase(
                 "Remove From Production Set",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixAddToProductionSet
                 {
                     SearchTerm            = Constant("*.txt"),
@@ -48,8 +46,7 @@ public partial class
                 AssertCount(1, "production-set:conjunction"),
                 new NuixRemoveFromProductionSet { ProductionSetName = Constant("conjunction") },
                 AssertCount(0, "production-set:conjunction"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

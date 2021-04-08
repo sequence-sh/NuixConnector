@@ -3,7 +3,6 @@ using System.IO;
 using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
@@ -20,9 +19,7 @@ public partial class NuixSearchAndTagTests : NuixStepTestBase<NuixSearchAndTag, 
         {
             yield return new NuixIntegrationTestCase(
                 "Search and Tag",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixSearchAndTag { SearchTerm = Constant("charm"), Tag = Constant("charm") },
                 AssertCount(1, "tag:charm"),
                 new NuixSearchAndTag
@@ -33,8 +30,7 @@ public partial class NuixSearchAndTagTests : NuixStepTestBase<NuixSearchAndTag, 
                     SearchOptions = Constant(Entity.Create(("limit", 1)))
                 },
                 AssertCount(1, "tag:conjunction"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
 
             yield return new NuixIntegrationTestCase(
@@ -95,8 +91,7 @@ public partial class NuixSearchAndTagTests : NuixStepTestBase<NuixSearchAndTag, 
                     SearchType = Constant(SearchType.TopLevelItems)
                 },
                 AssertCount(1, "tag:toplevel"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

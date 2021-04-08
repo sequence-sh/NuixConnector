@@ -18,9 +18,7 @@ public partial class
         {
             yield return new NuixIntegrationTestCase(
                 "Get item properties",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new AssertTrue
                 {
                     Boolean = new StringContains
@@ -52,8 +50,7 @@ public partial class
                         }
                     }
                 },
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

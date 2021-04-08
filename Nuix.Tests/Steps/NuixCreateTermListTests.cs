@@ -23,19 +23,16 @@ public partial class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermLi
         {
             yield return new NuixIntegrationTestCase(
                 "Create Term List",
-                DeleteCaseFolder,
+                SetupCase,
                 DeleteOutputFolder,
                 CreateOutputFolder,
-                CreateCase,
-                AddData,
                 new FileWrite
                 {
                     Stream = new NuixCreateTermList(),
                     Path   = new PathCombine { Paths = Array(OutputFolder, "Terms.txt") }
                 },
                 AssertFileContains(OutputFolder, "Terms.txt", "yellow	2"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder,
+                CleanupCase,
                 DeleteOutputFolder
             );
         }

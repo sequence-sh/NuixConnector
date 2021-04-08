@@ -17,9 +17,7 @@ public partial class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToPro
         {
             yield return new NuixIntegrationTestCase(
                 "Add to production set",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixAddToProductionSet
                 {
                     SearchTerm        = Constant("terrible"),
@@ -68,8 +66,7 @@ public partial class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToPro
                     SearchOptions            = Constant(Core.Entity.Create(("limit", 1)))
                 },
                 AssertCount(1, "production-set:conjunction"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

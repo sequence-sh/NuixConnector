@@ -13,27 +13,19 @@ public partial class
         StringStream>
 {
     /// <inheritdoc />
-    protected override IEnumerable<DeserializeCase> DeserializeCases
-    {
-        get { yield break; }
-    }
-
-    /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
     {
         get
         {
             yield return new NuixIntegrationTestCase(
                 "Irregular Items",
-                DeleteCaseFolder,
+                SetupCase,
                 DeleteOutputFolder,
                 CreateOutputFolder,
-                CreateCase,
-                AddData,
                 new FileWrite
                 {
                     Stream = new NuixCreateIrregularItemsReport(),
-                    Path   = new PathCombine() { Paths = Array(OutputFolder, "Irregular.txt") }
+                    Path   = new PathCombine { Paths = Array(OutputFolder, "Irregular.txt") }
                 },
                 AssertFileContains(
                     OutputFolder,
@@ -45,8 +37,7 @@ public partial class
                     "Irregular.txt",
                     "NeedManualExamination\tNew Folder/data/Jellyfish.txt"
                 ),
-                new NuixCloseConnection(),
-                DeleteCaseFolder,
+                CleanupCase,
                 DeleteOutputFolder
             );
         }

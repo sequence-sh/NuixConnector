@@ -29,7 +29,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
     <PackageReference Include="MicrosoftExtensions.Logging.Xunit" Version="1.0.0" />
-    <PackageReference Include="Reductech.EDR.Core.TestHarness" Version="0.8.0-a.master.2104071705" />
+    <PackageReference Include="Reductech.EDR.Core.TestHarness" Version="0.8.0-a.master.2104081236" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
@@ -46,6 +46,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AllData\Cases\TestCase-7.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Cases\TestCase-7.8.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Cases\TestCase-8.8.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AllData\Cases\TestCase-9.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="AllData\Concordance\IMAGE\00\000\SET-00000001.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

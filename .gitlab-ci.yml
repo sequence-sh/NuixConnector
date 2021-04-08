@@ -24,23 +24,20 @@ variables:
   PACKAGE_NAME_DLL: Reductech.EDR.Connectors.Nuix
   GIT_SUBMODULE_STRATEGY: normal
 
-.get_coverage:
-  - &get_coverage |
-    $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw ;
-    $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`"" ;
-    [System.IO.File]::WriteAllText("./coverage.cobertura.xml", $fixPaths) ;
-    $xml = [xml]$report ;
-    $branchCoverage = [double]($xml.coverage."branch-rate") * 100 ;
-    $lineCoverage = [double]($xml.coverage."line-rate") * 100 ;
-    Write-Host "Coverage (Branch) : ${branchCoverage}%" ;
-    Write-Host "Coverage (Line)   : ${lineCoverage}%"
+.fix_coverage:
+  - &fix_coverage |
+    $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw
+    $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`""
+    $fixPaths = $fixPaths -replace '\\', '/'
+    $outPath = Join-Path (Get-Location) "coverage.$($env:CI_JOB_NAME -replace "[^\w]+", "-").xml"
+    [System.IO.File]::WriteAllText($outPath, $fixPaths)
 
 test dev:
   script:
     - dotnet test --no-build --configuration $CONFIG -v normal
       --filter "Category!=Integration&Category!=IntegrationShort"
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
-    - *get_coverage
+    - *fix_coverage
 
 integration short:
   stage: integration
@@ -61,11 +58,11 @@ integration short:
     - dotnet test --no-restore --configuration $CONFIG -v normal
       --filter "Category!=Integration"
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
-    - *get_coverage
-  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
+    - *fix_coverage
   artifacts:
-    reports:
-      cobertura: coverage.cobertura.xml
+    paths:
+      - 'coverage.*.xml'
+    expire_in: 2 hours
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
       when: never
@@ -81,14 +78,14 @@ integration full:
     - dotnet restore --packages ./packages
     - dotnet test --no-restore --configuration $CONFIG -v normal
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
-    - *get_coverage
+    - *fix_coverage
     - |
       dotnet test --no-restore --configuration $CONFIG --list-tests |
         ForEach-Object {
           if ($_ -match 'caseName: "(.+?)\((\d+\.\d+)\)') {
             [pscustomobject]@{ Name = $Matches[1] ; Version = $Matches[2] }
-        } } | group Version | select Name, Count
-  coverage: /Coverage \(Branch\)[\s:]+(\d+.?\d*)%/
+          }
+        } | group Version | select Name, Count
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
     - if: $CI_COMMIT_BRANCH == 'master'
@@ -121,3 +118,21 @@ push to nuget dev:
 mutation testing:
   rules:
     - when: never
+
+code coverage dev:
+  needs:
+    - test dev
+    - version check dev
+    - job: integration short
+      optional: true
+    - job: integration full
+      optional: true
+
+code coverage release:
+  needs:
+    - test release
+    - version check release
+    - job: integration short
+      optional: true
+    - job: integration full
+      optional: true

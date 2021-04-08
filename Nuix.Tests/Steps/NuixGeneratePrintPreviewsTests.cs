@@ -24,9 +24,7 @@ public partial class
         {
             yield return new NuixIntegrationTestCase(
                 "Generate Print Previews",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixAddToProductionSet
                 {
                     SearchTerm            = Constant("*.txt"),
@@ -45,8 +43,7 @@ public partial class
                     ProductionSetName = Constant("prodSet"),
                     ExpectedState     = Constant(PrintPreviewState.All)
                 },
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

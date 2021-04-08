@@ -17,9 +17,7 @@ public partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
         {
             yield return new NuixIntegrationTestCase(
                 "Ingest and count items",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new AssertTrue
                 {
                     Boolean = new Equals<int>()
@@ -42,8 +40,7 @@ public partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
                         }
                     }
                 },
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

@@ -19,9 +19,7 @@ public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndE
         {
             yield return new NuixIntegrationTestCase(
                 "Search and Exclude",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixSearchAndExclude
                 {
                     SearchTerm = Constant("charm"),
@@ -39,8 +37,7 @@ public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndE
                 },
                 AssertCount(1, "exclusion:color"),
                 AssertCount(0, "tag:yellow"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
 
             yield return new NuixIntegrationTestCase(
@@ -101,8 +98,7 @@ public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndE
                     SearchType      = Constant(SearchType.TopLevelItems)
                 },
                 AssertCount(1, "exclusion:toplevel"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

@@ -21,9 +21,7 @@ public partial class
         {
             yield return new NuixIntegrationTestCase(
                 "Reorder From Production Set",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixAddToProductionSet
                 {
                     SearchTerm            = Constant("*.txt"),
@@ -36,8 +34,7 @@ public partial class
                     SortOrder         = Constant(ItemSortOrder.TopLevelItemDate)
                 },
                 AssertCount(2, "production-set:fullset"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

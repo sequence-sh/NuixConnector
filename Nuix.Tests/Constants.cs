@@ -76,12 +76,8 @@ public static class Constants
     public static readonly string CasePathString = Path.Combine(GeneralDataFolder, "TestCase");
 
     public static readonly IStep<StringStream> CasePath = Constant(CasePathString);
-    public static readonly string OutputFolder = Path.Combine(GeneralDataFolder, "OutputFolder");
 
-    public static readonly string ConcordanceFolder = Path.Combine(
-        GeneralDataFolder,
-        "ConcordanceFolder"
-    );
+    public static readonly string OutputFolder = Path.Combine(GeneralDataFolder, "OutputFolder");
 
     public static readonly IStep<StringStream> NRTFolder =
         Constant(Path.Combine(GeneralDataFolder, "NRT"));
@@ -95,7 +91,6 @@ public static class Constants
         "data"
     );
 
-    public static readonly IStep<StringStream> DataPath = Constant(DataPathString);
     public static readonly IStep<Array<StringStream>> DataPaths = Array(DataPathString);
 
     public static readonly IStep<Array<StringStream>> EncryptedDataPaths = Array(
@@ -196,11 +191,11 @@ public static class Constants
         int right,
         string searchTerm)
     {
-        return new Equals<int>()
+        return new Equals<int>
         {
-            Terms = new ArrayNew<int>()
+            Terms = new ArrayNew<int>
             {
-                Elements = new List<IStep<int>>()
+                Elements = new List<IStep<int>>
                 {
                     Constant(right),
                     new NuixCountItems { SearchTerm = Constant(searchTerm) }
@@ -234,17 +229,57 @@ public static class Constants
             }
     };
 
-    public static readonly IStep<Unit> OpenCase = new NuixOpenCase() { CasePath = CasePath };
-
-    public static readonly IStep<Unit> AddData = new NuixAddItem
-    {
-        Custodian = Constant("Mark"), Paths = DataPaths, Container = Constant("New Folder")
-    };
+    public static readonly IStep<Unit> OpenCase = new NuixOpenCase { CasePath = CasePath };
 
     public static ExternalProcessAction HelperAction(string name) => new(
         new ConnectionCommand { Command = name, FunctionDefinition = "", IsHelper = true },
         new ConnectionOutput { Result   = new ConnectionOutputResult { Data = "helper_success" } }
     );
+
+    private static List<IStep<StringStream>> TestCasePath => new()
+    {
+        Constant("AllData\\Cases\\TestCase-"),
+        new EntityGetValue<StringStream>
+        {
+            Entity = new GetSettings(), Property = Constant("Connectors.Nuix.Version")
+        },
+        Constant(".zip")
+    };
+
+    public static IStep<Unit> SetupCase => new Sequence<Unit>
+    {
+        InitialSteps = new IStep<Unit>[]
+        {
+            new DeleteItem { Path = CasePath },
+            new FileExtract
+            {
+                ArchiveFilePath = new PathCombine
+                {
+                    Paths = new ArrayNew<StringStream>
+                    {
+                        Elements = new List<IStep<StringStream>>
+                        {
+                            new StringJoin
+                            {
+                                Strings = new ArrayNew<StringStream>
+                                {
+                                    Elements = TestCasePath
+                                }
+                            }
+                        }
+                    }
+                },
+                Destination = Constant(GeneralDataFolder)
+            }
+        },
+        FinalStep = new NuixOpenCase { CasePath = CasePath }
+    };
+
+    public static IStep<Unit> CleanupCase => new Sequence<Unit>
+    {
+        InitialSteps = new IStep<Unit>[] { new NuixCloseConnection() },
+        FinalStep    = DeleteCaseFolder
+    };
 }
 
 }
