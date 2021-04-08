@@ -47,10 +47,18 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
       processor.set_processing_settings(processingSettingsArg)
     end
 
+    log ""Creating new evidence container '#{containerNameArg}'""
     container = processor.new_evidence_container(containerNameArg)
 
-    container.description = folderDescriptionArg
-    container.initial_custodian = folderCustodianArg
+    unless containerDescriptionArg.nil?
+      log(""Container description: #{containerDescriptionArg}"", severity: :debug)
+      container.description = containerDescriptionArg
+    end
+
+    unless containerCustodianArg.nil?
+      log(""Container custodian: '#{containerCustodianArg}'"", severity: :debug)
+      container.initial_custodian = containerCustodianArg
+    end
 
     unless customMetadataArg.nil?
       log(""Adding custom metadata to container #{containerNameArg}"", severity: :debug)
@@ -97,38 +105,30 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     //TODO add a profile from a file - there is no Nuix function to do this right now.
 
     /// <summary>
-    /// The name of the evidence container to add the concordance file to.
-    /// </summary>
-    [Required]
-    [StepProperty(1)]
-    [RubyArgument("containerNameArg")]
-    [Alias("ToContainer")]
-    [Alias("FolderName")]
-    public IStep<StringStream> Container { get; set; } = null!;
-
-    /// <summary>
-    /// The name of the custodian to assign the container to.
-    /// </summary>
-    [Required]
-    [StepProperty(2)]
-    [RubyArgument("folderCustodianArg")]
-    public IStep<StringStream> Custodian { get; set; } = null!;
-
-    /// <summary>
     /// The path of the concordance file to import.
     /// </summary>
     [Required]
-    [StepProperty(3)]
+    [StepProperty(1)]
     [Example("C:/MyConcordance.dat")]
     [RubyArgument("filePathArg")]
     [Alias("ConcordanceFile")]
     public IStep<StringStream> FilePath { get; set; } = null!;
 
     /// <summary>
+    /// The name of the evidence container to add the concordance file to.
+    /// </summary>
+    [Required]
+    [StepProperty(2)]
+    [RubyArgument("containerNameArg")]
+    [Alias("ToContainer")]
+    [Alias("FolderName")]
+    public IStep<StringStream> Container { get; set; } = null!;
+
+    /// <summary>
     /// The concordance date format to use.
     /// </summary>
     [Required]
-    [StepProperty(4)]
+    [StepProperty(3)]
     [Example("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
     [RubyArgument("dateFormatArg")]
     public IStep<StringStream> ConcordanceDateFormat { get; set; } = null!;
@@ -137,18 +137,28 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     /// The name of the concordance profile to use.
     /// </summary>
     [Required]
-    [StepProperty(5)]
+    [StepProperty(4)]
     [Example("MyProfile")]
     [RubyArgument("profileNameArg")]
     public IStep<StringStream> ConcordanceProfileName { get; set; } = null!;
 
     /// <summary>
-    /// A description to add to the folder.
+    /// The description of the evidence container.
     /// </summary>
-    [StepProperty(6)]
-    [RubyArgument("folderDescriptionArg")]
-    [DefaultValueExplanation("No description")]
+    [StepProperty]
+    [RubyArgument("containerDescriptionArg")]
+    [DefaultValueExplanation("No Description")]
+    [Alias("ContainerDescription")]
     public IStep<StringStream>? Description { get; set; }
+
+    /// <summary>
+    /// The custodian to assign to the new evidence container.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("containerCustodianArg")]
+    [DefaultValueExplanation("No custodian assigned")]
+    [Alias("ContainerCustodian")]
+    public IStep<StringStream>? Custodian { get; set; }
 
     /// <summary>
     /// Sets the processing settings to use.
