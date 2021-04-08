@@ -1,3 +1,45 @@
+# v0.8.0 (2021-04-08)
+
+## Summary of Changes
+
+### Steps
+
+- Updated `NuixAddConcordance` step
+   - Added new parameters
+     - OpticonPath
+     - ProcessingSettings
+     - ProgressInterval
+     - CustomMetadata
+     - ContainerEncoding
+     - ContainerLocale
+     - ContainerTimeZone
+   - These parameters are now optional
+     - ConcordanceDateFormat
+     - Description
+     - Custodian
+   - Added progress updates when processing
+
+### Connector Updates
+
+- Added `NuixGetVersion` step
+
+## Issues Closed in this Release
+
+### New Features
+
+- Allow for greater customisation of processing options in NuixAddConcordance #182
+- Add step to return the nuix version #188
+
+### Bug Fixes
+
+- Mime type settings have no effect in NuixAddItem #186
+- Return Nuix case details integration test fails on Nuix 7.0 #184
+
+### Maintenance
+
+- Decrease time required for nuix integration tests #177
+- Improve Integration Short coverage by adding additional steps #179
+
 # v0.7.0 (2021-03-26)
 
 ## Summary of Changes
