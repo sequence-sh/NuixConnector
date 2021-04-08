@@ -136,7 +136,7 @@ public partial class IntegrationShortTests
                                 ConcordanceDateFormat  = Constant("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
                                 FilePath               = ConcordancePath,
                                 Custodian              = Constant("Reductech EDR"),
-                                FolderName             = Constant("INT01B0002")
+                                Container              = Constant("INT01B0002")
                             },
                             AssertCount(3, "custodian:\"Reductech EDR\""), AssertCount(4, "*.txt"),
                             // OCR the data

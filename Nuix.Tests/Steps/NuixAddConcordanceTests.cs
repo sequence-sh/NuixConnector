@@ -25,7 +25,7 @@ public partial class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordan
                     ConcordanceDateFormat  = Constant("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
                     FilePath               = ConcordancePath,
                     Custodian              = Constant("Mark"),
-                    FolderName             = Constant("New Folder"),
+                    Container              = Constant("New Folder"),
                     CasePath               = CasePath,
                 },
                 Unit.Default,
@@ -39,7 +39,7 @@ public partial class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordan
                             Arguments = new Dictionary<string, object>
                             {
                                 { nameof(NuixAddConcordance.CasePath), CasePathString },
-                                { nameof(NuixAddConcordance.FolderName), "New Folder" },
+                                { nameof(NuixAddConcordance.Container), "New Folder" },
                                 { nameof(NuixAddConcordance.Custodian), "Mark" },
                                 {
                                     nameof(NuixAddConcordance.FilePath),
@@ -89,7 +89,7 @@ public partial class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordan
                                 Arguments = new Dictionary<string, object>
                                 {
                                     { nameof(NuixAddConcordance.CasePath), CasePathString },
-                                    { nameof(NuixAddConcordance.FolderName), newFolder },
+                                    { nameof(NuixAddConcordance.Container), newFolder },
                                     { nameof(NuixAddConcordance.Custodian), custodian },
                                     {
                                         nameof(NuixAddConcordance.FilePath),
@@ -133,7 +133,7 @@ public partial class NuixAddConcordanceTests : NuixStepTestBase<NuixAddConcordan
                     ConcordanceDateFormat  = Constant("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
                     FilePath               = ConcordancePath,
                     Custodian              = Constant("Mark"),
-                    FolderName             = Constant("New Folder")
+                    Container              = Constant("New Folder")
                 },
                 AssertCount(2, "*.txt"),
                 new NuixCloseConnection(),

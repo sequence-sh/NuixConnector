@@ -47,16 +47,16 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
       processor.set_processing_settings(processingSettingsArg)
     end
 
-    folder = processor.new_evidence_container(folderNameArg)
+    container = processor.new_evidence_container(containerNameArg)
 
-    folder.description = folderDescriptionArg
-    folder.initial_custodian = folderCustodianArg
-    folder.addLoadFile({
+    container.description = folderDescriptionArg
+    container.initial_custodian = folderCustodianArg
+    container.addLoadFile({
     :concordanceFile => filePathArg,
     :concordanceDateFormat => dateFormatArg
     })
-    folder.setMetadataImportProfileName(profileNameArg)
-    folder.save
+    container.setMetadataImportProfileName(profileNameArg)
+    container.save
 
     log 'Starting processing.'
     processor.process
@@ -76,16 +76,17 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     //TODO add a profile from a file - there is no Nuix function to do this right now.
 
     /// <summary>
-    /// The name of the folder to create.
+    /// The name of the evidence container to add the concordance file to.
     /// </summary>
     [Required]
     [StepProperty(1)]
-    [RubyArgument("folderNameArg")]
-    [Alias("Container")]
-    public IStep<StringStream> FolderName { get; set; } = null!;
+    [RubyArgument("containerNameArg")]
+    [Alias("ToContainer")]
+    [Alias("FolderName")]
+    public IStep<StringStream> Container { get; set; } = null!;
 
     /// <summary>
-    /// The name of the custodian to assign the folder/container to.
+    /// The name of the custodian to assign the container to.
     /// </summary>
     [Required]
     [StepProperty(2)]
