@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
@@ -19,9 +18,7 @@ public partial class NuixGetCaseDetailsTests : NuixStepTestBase<NuixGetCaseDetai
         {
             yield return new NuixIntegrationTestCase(
                 "Return Nuix case details",
-                DeleteCaseFolder,
-                CreateCase,
-                //AddData, // Required only for EarliestDate
+                SetupCase,
                 new SetVariable<Entity>
                 {
                     Variable = VariableName.Entity, Value = new NuixGetCaseDetails()
@@ -30,29 +27,28 @@ public partial class NuixGetCaseDetailsTests : NuixStepTestBase<NuixGetCaseDetai
                 AssertPropertyValueEquals("Location",     CasePath),
                 AssertPropertyValueEquals("Investigator", Constant("Mark")),
                 AssertPropertyValueEquals("IsCompound",   Constant(false)),
-                //new AssertTrue
-                //{
-                //    Boolean = new Equals<StringStream>
-                //    {
-                //        Terms = new ArrayNew<StringStream>
-                //        {
-                //            Elements = new List<IStep<StringStream>>
-                //            {
-                //                Constant("2020-10-20"),
-                //                new EntityGetValue<StringStream>
-                //                {
-                //                    Entity = new GetVariable<Entity>
-                //                    {
-                //                        Variable = VariableName.Entity
-                //                    },
-                //                    Property = Constant("EarliestDate")
-                //                }
-                //            }
-                //        }
-                //    }
-                //},
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                new AssertTrue
+                {
+                    Boolean = new Equals<StringStream>
+                    {
+                        Terms = new ArrayNew<StringStream>
+                        {
+                            Elements = new List<IStep<StringStream>>
+                            {
+                                Constant("2020-10-20"),
+                                new EntityGetValue<StringStream>
+                                {
+                                    Entity = new GetVariable<Entity>
+                                    {
+                                        Variable = VariableName.Entity
+                                    },
+                                    Property = Constant("EarliestDate")
+                                }
+                            }
+                        }
+                    }
+                },
+                CleanupCase
             );
         }
     }

@@ -18,9 +18,7 @@ public partial class
         {
             yield return new NuixIntegrationTestCase(
                 "Remove From Production Set",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixAddToItemSet
                 {
                     SearchTerm = Constant("charm"), ItemSetName = Constant("charmset")
@@ -42,8 +40,7 @@ public partial class
                     RemoveDuplicates = Constant(false)
                 },
                 AssertCount(1, "item-set:text"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

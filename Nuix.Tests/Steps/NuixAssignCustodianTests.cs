@@ -16,9 +16,7 @@ public partial class NuixAssignCustodianTests : NuixStepTestBase<NuixAssignCusto
         {
             yield return new NuixIntegrationTestCase(
                 "Assign Custodians",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 AssertCount(0, "custodian:\"Jason\""),
                 new NuixAssignCustodian()
                 {
@@ -33,8 +31,7 @@ public partial class NuixAssignCustodianTests : NuixStepTestBase<NuixAssignCusto
                     SearchOptions = Constant(Core.Entity.Create(("limit", 1)))
                 },
                 AssertCount(1, "custodian:\"John\""),
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

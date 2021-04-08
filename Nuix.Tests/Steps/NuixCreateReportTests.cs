@@ -23,19 +23,16 @@ public partial class NuixCreateReportTests : NuixStepTestBase<NuixCreateReport, 
         {
             yield return new NuixIntegrationTestCase(
                 "Create Report",
-                DeleteCaseFolder,
+                SetupCase,
                 DeleteOutputFolder,
                 CreateOutputFolder,
-                CreateCase,
-                AddData,
                 new FileWrite
                 {
                     Stream = new NuixCreateReport(),
                     Path   = new PathCombine { Paths = Array(OutputFolder, "Stats.txt") }
                 },
                 AssertFileContains(OutputFolder, "Stats.txt", "Mark	type	text/plain	2"),
-                new NuixCloseConnection(),
-                DeleteCaseFolder,
+                CleanupCase,
                 DeleteOutputFolder
             );
         }

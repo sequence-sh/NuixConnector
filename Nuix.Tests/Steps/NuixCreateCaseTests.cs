@@ -24,7 +24,13 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                 "Create Case then add item",
                 new Sequence<Unit>
                 {
-                    InitialSteps = new List<IStep<Unit>> { CreateCase, }, FinalStep = AddData
+                    InitialSteps = new List<IStep<Unit>> { CreateCase },
+                    FinalStep = new NuixAddItem
+                    {
+                        Custodian = Constant("Mark"),
+                        Paths     = DataPaths,
+                        Container = Constant("New Folder")
+                    }
                 },
                 new List<ExternalProcessAction>
                 {
@@ -172,8 +178,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                 AssertCaseDoesNotExist,
                 CreateCase,
                 new AssertTrue { Boolean = new NuixDoesCaseExist { CasePath = CasePath } },
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

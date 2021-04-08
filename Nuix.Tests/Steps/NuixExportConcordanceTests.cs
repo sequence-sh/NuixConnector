@@ -24,11 +24,9 @@ public partial class NuixExportConcordanceTests : NuixStepTestBase<NuixExportCon
         {
             yield return new NuixIntegrationTestCase(
                 "Export Concordance",
-                DeleteCaseFolder,
                 new DeleteItem { Path = Constant(_concordancePath1) },
                 new DeleteItem { Path = Constant(_concordancePath2) },
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixAddToProductionSet
                 {
                     SearchTerm            = Constant("charm"),
@@ -101,17 +99,14 @@ public partial class NuixExportConcordanceTests : NuixStepTestBase<NuixExportCon
                     }
                 },
                 AssertFileContains(_concordancePath2, "loadfile.dat", "þNATIVE\\ABC005.txtþ"),
-                new NuixCloseConnection(),
+                CleanupCase,
                 new DeleteItem { Path = Constant(_concordancePath1) },
-                new DeleteItem { Path = Constant(_concordancePath2) },
-                DeleteCaseFolder
+                new DeleteItem { Path = Constant(_concordancePath2) }
             );
 
             yield return new NuixIntegrationTestCase(
                 "Export Concordance Errors",
-                DeleteCaseFolder,
-                CreateCase,
-                AddData,
+                SetupCase,
                 new NuixAddToProductionSet
                 {
                     SearchTerm            = Constant("charm"),
@@ -141,8 +136,7 @@ public partial class NuixExportConcordanceTests : NuixStepTestBase<NuixExportCon
                         ExportPath        = Constant("TestPath")
                     }
                 },
-                new NuixCloseConnection(),
-                DeleteCaseFolder
+                CleanupCase
             );
         }
     }

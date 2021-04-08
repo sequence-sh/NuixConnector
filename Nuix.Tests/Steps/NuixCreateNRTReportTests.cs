@@ -18,10 +18,8 @@ public partial class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTRe
         {
             yield return new NuixIntegrationTestCase(
                 "Export NRT Report",
-                DeleteCaseFolder,
+                SetupCase,
                 new DeleteItem { Path = NRTFolder },
-                CreateCase,
-                AddData,
                 new NuixAddToProductionSet
                 {
                     SearchTerm            = Constant("*.txt"),
@@ -40,9 +38,8 @@ public partial class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTRe
                     ApplicationName = Constant("NuixApp")
                 },
                 AssertFileContains(GeneralDataFolder, "NRT", "PDF-1.4"),
-                new NuixCloseConnection(),
-                new DeleteItem { Path = NRTFolder },
-                DeleteCaseFolder
+                CleanupCase,
+                new DeleteItem { Path = NRTFolder }
             );
         }
     }
