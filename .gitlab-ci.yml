@@ -121,8 +121,10 @@ mutation testing:
 
 code coverage dev:
   needs:
-    - test dev
-    - version check dev
+    - job: test dev
+      optional: false
+    - job: version check dev
+      optional: false
     - job: integration short
       optional: true
     - job: integration full
@@ -130,8 +132,10 @@ code coverage dev:
 
 code coverage release:
   needs:
-    - test release
-    - version check release
+    - job: test release
+      optional: false
+    - job: version check release
+      optional: false
     - job: integration short
       optional: true
     - job: integration full
