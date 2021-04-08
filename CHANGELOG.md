@@ -4,24 +4,23 @@
 
 ### Steps
 
-- Updated `NuixAddConcordance` step
-   - Added new parameters
-     - OpticonPath
-     - ProcessingSettings
-     - ProgressInterval
-     - CustomMetadata
-     - ContainerEncoding
-     - ContainerLocale
-     - ContainerTimeZone
-   - These parameters are now optional
-     - ConcordanceDateFormat
-     - Description
-     - Custodian
-   - Added progress updates when processing
-
-### Connector Updates
-
-- Added `NuixGetVersion` step
+- Added
+  - `NuixGetVersion`
+- Updated
+  - `NuixAddConcordance`
+    - Added new parameters
+      - OpticonPath
+      - ProcessingSettings
+      - ProgressInterval
+      - CustomMetadata
+      - ContainerEncoding
+      - ContainerLocale
+      - ContainerTimeZone
+    - These parameters are now optional
+      - ConcordanceDateFormat
+      - Description
+      - Custodian
+    - Added progress updates when processing
 
 ## Issues Closed in this Release
 
