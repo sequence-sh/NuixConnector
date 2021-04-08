@@ -123,12 +123,16 @@ code coverage dev:
   needs:
     - test dev
     - version check dev
-    - integration short
-    - integration full
+    - job: integration short
+      optional: true
+    - job: integration full
+      optional: true
 
 code coverage release:
   needs:
     - test release
     - version check release
-    - integration short
-    - integration full
+    - job: integration short
+      optional: true
+    - job: integration full
+      optional: true
