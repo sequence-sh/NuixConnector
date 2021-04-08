@@ -76,6 +76,7 @@ public static class Constants
     public static readonly string CasePathString = Path.Combine(GeneralDataFolder, "TestCase");
 
     public static readonly IStep<StringStream> CasePath = Constant(CasePathString);
+
     public static readonly string OutputFolder = Path.Combine(GeneralDataFolder, "OutputFolder");
 
     public static readonly IStep<StringStream> NRTFolder =
@@ -229,11 +230,6 @@ public static class Constants
     };
 
     public static readonly IStep<Unit> OpenCase = new NuixOpenCase { CasePath = CasePath };
-
-    public static readonly IStep<Unit> AddData = new NuixAddItem
-    {
-        Custodian = Constant("Mark"), Paths = DataPaths, Container = Constant("New Folder")
-    };
 
     public static ExternalProcessAction HelperAction(string name) => new(
         new ConnectionCommand { Command = name, FunctionDefinition = "", IsHelper = true },
