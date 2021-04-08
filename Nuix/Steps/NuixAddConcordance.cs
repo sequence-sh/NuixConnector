@@ -51,6 +51,27 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
 
     container.description = folderDescriptionArg
     container.initial_custodian = folderCustodianArg
+
+    unless customMetadataArg.nil?
+      log(""Adding custom metadata to container #{containerNameArg}"", severity: :debug)
+      container.set_custom_metadata(customMetadataArg)
+    end
+
+    unless containerEncodingArg.nil?
+      log(""Container encoding: '#{containerEncodingArg}'"", severity: :debug)
+      container.set_encoding(containerEncodingArg)
+    end
+
+    unless containerLocaleArg.nil?
+      log(""Container locale: '#{containerLocaleArg}'"", severity: :debug)
+      container.set_locale(containerLocaleArg)
+    end
+
+    unless containerTimeZoneArg.nil?
+      log(""Container time zone: '#{containerTimeZoneArg}'"", severity: :debug)
+      container.set_time_zone(containerTimeZoneArg)
+    end
+
     container.addLoadFile({
     :concordanceFile => filePathArg,
     :concordanceDateFormat => dateFormatArg
@@ -139,6 +160,46 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("processingSettingsArg")]
     [Alias("Settings")]
     public IStep<Entity>? ProcessingSettings { get; set; }
+
+    /// <summary>
+    /// Sets additional metadata on the evidence container.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("customMetadataArg")]
+    [DefaultValueExplanation("No custom metadata will be added")]
+    public IStep<Core.Entity>? CustomMetadata { get; set; }
+
+    /// <summary>
+    /// Set the encoding for the evidence container.
+    /// </summary>
+    [StepProperty]
+    [Example("UTF-8")]
+    [RubyArgument("containerEncodingArg")]
+    [DefaultValueExplanation("Default system encoding")]
+    [Alias("Encoding")]
+    public IStep<StringStream>? ContainerEncoding { get; set; }
+
+    /// <summary>
+    /// Set the locale for the evidence container.
+    /// </summary>
+    [RequiredVersion("Nuix", "7.2")]
+    [StepProperty]
+    [Example("en_GB")]
+    [RubyArgument("containerLocaleArg")]
+    [DefaultValueExplanation("Default system locale")]
+    [Alias("Locale")]
+    public IStep<StringStream>? ContainerLocale { get; set; }
+
+    /// <summary>
+    /// Set the time zone for the evidence container.
+    /// If the time zone given is not known to Nuix, the GMT time zone will be used.
+    /// </summary>
+    [StepProperty]
+    [Example("UTC")]
+    [RubyArgument("containerTimeZoneArg")]
+    [DefaultValueExplanation("Default system time zone")]
+    [Alias("TimeZone")]
+    public IStep<StringStream>? ContainerTimeZone { get; set; }
 }
 
 }
