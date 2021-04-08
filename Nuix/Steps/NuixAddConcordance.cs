@@ -35,12 +35,17 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
     public override string FunctionName { get; } = "AddConcordanceToCase";
 
     /// <inheritdoc />
-    public override string RubyFunctionText { get; } =
-        //language=RUBY
-        @"
+    public override string RubyFunctionText { get; } = @"
     processor = $current_case.create_processor
-    processor.processing_settings = { :create_thumbnails       => false,
-                                    :additional_digests      => [ 'SHA-1' ] }
+
+    if processingSettingsArg.nil?
+      processor.set_processing_settings({
+        'create_thumbnails' => false,
+        'additional_digests' => [ 'SHA-1' ]
+      })
+    else
+      processor.set_processing_settings(processingSettingsArg)
+    end
 
     folder = processor.new_evidence_container(folderNameArg)
 
@@ -122,6 +127,17 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("folderDescriptionArg")]
     [DefaultValueExplanation("No description")]
     public IStep<StringStream>? Description { get; set; }
+
+    /// <summary>
+    /// Sets the processing settings to use.
+    /// These settings correspond to the same settings in the desktop application,
+    /// however the user's preferences are not used to derive the defaults.
+    /// </summary>
+    [StepProperty]
+    [DefaultValueExplanation("(create_thumbnails: false, additional_digests: ['SHA-1'])")]
+    [RubyArgument("processingSettingsArg")]
+    [Alias("Settings")]
+    public IStep<Entity>? ProcessingSettings { get; set; }
 }
 
 }
