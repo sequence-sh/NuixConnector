@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -107,18 +108,17 @@ public partial class IntegrationShortTests
                                         ("processText", true)
                                     )
                                 ),
-                                // Upstream bug in Core. reductech/edr/core#225
-                                //CustomMetadata = new CreateEntityStep(
-                                //    new ReadOnlyDictionary<EntityPropertyKey, IStep>(
-                                //        new Dictionary<EntityPropertyKey, IStep>
-                                //        {
-                                //            {
-                                //                new EntityPropertyKey("EDRVersion"),
-                                //                new GetApplicationVersion()
-                                //            }
-                                //        }
-                                //    )
-                                //),
+                                CustomMetadata = new CreateEntityStep(
+                                    new ReadOnlyDictionary<EntityPropertyKey, IStep>(
+                                        new Dictionary<EntityPropertyKey, IStep>
+                                        {
+                                            {
+                                                new EntityPropertyKey("EDRVersion"),
+                                                new GetApplicationVersion()
+                                            }
+                                        }
+                                    )
+                                ),
                                 ProcessingProfileName = Constant("Default"),
                                 ProcessingSettings = Constant(
                                     Entity.Create(("calculateAuditedSize", true))
@@ -126,7 +126,7 @@ public partial class IntegrationShortTests
                                 PasswordFilePath = PasswordFilePath
                             },
                             AssertCount(188, "custodian:\"EDRM Micro\""), AssertCount(2, "*.txt"),
-                            //AssertCount(188, "custom-metadata:\"EDRVersion\":*"),
+                            AssertCount(188, "evidence-metadata:\"EDRVersion:*\""),
                             // Check audited size
                             AssertEquals(Constant(76924230.0), new NuixGetAuditedSize()),
                             // Add concordance file
