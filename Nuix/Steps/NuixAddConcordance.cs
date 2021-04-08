@@ -81,15 +81,30 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
     end
 
     container.addLoadFile({
-    :concordanceFile => filePathArg,
-    :concordanceDateFormat => dateFormatArg
+      :concordanceFile => filePathArg,
+      :concordanceDateFormat => dateFormatArg
     })
     container.setMetadataImportProfileName(profileNameArg)
     container.save
 
-    log 'Starting processing.'
+    processor.when_cleaning_up do
+      log 'Processor cleaning up'
+	end
+
+    semaphore = Mutex.new
+    item_count = 0
+
+    processor.when_item_processed do |item|
+	  semaphore.synchronize do
+		item_count += 1
+        log(""Processor items processed: #{item_count}"") if item_count % progressIntervalArg == 0
+      end
+    end
+
+    log 'Processor starting'
     processor.process
-    log 'Processing complete.'";
+    log ""Processor finished. Total items processed: #{item_count}""
+";
 }
 
 /// <summary>
@@ -170,6 +185,14 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("processingSettingsArg")]
     [Alias("Settings")]
     public IStep<Entity>? ProcessingSettings { get; set; }
+
+    /// <summary>
+    /// The number of items at which the Nuix processor logs a progress message.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("progressIntervalArg")]
+    [DefaultValueExplanation("Every 5000 items")]
+    public IStep<int> ProgressInterval { get; set; } = new IntConstant(5000);
 
     /// <summary>
     /// Sets additional metadata on the evidence container.
