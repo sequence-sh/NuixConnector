@@ -217,7 +217,7 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("customMetadataArg")]
     [DefaultValueExplanation("No custom metadata will be added")]
-    public IStep<Core.Entity>? CustomMetadata { get; set; }
+    public IStep<Entity>? CustomMetadata { get; set; }
 
     /// <summary>
     /// Set the encoding for the evidence container.
@@ -234,7 +234,7 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     /// </summary>
     [RequiredVersion("Nuix", "7.2")]
     [StepProperty]
-    [Example("en_GB")]
+    [Example("en-GB")]
     [RubyArgument("containerLocaleArg")]
     [DefaultValueExplanation("Default system locale")]
     [Alias("Locale")]
