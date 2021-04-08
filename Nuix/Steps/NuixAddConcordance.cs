@@ -82,7 +82,7 @@ public sealed class NuixAddConcordanceFactory : RubyScriptStepFactory<NuixAddCon
 
     container.addLoadFile({
       :concordanceFile => filePathArg,
-      :concordanceDateFormat => dateFormatArg
+      :concordanceDateFormat => dateFormatArg.nil? ? ""yyyy-MM-dd'T'HH:mm:ss.SSSZ"" : dateFormatArg
     })
     container.setMetadataImportProfileName(profileNameArg)
     container.save
@@ -140,22 +140,22 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     public IStep<StringStream> Container { get; set; } = null!;
 
     /// <summary>
-    /// The concordance date format to use.
-    /// </summary>
-    [Required]
-    [StepProperty(3)]
-    [Example("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
-    [RubyArgument("dateFormatArg")]
-    public IStep<StringStream> ConcordanceDateFormat { get; set; } = null!;
-
-    /// <summary>
     /// The name of the concordance profile to use.
     /// </summary>
     [Required]
-    [StepProperty(4)]
+    [StepProperty(3)]
     [Example("MyProfile")]
     [RubyArgument("profileNameArg")]
     public IStep<StringStream> ConcordanceProfileName { get; set; } = null!;
+
+    /// <summary>
+    /// The concordance date format to use.
+    /// </summary>
+    [StepProperty]
+    [RubyArgument("dateFormatArg")]
+    [DefaultValueExplanation("yyyy-MM-dd'T'HH:mm:ss.SSSZ")]
+    [Alias("DateFormat")]
+    public IStep<StringStream>? ConcordanceDateFormat { get; set; }
 
     /// <summary>
     /// The description of the evidence container.
