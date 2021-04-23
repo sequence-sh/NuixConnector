@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reductech.EDR.Core" Version="0.8.0" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.9.0-a.master.2104221758" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
