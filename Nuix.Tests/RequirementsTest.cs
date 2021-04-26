@@ -31,7 +31,7 @@ public class RequirementsTest
                  FakeConstantPath,
                  new Version(8, 0),
                  true,
-                 new List<NuixFeature>() { NuixFeature.CASE_CREATION }
+                 new List<NuixFeature> { NuixFeature.CASE_CREATION }
              )
             ),
             (null,
@@ -53,7 +53,7 @@ public class RequirementsTest
         var result = process.Verify(args.settings);
 
         if (args.expectedError == null)
-            result.ShouldBeSuccessful(x => x.AsString);
+            result.ShouldBeSuccessful();
         else
             result.MapError(x => x.AsString).ShouldBeFailure(args.expectedError);
     }

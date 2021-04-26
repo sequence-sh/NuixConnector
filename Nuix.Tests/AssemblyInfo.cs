@@ -1,1 +1,3 @@
-﻿[assembly: AutoTheory.DontAddAutoTheoryNamespace]
+﻿using AutoTheory;
+
+[assembly: DontAddAutoTheoryNamespace]

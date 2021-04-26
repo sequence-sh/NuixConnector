@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Steps;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 

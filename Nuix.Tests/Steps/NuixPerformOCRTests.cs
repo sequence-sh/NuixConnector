@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
@@ -53,7 +54,7 @@ public partial class NuixPerformOCRTests : NuixStepTestBase<NuixPerformOCR, Unit
                     SearchTerm     = Constant("*.png"),
                     OCRProfileName = Constant("Default"),
                     SortSearch     = Constant(true),
-                    SearchOptions  = Constant(Core.Entity.Create(("limit", 1)))
+                    SearchOptions  = Constant(Entity.Create(("limit", 1)))
                 },
                 AssertCount(1, "sheep OR ghost"),
                 new NuixCloseConnection(),

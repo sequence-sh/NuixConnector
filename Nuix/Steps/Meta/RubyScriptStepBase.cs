@@ -75,7 +75,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
 
         if (runResult.IsFailure &&
             runResult.Error.GetErrorBuilders()
-                .Any(x => x.Data.TryPickT0(out var e, out _) && e is ChannelClosedException))
+                .Any(x => x.Data is ErrorData.ExceptionData { Exception: ChannelClosedException }))
         {
             //The channel has closed on us. Try reopening it and rerunning the function
 
@@ -124,7 +124,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
             {
                 if (!argument.IsOptional)
                     errors.Add(
-                        ErrorHelper.MissingParameterError(argument.PropertyName)
+                        ErrorCode.MissingParameter.ToErrorBuilder(argument.PropertyName)
                             .WithLocation(this)
                     );
             }

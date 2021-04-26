@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
@@ -39,9 +40,7 @@ public partial class
                 {
                     ProductionSetName = Constant("conjunction"),
                     SearchTerm        = Constant("jellyfish"),
-                    SearchOptions = Constant(
-                        Core.Entity.Create(("defaultFields", new[] { "name" }))
-                    )
+                    SearchOptions     = Constant(Entity.Create(("defaultFields", new[] { "name" })))
                 },
                 AssertCount(1, "production-set:conjunction"),
                 new NuixRemoveFromProductionSet { ProductionSetName = Constant("conjunction") },

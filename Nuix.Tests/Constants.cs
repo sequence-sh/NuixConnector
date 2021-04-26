@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
@@ -151,7 +152,7 @@ public static class Constants
         new DeleteItem { Path = Constant(OutputFolder) };
 
     public static readonly IStep<Unit> CreateOutputFolder =
-        new CreateDirectory { Path = Constant(OutputFolder) };
+        new DirectoryCreate { Path = Constant(OutputFolder) };
 
     public static readonly IStep<Unit> AssertCaseDoesNotExist = new AssertTrue
     {
@@ -214,7 +215,7 @@ public static class Constants
     }
 
     public static IStep<Unit> AssertEquals<T>(IStep<T> expected, IStep<T> actual)
-        where T : IComparable<T> => new AssertEqual<T>() { Left = expected, Right = actual };
+        where T : IComparable<T> => new AssertEqual<T> { Left = expected, Right = actual };
 
     public static IStep<Unit> AssertPropertyValueEquals<T>(string property, IStep<T> expected)
         where T : IComparable<T> => AssertPropertyValueEquals(
@@ -227,7 +228,7 @@ public static class Constants
         string variable,
         string property,
         IStep<T> expected)
-        where T : IComparable<T> => new AssertEqual<T>()
+        where T : IComparable<T> => new AssertEqual<T>
     {
         Left = expected,
         Right =

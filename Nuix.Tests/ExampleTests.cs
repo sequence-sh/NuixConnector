@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Logging.Xunit;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
@@ -34,11 +36,13 @@ public class ExampleTests
         string yaml,
         Action<Result<IStep, IError>> errorAction)
     {
-        var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
+        var sfs = StepFactoryStore.CreateFromAssemblies(
+            Assembly.GetAssembly(typeof(IRubyScriptStep))!
+        );
 
-        var logger = new Microsoft.Extensions.Logging.Xunit.XunitLogger(TestOutputHelper, "Test");
+        var logger = new XunitLogger(TestOutputHelper, "Test");
 
-        var stepResult = SCLParsing.ParseSequence(yaml)
+        var stepResult = SCLParsing.TryParseStep(yaml)
             .Bind(x => x.TryFreeze(TypeReference.Any.Instance, sfs));
 
         if (stepResult.IsFailure)
@@ -56,7 +60,7 @@ public class ExampleTests
 
         var r = await stepResult.Value.Run<Unit>(monad, CancellationToken.None);
 
-        r.ShouldBeSuccessful(x => x.AsString);
+        r.ShouldBeSuccessful();
 
         static SCLSettings CreateSettings()
         {
@@ -77,7 +81,7 @@ public class ExampleTests
                         //{ NuixSettings.LicenceTypeKey, "enterprise-workstation" },
                         {
                             NuixSettings.ConsoleArgumentsKey,
-                            new List<string>()
+                            new List<string>
                             {
                                 "-Dnuix.licence.handlers=server",
                                 "-Dnuix.registry.servers=license server",
@@ -85,7 +89,7 @@ public class ExampleTests
                         },
                         {
                             NuixSettings.EnvironmentVariablesKey,
-                            new Dictionary<string, string>()
+                            new Dictionary<string, string>
                             {
                                 { "NUIX_USERNAME", "user" }, { "NUIX_PASSWORD", "password" },
                             }
@@ -137,7 +141,7 @@ public class ExampleTests
         await RunYamlSequenceInternal(
             yaml,
             result =>
-                result.ShouldBeSuccessful(x => x.AsString)
+                result.ShouldBeSuccessful()
         );
     }
 }

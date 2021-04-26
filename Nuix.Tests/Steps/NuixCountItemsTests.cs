@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
@@ -20,18 +21,18 @@ public partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
                 SetupCase,
                 new AssertTrue
                 {
-                    Boolean = new Equals<int>()
+                    Boolean = new Equals<int>
                     {
-                        Terms = new ArrayNew<int>()
+                        Terms = new ArrayNew<int>
                         {
-                            Elements = new List<IStep<int>>()
+                            Elements = new List<IStep<int>>
                             {
                                 Constant(1),
                                 new NuixCountItems
                                 {
                                     SearchTerm = Constant("jellyfish"),
                                     SearchOptions = Constant(
-                                        Core.Entity.Create(
+                                        Entity.Create(
                                             ("defaultFields", new[] { "name" })
                                         )
                                     )

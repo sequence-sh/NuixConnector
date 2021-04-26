@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,7 +70,13 @@ public static class NuixConnectionHelper
         // TODO: Make this configurable
         var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
 
-        if (!stateMonad.ExternalContext.FileSystemHelper.File.Exists(scriptPath))
+        var fileSystemHelper =
+            stateMonad.ExternalContext.TryGetContext<IFileSystem>(ConnectorInjection.FileSystemKey);
+
+        if (fileSystemHelper.IsFailure)
+            return fileSystemHelper.ConvertFailure<NuixConnection>();
+
+        if (!fileSystemHelper.Value.File.Exists(scriptPath))
             return ErrorCode.ExternalProcessNotFound.ToErrorBuilder(scriptPath);
 
         consoleArguments.Value.arguments.Add(scriptPath);

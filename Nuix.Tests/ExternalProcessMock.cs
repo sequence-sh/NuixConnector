@@ -45,7 +45,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
     public int ExpectedTimesStarted { get; }
     public ExternalProcessAction[] ExternalProcessActions { get; }
 
-    public int TimesStarted { get; private set; } = 0;
+    public int TimesStarted { get; private set; }
 
     /// <inheritdoc />
     public async Task<Result<Unit, IErrorBuilder>> RunExternalProcess(
@@ -149,9 +149,9 @@ internal class ExternalProcessMock : IExternalProcessRunner
                             isStream       = false;
                             streamEndToken = null;
 
-                            var data = new ConnectionOutput()
+                            var data = new ConnectionOutput
                             {
-                                Result = new ConnectionOutputResult()
+                                Result = new ConnectionOutputResult
                                 {
                                     Data = $"[{string.Join(',', entityStream)}]"
                                 }
@@ -172,7 +172,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
                         throw new XunitException($"Unexpected: '{inputJson}'");
 
                     var commandResult = JsonConverters.DeserializeConnectionCommand(inputJson);
-                    commandResult.ShouldBeSuccessful(x => x.AsString);
+                    commandResult.ShouldBeSuccessful();
 
                     commandResult.Value.Should()
                         .BeEquivalentTo(
@@ -236,7 +236,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
 
         private Stack<ExternalProcessAction> RemainingExternalProcessActions { get; }
 
-        internal bool IsDisposed { get; private set; } = false;
+        internal bool IsDisposed { get; private set; }
 
         /// <inheritdoc />
         public void Dispose()

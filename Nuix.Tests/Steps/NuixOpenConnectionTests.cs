@@ -34,7 +34,7 @@ public partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, 
                         Constants.AllNuixFeatures
                     )
                 )
-                .WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true))
+                .WithScriptExists()
                 .WithExternalProcessAction(
                     x => x.Setup(
                             a =>

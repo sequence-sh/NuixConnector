@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
@@ -18,17 +19,17 @@ public partial class NuixAssignCustodianTests : NuixStepTestBase<NuixAssignCusto
                 "Assign Custodians",
                 SetupCase,
                 AssertCount(0, "custodian:\"Jason\""),
-                new NuixAssignCustodian()
+                new NuixAssignCustodian
                 {
                     Custodian = Constant("Jason"), SearchTerm = Constant("charm")
                 },
                 AssertCount(1, "custodian:\"Jason\""),
-                new NuixAssignCustodian()
+                new NuixAssignCustodian
                 {
                     Custodian     = Constant("John"),
                     SearchTerm    = Constant("*.txt"),
                     SortSearch    = Constant(true),
-                    SearchOptions = Constant(Core.Entity.Create(("limit", 1)))
+                    SearchOptions = Constant(Entity.Create(("limit", 1)))
                 },
                 AssertCount(1, "custodian:\"John\""),
                 CleanupCase

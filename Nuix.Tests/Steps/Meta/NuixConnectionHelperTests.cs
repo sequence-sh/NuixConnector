@@ -1,19 +1,17 @@
-﻿using System.Threading;
+﻿using System.IO.Abstractions;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using MELT;
 using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Util;
-using Thinktecture.Adapters;
-using Thinktecture.IO;
 using Xunit;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
 {
-
-using Reductech.EDR.Core;
 
 public class NuixConnectionHelperTests
 {
@@ -84,8 +82,7 @@ public class NuixConnectionHelperTests
         IStateMonad state =
             ConnectionTestsHelper.GetStateMonad(
                 fakeExternalProcess,
-                loggerFactory,
-                FileSystemAdapter.Default
+                loggerFactory
             );
 
         var createConnection = await state.GetOrCreateNuixConnection(null, true);
@@ -108,8 +105,7 @@ public class NuixConnectionHelperTests
 
         IStateMonad state = ConnectionTestsHelper.GetStateMonad(
             fakeExternalProcess,
-            TestLoggerFactory.Create(),
-            FileSystemAdapter.Default
+            TestLoggerFactory.Create()
         );
 
         var ct = new CancellationToken();
@@ -176,9 +172,14 @@ public class NuixConnectionHelperTests
         IStateMonad state = ConnectionTestsHelper.GetStateMonad(
             TestLoggerFactory.Create(),
             fakeExternalProcess,
-            new FileSystemAdapter(Mock.Of<IDirectory>(), fileMock, Mock.Of<ICompression>()),
-            new ConsoleAdapter()
+            ConsoleAdapter.Instance
         );
+
+        //Remove the script from the file system
+        var nuixFileSystem =
+            state.ExternalContext.TryGetContext<IFileSystem>(ConnectorInjection.FileSystemKey);
+
+        nuixFileSystem.Value.File.Delete(NuixConnectionHelper.NuixGeneralScriptName);
 
         var connection = await state.GetOrCreateNuixConnection(null, false);
 
