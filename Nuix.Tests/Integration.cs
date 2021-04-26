@@ -6,9 +6,11 @@ using AutoTheory;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
+using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -34,10 +36,11 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             NuixSettings.TryGetNuixVersion(settings).Value
         ) //&& false //uncomment to disable integration tests
         select new IntegrationTestCase(
-            // Name needs to have nuix version in parentheses for ci script to build summary
-            $"{nuixTestCase.Name} ({NuixSettings.TryGetNuixVersion(settings).Value})",
-            nuixTestCase.Step
-        ).WithSettings(settings);
+                // Name needs to have nuix version in parentheses for ci script to build summary
+                $"{nuixTestCase.Name} ({NuixSettings.TryGetNuixVersion(settings).Value})",
+                nuixTestCase.Step
+            )
+            .WithSettings(settings);
 
     public class NuixIntegrationTestCase
     {
@@ -62,6 +65,22 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             Steps              = steps;
             IgnoreFinalState   = true;
             IgnoreLoggedValues = true;
+
+            var connectorInjections = new IConnectorInjection[]
+            {
+                new ConnectorInjection(), new FileSystem.ConnectorInjection()
+            };
+
+            foreach (var connectorInjection in connectorInjections)
+            {
+                var injectedContextsResult = connectorInjection.TryGetInjectedContexts(Settings);
+                injectedContextsResult.ShouldBeSuccessful();
+
+                foreach (var (contextName, context) in injectedContextsResult.Value)
+                {
+                    ExternalContextSetupHelper.AddContextObject(contextName, context);
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -79,7 +98,10 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             testOutputHelper.WriteLine(yaml);
 
-            var sfs = StepFactoryStore.CreateFromAssemblies(Assembly.GetAssembly(typeof(TStep))!);
+            var sfs = StepFactoryStore.CreateFromAssemblies(
+                Assembly.GetAssembly(typeof(TStep))!,
+                Assembly.GetAssembly(typeof(DeleteItem))!
+            );
 
             var deserializedStep = SCLParsing.TryParseStep(yaml);
 
@@ -117,7 +139,8 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
                     ExternalProcessRunner.Instance,
-                    baseMonad.ExternalContext.Console
+                    baseMonad.ExternalContext.Console,
+                    baseMonad.ExternalContext.InjectedContexts
                 ),
                 baseMonad.SequenceMetadata
             );

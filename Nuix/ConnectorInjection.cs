@@ -5,11 +5,17 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
+namespace Reductech.EDR.Connectors.Nuix
 {
 
+/// <summary>
+/// Provides context information for the nuix connector
+/// </summary>
 public sealed class ConnectorInjection : IConnectorInjection
 {
+    /// <summary>
+    /// The key that this connector injection will use
+    /// </summary>
     public const string FileSystemKey = "Nuix.FileSystem";
 
     /// <inheritdoc />
