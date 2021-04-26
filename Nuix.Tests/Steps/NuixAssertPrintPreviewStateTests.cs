@@ -19,40 +19,44 @@ public partial class
         get
         {
             yield return new NuixStepCase(
-                "Check State All",
-                new NuixAssertPrintPreviewState
-                {
-                    CasePath          = CasePath,
-                    ProductionSetName = Constant("Production Set"),
-                    ExpectedState     = Constant(PrintPreviewState.All)
-                },
-                Unit.Default,
-                new List<ExternalProcessAction>
-                {
-                    new(
-                        new ConnectionCommand
-                        {
-                            Command = "GetPrintPreviewState",
-                            Arguments = new Dictionary<string, object>
+                    "Check State All",
+                    new NuixAssertPrintPreviewState
+                    {
+                        CasePath          = CasePath,
+                        ProductionSetName = Constant("Production Set"),
+                        ExpectedState     = Constant(PrintPreviewState.All)
+                    },
+                    Unit.Default,
+                    new List<ExternalProcessAction>
+                    {
+                        new(
+                            new ConnectionCommand
                             {
+                                Command = "GetPrintPreviewState",
+                                Arguments = new Dictionary<string, object>
                                 {
-                                    nameof(NuixAssertPrintPreviewState.ProductionSetName),
-                                    "Production Set"
-                                },
-                                {
-                                    nameof(NuixAssertPrintPreviewState.ExpectedState),
-                                    PrintPreviewState.All.ToString()
-                                },
-                                {
-                                    nameof(RubyCaseScriptStepBase<bool>.CasePath),
-                                    CasePathString
+                                    {
+                                        nameof(NuixAssertPrintPreviewState.ProductionSetName),
+                                        "Production Set"
+                                    },
+                                    {
+                                        nameof(NuixAssertPrintPreviewState.ExpectedState),
+                                        PrintPreviewState.All.ToString()
+                                    },
+                                    {
+                                        nameof(RubyCaseScriptStepBase<bool>.CasePath),
+                                        CasePathString
+                                    }
                                 }
+                            },
+                            new ConnectionOutput
+                            {
+                                Result = new ConnectionOutputResult { Data = null }
                             }
-                        },
-                        new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
-                    )
-                }
-            ).WithSettings(UnitTestSettings);
+                        )
+                    }
+                )
+                .WithSettings(UnitTestSettings);
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using JetBrains.Annotations;
 using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Errors
@@ -8,10 +7,11 @@ namespace Reductech.EDR.Connectors.Nuix.Errors
 /// <summary>
 /// Error Code for Nuix
 /// </summary>
+// ReSharper disable once InconsistentNaming
 public sealed record ErrorCode_Nuix : ErrorCodeBase
 {
     /// <inheritdoc />
-    private ErrorCode_Nuix([NotNull] string code) : base(code) { }
+    private ErrorCode_Nuix(string code) : base(code) { }
 
     /// <summary>
     /// A nuix function cannot have more than one Entity Array parameter.

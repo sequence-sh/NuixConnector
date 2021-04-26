@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.Internal;
@@ -21,55 +20,63 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
         get
         {
             yield return new NuixStepCase(
-                "Create Case then add item",
-                new Sequence<Unit>
-                {
-                    InitialSteps = new List<IStep<Unit>> { CreateCase },
-                    FinalStep = new NuixAddItem
+                    "Create Case then add item",
+                    new Sequence<Unit>
                     {
-                        Custodian = Constant("Mark"),
-                        Paths     = DataPaths,
-                        Container = Constant("New Folder")
+                        InitialSteps = new List<IStep<Unit>> { CreateCase },
+                        FinalStep = new NuixAddItem
+                        {
+                            Custodian = Constant("Mark"),
+                            Paths     = DataPaths,
+                            Container = Constant("New Folder")
+                        }
+                    },
+                    new List<ExternalProcessAction>
+                    {
+                        new(
+                            new ConnectionCommand
+                            {
+                                Command            = "CreateCase",
+                                FunctionDefinition = "",
+                                Arguments = new Dictionary<string, object>
+                                {
+                                    { nameof(NuixCreateCase.CasePath), CasePathString },
+                                    {
+                                        nameof(NuixCreateCase.CaseName),
+                                        "Integration Test Case"
+                                    },
+                                    { nameof(NuixCreateCase.Investigator), "Mark" }
+                                }
+                            },
+                            new ConnectionOutput
+                            {
+                                Result = new ConnectionOutputResult { Data = null }
+                            }
+                        ),
+                        new(
+                            new ConnectionCommand
+                            {
+                                Command            = "AddToCase",
+                                FunctionDefinition = "",
+                                Arguments = new Dictionary<string, object>
+                                {
+                                    { nameof(NuixAddItem.Container), "New Folder" },
+                                    { nameof(NuixAddItem.Custodian), "Mark" },
+                                    {
+                                        nameof(NuixAddItem.Paths),
+                                        new List<string> { DataPathString }
+                                    },
+                                    { nameof(NuixAddItem.ProgressInterval), 5000 }
+                                }
+                            },
+                            new ConnectionOutput
+                            {
+                                Result = new ConnectionOutputResult { Data = null }
+                            }
+                        )
                     }
-                },
-                new List<ExternalProcessAction>
-                {
-                    new(
-                        new ConnectionCommand
-                        {
-                            Command            = "CreateCase",
-                            FunctionDefinition = "",
-                            Arguments = new Dictionary<string, object>
-                            {
-                                { nameof(NuixCreateCase.CasePath), CasePathString },
-                                {
-                                    nameof(NuixCreateCase.CaseName), "Integration Test Case"
-                                },
-                                { nameof(NuixCreateCase.Investigator), "Mark" }
-                            }
-                        },
-                        new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
-                    ),
-                    new(
-                        new ConnectionCommand
-                        {
-                            Command            = "AddToCase",
-                            FunctionDefinition = "",
-                            Arguments = new Dictionary<string, object>
-                            {
-                                { nameof(NuixAddItem.Container), "New Folder" },
-                                { nameof(NuixAddItem.Custodian), "Mark" },
-                                {
-                                    nameof(NuixAddItem.Paths),
-                                    new List<string> { DataPathString }
-                                },
-                                { nameof(NuixAddItem.ProgressInterval), 5000 }
-                            }
-                        },
-                        new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
-                    )
-                }
-            ).WithSettings(UnitTestSettings);
+                )
+                .WithSettings(UnitTestSettings);
         }
     }
 
@@ -94,7 +101,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
 
             yield return new ErrorCase(
                 "Missing Settings",
-                new NuixCreateCase()
+                new NuixCreateCase
                 {
                     CasePath     = CasePath,
                     CaseName     = Constant("Error Case"),
@@ -162,8 +169,8 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                             }
                         )
                     }
-                ).WithSettings(UnitTestSettings)
-                .WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
+                ).WithScriptExists()
+                .WithSettings(UnitTestSettings);
         }
     }
 

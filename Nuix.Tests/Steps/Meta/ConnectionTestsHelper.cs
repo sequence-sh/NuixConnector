@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO.Abstractions.TestingHelpers;
+using System.Reflection;
 using MELT;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -9,8 +11,6 @@ using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
-using Thinktecture;
-using Thinktecture.Adapters;
 using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
@@ -20,18 +20,15 @@ public static class ConnectionTestsHelper
 {
     public static IStateMonad GetStateMonad(
         IExternalProcessRunner externalProcessRunner,
-        ITestLoggerFactory testLoggerFactory,
-        IFileSystem fileSystem) => GetStateMonad(
+        ITestLoggerFactory testLoggerFactory) => GetStateMonad(
         testLoggerFactory,
         externalProcessRunner,
-        fileSystem,
-        new ConsoleAdapter()
+        ConsoleAdapter.Instance
     );
 
     public static IStateMonad GetStateMonad(
         ITestLoggerFactory testLoggerFactory,
         IExternalProcessRunner externalProcessRunner,
-        IFileSystem fileSystem,
         IConsole console)
     {
         var nuixSettings = NuixSettings.CreateSettings(
@@ -41,13 +38,27 @@ public static class ConnectionTestsHelper
             Constants.AllNuixFeatures
         );
 
-        var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(IRubyScriptStep));
+        var sfs = StepFactoryStore.CreateFromAssemblies(
+            Assembly.GetAssembly(typeof(IRubyScriptStep))!
+        );
+
+        var fileSystem = new MockFileSystem(
+            new Dictionary<string, MockFileData>()
+            {
+                { NuixConnectionHelper.NuixGeneralScriptName, "Ultimate Nuix Script" }
+            },
+            AppContext.BaseDirectory
+        );
 
         var monad = new StateMonad(
             testLoggerFactory.CreateLogger("Test"),
             nuixSettings,
             sfs,
-            new ExternalContext(fileSystem, externalProcessRunner, console),
+            new ExternalContext(
+                externalProcessRunner,
+                console,
+                (ConnectorInjection.FileSystemKey, fileSystem)
+            ),
             new Dictionary<string, object>()
         );
 
@@ -105,8 +116,7 @@ public static class ConnectionTestsHelper
 
         IStateMonad state = GetStateMonad(
             fakeExternalProcess,
-            loggerFactory,
-            FileSystemAdapter.Default
+            loggerFactory
         );
 
         fakeExternalProcess.ProcessPath = Constants.NuixConsoleExe;

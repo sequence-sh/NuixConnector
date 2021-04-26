@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.Util;
@@ -30,14 +31,11 @@ public partial class NuixMigrateCaseTests : NuixStepTestBase<NuixMigrateCase, Un
                 },
                 new AssertError
                 {
-                    Step = new Nuix.Steps.NuixOpenCase
-                    {
-                        CasePath = Constants.MigrationTestCaseFolder
-                    }
+                    Step = new NuixOpenCase { CasePath = Constants.MigrationTestCaseFolder }
                 },                         //This should fail because we can't open the case
                 new NuixCloseConnection(), //Not necessary
-                new NuixMigrateCase { CasePath         = Constants.MigrationTestCaseFolder },
-                new Nuix.Steps.NuixOpenCase { CasePath = Constants.MigrationTestCaseFolder },
+                new NuixMigrateCase { CasePath = Constants.MigrationTestCaseFolder },
+                new NuixOpenCase { CasePath    = Constants.MigrationTestCaseFolder },
                 Constants.AssertCount(1, "jellyfish.txt"),
                 new NuixCloseConnection(),
                 new DeleteItem { Path = Constants.MigrationTestCaseFolder }

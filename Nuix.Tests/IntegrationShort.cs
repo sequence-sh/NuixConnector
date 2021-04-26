@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using AutoTheory;
 using Microsoft.Extensions.Logging;
+using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Core;
@@ -25,7 +27,7 @@ public partial class IntegrationShortTests
     private const string ReportPath = @"D:\Shares\Cases\Nuix\IntegrationShort\Reports";
     private const string ExportPath = @"D:\Shares\Cases\Nuix\IntegrationShort\Export";
 
-    [AutoTheory.GenerateAsyncTheory("NuixIntegration", Category = "IntegrationShort")]
+    [GenerateAsyncTheory("NuixIntegration", Category = "IntegrationShort")]
 
     public IEnumerable<NuixStepTestBase<NuixCreateCase, Unit>.IntegrationTestCase>
         IntegrationTestCases
@@ -220,7 +222,7 @@ public partial class IntegrationShortTests
                                 SortOrder = Constant(ItemSortOrder.Position)
                             },
                             // Write out a file type report
-                            new CreateDirectory { Path = Constant(ReportPath) },
+                            new DirectoryCreate { Path = Constant(ReportPath) },
                             new FileWrite
                             {
                                 Path = new PathCombine

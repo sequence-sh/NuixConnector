@@ -28,7 +28,7 @@ public partial class
                     ProductionSetName     = Constant("fullset"),
                     ProductionProfilePath = TestProductionProfilePath
                 },
-                new NuixReorderProductionSet()
+                new NuixReorderProductionSet
                 {
                     ProductionSetName = Constant("fullset"),
                     SortOrder         = Constant(ItemSortOrder.TopLevelItemDate)

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -98,7 +99,7 @@ public static class JsonConverters
         {
             if (value is IArray array)
             {
-                var objectsResult = array.GetObjects();
+                var objectsResult = array.GetObjectsAsync(CancellationToken.None).Result;
 
                 if (objectsResult.IsFailure)
                     throw new ErrorException(objectsResult.Error);

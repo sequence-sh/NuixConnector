@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using AutoTheory;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -12,6 +14,7 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
+using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -27,7 +30,7 @@ using Entity = Reductech.EDR.Core.Entity;
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-[AutoTheory.UseTestOutputHelper]
+[UseTestOutputHelper]
 [Collection("RequiresNuixLicense")]
 public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStream>
 {
@@ -66,10 +69,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                             {
                                 Command            = "test_Script",
                                 FunctionDefinition = "Lorem Ipsum",
-                                Arguments = new Dictionary<string, object>
-                                {
-                                    { "param1", "ABC" }
-                                }
+                                Arguments =
+                                    new Dictionary<string, object> { { "param1", "ABC" } }
                             },
                             new ConnectionOutput
                             {
@@ -85,8 +86,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                         )
                     },
                     "Log Message"
-                ).WithSettings(UnitTestSettings)
-                .WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
+                ).WithScriptExists()
+                .WithSettings(UnitTestSettings);
 
             yield return new RunScriptStepCase(
                     "Run Script with entity Stream",
@@ -106,10 +107,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                             {
                                 Command            = "test_Script",
                                 FunctionDefinition = "Lorem Ipsum",
-                                Arguments = new Dictionary<string, object>
-                                {
-                                    { "param1", "ABC" }
-                                },
+                                Arguments =
+                                    new Dictionary<string, object> { { "param1", "ABC" } },
                                 IsStream = true
                             },
                             new ConnectionOutput
@@ -122,8 +121,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                         )
                     },
                     "Log Message"
-                ).WithSettings(UnitTestSettings)
-                .WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
+                ).WithScriptExists()
+                .WithSettings(UnitTestSettings);
         }
     }
 
@@ -229,9 +228,9 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                 baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
-                    baseMonad.ExternalContext.FileSystemHelper,
                     externalProcessMock,
-                    baseMonad.ExternalContext.Console
+                    baseMonad.ExternalContext.Console,
+                    baseMonad.ExternalContext.InjectedContexts
                 ),
                 baseMonad.SequenceMetadata
             );
@@ -265,6 +264,19 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             Step             = sequence;
             IgnoreFinalState = true;
             MyExpectedOutput = expectedOutput;
+
+            var connectorInjections = new IConnectorInjection[] { new ConnectorInjection() };
+
+            foreach (var connectorInjection in connectorInjections)
+            {
+                var injectedContextsResult = connectorInjection.TryGetInjectedContexts(Settings);
+                injectedContextsResult.ShouldBeSuccessful();
+
+                foreach (var (contextName, context) in injectedContextsResult.Value)
+                {
+                    ExternalContextSetupHelper.AddContextObject(contextName, context);
+                }
+            }
         }
 
         public Sequence<StringStream> Step { get; }
@@ -277,15 +289,17 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             await Task.CompletedTask;
             var yaml = Step.Serialize();
 
-            var sfs = StepFactoryStore.CreateUsingReflection(typeof(IStep), typeof(NuixRunScript));
+            var sfs = StepFactoryStore.CreateFromAssemblies(
+                Assembly.GetAssembly(typeof(NuixRunScript))!
+            );
 
-            var deserializedStep = SCLParsing.ParseSequence(yaml);
+            var deserializedStep = SCLParsing.TryParseStep(yaml);
 
-            deserializedStep.ShouldBeSuccessful(x => x.AsString);
+            deserializedStep.ShouldBeSuccessful();
 
             var unfrozenStep = deserializedStep.Value.TryFreeze(TypeReference.Any.Instance, sfs);
 
-            unfrozenStep.ShouldBeSuccessful(x => x.AsString);
+            unfrozenStep.ShouldBeSuccessful();
 
             return unfrozenStep.Value;
         }
@@ -299,7 +313,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         /// <inheritdoc />
         public override void CheckOutputResult(Result<StringStream, IError> result)
         {
-            result.ShouldBeSuccessful(x => x.AsString);
+            result.ShouldBeSuccessful();
 
             result.Value.Should().Be(MyExpectedOutput);
         }
@@ -316,9 +330,9 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                 baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
-                    FileSystemAdapter.Default,
                     ExternalProcessRunner.Instance,
-                    baseMonad.ExternalContext.Console
+                    baseMonad.ExternalContext.Console,
+                    baseMonad.ExternalContext.InjectedContexts
                 ),
                 baseMonad.SequenceMetadata
             );

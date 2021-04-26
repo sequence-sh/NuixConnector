@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Core;
 using Reductech.EDR.Core.Util;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
@@ -25,27 +26,27 @@ public partial class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToPro
                     ItemSortOrder     = Constant(ItemSortOrder.DocumentId),
                     ImagingOptions =
                         Constant(
-                            Core.Entity.Create(
+                            Entity.Create(
                                 ("imageExcelSpreadsheets", true),
                                 ("slipSheetContainers", true)
                             )
                         ),
                     NumberingOptions =
                         Constant(
-                            Core.Entity.Create(
+                            Entity.Create(
                                 ("createProductionSet", false),
                                 ("prefix", "ABC"),
-                                ("documentId", Core.Entity.Create(("startAt", 1)))
+                                ("documentId", Entity.Create(("startAt", 1)))
                             )
                         ),
                     StampingOptions =
                         Constant(
-                            Core.Entity.Create(
-                                ("footerCentre", Core.Entity.Create(("type", "document_number")))
+                            Entity.Create(
+                                ("footerCentre", Entity.Create(("type", "document_number")))
                             )
                         ),
                     TextOptions = Constant(
-                        Core.Entity.Create(("lineSeparator", "\\n"), ("encoding", "UTF-8"))
+                        Entity.Create(("lineSeparator", "\\n"), ("encoding", "UTF-8"))
                     )
                 },
                 AssertCount(1, "production-set:TerribleSet"),
@@ -63,7 +64,7 @@ public partial class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToPro
                     ProductionSetDescription = Constant("description"),
                     ProductionProfilePath    = TestProductionProfilePath,
                     SortSearch               = Constant(true),
-                    SearchOptions            = Constant(Core.Entity.Create(("limit", 1)))
+                    SearchOptions            = Constant(Entity.Create(("limit", 1)))
                 },
                 AssertCount(1, "production-set:conjunction"),
                 CleanupCase

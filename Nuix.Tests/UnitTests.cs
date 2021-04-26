@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
-using OneOf;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
-using Reductech.EDR.Core.Util;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -28,14 +29,25 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             : base(
                 name,
                 sequence,
-                new ExpectedOutput(OneOf<Unit, TOutput>.FromT0(Unit.Default)),
+                ExpectedUnitOutput.Instance,
                 expectedLogValues
             )
         {
             ExternalProcessActions = externalProcessActions;
             IgnoreFinalState       = true;
 
-            this.WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
+            this.WithContextMock(
+                ConnectorInjection.FileSystemKey,
+                mr =>
+                {
+                    var mock = mr.Create<IFileSystem>();
+
+                    mock.Setup(f => f.File.Exists(It.IsAny<string>()))
+                        .Returns(true);
+
+                    return mock;
+                }
+            );
         }
 
         public NuixStepCase(
@@ -49,7 +61,18 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             ExternalProcessActions = externalProcessActions;
             IgnoreFinalState       = true;
 
-            this.WithFileAction(x => x.Setup(f => f.Exists(It.IsAny<string>())).Returns(true));
+            this.WithContextMock(
+                ConnectorInjection.FileSystemKey,
+                mr =>
+                {
+                    var mock = mr.Create<IFileSystem>();
+
+                    mock.Setup(f => f.File.Exists(It.IsAny<string>()))
+                        .Returns(true);
+
+                    return mock;
+                }
+            );
         }
 
         public IReadOnlyCollection<ExternalProcessAction> ExternalProcessActions { get; }
@@ -71,9 +94,9 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                 baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
-                    baseMonad.ExternalContext.FileSystemHelper,
                     externalProcessMock,
-                    baseMonad.ExternalContext.Console
+                    baseMonad.ExternalContext.Console,
+                    baseMonad.ExternalContext.InjectedContexts
                 ),
                 baseMonad.SequenceMetadata
             );

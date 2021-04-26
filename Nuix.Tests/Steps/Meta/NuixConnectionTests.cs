@@ -12,7 +12,6 @@ using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
@@ -38,8 +37,7 @@ public class NuixConnectionTests
 
         var state = ConnectionTestsHelper.GetStateMonad(
             fakeExternalProcess,
-            logFactory,
-            FileSystemAdapter.Default
+            logFactory
         );
 
         var ct = new CancellationToken();
@@ -134,7 +132,7 @@ public class NuixConnectionTests
 
         var stream1 = entities.ToAsyncEnumerable().ToSCLArray();
 
-        var dict = new Dictionary<RubyFunctionParameter, object>()
+        var dict = new Dictionary<RubyFunctionParameter, object>
         {
             { new RubyFunctionParameter("entityStream", "EntityStream", false), stream1 }
         };
@@ -152,7 +150,7 @@ public class NuixConnectionTests
             ct
         );
 
-        result.ShouldBeSuccessful(x => x.AsString);
+        result.ShouldBeSuccessful();
 
         Assert.Equal(@"[{""Property1"":""Value1""},{""Property2"":""Value2""}]", result.Value);
     }

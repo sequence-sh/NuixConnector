@@ -67,9 +67,9 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                 baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
-                    baseMonad.ExternalContext.FileSystemHelper,
                     externalProcessMock,
-                    baseMonad.ExternalContext.Console
+                    baseMonad.ExternalContext.Console,
+                    baseMonad.ExternalContext.InjectedContexts
                 ),
                 baseMonad.SequenceMetadata
             );

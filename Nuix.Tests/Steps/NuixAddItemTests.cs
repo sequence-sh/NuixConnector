@@ -19,46 +19,50 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
         get
         {
             yield return new NuixStepCase(
-                "Add item",
-                new NuixAddItem
-                {
-                    Custodian          = Constant("Mark"),
-                    Paths              = DataPaths,
-                    Container          = Constant("New Folder"),
-                    ProcessingSettings = Constant(Entity.Create(("Foo", "Bar"))),
-                    CasePath           = CasePath
-                },
-                Unit.Default,
-                new List<ExternalProcessAction>
-                {
-                    new(
-                        new ConnectionCommand
-                        {
-                            Command = "AddToCase",
-                            Arguments = new Dictionary<string, object>
+                    "Add item",
+                    new NuixAddItem
+                    {
+                        Custodian          = Constant("Mark"),
+                        Paths              = DataPaths,
+                        Container          = Constant("New Folder"),
+                        ProcessingSettings = Constant(Entity.Create(("Foo", "Bar"))),
+                        CasePath           = CasePath
+                    },
+                    Unit.Default,
+                    new List<ExternalProcessAction>
+                    {
+                        new(
+                            new ConnectionCommand
                             {
+                                Command = "AddToCase",
+                                Arguments = new Dictionary<string, object>
                                 {
-                                    nameof(RubyCaseScriptStepBase<bool>.CasePath),
-                                    CasePathString
+                                    {
+                                        nameof(RubyCaseScriptStepBase<bool>.CasePath),
+                                        CasePathString
+                                    },
+                                    { nameof(NuixAddItem.Container), "New Folder" },
+                                    { nameof(NuixAddItem.Custodian), "Mark" },
+                                    {
+                                        nameof(NuixAddItem.Paths),
+                                        new List<string> { DataPathString }
+                                    },
+                                    {
+                                        nameof(NuixAddItem.ProcessingSettings),
+                                        Entity.Create(("Foo", "Bar"))
+                                    },
+                                    { nameof(NuixAddItem.ProgressInterval), 5000 }
                                 },
-                                { nameof(NuixAddItem.Container), "New Folder" },
-                                { nameof(NuixAddItem.Custodian), "Mark" },
-                                {
-                                    nameof(NuixAddItem.Paths),
-                                    new List<string> { DataPathString }
-                                },
-                                {
-                                    nameof(NuixAddItem.ProcessingSettings),
-                                    Entity.Create(("Foo", "Bar"))
-                                },
-                                { nameof(NuixAddItem.ProgressInterval), 5000 }
+                                FunctionDefinition = ""
                             },
-                            FunctionDefinition = ""
-                        },
-                        new ConnectionOutput { Result = new ConnectionOutputResult { Data = null } }
-                    )
-                }
-            ).WithSettings(UnitTestSettings);
+                            new ConnectionOutput
+                            {
+                                Result = new ConnectionOutputResult { Data = null }
+                            }
+                        )
+                    }
+                )
+                .WithSettings(UnitTestSettings);
         }
     }
 
