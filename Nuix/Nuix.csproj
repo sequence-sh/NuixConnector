@@ -28,10 +28,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reductech.EDR.Core" Version="0.9.0-a.master.2104261241">
+    <PackageReference Include="Reductech.EDR.Core" Version="0.9.0-a.master.2104261457">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.29" />
   </ItemGroup>
 
   <ItemGroup>

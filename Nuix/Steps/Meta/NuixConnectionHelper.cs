@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -21,8 +22,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 /// </summary>
 public static class NuixConnectionHelper
 {
+    /// <summary>
+    /// The name of the Nuix Connector Script
+    /// </summary>
     internal const string NuixGeneralScriptName = "nuixconnectorscript.rb";
 
+    /// <summary>
+    /// The name of the Nuix Variable in the SCL state
+    /// </summary>
     internal static readonly VariableName NuixVariableName =
         new("ReductechNuixConnection");
 
@@ -67,8 +74,7 @@ public static class NuixConnectionHelper
         if (consoleArguments.IsFailure)
             return consoleArguments.ConvertFailure<NuixConnection>();
 
-        // TODO: Make this configurable
-        var scriptPath = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
+        var scriptPath = GetScriptPath(settings);
 
         var fileSystemHelper =
             stateMonad.ExternalContext.TryGetContext<IFileSystem>(ConnectorInjection.FileSystemKey);
@@ -114,6 +120,39 @@ public static class NuixConnectionHelper
         return connection;
     }
 
+    /// <summary>
+    /// Gets the nuix script path - first looking in the plugin path folder, then in the base directory
+    /// </summary>
+    /// <returns></returns>
+    private static string GetScriptPath(SCLSettings sclSettings)
+    {
+        var ev =
+            sclSettings.Entity.TryGetValue(
+                new EntityPropertyKey(
+                    new[] { SCLSettings.ConnectorsKey, NuixSettings.NuixSettingsKey, "path" }
+                )
+            ); //look for plugin directory
+
+        if (ev.HasValue)
+        {
+            //use the plugin directory
+            var pluginPath   = ev.Value.GetPrimitiveString();
+            var absolutePath = PluginLoadContext.GetAbsolutePath(pluginPath);
+
+            var directory = Path.GetDirectoryName(absolutePath);
+
+            if (directory is not null)
+            {
+                var scriptPath = Path.Combine(directory, NuixGeneralScriptName);
+                return scriptPath;
+            }
+        }
+
+        //use the 
+        var scriptPath2 = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
+        return scriptPath2;
+    }
+
     private static Result<IReadOnlyDictionary<string, string>, IErrorBuilder>
         TryGetEnvironmentVariables(SCLSettings sclSettings)
     {
@@ -140,7 +179,7 @@ public static class NuixConnectionHelper
         var dict = new Dictionary<string, string>();
 
         foreach (var ep in entity.Value.Dictionary.Values)
-            dict.Add(ep.Name, ep.BestValue.GetPrimitiveString() ?? ep.BestValue.Serialize());
+            dict.Add(ep.Name, ep.BestValue.GetPrimitiveString());
 
         var username = sclSettings.Entity.TryGetNestedString(
             SCLSettings.ConnectorsKey,
