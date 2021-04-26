@@ -43,6 +43,11 @@ public static class NuixSettings
     public const string ConsolePathKey = "exeConsolePath";
 
     /// <summary>
+    /// The path to the nuix ruby script
+    /// </summary>
+    public const string ScriptPathKey = "scriptPath";
+
+    /// <summary>
     /// Signs the user out at the end of the execution, also releasing the semi-offline licence if present.
     /// </summary>
     public const string SignoutKey = "signout";
