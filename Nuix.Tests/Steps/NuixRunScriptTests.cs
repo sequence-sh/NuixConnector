@@ -14,6 +14,7 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
+using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -263,6 +264,19 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             Step             = sequence;
             IgnoreFinalState = true;
             MyExpectedOutput = expectedOutput;
+
+            var connectorInjections = new IConnectorInjection[] { new ConnectorInjection() };
+
+            foreach (var connectorInjection in connectorInjections)
+            {
+                var injectedContextsResult = connectorInjection.TryGetInjectedContexts(Settings);
+                injectedContextsResult.ShouldBeSuccessful();
+
+                foreach (var (contextName, context) in injectedContextsResult.Value)
+                {
+                    ExternalContextSetupHelper.AddContextObject(contextName, context);
+                }
+            }
         }
 
         public Sequence<StringStream> Step { get; }
@@ -317,7 +331,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
                     ExternalProcessRunner.Instance,
-                    baseMonad.ExternalContext.Console
+                    baseMonad.ExternalContext.Console,
+                    baseMonad.ExternalContext.InjectedContexts
                 ),
                 baseMonad.SequenceMetadata
             );
