@@ -322,7 +322,7 @@ public partial class IntegrationShortTests
                     }
                 )
                 .WithSettings(
-                    NuixSettingsList.First()
+                    SettingsHelpers.CreateSCLSettings(NuixSettingsList.First())
                 ); // Only run these tests on the latest version of nuix that we support.
 
             stepTest.OutputLogLevel1 = LogLevel.Debug;

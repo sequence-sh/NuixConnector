@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
@@ -65,16 +65,26 @@ public static class NuixConnectionHelper
                 return currentConnection.Value;
         }
 
-        var settings = stateMonad.Settings;
+        var nuixSettings =
+            SettingsHelpers.TryGetNuixSettings(
+                stateMonad.StepFactoryStore.ConnectorData.Select(x => x.ConnectorSettings)
+            );
 
-        var connectionSettings = NuixConnectionSettings.Create(settings);
+        if (nuixSettings.IsFailure)
+            return nuixSettings.ConvertFailure<NuixConnection>();
 
-        var consoleArguments = TryGetConsoleArguments(settings);
+        if (string.IsNullOrWhiteSpace(nuixSettings.Value.ExeConsolePath))
+            return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(
+                nameof(ConnectorSettings.Settings),
+                nameof(NuixSettings.ExeConsolePath)
+            );
+
+        var consoleArguments = TryGetConsoleArguments(nuixSettings.Value);
 
         if (consoleArguments.IsFailure)
             return consoleArguments.ConvertFailure<NuixConnection>();
 
-        var scriptPath = GetScriptPath(settings);
+        var scriptPath = GetScriptPath(nuixSettings.Value);
 
         var fileSystemHelper =
             stateMonad.ExternalContext.TryGetContext<IFileSystem>(ConnectorInjection.FileSystemKey);
@@ -85,16 +95,16 @@ public static class NuixConnectionHelper
         if (!fileSystemHelper.Value.File.Exists(scriptPath))
             return ErrorCode.ExternalProcessNotFound.ToErrorBuilder(scriptPath);
 
-        consoleArguments.Value.arguments.Add(scriptPath);
+        consoleArguments.Value.Add(scriptPath);
 
-        var environmentVariables = TryGetEnvironmentVariables(settings);
+        var environmentVariables = TryGetEnvironmentVariables(nuixSettings.Value);
 
         if (environmentVariables.IsFailure)
             return environmentVariables.ConvertFailure<NuixConnection>();
 
         var r = stateMonad.ExternalContext.ExternalProcessRunner.StartExternalProcess(
-            consoleArguments.Value.consolePath,
-            consoleArguments.Value.arguments,
+            nuixSettings.Value.ExeConsolePath,
+            consoleArguments.Value,
             environmentVariables.Value,
             Encoding.UTF8,
             stateMonad,
@@ -104,7 +114,13 @@ public static class NuixConnectionHelper
         if (r.IsFailure)
             return r.ConvertFailure<NuixConnection>();
 
-        var connection = new NuixConnection(r.Value, connectionSettings);
+        var connection = new NuixConnection(
+            r.Value,
+            new NuixConnectionSettings(
+                nuixSettings.Value.IgnoreWarningsRegex,
+                nuixSettings.Value.IgnoreErrorsRegex
+            )
+        );
 
         var setResult = await stateMonad.SetVariableAsync(
             NuixVariableName,
@@ -124,80 +140,58 @@ public static class NuixConnectionHelper
     /// Gets the nuix script path - first looking in the plugin path folder, then in the base directory
     /// </summary>
     /// <returns></returns>
-    private static string GetScriptPath(SCLSettings sclSettings)
+    private static string GetScriptPath(NuixSettings settings)
     {
-        var ev =
-            sclSettings.Entity.TryGetValue(
-                new EntityPropertyKey(
-                    new[] { SCLSettings.ConnectorsKey, NuixSettings.NuixSettingsKey, "path" }
-                )
-            ); //look for plugin directory
+        if (settings.ScriptPath is not null)
+            return settings.ScriptPath;
 
-        if (ev.HasValue)
-        {
-            //use the plugin directory
-            var pluginPath   = ev.Value.GetPrimitiveString();
-            var absolutePath = PluginLoadContext.GetAbsolutePath(pluginPath);
-
-            var directory = Path.GetDirectoryName(absolutePath);
-
-            if (directory is not null)
-            {
-                var scriptPath = Path.Combine(directory, NuixGeneralScriptName);
-                return scriptPath;
-            }
-        }
-
-        //use the 
-        var scriptPath2 = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
+        var nuixAssembly = Assembly.GetAssembly(typeof(IRubyScriptStep))!;
+        var scriptPath2  = Path.Combine(nuixAssembly.Location, "..", NuixGeneralScriptName);
         return scriptPath2;
+
+        //var ev =
+        //    sclSettings.Entity.TryGetValue(
+        //        new EntityPropertyKey(
+        //            new[] { SCLSettings.ConnectorsKey, NuixSettings.NuixSettingsKey, "path" }
+        //        )
+        //    ); //look for plugin directory
+
+        //if (ev.HasValue)
+        //{
+        //    //use the plugin directory
+        //    var pluginPath   = ev.Value.GetPrimitiveString();
+        //    var absolutePath = PluginLoadContext.GetAbsolutePath(pluginPath);
+
+        //    var directory = Path.GetDirectoryName(absolutePath);
+
+        //    if (directory is not null)
+        //    {
+        //        var scriptPath = Path.Combine(directory, NuixGeneralScriptName);
+        //        return scriptPath;
+        //    }
+        //}
+
+        ////use the base directory
+        //var scriptPath2 = Path.Combine(AppContext.BaseDirectory, NuixGeneralScriptName);
+        //return scriptPath2;
     }
 
     private static Result<IReadOnlyDictionary<string, string>, IErrorBuilder>
-        TryGetEnvironmentVariables(SCLSettings sclSettings)
+        TryGetEnvironmentVariables(NuixSettings nuixSettings)
     {
-        var ev =
-            sclSettings.Entity.TryGetValue(
-                new EntityPropertyKey(
-                    new[]
-                    {
-                        SCLSettings.ConnectorsKey, NuixSettings.NuixSettingsKey,
-                        NuixSettings.EnvironmentVariablesKey
-                    }
-                )
-            );
-
-        if (ev.HasNoValue)
-            return new Dictionary<string, string>();
-
-        if (ev.Value is not EntityValue.NestedEntity entity)
-            return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(
-                NuixSettings.NuixSettingsKey,
-                NuixSettings.EnvironmentVariablesKey
-            );
-
         var dict = new Dictionary<string, string>();
 
-        foreach (var ep in entity.Value.Dictionary.Values)
-            dict.Add(ep.Name, ep.BestValue.GetPrimitiveString());
+        if (nuixSettings.EnvironmentVariables is not null)
+        {
+            foreach (var ep in nuixSettings.EnvironmentVariables)
+                dict.Add(ep.Name, ep.BestValue.GetPrimitiveString());
+        }
 
-        var username = sclSettings.Entity.TryGetNestedString(
-            SCLSettings.ConnectorsKey,
-            NuixSettings.NuixSettingsKey,
-            NuixSettings.NuixUsernameKey
-        );
+        if (nuixSettings.NuixUsername is not null)
+            dict.Add("NUIX_USERNAME", nuixSettings.NuixUsername);
 
-        if (username.HasValue)
-            dict.Add(NuixSettings.NuixUsernameKey, username.Value);
-
-        var password = sclSettings.Entity.TryGetNestedString(
-            SCLSettings.ConnectorsKey,
-            NuixSettings.NuixSettingsKey,
-            NuixSettings.NuixPasswordKey
-        );
-
-        if (password.HasValue)
-            dict.Add(NuixSettings.NuixPasswordKey, password.Value);
+        if (nuixSettings.NuixPassword is not null)
+            dict.Add("NUIX_PASSWORD", nuixSettings.NuixPassword);
 
         return dict;
     }
@@ -205,78 +199,40 @@ public static class NuixConnectionHelper
     /// <summary>
     /// Get the arguments that will be sent to the nuix console
     /// </summary>
-    public static Result<(string consolePath, List<string> arguments), IErrorBuilder>
-        TryGetConsoleArguments(SCLSettings sclSettings)
+    public static Result<List<string>, IErrorBuilder>
+        TryGetConsoleArguments(NuixSettings nuixSettings)
     {
-        var pathResult = sclSettings.Entity.TryGetNestedString(
-            SCLSettings.ConnectorsKey,
-            NuixSettings.NuixSettingsKey,
-            NuixSettings.ConsolePathKey
-        );
-
-        if (pathResult.HasNoValue)
-            return ErrorCode.MissingStepSettingsValue.ToErrorBuilder(
-                NuixSettings.NuixSettingsKey,
-                NuixSettings.ConsolePathKey
-            );
-
         var argumentsList = new List<string>();
 
-        void MaybeAddBoolValue(string key)
+        void MaybeAddBoolValue(string key, bool b)
         {
-            var b = sclSettings.Entity.TryGetNestedBool(
-                SCLSettings.ConnectorsKey,
-                NuixSettings.NuixSettingsKey,
-                key
-            );
-
             if (b)
                 argumentsList.Add("-" + key);
         }
 
-        void MaybeAddStringKey(string key)
+        void MaybeAddStringKey(string key, string? value)
         {
-            var s = sclSettings.Entity.TryGetNestedString(
-                SCLSettings.ConnectorsKey,
-                NuixSettings.NuixSettingsKey,
-                key
-            );
+            if (value is null)
+                return;
 
-            if (s.HasValue)
-            {
-                argumentsList.Add("-" + key);
-                argumentsList.Add(s.Value);
-            }
+            argumentsList.Add("-" + key);
+            argumentsList.Add(value);
         }
 
-        var extraConsoleArguments =
-            sclSettings.Entity.TryGetNestedList(
-                SCLSettings.ConnectorsKey,
-                NuixSettings.NuixSettingsKey,
-                NuixSettings.ConsoleArgumentsKey
-            );
+        if (nuixSettings.ConsoleArguments is not null)
+            argumentsList.AddRange(nuixSettings.ConsoleArguments);
 
-        if (extraConsoleArguments.HasValue)
-            argumentsList.AddRange(extraConsoleArguments.Value);
+        MaybeAddBoolValue("signout", nuixSettings.Signout);
+        MaybeAddBoolValue("release", nuixSettings.Release);
+        MaybeAddStringKey("licencesourcetype",     nuixSettings.LicenceSourceType);
+        MaybeAddStringKey("licenceSourceLocation", nuixSettings.LicenseSourceLocation);
+        MaybeAddStringKey("licenceType",           nuixSettings.LicenceType);
+        MaybeAddStringKey("licenceWorkers",        nuixSettings.LicenceWorkers?.ToString());
 
-        MaybeAddBoolValue(NuixSettings.SignoutKey);
-        MaybeAddBoolValue(NuixSettings.ReleaseKey);
-        MaybeAddStringKey(NuixSettings.LicenceSourceTypeKey);
-        MaybeAddStringKey(NuixSettings.LicenceSourceLocationKey);
-        MaybeAddStringKey(NuixSettings.LicenceTypeKey);
-        MaybeAddStringKey(NuixSettings.LicenceWorkersKey);
+        if (nuixSettings.ConsoleArgumentsPost is not null)
+            argumentsList.AddRange(nuixSettings.ConsoleArgumentsPost);
 
-        var postConsoleArguments =
-            sclSettings.Entity.TryGetNestedList(
-                SCLSettings.ConnectorsKey,
-                NuixSettings.NuixSettingsKey,
-                NuixSettings.ConsoleArgumentsPostKey
-            );
-
-        if (postConsoleArguments.HasValue)
-            argumentsList.AddRange(postConsoleArguments.Value);
-
-        return (pathResult.Value, argumentsList);
+        return argumentsList;
     }
 
     /// <summary>

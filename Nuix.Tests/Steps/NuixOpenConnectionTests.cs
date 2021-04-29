@@ -27,11 +27,13 @@ public partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, 
                     IgnoreFinalState = true
                 }
                 .WithSettings(
-                    NuixSettings.CreateSettings(
-                        "TestPath",
-                        new Version(1, 0),
-                        true,
-                        Constants.AllNuixFeatures
+                    SettingsHelpers.CreateSCLSettings(
+                        new NuixSettings(
+                            "TestPath",
+                            new Version(1, 0),
+                            true,
+                            Constants.AllNuixFeatures
+                        )
                     )
                 )
                 .WithScriptExists()

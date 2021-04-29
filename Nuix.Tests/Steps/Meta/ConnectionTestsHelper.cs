@@ -31,14 +31,17 @@ public static class ConnectionTestsHelper
         IExternalProcessRunner externalProcessRunner,
         IConsole console)
     {
-        var nuixSettings = NuixSettings.CreateSettings(
-            Constants.NuixConsoleExe,
-            new Version(8, 0),
-            true,
-            Constants.AllNuixFeatures
+        var sclSettings = SettingsHelpers.CreateSCLSettings(
+            new NuixSettings(
+                Constants.NuixConsoleExe,
+                new Version(8, 0),
+                true,
+                Constants.AllNuixFeatures
+            )
         );
 
-        var sfs = StepFactoryStore.CreateFromAssemblies(
+        var sfs = StepFactoryStore.Create(
+            sclSettings,
             Assembly.GetAssembly(typeof(IRubyScriptStep))!
         );
 
@@ -52,7 +55,7 @@ public static class ConnectionTestsHelper
 
         var monad = new StateMonad(
             testLoggerFactory.CreateLogger("Test"),
-            nuixSettings,
+            sclSettings,
             sfs,
             new ExternalContext(
                 externalProcessRunner,

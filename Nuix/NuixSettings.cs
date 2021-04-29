@@ -1,104 +1,195 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using CSharpFunctionalExtensions;
+using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix
 {
 
 /// <summary>
-/// Methods to create Nuix Settings
+/// Special settings, unique to the Nuix connector
 /// </summary>
-public static class NuixSettings
+[Serializable]
+public class NuixSettings : IEntityConvertible
 {
     /// <summary>
-    /// The key to use for the Nuix Connector in the settings file.
+    /// Empty constructor for deserialization
     /// </summary>
-    // ReSharper disable StringLiteralTypo
-    public const string NuixSettingsKey = "Nuix";
+    public NuixSettings() { }
+
+    /// <summary>
+    /// Create nuix settings with default settings
+    /// </summary>
+    public NuixSettings(
+        string nuixConsolePath,
+        Version version,
+        bool useDongle,
+        IEnumerable<NuixFeature> nuixFeatures)
+    {
+        ExeConsolePath = nuixConsolePath;
+        Version        = version;
+        Features       = nuixFeatures.ToList();
+
+        if (useDongle)
+            LicenceSourceType = "dongle";
+        //Constants.NuixConsoleExe,
+        //new Version(8, 0),
+        //true,
+        //Constants.AllNuixFeatures
+    }
 
     /// <summary>
     /// Console arguments that come before other parameters
     /// </summary>
-    public const string ConsoleArgumentsKey = "ConsoleArguments";
+    [JsonProperty("ConsoleArguments")]
+    public List<string>? ConsoleArguments { get; set; }
 
     /// <summary>
     /// Console arguments that come after other parameters
     /// </summary>
-    public const string ConsoleArgumentsPostKey = "ConsoleArgumentsPost";
+    [JsonProperty("ConsoleArgumentsPost")]
+    public List<string>? ConsoleArgumentsPost { get; set; }
+
+    [JsonProperty("features")] public List<NuixFeature>? Features { get; set; }
 
     /// <summary>
     /// Environment variables to send to the Nuix Console
     /// </summary>
-    public const string EnvironmentVariablesKey = "EnvironmentVariables";
+    [JsonProperty("EnvironmentVariables")]
+    public Entity? EnvironmentVariables { get; set; }
+
+    /// <summary>
+    /// The version of the nuix console application
+    /// </summary>
+    [JsonProperty("Version")]
+    public Version? Version { get; set; }
 
     /// <summary>
     /// The path to the Nuix Console application
     /// </summary>
-    public const string ConsolePathKey = "exeConsolePath";
+    [JsonProperty("exeConsolePath")]
+    public string ExeConsolePath { get; set; }
 
     /// <summary>
     /// The path to the nuix ruby script
     /// </summary>
-    public const string ScriptPathKey = "scriptPath";
+    [JsonProperty("scriptPath")]
+    public string? ScriptPath { get; set; }
 
     /// <summary>
     /// Signs the user out at the end of the execution, also releasing the semi-offline licence if present.
     /// </summary>
-    public const string SignoutKey = "signout";
+    [JsonProperty("signout")]
+    public bool Signout { get; set; }
 
     /// <summary>
     /// Releases the semi-offline licence at the end of the execution.
     /// </summary>
-    public const string ReleaseKey = "release";
+    [JsonProperty("release")]
+    public bool Release { get; set; }
 
     /// <summary>
     /// Selects a licence source type (e.g. dongle, server, cloud-server) to use. 
     /// </summary>
-    public const string LicenceSourceTypeKey = "licencesourcetype";
+    [JsonProperty("licencesourcetype")]
+    public string? LicenceSourceType { get; set; }
 
     /// <summary>
     /// Selects a licence source if multiple are available. 
     /// </summary>
-    public const string LicenceSourceLocationKey = "licencesourcelocation";
+    [JsonProperty("licencesourcelocation")]
+    public string? LicenseSourceLocation { get; set; }
 
     /// <summary>
     /// Selects a licence type to use if multiple are available.
     /// </summary>
-    public const string LicenceTypeKey = "licencetype";
+    [JsonProperty("licencetype")]
+    public string? LicenceType { get; set; }
 
     /// <summary>
     /// Selects the number of workers to use if the choice is available.
     /// </summary>
-    public const string LicenceWorkersKey = "licenceworkers";
+    [JsonProperty("licenceworkers")]
+    public int? LicenceWorkers { get; set; }
 
     /// <summary>
     /// Nuix Username - will be passed as an environment variable
     /// </summary>
-    public const string NuixUsernameKey = "NUIX_USERNAME";
+    [JsonProperty("NUIX_USERNAME")]
+    public string? NuixUsername { get; set; }
 
     /// <summary>
     /// Nuix password - will be passed as an environment variable
     /// </summary>
-    public const string NuixPasswordKey = "NUIX_PASSWORD";
-    // ReSharper restore StringLiteralTypo
+    [JsonProperty("NUIX_PASSWORD")]
+    public string? NuixPassword { get; set; }
 
     /// <summary>
     /// Regex used to ignore java warnings coming from the Nuix connection.
     /// The default values ignores warnings from Nuix Version up to 9.
     /// </summary>
-    public const string IgnoreWarningsRegexKey = "IgnoreWarningsRegex";
+    [JsonProperty("IgnoreWarningsRegex")]
+    public string? IgnoreWarningsRegex { get; set; }
 
     /// <summary>
     /// Regex used to ignore java errors coming from the Nuix connection.
     /// The default values ignores errors from Nuix Version up to 9.
     /// </summary>
-    public const string IgnoreErrorsRegexKey = "IgnoreErrorsRegex";
+    [JsonProperty("IgnoreErrorsRegex")]
+    public string IgnoreErrorsRegex { get; set; }
+}
+
+/// <summary>
+/// Contains helper methods for nuix settings
+/// </summary>
+public static class SettingsHelpers
+{
+    /// <summary>
+    /// Create Nuix Settings
+    /// </summary>
+    public static SCLSettings CreateSCLSettings(NuixSettings nuixSettings)
+    {
+        var connectorSettings =
+            ConnectorSettings.DefaultForAssembly(Assembly.GetAssembly(typeof(IRubyScriptStep))!);
+
+        connectorSettings.Settings = nuixSettings.ConvertToEntity();
+
+        var dict =
+            new Dictionary<string, object> { { "nuix", connectorSettings.ConvertToEntity() } };
+
+        var entity = Entity.Create((SCLSettings.ConnectorsKey, dict));
+
+        return new SCLSettings(entity);
+    }
+
+    /// <summary>
+    /// Try to get a list of NuixSettings from a list of Connector Informations
+    /// </summary>
+    public static Result<NuixSettings, IErrorBuilder> TryGetNuixSettings(
+        IEnumerable<ConnectorSettings> connectorSettings)
+    {
+        var connectorInformation =
+            connectorSettings.FirstOrDefault(
+                x => x.Id.EndsWith("Nuix", StringComparison.OrdinalIgnoreCase)
+            );
+
+        if (connectorInformation is null)
+            return ErrorCode.MissingStepSettings.ToErrorBuilder("Nuix");
+
+        var nuixSettings =
+            EntityConversionHelpers.TryCreateFromEntity<NuixSettings>(
+                connectorInformation.Settings
+            );
+
+        return nuixSettings;
+    }
 
     /// <summary>
     /// Returns a new SCLSettings object with a property added
@@ -111,52 +202,6 @@ public static class NuixSettings
         var e = Entity.Create(new[] { (new EntityPropertyKey(pathComponents), value) });
 
         return new SCLSettings(settings.Entity.Combine(e));
-    }
-
-    /// <summary>
-    /// Create Nuix Settings
-    /// </summary>
-    public static SCLSettings CreateSettings(
-        string consolePath,
-        Version version,
-        bool useDongle,
-        IReadOnlyCollection<NuixFeature> features)
-    {
-        var settingsDict = new Dictionary<string, object>
-        {
-            { ConsolePathKey, consolePath },
-            { SCLSettings.VersionKey, version.ToString() },
-            { SCLSettings.FeaturesKey, features.Select(x => x.ToString()).ToList() }
-        };
-
-        if (useDongle)
-            settingsDict.Add(LicenceSourceTypeKey, "dongle");
-
-        var dict = new Dictionary<string, object> { { NuixSettingsKey, settingsDict } };
-
-        var entity = Entity.Create((SCLSettings.ConnectorsKey, dict));
-
-        return new SCLSettings(entity);
-    }
-
-    /// <summary>
-    /// Tries to get the nuix version from a settings object
-    /// </summary>
-    public static Maybe<Version> TryGetNuixVersion(SCLSettings settings)
-    {
-        var versionString = settings.Entity.TryGetNestedString(
-            SCLSettings.ConnectorsKey,
-            NuixSettingsKey,
-            SCLSettings.VersionKey
-        );
-
-        if (versionString.HasNoValue)
-            return Maybe<Version>.None;
-
-        if (Version.TryParse(versionString.Value, out var v))
-            return v;
-
-        return Maybe<Version>.None;
     }
 }
 

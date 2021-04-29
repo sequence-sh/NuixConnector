@@ -38,7 +38,10 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(SCLSettings settings)
     {
-        var r = NuixConnectionHelper.TryGetConsoleArguments(settings)
+        var r = SettingsHelpers.TryGetNuixSettings(
+                ConnectorSettings.CreateFromSCLSettings(settings).Select(x => x.Settings)
+            )
+            .Bind(NuixConnectionHelper.TryGetConsoleArguments)
             .MapError(x => x.WithLocation(this));
 
         if (r.IsFailure)

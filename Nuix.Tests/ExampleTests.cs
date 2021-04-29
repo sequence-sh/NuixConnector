@@ -36,7 +36,10 @@ public class ExampleTests
         string yaml,
         Action<Result<IStep, IError>> errorAction)
     {
-        var sfs = StepFactoryStore.CreateFromAssemblies(
+        var settings = CreateSettings();
+
+        var sfs = StepFactoryStore.Create(
+            settings,
             Assembly.GetAssembly(typeof(IRubyScriptStep))!
         );
 
@@ -47,8 +50,6 @@ public class ExampleTests
 
         if (stepResult.IsFailure)
             errorAction.Invoke(stepResult);
-
-        var settings = CreateSettings();
 
         var monad = new StateMonad(
             logger,
@@ -64,48 +65,30 @@ public class ExampleTests
 
         static SCLSettings CreateSettings()
         {
-            var dict = new Dictionary<string, object>
-            {
+            return SettingsHelpers.CreateSCLSettings(
+                new NuixSettings(
+                    Path.Combine(
+                        @"C:\Program Files\Nuix\Nuix 8.8",
+                        Constants.NuixConsoleExe
+                    ),
+                    new Version(8, 8),
+                    false,
+                    Enum.GetValues<NuixFeature>()
+                )
                 {
-                    NuixSettings.NuixSettingsKey, new Dictionary<string, object>
+                    LicenceSourceType     = "server",
+                    LicenseSourceLocation = "license location",
+                    ConsoleArguments = new List<string>()
                     {
-                        {
-                            NuixSettings.ConsolePathKey, Path.Combine(
-                                @"C:\Program Files\Nuix\Nuix 8.8",
-                                Constants.NuixConsoleExe
-                            )
-                        },
-                        { SCLSettings.VersionKey, new Version(8, 8).ToString() },
-                        { NuixSettings.LicenceSourceTypeKey, "server" },
-                        { NuixSettings.LicenceSourceLocationKey, "license location" },
-                        //{ NuixSettings.LicenceTypeKey, "enterprise-workstation" },
-                        {
-                            NuixSettings.ConsoleArgumentsKey,
-                            new List<string>
-                            {
-                                "-Dnuix.licence.handlers=server",
-                                "-Dnuix.registry.servers=license server",
-                            }
-                        },
-                        {
-                            NuixSettings.EnvironmentVariablesKey,
-                            new Dictionary<string, string>
-                            {
-                                { "NUIX_USERNAME", "user" }, { "NUIX_PASSWORD", "password" },
-                            }
-                        },
-                        {
-                            SCLSettings.FeaturesKey, Enum.GetNames(typeof(NuixFeature))
-                                .Select(x => x.ToString())
-                                .ToList()
-                        }
-                    }
+                        "-Dnuix.licence.handlers=server",
+                        "-Dnuix.registry.servers=license server",
+                    },
+                    EnvironmentVariables = Entity.Create(
+                        ("NUIX_USERNAME", "user"),
+                        ("NUIX_PASSWORD", "password")
+                    )
                 }
-            };
-
-            var entity = Entity.Create((SCLSettings.ConnectorsKey, dict));
-
-            return new SCLSettings(entity);
+            );
         }
     }
 
