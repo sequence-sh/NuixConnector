@@ -21,7 +21,7 @@ public class LogSituationNuixTests
 
         var stateMonad = new StateMonad(
             lf.CreateLogger("test"),
-            NuixSettingsList.First(),
+            SettingsHelpers.CreateSCLSettings(NuixSettingsList.First()),
             null!,
             null!,
             null!

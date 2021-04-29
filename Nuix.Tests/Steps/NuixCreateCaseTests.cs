@@ -107,7 +107,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                     CaseName     = Constant("Error Case"),
                     Investigator = Constant("investigator")
                 },
-                new ErrorBuilder(ErrorCode.MissingStepSettingsValue, "Nuix", "exeConsolePath")
+                new ErrorBuilder(ErrorCode.MissingStepSettingsValue, "Settings", "ExeConsolePath")
             );
         }
     }

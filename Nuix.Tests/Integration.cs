@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps;
+using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
@@ -33,14 +35,29 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         from settings in Constants.NuixSettingsList
         where IsVersionCompatible(
             nuixTestCase.Step,
-            NuixSettings.TryGetNuixVersion(settings).Value
+            settings.Version!
         ) //&& false //uncomment to disable integration tests
         select new IntegrationTestCase(
                 // Name needs to have nuix version in parentheses for ci script to build summary
-                $"{nuixTestCase.Name} ({NuixSettings.TryGetNuixVersion(settings).Value})",
+                $"{nuixTestCase.Name} ({settings.Version})",
                 nuixTestCase.Step
             )
-            .WithSettings(settings);
+            .WithSettings(SettingsHelpers.CreateSCLSettings(settings));
+
+    private static bool IsVersionCompatible(IStep step, Version nuixVersion)
+    {
+        var features = Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToHashSet();
+
+        var settings = new NuixSettings(
+            TestNuixPath,
+            nuixVersion,
+            true,
+            features
+        );
+
+        var r = step.Verify(SettingsHelpers.CreateSCLSettings(settings));
+        return r.IsSuccess;
+    }
 
     public class NuixIntegrationTestCase
     {
@@ -98,7 +115,8 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             testOutputHelper.WriteLine(yaml);
 
-            var sfs = StepFactoryStore.CreateFromAssemblies(
+            var sfs = StepFactoryStore.Create(
+                Settings,
                 Assembly.GetAssembly(typeof(TStep))!,
                 Assembly.GetAssembly(typeof(DeleteItem))!
             );

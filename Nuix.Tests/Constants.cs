@@ -29,44 +29,37 @@ public static class Constants
         Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
 
     // The latest version supported by this connector should always be the first one in this list
-    public static IReadOnlyCollection<SCLSettings> NuixSettingsList => new List<SCLSettings>
+    public static IReadOnlyCollection<NuixSettings> NuixSettingsList => new List<NuixSettings>
     {
-        NuixSettings.CreateSettings(
+        new(
             Path.Combine(Nuix9Path, NuixConsoleExe),
             new Version(9, 0),
             true,
             AllNuixFeatures
         ),
-        NuixSettings.CreateSettings(
+        new(
             Path.Combine(Nuix8Path, NuixConsoleExe),
             new Version(8, 8),
             true,
             AllNuixFeatures
         ),
-        NuixSettings.CreateSettings(
+        new(
             Path.Combine(Nuix7Path, NuixConsoleExe),
             new Version(7, 8),
             true,
             AllNuixFeatures
         ),
-        NuixSettings.CreateSettings(
-                Path.Combine(Nuix70Path, NuixConsoleExe),
-                new Version(7, 0),
-                true,
-                AllNuixFeatures
-            )
-            .WithProperty(
+        new(
+            Path.Combine(Nuix70Path, NuixConsoleExe),
+            new Version(7, 0),
+            true,
+            AllNuixFeatures
+        )
+        {
+            IgnoreWarningsRegex =
                 @"\Awarning\Z", //We don't need to catch any java warnings from Nuix7
-                SCLSettings.ConnectorsKey,
-                NuixSettings.NuixSettingsKey,
-                NuixSettings.IgnoreWarningsRegexKey
-            )
-            .WithProperty(
-                @"\Aerror\Z",
-                SCLSettings.ConnectorsKey,
-                NuixSettings.NuixSettingsKey,
-                NuixSettings.IgnoreErrorsRegexKey
-            )
+            IgnoreErrorsRegex = @"\Aerror\Z"
+        }
     };
 
     public static readonly string GeneralDataFolder = Path.Combine(

@@ -7,6 +7,7 @@ using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
+using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit;
 
@@ -87,12 +88,10 @@ public class NuixConnectionHelperTests
 
         var createConnection = await state.GetOrCreateNuixConnection(null, true);
 
-        Assert.True(createConnection.IsFailure);
+        createConnection.ShouldBeFailure();
 
-        Assert.Equal(
-            $"External Process Failed: 'Could not start '{Constants.NuixConsoleExe}''",
-            createConnection.Error.AsString
-        );
+        createConnection.Error.AsString.Should()
+            .Be($"External Process Failed: 'Could not start '{Constants.NuixConsoleExe}''");
     }
 
     [Fact]

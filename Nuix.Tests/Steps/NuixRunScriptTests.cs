@@ -131,18 +131,22 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
     public static List<NuixFeature> AllNuixFeatures =>
         Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
 
-    public static SCLSettings UnitTestSettings => NuixSettings.CreateSettings(
-        TestNuixPath,
-        new Version(8, 2),
-        true,
-        AllNuixFeatures
+    public static SCLSettings UnitTestSettings => SettingsHelpers.CreateSCLSettings(
+        new NuixSettings(
+            TestNuixPath,
+            new Version(8, 2),
+            true,
+            AllNuixFeatures
+        )
     );
 
-    public static SCLSettings IntegrationTestSettings => NuixSettings.CreateSettings(
-        Path.Combine(Constants.Nuix8Path, Constants.NuixConsoleExe),
-        new Version(8, 8),
-        true,
-        AllNuixFeatures
+    public static SCLSettings IntegrationTestSettings => SettingsHelpers.CreateSCLSettings(
+        new NuixSettings(
+            Path.Combine(Constants.Nuix8Path, Constants.NuixConsoleExe),
+            new Version(8, 8),
+            true,
+            AllNuixFeatures
+        )
     );
 
     [Fact]
@@ -289,7 +293,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             await Task.CompletedTask;
             var yaml = Step.Serialize();
 
-            var sfs = StepFactoryStore.CreateFromAssemblies(
+            var sfs = StepFactoryStore.Create(
+                Settings,
                 Assembly.GetAssembly(typeof(NuixRunScript))!
             );
 

@@ -95,15 +95,14 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                 casePath = null;
                 break;
 
-            case CasePathParameter.ChangesOpenCase opensCase
-                when opensCase.NewCaseParameter.HasNoValue:
+            case CasePathParameter.ChangesOpenCase { NewCaseParameter: { HasNoValue: true } }:
             {
                 CurrentCasePath = Maybe<string>.None; //This will be the case path for the next step
                 casePath        = null;
                 break;
             }
-            case CasePathParameter.ChangesOpenCase opensCase
-                when opensCase.NewCaseParameter.HasValue:
+            case CasePathParameter.ChangesOpenCase
+                { NewCaseParameter: { HasValue: true } } opensCase:
             {
                 if (parameters.TryGetValue(opensCase.NewCaseParameter.Value, out var cp))
                 {
@@ -140,7 +139,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
 
         await _semaphore.WaitAsync(cancellationToken);
 
-        if (function.RequiredHelpers != null && function.RequiredHelpers.Count > 0)
+        if (function.RequiredHelpers is { Count: > 0 })
         {
             foreach (var helper in function.RequiredHelpers)
             {
