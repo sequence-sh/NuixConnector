@@ -23,6 +23,7 @@ variables:
   PACKAGE_NAME_NUGET: Reductech.EDR.Connectors.Nuix
   PACKAGE_NAME_DLL: Reductech.EDR.Connectors.Nuix
   GIT_SUBMODULE_STRATEGY: normal
+  PACKAGE_CONNECTOR: 'true'
 
 .fix_coverage:
   - &fix_coverage |

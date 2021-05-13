@@ -70,4 +70,18 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <PropertyGroup Condition="$(PackConnector) != ''">
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <Target Name="AddConnectorDependencies"
+          BeforeTargets="GenerateNuspec"
+          Condition="$(PackConnector) != ''">
+    <ItemGroup>
+      <_PackageFiles
+        Include="@(RuntimeCopyLocalItems)"
+        PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
+
 </Project>
