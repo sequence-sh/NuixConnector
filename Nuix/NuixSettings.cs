@@ -39,10 +39,7 @@ public class NuixSettings : IEntityConvertible
 
         if (useDongle)
             LicenceSourceType = "dongle";
-        //Constants.NuixConsoleExe,
-        //new Version(8, 0),
-        //true,
-        //Constants.AllNuixFeatures
+            
     }
 
     /// <summary>

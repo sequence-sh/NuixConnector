@@ -19,30 +19,9 @@ public sealed record NuixConnectionSettings(Regex JavaWarningRegex, Regex JavaEr
             ? DefaultJavaErrorRegex
             : new Regex(javaErrorRegex, RegexOptions.IgnoreCase | RegexOptions.Compiled)
     ) { }
-
-    ///// <summary>
-    ///// Create NuixConnectionSettings from SCL Settings
-    ///// </summary>
-    //public static NuixConnectionSettings Create(SCLSettings sclSettings)
-    //{
-    //    var javaWarningsRegex = sclSettings.Entity.TryGetNestedString(
-    //        SCLSettings.ConnectorsKey,
-    //        NuixSettings.NuixSettingsKey,
-    //        NuixSettings.IgnoreWarningsRegexKey
-    //    )!.Unwrap();
-
-    //    var javaErrorsRegex = sclSettings.Entity.TryGetNestedString(
-    //        SCLSettings.ConnectorsKey,
-    //        NuixSettings.NuixSettingsKey,
-    //        NuixSettings.IgnoreErrorsRegexKey
-    //    )!.Unwrap();
-
-    //    return new NuixConnectionSettings(javaWarningsRegex, javaErrorsRegex);
-    //}
-
+    
     private static readonly Regex DefaultJavaWarningRegex = new(
-        @"\A(?:(?:\(eval\):9: warning)|(?:OpenJDK 64-Bit Server VM warning)|(?:WARNING)):(?<text>.+)\Z"
-       ,
+        @"\A(?:(?:\(eval\):9: warning)|(?:OpenJDK 64-Bit Server VM warning)|(?:WARNING)):(?<text>.+)\Z",
         RegexOptions.Compiled | RegexOptions.IgnoreCase
     );
 
