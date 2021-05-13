@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reductech.EDR.Core" Version="0.9.0-a.master.2104281820">
+    <PackageReference Include="Reductech.EDR.Core" Version="0.9.0-a.master.2105121639">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
@@ -69,5 +69,19 @@
       <LastGenOutput>LogMessages-EN.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <PropertyGroup Condition="$(PackConnector) != ''">
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <Target Name="AddConnectorDependencies"
+          BeforeTargets="GenerateNuspec"
+          Condition="$(PackConnector) != ''">
+    <ItemGroup>
+      <_PackageFiles
+        Include="@(RuntimeCopyLocalItems)"
+        PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
 
 </Project>
