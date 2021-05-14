@@ -1,3 +1,26 @@
+# v0.9.0 (2021-05-14)
+
+## Summary of Changes
+
+### Core SDK
+
+- Connector can now be used as a plugin for EDR
+
+## Issues Closed in this Release
+
+### New Features
+
+- Use new settings #192
+
+### Maintenance
+
+- Enable publish to connector registry #193
+- Update Core dependecies #191
+
+### Other
+
+- Allow this package to be used as a plugin #190
+
 # v0.8.0 (2021-04-08)
 
 ## Summary of Changes
