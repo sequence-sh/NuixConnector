@@ -36,28 +36,34 @@ and a command-line application for running Sequences, called
 
 ### SCL
 
-[SCL](https://docs.reductech.io/edr/how-to/sequence-configuration-language.html) stands for Sequence Configuration Language, a language for automating e-discovery and forensic workflows.
+[SCL](https://docs.reductech.io/edr/how-to/scl/sequence-configuration-language.html) stands for
+Sequence Configuration Language, a language for automating e-discovery and forensic workflows.
 
 ## Settings
 
-To use the Nuix Connector you need to add a `nuix` section to the `connectors` section of your `appsettings.json` file.
+To use the Nuix Connector you need to add a `settings` block to the `nuix` connector configuration in the `connectors.json` file.
 
 ### Using EDR with a license dongle
 
 ```json
-"connectors": {
-  "nuix": {
-    "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 8.8\\nuix_console.exe",
-    "licencesourcetype": "dongle",
-    "version": "8.8",
-    "features": [
-      "ANALYSIS",
-      "CASE_CREATION",
-      "EXPORT_ITEMS",
-      "METADATA_IMPORT",
-      "OCR_PROCESSING",
-      "PRODUCTION_SET"
-    ]
+{
+  "Reductech.EDR.Connectors.Nuix": {
+    "id": "Reductech.EDR.Connectors.Nuix",
+    "version": "0.9.0",
+    "enabled": true,
+    "settings": {
+      "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
+      "version": "9.0",
+      "licencesourcetype": "dongle",
+      "features": [
+        "ANALYSIS",
+        "CASE_CREATION",
+        "EXPORT_ITEMS",
+        "METADATA_IMPORT",
+        "OCR_PROCESSING",
+        "PRODUCTION_SET"
+      ]
+    }
   }
 }
 ```
@@ -65,29 +71,34 @@ To use the Nuix Connector you need to add a `nuix` section to the `connectors` s
 ### Using EDR with a license server
 
 ```json
-"connectors": {
-  "nuix": {
-    "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 8.8\\nuix_console.exe",
-    "licencesourcetype": "server",
-    "licencesourcelocation": "myserver",
-    "licencetype": "law-enforcement-desktop",
-    "version": "8.8",
-    "ConsoleArgumentsPost": [
-      "-Dnuix.licence.handlers=server",
-      "-Dnuix.registry.servers=myserver"
-    ],
-    "EnvironmentVariables": {
-      "NUIX_USERNAME": "user.name",
-      "NUIX_PASSWORD": "password"
-    },
-    "features": [
-      "ANALYSIS",
-      "CASE_CREATION",
-      "EXPORT_ITEMS",
-      "METADATA_IMPORT",
-      "OCR_PROCESSING",
-      "PRODUCTION_SET"
-    ]
+{
+  "Reductech.EDR.Connectors.Nuix": {
+    "id": "Reductech.EDR.Connectors.Nuix",
+    "version": "0.9.0",
+    "enabled": true,
+    "settings": {
+      "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
+      "version": "9.0",
+      "licencesourcetype": "server",
+      "licencesourcelocation": "myserver",
+      "licencetype": "law-enforcement-desktop",
+      "ConsoleArgumentsPost": [
+        "-Dnuix.licence.handlers=server",
+        "-Dnuix.registry.servers=myserver"
+      ],
+      "EnvironmentVariables": {
+        "NUIX_USERNAME": "user.name",
+        "NUIX_PASSWORD": "password"
+      },
+      "features": [
+        "ANALYSIS",
+        "CASE_CREATION",
+        "EXPORT_ITEMS",
+        "METADATA_IMPORT",
+        "OCR_PROCESSING",
+        "PRODUCTION_SET"
+      ]
+    }
   }
 }
 ```
