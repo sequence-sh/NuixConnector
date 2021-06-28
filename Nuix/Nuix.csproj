@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
     <AssemblyName>Reductech.EDR.Connectors.Nuix</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.9.0$(VersionSuffix)</Version>
+    <Version>0.10.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -32,7 +32,7 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.29" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.38" />
   </ItemGroup>
 
   <ItemGroup>
