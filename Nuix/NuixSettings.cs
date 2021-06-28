@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using CSharpFunctionalExtensions;
 using Newtonsoft.Json;
+using Reductech.EDR.ConnectorManagement.Base;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
@@ -39,7 +40,6 @@ public class NuixSettings : IEntityConvertible
 
         if (useDongle)
             LicenceSourceType = "dongle";
-            
     }
 
     /// <summary>
@@ -151,55 +151,63 @@ public static class SettingsHelpers
     /// <summary>
     /// Create Nuix Settings
     /// </summary>
-    public static SCLSettings CreateSCLSettings(NuixSettings nuixSettings)
+    public static StepFactoryStore CreateStepFactoryStore(
+        NuixSettings? nuixSettings,
+        params Assembly[] additionalAssemblies)
     {
-        var connectorSettings =
-            ConnectorSettings.DefaultForAssembly(Assembly.GetAssembly(typeof(IRubyScriptStep))!);
+        var nuix = Assembly.GetAssembly(typeof(IRubyScriptStep));
 
-        connectorSettings.Settings = nuixSettings.ConvertToEntity();
+        var ns = ConnectorSettings.DefaultForAssembly(nuix!);
 
-        var dict =
-            new Dictionary<string, object> { { "nuix", connectorSettings.ConvertToEntity() } };
+        ns.Settings = nuixSettings?.ConvertToEntity()
+            .Dictionary.ToDictionary(k => k.Key, v => v.Value.BestValue.ObjectValue!);
 
-        var entity = Entity.Create((SCLSettings.ConnectorsKey, dict));
+        var core = Assembly.GetAssembly(typeof(IStep));
 
-        return new SCLSettings(entity);
+        var cd = new List<ConnectorData>
+        {
+            new(ConnectorSettings.DefaultForAssembly(core!), core), new(ns, nuix)
+        };
+
+        cd.AddRange(
+            additionalAssemblies.Select(
+                a => new ConnectorData(ConnectorSettings.DefaultForAssembly(a), a)
+            )
+        );
+
+        var sfs = StepFactoryStore.Create(cd);
+
+        return sfs;
     }
 
     /// <summary>
-    /// Try to get a list of NuixSettings from a list of Connector Informations
+    /// Try to get a list of NuixSettings from the global settings Entity
     /// </summary>
-    public static Result<NuixSettings, IErrorBuilder> TryGetNuixSettings(
-        IEnumerable<ConnectorSettings> connectorSettings)
+    public static Result<NuixSettings, IErrorBuilder> TryGetNuixSettings(Entity settings)
     {
-        var connectorInformation =
-            connectorSettings.FirstOrDefault(
-                x => x.Id.EndsWith("Nuix", StringComparison.OrdinalIgnoreCase)
-            );
+        var connectorSettings =
+            settings.TryGetValue(new EntityPropertyKey(new[] { "Connectors", "Nuix" }));
 
-        if (connectorInformation is null)
+        if (connectorSettings.HasNoValue || connectorSettings.Value.ObjectValue is not Entity ent)
             return ErrorCode.MissingStepSettings.ToErrorBuilder("Nuix");
 
-        var nuixSettings =
-            EntityConversionHelpers.TryCreateFromEntity<NuixSettings>(
-                connectorInformation.Settings
-            );
+        var settingsObj = EntityConversionHelpers.TryCreateFromEntity<NuixSettings>(ent);
 
-        return nuixSettings;
+        return settingsObj;
     }
 
     /// <summary>
     /// Returns a new SCLSettings object with a property added
     /// </summary>
-    public static SCLSettings WithProperty(
-        this SCLSettings settings,
-        object? value,
-        params string[] pathComponents)
-    {
-        var e = Entity.Create(new[] { (new EntityPropertyKey(pathComponents), value) });
+    //public static SCLSettings WithProperty(
+    //    this SCLSettings settings,
+    //    object? value,
+    //    params string[] pathComponents)
+    //{
+    //    var e = Entity.Create(new[] { (new EntityPropertyKey(pathComponents), value) });
 
-        return new SCLSettings(settings.Entity.Combine(e));
-    }
+    //    return new SCLSettings(settings.Entity.Combine(e));
+    //}
 }
 
 }
