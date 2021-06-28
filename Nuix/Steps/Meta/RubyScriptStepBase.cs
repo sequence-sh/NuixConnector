@@ -5,9 +5,11 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
+using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -36,18 +38,24 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     public abstract CasePathParameter CasePathParameter { get; }
 
     /// <inheritdoc />
-    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
+    public override Result<Unit, IError> VerifyThis(StepFactoryStore stepFactoryStore)
     {
-        var r = SettingsHelpers.TryGetNuixSettings(
-                ConnectorSettings.CreateFromSCLSettings(settings).Select(x => x.Settings)
-            )
+        var connectorsSetting = EntityValue.CreateFromObject(
+            stepFactoryStore.ConnectorData
+                .Select(x => EntityValue.CreateFromObject(x.ConnectorSettings))
+                .ToList()
+        );
+
+        var settings = Entity.Create(("Connectors", connectorsSetting));
+
+        var r = SettingsHelpers.TryGetNuixSettings(settings)
             .Bind(NuixConnectionHelper.TryGetConsoleArguments)
             .MapError(x => x.WithLocation(this));
 
         if (r.IsFailure)
             return r.ConvertFailure<Unit>();
 
-        return base.VerifyThis(settings);
+        return base.VerifyThis(stepFactoryStore);
     }
 
     /// <summary>

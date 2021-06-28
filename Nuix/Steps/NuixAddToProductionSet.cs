@@ -225,7 +225,7 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
     public IStep<Core.Entity>? TextOptions { get; set; }
 
     /// <inheritdoc />
-    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
+    public override Result<Unit, IError> VerifyThis(StepFactoryStore stepFactoryStore)
     {
         if (ProductionProfileName != null && ProductionProfilePath != null)
             return new SingleError(
@@ -246,7 +246,7 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
             );
         }
 
-        return base.VerifyThis(settings);
+        return base.VerifyThis(stepFactoryStore);
     }
 }
 
