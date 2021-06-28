@@ -62,7 +62,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                         )
                     }
                 )
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
         }
     }
 

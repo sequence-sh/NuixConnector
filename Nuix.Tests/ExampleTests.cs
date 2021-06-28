@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -13,6 +12,7 @@ using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
+using Reductech.EDR.Core.Internal.Serialization;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit;
@@ -36,24 +36,18 @@ public class ExampleTests
         string yaml,
         Action<Result<IStep, IError>> errorAction)
     {
-        var settings = CreateSettings();
-
-        var sfs = StepFactoryStore.Create(
-            settings,
-            Assembly.GetAssembly(typeof(IRubyScriptStep))!
-        );
+        var sfs = CreateStepFactoryStore();
 
         var logger = new XunitLogger(TestOutputHelper, "Test");
 
         var stepResult = SCLParsing.TryParseStep(yaml)
-            .Bind(x => x.TryFreeze(TypeReference.Any.Instance, sfs));
+            .Bind(x => x.TryFreeze(SCLRunner.RootCallerMetadata, sfs));
 
         if (stepResult.IsFailure)
             errorAction.Invoke(stepResult);
 
         var monad = new StateMonad(
             logger,
-            settings,
             sfs,
             ExternalContext.Default,
             new Dictionary<string, object>()
@@ -63,9 +57,9 @@ public class ExampleTests
 
         r.ShouldBeSuccessful();
 
-        static SCLSettings CreateSettings()
+        static StepFactoryStore CreateStepFactoryStore()
         {
-            return SettingsHelpers.CreateSCLSettings(
+            return SettingsHelpers.CreateStepFactoryStore(
                 new NuixSettings(
                     Path.Combine(
                         @"C:\Program Files\Nuix\Nuix 8.8",

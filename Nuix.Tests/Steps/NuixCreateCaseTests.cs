@@ -76,7 +76,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                         )
                     }
                 )
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
         }
     }
 
@@ -97,7 +97,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                         }
                     )
                 )
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
 
             yield return new ErrorCase(
                 "Missing Settings",
@@ -170,7 +170,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                         )
                     }
                 ).WithScriptExists()
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
         }
     }
 

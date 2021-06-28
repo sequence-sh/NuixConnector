@@ -26,8 +26,8 @@ public partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, 
                 {
                     IgnoreFinalState = true
                 }
-                .WithSettings(
-                    SettingsHelpers.CreateSCLSettings(
+                .WithStepFactoryStore(
+                    SettingsHelpers.CreateStepFactoryStore(
                         new NuixSettings(
                             "TestPath",
                             new Version(1, 0),

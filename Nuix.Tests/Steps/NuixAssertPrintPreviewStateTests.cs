@@ -56,7 +56,7 @@ public partial class
                         )
                     }
                 )
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
         }
     }
 
