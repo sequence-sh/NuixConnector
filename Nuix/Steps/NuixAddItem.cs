@@ -329,7 +329,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     public IStep<StringStream>? ContainerTimeZone { get; set; }
 
     /// <inheritdoc />
-    public override Result<Unit, IError> VerifyThis(SCLSettings settings)
+    public override Result<Unit, IError> VerifyThis(StepFactoryStore stepFactoryStore)
     {
         if (ProcessingProfileName != null && ProcessingProfilePath != null)
         {
@@ -341,7 +341,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
             );
         }
 
-        return base.VerifyThis(settings);
+        return base.VerifyThis(stepFactoryStore);
     }
 }
 

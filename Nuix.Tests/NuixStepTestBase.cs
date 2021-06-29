@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
 
@@ -14,14 +11,14 @@ public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TS
 {
     public const string TestNuixPath = "TestPath";
 
-    public SCLSettings UnitTestSettings
+    public StepFactoryStore UnitTestSettings
     {
         get
         {
             var instance = new TStep();
             var factory  = instance.RubyScriptStepFactory;
 
-            return SettingsHelpers.CreateSCLSettings(
+            return SettingsHelpers.CreateStepFactoryStore(
                 new NuixSettings(
                     TestNuixPath,
                     factory.RequiredNuixVersion,
@@ -39,7 +36,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TS
         {
             foreach (var baseErrorCase in base.ErrorCases)
             {
-                var caseWithSettings = baseErrorCase.WithSettings(UnitTestSettings);
+                var caseWithSettings = baseErrorCase.WithStepFactoryStore(UnitTestSettings);
                 yield return caseWithSettings;
             }
         }

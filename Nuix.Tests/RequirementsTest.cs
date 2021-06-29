@@ -50,7 +50,7 @@ public class RequirementsTest
         var process = new NuixSearchAndTag { SearchTerm = Constant("a"), Tag = Constant("c") };
 
         var (expectedError, settings) = args;
-        var result = process.Verify(SettingsHelpers.CreateSCLSettings(settings));
+        var result = process.Verify(SettingsHelpers.CreateStepFactoryStore(settings));
 
         if (expectedError == null)
             result.ShouldBeSuccessful();

@@ -76,7 +76,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                         )
                     }
                 )
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
         }
     }
 
@@ -97,7 +97,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                         }
                     )
                 )
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
 
             yield return new ErrorCase(
                 "Missing Settings",
@@ -107,7 +107,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                     CaseName     = Constant("Error Case"),
                     Investigator = Constant("investigator")
                 },
-                new ErrorBuilder(ErrorCode.MissingStepSettingsValue, "Settings", "ExeConsolePath")
+                new ErrorBuilder(ErrorCode.MissingStepSettings, "Reductech.EDR.Connectors.Nuix")
             );
         }
     }
@@ -170,7 +170,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                         )
                     }
                 ).WithScriptExists()
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
         }
     }
 

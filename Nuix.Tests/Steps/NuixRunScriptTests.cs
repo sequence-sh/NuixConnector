@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using AutoTheory;
 using CSharpFunctionalExtensions;
@@ -19,6 +18,7 @@ using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
+using Reductech.EDR.Core.Internal.Serialization;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
@@ -43,7 +43,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                        !errorCase.Name.Contains(
                            "EntityStreamParameter"
                        ) //Skip this case because the failure happens too late to be tested here (it is tested in NuixConnection)
-                   select errorCase.WithSettings(UnitTestSettings);
+                   select errorCase.WithStepFactoryStore(UnitTestSettings);
         }
     }
 
@@ -87,7 +87,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                     },
                     "Log Message"
                 ).WithScriptExists()
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
 
             yield return new RunScriptStepCase(
                     "Run Script with entity Stream",
@@ -122,7 +122,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                     },
                     "Log Message"
                 ).WithScriptExists()
-                .WithSettings(UnitTestSettings);
+                .WithStepFactoryStore(UnitTestSettings);
         }
     }
 
@@ -131,7 +131,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
     public static List<NuixFeature> AllNuixFeatures =>
         Enum.GetValues(typeof(NuixFeature)).Cast<NuixFeature>().ToList();
 
-    public static SCLSettings UnitTestSettings => SettingsHelpers.CreateSCLSettings(
+    public static StepFactoryStore UnitTestSettings => SettingsHelpers.CreateStepFactoryStore(
         new NuixSettings(
             TestNuixPath,
             new Version(8, 2),
@@ -140,14 +140,15 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         )
     );
 
-    public static SCLSettings IntegrationTestSettings => SettingsHelpers.CreateSCLSettings(
-        new NuixSettings(
-            Path.Combine(Constants.Nuix8Path, Constants.NuixConsoleExe),
-            new Version(8, 8),
-            true,
-            AllNuixFeatures
-        )
-    );
+    public static StepFactoryStore IntegrationTestSettings =>
+        SettingsHelpers.CreateStepFactoryStore(
+            new NuixSettings(
+                Path.Combine(Constants.Nuix8Path, Constants.NuixConsoleExe),
+                new Version(8, 8),
+                true,
+                AllNuixFeatures
+            )
+        );
 
     [Fact]
     [Trait("Category", "Integration")]
@@ -172,7 +173,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             "{\"Foo\":\"a\"}",
             "{\"Foo\":\"b\"}",
             "NuixConnectorScript finished"
-        ).WithSettings(IntegrationTestSettings);
+        ).WithStepFactoryStore(IntegrationTestSettings);
 
         await stepCase.RunAsync(TestOutputHelper);
     }
@@ -194,7 +195,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             "NuixConnectorScript starting",
             "ABC",
             "NuixConnectorScript finished"
-        ).WithSettings(IntegrationTestSettings);
+        ).WithStepFactoryStore(IntegrationTestSettings);
 
         await stepCase.RunAsync(TestOutputHelper);
     }
@@ -229,7 +230,6 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
             return new StateMonad(
                 baseMonad.Logger,
-                baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
                     externalProcessMock,
@@ -273,7 +273,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
             foreach (var connectorInjection in connectorInjections)
             {
-                var injectedContextsResult = connectorInjection.TryGetInjectedContexts(Settings);
+                var injectedContextsResult = connectorInjection.TryGetInjectedContexts();
                 injectedContextsResult.ShouldBeSuccessful();
 
                 foreach (var (contextName, context) in injectedContextsResult.Value)
@@ -293,16 +293,13 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             await Task.CompletedTask;
             var yaml = Step.Serialize();
 
-            var sfs = StepFactoryStore.Create(
-                Settings,
-                Assembly.GetAssembly(typeof(NuixRunScript))!
-            );
+            var sfs = SettingsHelpers.CreateStepFactoryStore(null);
 
             var deserializedStep = SCLParsing.TryParseStep(yaml);
 
             deserializedStep.ShouldBeSuccessful();
 
-            var unfrozenStep = deserializedStep.Value.TryFreeze(TypeReference.Any.Instance, sfs);
+            var unfrozenStep = deserializedStep.Value.TryFreeze(SCLRunner.RootCallerMetadata, sfs);
 
             unfrozenStep.ShouldBeSuccessful();
 
@@ -332,7 +329,6 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
             return new StateMonad(
                 baseMonad.Logger,
-                baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
                     ExternalProcessRunner.Instance,

@@ -5,9 +5,9 @@ using FluentAssertions;
 using MELT;
 using Reductech.EDR.Connectors.Nuix.Logging;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
 using Xunit;
-using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Logging
 {
@@ -21,8 +21,7 @@ public class LogSituationNuixTests
 
         var stateMonad = new StateMonad(
             lf.CreateLogger("test"),
-            SettingsHelpers.CreateSCLSettings(NuixSettingsList.First()),
-            null!,
+            StepFactoryStore.Create(),
             null!,
             null!
         );

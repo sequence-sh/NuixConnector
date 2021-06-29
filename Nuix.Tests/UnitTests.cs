@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Steps;
@@ -91,7 +90,6 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             return new StateMonad(
                 baseMonad.Logger,
-                baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
                     externalProcessMock,

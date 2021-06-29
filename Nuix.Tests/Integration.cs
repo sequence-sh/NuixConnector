@@ -17,6 +17,7 @@ using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
+using Reductech.EDR.Core.Internal.Serialization;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
@@ -42,7 +43,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                 $"{nuixTestCase.Name} ({settings.Version})",
                 nuixTestCase.Step
             )
-            .WithSettings(SettingsHelpers.CreateSCLSettings(settings));
+            .WithStepFactoryStore(SettingsHelpers.CreateStepFactoryStore(settings));
 
     private static bool IsVersionCompatible(IStep step, Version nuixVersion)
     {
@@ -55,7 +56,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             features
         );
 
-        var r = step.Verify(SettingsHelpers.CreateSCLSettings(settings));
+        var r = step.Verify(SettingsHelpers.CreateStepFactoryStore(settings));
         return r.IsSuccess;
     }
 
@@ -90,7 +91,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             foreach (var connectorInjection in connectorInjections)
             {
-                var injectedContextsResult = connectorInjection.TryGetInjectedContexts(Settings);
+                var injectedContextsResult = connectorInjection.TryGetInjectedContexts();
                 injectedContextsResult.ShouldBeSuccessful();
 
                 foreach (var (contextName, context) in injectedContextsResult.Value)
@@ -115,9 +116,8 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             testOutputHelper.WriteLine(yaml);
 
-            var sfs = StepFactoryStore.Create(
-                Settings,
-                Assembly.GetAssembly(typeof(TStep))!,
+            var sfs = SettingsHelpers.CreateStepFactoryStore(
+                null,
                 Assembly.GetAssembly(typeof(DeleteItem))!
             );
 
@@ -125,7 +125,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             deserializedStep.ShouldBeSuccessful();
 
-            var unfrozenStep = deserializedStep.Value.TryFreeze(TypeReference.Any.Instance, sfs);
+            var unfrozenStep = deserializedStep.Value.TryFreeze(SCLRunner.RootCallerMetadata, sfs);
 
             unfrozenStep.ShouldBeSuccessful();
 
@@ -153,7 +153,6 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             return new StateMonad(
                 baseMonad.Logger,
-                baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
                     ExternalProcessRunner.Instance,

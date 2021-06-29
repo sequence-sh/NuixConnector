@@ -321,8 +321,8 @@ public partial class IntegrationShortTests
                         }
                     }
                 )
-                .WithSettings(
-                    SettingsHelpers.CreateSCLSettings(NuixSettingsList.First())
+                .WithStepFactoryStore(
+                    SettingsHelpers.CreateStepFactoryStore(NuixSettingsList.First())
                 ); // Only run these tests on the latest version of nuix that we support.
 
             stepTest.OutputLogLevel1 = LogLevel.Debug;

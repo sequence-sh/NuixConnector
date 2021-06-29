@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Abstractions.TestingHelpers;
-using System.Reflection;
 using MELT;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -31,18 +30,13 @@ public static class ConnectionTestsHelper
         IExternalProcessRunner externalProcessRunner,
         IConsole console)
     {
-        var sclSettings = SettingsHelpers.CreateSCLSettings(
+        var sfs = SettingsHelpers.CreateStepFactoryStore(
             new NuixSettings(
                 Constants.NuixConsoleExe,
                 new Version(8, 0),
                 true,
                 Constants.AllNuixFeatures
             )
-        );
-
-        var sfs = StepFactoryStore.Create(
-            sclSettings,
-            Assembly.GetAssembly(typeof(IRubyScriptStep))!
         );
 
         var fileSystem = new MockFileSystem(
@@ -55,7 +49,6 @@ public static class ConnectionTestsHelper
 
         var monad = new StateMonad(
             testLoggerFactory.CreateLogger("Test"),
-            sclSettings,
             sfs,
             new ExternalContext(
                 externalProcessRunner,
@@ -71,8 +64,10 @@ public static class ConnectionTestsHelper
     public static IStateMonad GetStateMonadForProcess(ITestLoggerFactory testLoggerFactory) =>
         new StateMonad(
             testLoggerFactory.CreateLogger("NuixProcess"),
-            new SCLSettings(Entity.Create()),
-            null!,
+            StepFactoryStore.CreateFromAssemblies(
+                typeof(IStep).Assembly,
+                typeof(IRubyScriptStep).Assembly
+            ),
             null!,
             new Dictionary<string, object>()
         );

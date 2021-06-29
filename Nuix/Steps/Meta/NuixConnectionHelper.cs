@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using Reductech.EDR.ConnectorManagement.Base;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -65,10 +65,7 @@ public static class NuixConnectionHelper
                 return currentConnection.Value;
         }
 
-        var nuixSettings =
-            SettingsHelpers.TryGetNuixSettings(
-                stateMonad.StepFactoryStore.ConnectorData.Select(x => x.ConnectorSettings)
-            );
+        var nuixSettings = SettingsHelpers.TryGetNuixSettings(stateMonad.Settings);
 
         if (nuixSettings.IsFailure)
             return nuixSettings.ConvertFailure<NuixConnection>();
