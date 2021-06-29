@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Reductech.EDR.ConnectorManagement.Base;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Entity = Reductech.EDR.Core.Entity;
@@ -185,29 +186,24 @@ public static class SettingsHelpers
     /// </summary>
     public static Result<NuixSettings, IErrorBuilder> TryGetNuixSettings(Entity settings)
     {
-        var connectorSettings =
-            settings.TryGetValue(new EntityPropertyKey(new[] { "Connectors", "Nuix" }));
+        var nuixKey = "Reductech.EDR.Connectors.Nuix";
 
-        if (connectorSettings.HasNoValue || connectorSettings.Value.ObjectValue is not Entity ent)
-            return ErrorCode.MissingStepSettings.ToErrorBuilder("Nuix");
+        var nuixConnector = settings.TryGetValue(
+            new EntityPropertyKey(
+                StateMonad.ConnectorsKey,
+                nuixKey,
+                nameof(ConnectorData.ConnectorSettings.Settings)
+            )
+        );
 
-        var settingsObj = EntityConversionHelpers.TryCreateFromEntity<NuixSettings>(ent);
+        if (nuixConnector.HasNoValue || nuixConnector.Value is not EntityValue.NestedEntity ent)
+            return ErrorCode.MissingStepSettings.ToErrorBuilder(nuixKey);
+
+        var settingsObj =
+            EntityConversionHelpers.TryCreateFromEntity<NuixSettings>((ent).Value);
 
         return settingsObj;
     }
-
-    /// <summary>
-    /// Returns a new SCLSettings object with a property added
-    /// </summary>
-    //public static SCLSettings WithProperty(
-    //    this SCLSettings settings,
-    //    object? value,
-    //    params string[] pathComponents)
-    //{
-    //    var e = Entity.Create(new[] { (new EntityPropertyKey(pathComponents), value) });
-
-    //    return new SCLSettings(settings.Entity.Combine(e));
-    //}
 }
 
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -64,7 +65,6 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             return new StateMonad(
                 baseMonad.Logger,
-                baseMonad.Settings,
                 baseMonad.StepFactoryStore,
                 new ExternalContext(
                     externalProcessMock,

@@ -9,6 +9,7 @@ using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.EDR.Core.Internal;
 using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
@@ -63,7 +64,10 @@ public static class ConnectionTestsHelper
     public static IStateMonad GetStateMonadForProcess(ITestLoggerFactory testLoggerFactory) =>
         new StateMonad(
             testLoggerFactory.CreateLogger("NuixProcess"),
-            null!,
+            StepFactoryStore.CreateFromAssemblies(
+                typeof(IStep).Assembly,
+                typeof(IRubyScriptStep).Assembly
+            ),
             null!,
             new Dictionary<string, object>()
         );

@@ -5,6 +5,7 @@ using FluentAssertions;
 using MELT;
 using Reductech.EDR.Connectors.Nuix.Logging;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
 using Xunit;
 
@@ -20,7 +21,7 @@ public class LogSituationNuixTests
 
         var stateMonad = new StateMonad(
             lf.CreateLogger("test"),
-            null!,
+            StepFactoryStore.Create(),
             null!,
             null!
         );

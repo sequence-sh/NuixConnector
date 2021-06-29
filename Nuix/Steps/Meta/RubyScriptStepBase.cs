@@ -40,13 +40,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     /// <inheritdoc />
     public override Result<Unit, IError> VerifyThis(StepFactoryStore stepFactoryStore)
     {
-        var connectorsSetting = EntityValue.CreateFromObject(
-            stepFactoryStore.ConnectorData
-                .Select(x => EntityValue.CreateFromObject(x.ConnectorSettings))
-                .ToList()
-        );
-
-        var settings = Entity.Create(("Connectors", connectorsSetting));
+        var settings = StateMonad.CreateSettingsEntity(stepFactoryStore);
 
         var r = SettingsHelpers.TryGetNuixSettings(settings)
             .Bind(NuixConnectionHelper.TryGetConsoleArguments)
