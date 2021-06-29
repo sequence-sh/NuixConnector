@@ -176,7 +176,7 @@ public static class SettingsHelpers
             )
         );
 
-        var sfs = StepFactoryStore.Create(cd);
+        var sfs = StepFactoryStore.Create(cd.ToArray());
 
         return sfs;
     }
