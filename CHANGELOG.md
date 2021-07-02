@@ -1,3 +1,11 @@
+# v0.10.0 (2021-07-02)
+
+## Issues Closed in this Release
+
+### Maintenance
+
+- Update Core to latest and remove SCLSettings #195
+
 # v0.9.0 (2021-05-14)
 
 ## Summary of Changes
