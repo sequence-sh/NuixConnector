@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
@@ -131,6 +130,7 @@ public class NuixRunScript : CompoundStep<StringStream>
     /// This will have spaces replaced with underscores and the first character will be made lowercase
     /// </summary>
     [StepProperty(1)]
+    [RequiredVersion(RubyScriptStepBase<object>.NuixVersionKey, "8.2")]
     [Required]
     public IStep<StringStream> FunctionName { get; set; } = null!;
 
@@ -174,19 +174,6 @@ public class NuixRunScriptStepFactory : SimpleStepFactory<NuixRunScript, StringS
     /// </summary>
     public static SimpleStepFactory<NuixRunScript, StringStream> Instance { get; } =
         new NuixRunScriptStepFactory();
-
-    /// <inheritdoc />
-    public override IEnumerable<Requirement> Requirements
-    {
-        get
-        {
-            yield return new Requirement
-            {
-                MinVersion = new Version(8, 2),
-                Name       = RubyScriptStepBase<object>.NuixRequirementName
-            };
-        }
-    }
 }
 
 }

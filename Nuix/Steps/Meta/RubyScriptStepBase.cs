@@ -5,7 +5,6 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
@@ -20,9 +19,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T>
 {
     /// <summary>
-    /// The string to use for the Nuix requirement
+    ///The name of the Nuix Connector
     /// </summary>
-    public const string NuixRequirementName = "Nuix";
+    public const string NuixFeaturesKey = "Features";
+
+    /// <summary>
+    /// Key to the settings version property
+    /// </summary>
+    public const string NuixVersionKey = "Version";
 
     /// <inheritdoc />
     public string FunctionName => RubyScriptStepFactory.RubyFunction.FunctionName;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
+using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.TestHarness;
@@ -50,7 +51,10 @@ public class RequirementsTest
         var process = new NuixSearchAndTag { SearchTerm = Constant("a"), Tag = Constant("c") };
 
         var (expectedError, settings) = args;
-        var result = process.Verify(SettingsHelpers.CreateStepFactoryStore(settings));
+
+        var result = process.Verify(
+            SettingsHelpers.CreateStepFactoryStore(settings, typeof(DeleteItem).Assembly)
+        );
 
         if (expectedError == null)
             result.ShouldBeSuccessful();

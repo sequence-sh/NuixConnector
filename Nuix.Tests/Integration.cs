@@ -23,6 +23,7 @@ using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace Reductech.EDR.Connectors.Nuix.Tests
 {
@@ -31,19 +32,43 @@ namespace Reductech.EDR.Connectors.Nuix.Tests
 public abstract partial class NuixStepTestBase<TStep, TOutput>
 {
     [GenerateAsyncTheory("NuixIntegration", Category = "Integration")]
-    public IEnumerable<IntegrationTestCase> IntegrationTestCasesWithSettings =>
-        from nuixTestCase in NuixTestCases
-        from settings in Constants.NuixSettingsList
-        where IsVersionCompatible(
-            nuixTestCase.Step,
-            settings.Version!
-        ) //&& false //uncomment to disable integration tests
-        select new IntegrationTestCase(
-                // Name needs to have nuix version in parentheses for ci script to build summary
-                $"{nuixTestCase.Name} ({settings.Version})",
-                nuixTestCase.Step
-            )
-            .WithStepFactoryStore(SettingsHelpers.CreateStepFactoryStore(settings));
+    public IEnumerable<IntegrationTestCase> IntegrationTestCasesWithSettings
+    {
+        get
+        {
+            foreach (NuixIntegrationTestCase nuixTestCase in NuixTestCases)
+            {
+                var atLeastOne = false;
+
+                foreach (NuixSettings settings in Constants.NuixSettingsList)
+                {
+                    if (IsVersionCompatible(
+                        nuixTestCase.Step,
+                        settings.Version!
+                    ))
+                    {
+                        yield return new IntegrationTestCase(
+                            // Name needs to have nuix version in parentheses for ci script to build summary
+                            $"{nuixTestCase.Name} ({settings.Version})",
+                            nuixTestCase.Step
+                        ).WithStepFactoryStore(
+                            SettingsHelpers.CreateStepFactoryStore(
+                                settings,
+                                typeof(DeleteItem).Assembly
+                            )
+                        );
+
+                        atLeastOne = true;
+                    }
+                }
+
+                if (!atLeastOne)
+                    throw new XunitException(
+                        $"Test '{nuixTestCase.Name}' has no compatible settings"
+                    );
+            }
+        }
+    }
 
     private static bool IsVersionCompatible(IStep step, Version nuixVersion)
     {
@@ -56,7 +81,9 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             features
         );
 
-        var r = step.Verify(SettingsHelpers.CreateStepFactoryStore(settings));
+        var sfs = SettingsHelpers.CreateStepFactoryStore(settings, typeof(DeleteItem).Assembly);
+
+        var r = step.Verify(sfs);
         return r.IsSuccess;
     }
 

@@ -212,7 +212,7 @@ public static class Constants
 
     public static IStep<Unit> AssertPropertyValueEquals<T>(string property, IStep<T> expected)
         where T : IComparable<T> => AssertPropertyValueEquals(
-        VariableName.Entity.Name,
+        VariableName.Item.Name,
         property,
         expected
     );

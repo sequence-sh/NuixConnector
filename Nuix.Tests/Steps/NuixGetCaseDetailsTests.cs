@@ -21,7 +21,7 @@ public partial class NuixGetCaseDetailsTests : NuixStepTestBase<NuixGetCaseDetai
                 SetupCase,
                 new SetVariable<Entity>
                 {
-                    Variable = VariableName.Entity, Value = new NuixGetCaseDetails()
+                    Variable = VariableName.Item, Value = new NuixGetCaseDetails()
                 },
                 AssertPropertyValueEquals("Name",         Constant("Integration Test Case")),
                 AssertPropertyValueEquals("Location",     CasePath),
@@ -40,7 +40,7 @@ public partial class NuixGetCaseDetailsTests : NuixStepTestBase<NuixGetCaseDetai
                                 {
                                     Entity = new GetVariable<Entity>
                                     {
-                                        Variable = VariableName.Entity
+                                        Variable = VariableName.Item
                                     },
                                     Property = Constant("EarliestDate")
                                 }
