@@ -232,7 +232,7 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// Set the locale for the evidence container.
     /// </summary>
-    [RequiredVersion("Nuix", "7.2")]
+    [RequiredVersion(NuixVersionKey, "7.2")]
     [StepProperty]
     [Example("en-GB")]
     [RubyArgument("containerLocaleArg")]

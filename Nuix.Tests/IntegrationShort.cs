@@ -161,19 +161,22 @@ public partial class IntegrationShortTests
                                     Entity.Create(("SearchTerm", "*.jpg"), ("Tag", "image")),
                                     Entity.Create(("SearchTerm", "blue"),  ("Tag", "colour"))
                                 ),
-                                Action = new NuixSearchAndTag
-                                {
-                                    SearchTerm = new EntityGetValue<StringStream>
+                                Action = new LambdaFunction<Entity, Unit>(
+                                    VariableName.Item,
+                                    new NuixSearchAndTag
                                     {
-                                        Entity   = GetEntityVariable,
-                                        Property = Constant("SearchTerm")
-                                    },
-                                    Tag = new EntityGetValue<StringStream>
-                                    {
-                                        Entity   = GetEntityVariable,
-                                        Property = Constant("Tag")
+                                        SearchTerm = new EntityGetValue<StringStream>
+                                        {
+                                            Entity   = GetEntityVariable,
+                                            Property = Constant("SearchTerm")
+                                        },
+                                        Tag = new EntityGetValue<StringStream>
+                                        {
+                                            Entity   = GetEntityVariable,
+                                            Property = Constant("Tag")
+                                        }
                                     }
-                                }
+                                )
                             },
                             new NuixSearchAndExclude
                             {
@@ -314,15 +317,21 @@ public partial class IntegrationShortTests
                             new ForEach<StringStream>
                             {
                                 Array = Array(CasePath, ReportPath, ExportPath),
-                                Action = AssertDirectoryDoesNotExist(
-                                    GetVariable<StringStream>(VariableName.Entity)
+                                Action = new LambdaFunction<StringStream, Unit>(
+                                    VariableName.Item,
+                                    AssertDirectoryDoesNotExist(
+                                        GetVariable<StringStream>(VariableName.Item)
+                                    )
                                 )
                             }
                         }
                     }
                 )
                 .WithStepFactoryStore(
-                    SettingsHelpers.CreateStepFactoryStore(NuixSettingsList.First())
+                    SettingsHelpers.CreateStepFactoryStore(
+                        NuixSettingsList.First(),
+                        typeof(DeleteItem).Assembly
+                    )
                 ); // Only run these tests on the latest version of nuix that we support.
 
             stepTest.OutputLogLevel1 = LogLevel.Debug;

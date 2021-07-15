@@ -232,7 +232,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     /// Skip export of slipsheeted items.
     /// </summary>
     [StepProperty]
-    [RequiredVersion("Nuix", "7.6")]
+    [RequiredVersion(NuixVersionKey, "7.6")]
     [RubyArgument("skipSlipsheetedItemsArg")]
     [DefaultValueExplanation("false")]
     public IStep<bool>? SkipSlipsheetedNatives { get; set; }

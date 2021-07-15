@@ -121,7 +121,7 @@ public sealed class NuixPerformOCR : RubySearchStepBase<Unit>
     /// This cannot be set at the same times as OCRProfileName.
     /// </summary>
     [StepProperty]
-    [RequiredVersion("Nuix", "7.6")]
+    [RequiredVersion(NuixVersionKey, "7.6")]
     [DefaultValueExplanation("The Default profile will be used.")]
     [Example("C:\\Profiles\\MyProfile.xml")]
     [RubyArgument("ocrProfilePathArg")]

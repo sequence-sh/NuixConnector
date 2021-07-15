@@ -141,7 +141,7 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
     /// Cannot be used at the same time as ProductionProfilePath.
     /// This option only works if the ProductionSet is created by this Step.
     /// </summary>
-    [RequiredVersion("Nuix", "7.2")]
+    [RequiredVersion(NuixVersionKey, "7.2")]
     [StepProperty]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("No profile set")]
@@ -154,7 +154,7 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
     /// Cannot be used at the same time as ProductionProfileName.
     /// This option only works if the ProductionSet is created by this Step.
     /// </summary>
-    [RequiredVersion("Nuix", "7.6")]
+    [RequiredVersion(NuixVersionKey, "7.6")]
     [StepProperty]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("No profile set")]

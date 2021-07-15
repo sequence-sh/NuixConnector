@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.TestHarness;
@@ -24,7 +25,8 @@ public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TS
                     factory.RequiredNuixVersion,
                     true,
                     factory.RequiredFeatures
-                )
+                ),
+                typeof(DeleteItem).Assembly
             );
         }
     }

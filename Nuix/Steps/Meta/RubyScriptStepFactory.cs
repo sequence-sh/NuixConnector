@@ -14,20 +14,33 @@ public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<
                                                               IRubyScriptStepFactory<TOutput>
     where TStep : IRubyScriptStep<TOutput>, new()
 {
+    private static string NuixConnectorName { get; } = typeof(NuixAddItem).Assembly.GetName().Name!;
+
     /// <inheritdoc />
     public override IEnumerable<Requirement> Requirements
     {
         get
         {
-            yield return new Requirement
-            {
-                Name = RubyScriptStepBase<TStep>.NuixRequirementName,
-                MinVersion =
-                    NuixVersionHelper.DefaultRequiredVersion > RubyFunction.RequiredNuixVersion
-                        ? NuixVersionHelper.DefaultRequiredVersion
-                        : RubyFunction.RequiredNuixVersion,
-                Features = RubyFunction.RequiredNuixFeatures.Select(x => x.ToString()).ToList()
-            };
+            var minVersion = NuixVersionHelper.DefaultRequiredVersion
+                           > RubyFunction.RequiredNuixVersion
+                ? NuixVersionHelper.DefaultRequiredVersion
+                : RubyFunction.RequiredNuixVersion;
+
+            yield return new VersionRequirement(
+                NuixConnectorName,
+                RubyScriptStepBase<TStep>.NuixVersionKey,
+                minVersion
+            );
+
+            var requiredFeatures =
+                RubyFunction.RequiredNuixFeatures.Select(x => x.ToString()).ToList();
+
+            if (requiredFeatures.Any())
+                yield return new FeatureRequirement(
+                    NuixConnectorName,
+                    RubyScriptStepBase<TStep>.NuixFeaturesKey,
+                    requiredFeatures
+                );
         }
     }
 

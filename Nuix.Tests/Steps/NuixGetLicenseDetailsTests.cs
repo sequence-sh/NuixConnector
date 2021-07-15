@@ -22,7 +22,7 @@ public partial class NuixGetLicenseDetailsTests : NuixStepTestBase<NuixGetLicens
                 CreateCase,
                 new SetVariable<Entity>
                 {
-                    Variable = VariableName.Entity, Value = new NuixGetLicenseDetails()
+                    Variable = VariableName.Item, Value = new NuixGetLicenseDetails()
                 },
                 AssertPropertyValueEquals("Name",           Constant("enterprise-workstation")),
                 AssertPropertyValueEquals("Workers",        Constant(2)),

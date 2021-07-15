@@ -216,7 +216,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// The name of the Processing profile to use.
     /// </summary>
-    [RequiredVersion("Nuix", "7.6")]
+    [RequiredVersion(NuixVersionKey, "7.6")]
     [StepProperty]
     [Example("MyProcessingProfile")]
     [DefaultValueExplanation("The default processing profile will be used.")]
@@ -227,7 +227,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// The path to the Processing profile to use
     /// </summary>
-    [RequiredVersion("Nuix", "7.6")]
+    [RequiredVersion(NuixVersionKey, "7.6")]
     [StepProperty]
     [Example("C:/Profiles/MyProcessingProfile.xml")]
     [DefaultValueExplanation("The default processing profile will be used.")]
@@ -259,7 +259,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// The path of a file containing passwords to use for decryption.
     /// </summary>
-    [RequiredVersion("Nuix", "7.6")]
+    [RequiredVersion(NuixVersionKey, "7.6")]
     [StepProperty]
     [Example("C:/Data/Passwords.txt")]
     [RubyArgument("passwordFilePathArg")]
@@ -271,7 +271,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// Special settings for individual mime types.
     /// Should have a 'mimeType' property and then any other special properties.
     /// </summary>
-    [RequiredVersion("Nuix", "8.2")]
+    [RequiredVersion(NuixVersionKey, "8.2")]
     [StepProperty]
     [RubyArgument("mimeTypeDataStreamArg")]
     [DefaultValueExplanation("Use default settings for all MIME types")]
@@ -309,7 +309,7 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     /// <summary>
     /// Set the locale for the evidence container.
     /// </summary>
-    [RequiredVersion("Nuix", "7.2")]
+    [RequiredVersion(NuixVersionKey, "7.2")]
     [StepProperty]
     [Example("en-GB")]
     [RubyArgument("containerLocaleArg")]
@@ -325,6 +325,8 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     [Example("UTC")]
     [RubyArgument("containerTimeZoneArg")]
     [DefaultValueExplanation("Default system time zone")]
+    [RequiredVersion("NuixVersion", "0.9.0", "11.0")]
+    [RequiredFeature("NuixFeatures", "Case_Creation")]
     [Alias("TimeZone")]
     public IStep<StringStream>? ContainerTimeZone { get; set; }
 
