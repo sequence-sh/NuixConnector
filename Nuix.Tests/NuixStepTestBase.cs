@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.Internal;
@@ -19,10 +20,15 @@ public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TS
             var instance = new TStep();
             var factory  = instance.RubyScriptStepFactory;
 
+            Version requiredVersion = new(5, 0);
+
+            if (factory.RequiredNuixVersion > requiredVersion)
+                requiredVersion = factory.RequiredNuixVersion;
+
             return SettingsHelpers.CreateStepFactoryStore(
                 new NuixSettings(
                     TestNuixPath,
-                    factory.RequiredNuixVersion,
+                    requiredVersion,
                     true,
                     factory.RequiredFeatures
                 ),

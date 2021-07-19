@@ -242,9 +242,17 @@ public static class Constants
     private static List<IStep<StringStream>> TestCasePath => new()
     {
         Constant("AllData\\Cases\\TestCase-"),
-        new EntityGetValue<StringStream>
+        new EntityGetValue<StringStream>()
         {
-            Entity = new GetSettings(), Property = Constant("Connectors.Nuix.Version")
+            Entity = new EntityGetValue<Entity>
+            {
+                Entity = new EntityGetValue<Entity>
+                {
+                    Entity = new GetSettings(), Property = Constant("Connectors")
+                },
+                Property = Constant("$Reductech.EDR.Connectors.Nuix")
+            },
+            Property = Constant("Settings.Version")
         },
         Constant(".zip")
     };
