@@ -73,6 +73,7 @@
   <ItemGroup Condition="$(PackConnector) != ''">
     <None Include="..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="..\NOTICE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <PropertyGroup Condition="$(PackConnector) != ''">
