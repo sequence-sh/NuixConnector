@@ -28,7 +28,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reductech.EDR.Core" Version="0.11.0-a.master.2108251449" />
+    <PackageReference Include="Reductech.EDR.Core" Version="0.11.0-a.master.2108251449">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
   </ItemGroup>
@@ -68,13 +70,23 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup Condition="$(PackConnector) != ''">
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
   <PropertyGroup Condition="$(PackConnector) != ''">
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression></PackageLicenseExpression>
   </PropertyGroup>
 
   <Target Name="AddConnectorDependencies" BeforeTargets="GenerateNuspec" Condition="$(PackConnector) != ''">
     <ItemGroup>
-      <_PackageFiles Include="@(RuntimeCopyLocalItems)" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(Filename)%(Extension)" />
+      <_PackageFiles Include="@(RuntimeCopyLocalItems)" PackageFlatten="false" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(RecursiveDir)%(Filename)%(Extension)" />
+      <_PackageFiles Include="@(RuntimeTargetsCopyLocalItems)" PackageFlatten="false" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/$([System.Text.RegularExpressions.Regex]::Match(%(RuntimeTargetsCopyLocalItems.Identity), '.+(runtimes(\\|/).*)$').Groups[1].Value)" />
+      <_PackageFiles Include="$(OutputPath)$(AssemblyName).deps.json" PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/$(AssemblyName).deps.json" />
     </ItemGroup>
   </Target>
 
