@@ -90,7 +90,7 @@ public sealed class NuixAddItemStepFactory : RubyScriptStepFactory<NuixAddItem, 
           log(""Settings for '#{type_name}': #{mt}"", severity: :debug)
           processor.setMimeTypeProcessingSettings(type_name, mt)
         else
-          log(""The mime type #{type_name} is not supported by the current Nuix version"", severity: :warning)
+          log(""The mime type #{type_name} is not supported by the current Nuix version"", severity: :warn)
         end
       end
     end
