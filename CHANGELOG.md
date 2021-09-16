@@ -1,3 +1,14 @@
+# v0.11.0 (2021-09-16)
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- NuixAddItem 'undefined method' error when mime type does not exist #199
+- Do not include Core runtime assets #204
+- Integration Tests are Failing #203
+- Bug: Integration tests are not being run #200
+
 # v0.10.0 (2021-07-02)
 
 ## Issues Closed in this Release
