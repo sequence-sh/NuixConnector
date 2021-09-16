@@ -6,6 +6,8 @@
         <Configuration>
           <Format>cobertura</Format>
           <UseSourceLink>true</UseSourceLink>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
+          <ExcludeByFile>**/*.Designer.cs,**/*.Generated.cs</ExcludeByFile>
         </Configuration>
       </DataCollector>
     </DataCollectors>
