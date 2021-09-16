@@ -203,7 +203,8 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                             ("mimeType", "text/plain"),
                             ("enabled", false)
                         ),
-                        Entity.Create(("mimeType", "application/pdf"), ("enabled", true))
+                        Entity.Create(("mimeType", "application/pdf"), ("enabled", true)),
+                        Entity.Create(("mimeType", "does-not-exist"), ("enabled", true))
                     ),
                     CustomMetadata = Constant(Entity.Create(("Origin", "File")))
                 },
