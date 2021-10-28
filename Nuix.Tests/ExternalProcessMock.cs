@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
@@ -157,7 +157,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
                                 }
                             };
 
-                            var json = JsonConvert.SerializeObject(data);
+                            var json = JsonSerializer.Serialize(data);
                             await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                         }
                         else
@@ -201,10 +201,9 @@ internal class ExternalProcessMock : IExternalProcessRunner
                                 "Stream functions cannot have 'Result' set in ConnectionOutput"
                             );
 
-                        var json = JsonConvert.SerializeObject(
+                        var json = JsonSerializer.Serialize(
                             connectionOutput,
-                            Formatting.None,
-                            JsonConverters.All
+                            JsonConverters.Options
                         );
 
                         await output.WriteAsync((json, StreamSource.Output), cancellationToken);
@@ -225,7 +224,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
                         Error = new ConnectionOutputError { Message = exception.Message }
                     };
 
-                    var errorJson = JsonConvert.SerializeObject(error);
+                    var errorJson = JsonSerializer.Serialize(error);
 
                     await output.WriteAsync((errorJson, StreamSource.Error), cancellationToken);
                 }

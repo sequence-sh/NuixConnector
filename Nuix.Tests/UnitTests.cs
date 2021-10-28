@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
@@ -88,6 +87,8 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                 ExternalProcessActions.ToArray()
             );
 
+            var stepClient = RESTClientSetupHelper.GetRESTClient(mockRepository, FinalChecks);
+
             return new StateMonad(
                 baseMonad.Logger,
                 baseMonad.StepFactoryStore,
@@ -96,6 +97,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                     baseMonad.ExternalContext.Console,
                     baseMonad.ExternalContext.InjectedContexts
                 ),
+                new SingleRestClientFactory(stepClient),
                 baseMonad.SequenceMetadata
             );
         }

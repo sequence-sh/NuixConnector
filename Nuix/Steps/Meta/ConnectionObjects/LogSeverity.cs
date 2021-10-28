@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
 {
@@ -13,37 +13,37 @@ public enum LogSeverity
     /// <summary>
     /// Trace
     /// </summary>
-    [JsonProperty("trace")]
+    [JsonPropertyName("trace")]
     Trace,
 
     /// <summary>
     /// Information
     /// </summary>
-    [JsonProperty("info")]
+    [JsonPropertyName("info")]
     Information,
 
     /// <summary>
     /// Warning
     /// </summary>
-    [JsonProperty("warn")]
+    [JsonPropertyName("warn")]
     Warning,
 
     /// <summary>
     /// Error
     /// </summary>
-    [JsonProperty("error")]
+    [JsonPropertyName("error")]
     Error,
 
     /// <summary>
     /// Critical
     /// </summary>
-    [JsonProperty("fatal")]
+    [JsonPropertyName("fatal")]
     Critical,
 
     /// <summary>
     /// Debug
     /// </summary>
-    [JsonProperty("debug")]
+    [JsonPropertyName("debug")]
     Debug
 }
 

@@ -228,6 +228,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
             var baseMonad = await base.GetStateMonad(mockRepository, logger);
 
+            var restClient = RESTClientSetupHelper.GetRESTClient(mockRepository, FinalChecks);
+
             return new StateMonad(
                 baseMonad.Logger,
                 baseMonad.StepFactoryStore,
@@ -236,6 +238,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                     baseMonad.ExternalContext.Console,
                     baseMonad.ExternalContext.InjectedContexts
                 ),
+                new SingleRestClientFactory(restClient),
                 baseMonad.SequenceMetadata
             );
         }
@@ -325,7 +328,8 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             MockRepository mockRepository,
             ILogger logger)
         {
-            var baseMonad = await base.GetStateMonad(mockRepository, logger);
+            var baseMonad  = await base.GetStateMonad(mockRepository, logger);
+            var restClient = RESTClientSetupHelper.GetRESTClient(mockRepository, FinalChecks);
 
             return new StateMonad(
                 baseMonad.Logger,
@@ -335,6 +339,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                     baseMonad.ExternalContext.Console,
                     baseMonad.ExternalContext.InjectedContexts
                 ),
+                new SingleRestClientFactory(restClient),
                 baseMonad.SequenceMetadata
             );
         }

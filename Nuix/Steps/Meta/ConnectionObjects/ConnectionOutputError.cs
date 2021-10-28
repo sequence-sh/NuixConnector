@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
 {
@@ -11,7 +11,7 @@ public class ConnectionOutputError
     /// <summary>
     /// The error message.
     /// </summary>
-    [JsonProperty("message")]
+    [JsonPropertyName("message")]
     public string Message { get; set; } = null!;
 }
 

@@ -23,6 +23,7 @@ public class LogSituationNuixTests
             lf.CreateLogger("test"),
             StepFactoryStore.Create(),
             null!,
+            null!,
             null!
         );
 

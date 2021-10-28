@@ -301,7 +301,11 @@ public class NuixConnectionTests
 
         Assert.True(result.IsSuccess);
         Assert.IsType<Entity>(result.Value);
-        Assert.Equal("workstation", result.Value.TryGetValue("Name").Value.GetPrimitiveString());
+
+        Assert.Equal(
+            "workstation",
+            result.Value.TryGetValue("Name").GetValueOrThrow().GetPrimitiveString()
+        );
     }
 }
 
