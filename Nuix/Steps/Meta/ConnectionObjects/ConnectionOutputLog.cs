@@ -1,5 +1,5 @@
-﻿using CSharpFunctionalExtensions;
-using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
@@ -13,25 +13,25 @@ public class ConnectionOutputLog
     /// <summary>
     /// The severity of the log.
     /// </summary>
-    [JsonProperty("severity")]
+    [JsonPropertyName("severity")]
     public string Severity { get; set; } = null!;
 
     /// <summary>
     /// The log message.
     /// </summary>
-    [JsonProperty("message")]
+    [JsonPropertyName("message")]
     public string Message { get; set; } = null!;
 
     /// <summary>
     /// The time this message was logged.
     /// </summary>
-    [JsonProperty("time")]
+    [JsonPropertyName("time")]
     public string Time { get; set; } = null!;
 
     /// <summary>
     /// Stack trace of the message.
     /// </summary>
-    [JsonProperty("stackTrace")]
+    [JsonPropertyName("stackTrace")]
     public string StackTrace { get; set; } = null!;
 
     /// <summary>

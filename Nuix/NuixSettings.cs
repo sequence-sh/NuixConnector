@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
-using Newtonsoft.Json;
 using Reductech.EDR.ConnectorManagement.Base;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
@@ -46,101 +46,105 @@ public class NuixSettings : IEntityConvertible
     /// <summary>
     /// Console arguments that come before other parameters
     /// </summary>
-    [JsonProperty("ConsoleArguments")]
+    [JsonPropertyName("ConsoleArguments")]
     public List<string>? ConsoleArguments { get; set; }
 
     /// <summary>
     /// Console arguments that come after other parameters
     /// </summary>
-    [JsonProperty("ConsoleArgumentsPost")]
+    [JsonPropertyName("ConsoleArgumentsPost")]
     public List<string>? ConsoleArgumentsPost { get; set; }
 
-    [JsonProperty("features")] public List<NuixFeature>? Features { get; set; }
+    /// <summary>
+    /// List of available Nuix features
+    /// </summary>
+    [JsonPropertyName("features")]
+    public List<NuixFeature>? Features { get; set; }
 
     /// <summary>
     /// Environment variables to send to the Nuix Console
     /// </summary>
-    [JsonProperty("EnvironmentVariables")]
+    [JsonPropertyName("EnvironmentVariables")]
     public Entity? EnvironmentVariables { get; set; }
 
     /// <summary>
     /// The version of the nuix console application
     /// </summary>
-    [JsonProperty("Version")]
+    [JsonPropertyName("Version")]
     public Version? Version { get; set; }
 
     /// <summary>
     /// The path to the Nuix Console application
     /// </summary>
-    [JsonProperty("exeConsolePath")]
+    [JsonPropertyName("exeConsolePath")]
     public string ExeConsolePath { get; set; }
 
     /// <summary>
     /// The path to the nuix ruby script
     /// </summary>
-    [JsonProperty("scriptPath")]
+    [JsonPropertyName("scriptPath")]
     public string? ScriptPath { get; set; }
 
     /// <summary>
     /// Signs the user out at the end of the execution, also releasing the semi-offline licence if present.
     /// </summary>
-    [JsonProperty("signout")]
+    [JsonPropertyName("signout")]
     public bool Signout { get; set; }
 
     /// <summary>
     /// Releases the semi-offline licence at the end of the execution.
     /// </summary>
-    [JsonProperty("release")]
+    [JsonPropertyName("release")]
     public bool Release { get; set; }
 
     /// <summary>
     /// Selects a licence source type (e.g. dongle, server, cloud-server) to use. 
     /// </summary>
-    [JsonProperty("licencesourcetype")]
+    [JsonPropertyName("licencesourcetype")]
     public string? LicenceSourceType { get; set; }
 
     /// <summary>
     /// Selects a licence source if multiple are available. 
     /// </summary>
-    [JsonProperty("licencesourcelocation")]
+    [JsonPropertyName("licencesourcelocation")]
     public string? LicenseSourceLocation { get; set; }
 
     /// <summary>
     /// Selects a licence type to use if multiple are available.
     /// </summary>
-    [JsonProperty("licencetype")]
+    [JsonPropertyName("licencetype")]
     public string? LicenceType { get; set; }
 
     /// <summary>
     /// Selects the number of workers to use if the choice is available.
     /// </summary>
-    [JsonProperty("licenceworkers")]
+    [JsonPropertyName("licenceworkers")]
     public int? LicenceWorkers { get; set; }
 
     /// <summary>
     /// Nuix Username - will be passed as an environment variable
     /// </summary>
-    [JsonProperty("NUIX_USERNAME")]
+    [JsonPropertyName("NUIX_USERNAME")]
     public string? NuixUsername { get; set; }
 
     /// <summary>
     /// Nuix password - will be passed as an environment variable
     /// </summary>
-    [JsonProperty("NUIX_PASSWORD")]
+    [JsonPropertyName("NUIX_PASSWORD")]
     public string? NuixPassword { get; set; }
 
     /// <summary>
     /// Regex used to ignore java warnings coming from the Nuix connection.
     /// The default values ignores warnings from Nuix Version up to 9.
     /// </summary>
-    [JsonProperty("IgnoreWarningsRegex")]
+    [JsonPropertyName("IgnoreWarningsRegex")]
     public string? IgnoreWarningsRegex { get; set; }
 
     /// <summary>
     /// Regex used to ignore java errors coming from the Nuix connection.
     /// The default values ignores errors from Nuix Version up to 9.
     /// </summary>
-    [JsonProperty("IgnoreErrorsRegex")]
+    [JsonPropertyName("IgnoreErrorsRegex")]
     public string IgnoreErrorsRegex { get; set; }
 }
 
@@ -161,7 +165,7 @@ public static class SettingsHelpers
         var ns = ConnectorSettings.DefaultForAssembly(nuix!);
 
         ns.Settings = nuixSettings?.ConvertToEntity()
-            .Dictionary.ToDictionary(k => k.Key, v => v.Value.BestValue.ObjectValue!);
+            .Dictionary.ToDictionary(k => k.Key, v => v.Value.Value.ObjectValue!);
 
         var core = Assembly.GetAssembly(typeof(IStep));
 
@@ -196,7 +200,8 @@ public static class SettingsHelpers
             )
         );
 
-        if (nuixConnector.HasNoValue || nuixConnector.Value is not EntityValue.NestedEntity ent)
+        if (nuixConnector.HasNoValue
+         || nuixConnector.GetValueOrThrow() is not EntityValue.NestedEntity ent)
             return ErrorCode.MissingStepSettings.ToErrorBuilder(nuixKey);
 
         var settingsObj =

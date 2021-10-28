@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.TestHarness;
 using Reductech.EDR.Core.Util;
-using Xunit;
 using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
 using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
@@ -203,8 +200,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                             ("mimeType", "text/plain"),
                             ("enabled", false)
                         ),
-                        Entity.Create(("mimeType", "application/pdf"), ("enabled", true)),
-                        Entity.Create(("mimeType", "does-not-exist"), ("enabled", true))
+                        Entity.Create(("mimeType", "application/pdf"), ("enabled", true))
                     ),
                     CustomMetadata = Constant(Entity.Create(("Origin", "File")))
                 },

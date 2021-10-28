@@ -186,6 +186,7 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                     baseMonad.ExternalContext.Console,
                     baseMonad.ExternalContext.InjectedContexts
                 ),
+                DefaultRestClientFactory.Instance,
                 baseMonad.SequenceMetadata
             );
         }

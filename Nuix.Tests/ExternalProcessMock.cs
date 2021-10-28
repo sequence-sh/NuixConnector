@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using Newtonsoft.Json;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
@@ -157,7 +157,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
                                 }
                             };
 
-                            var json = JsonConvert.SerializeObject(data);
+                            var json = JsonSerializer.Serialize(data);
                             await output.WriteAsync((json, StreamSource.Output), cancellationToken);
                         }
                         else
@@ -171,7 +171,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
                     if (!externalProcessActions.TryPop(out var expectedAction))
                         throw new XunitException($"Unexpected: '{inputJson}'");
 
-                    var commandResult = JsonConverters.DeserializeConnectionCommand(inputJson);
+                    var commandResult = DeserializeConnectionCommand(inputJson);
                     commandResult.ShouldBeSuccessful();
 
                     commandResult.Value.Should()
@@ -201,10 +201,9 @@ internal class ExternalProcessMock : IExternalProcessRunner
                                 "Stream functions cannot have 'Result' set in ConnectionOutput"
                             );
 
-                        var json = JsonConvert.SerializeObject(
+                        var json = JsonSerializer.Serialize(
                             connectionOutput,
-                            Formatting.None,
-                            JsonConverters.All
+                            JsonConverters.Options
                         );
 
                         await output.WriteAsync((json, StreamSource.Output), cancellationToken);
@@ -225,7 +224,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
                         Error = new ConnectionOutputError { Message = exception.Message }
                     };
 
-                    var errorJson = JsonConvert.SerializeObject(error);
+                    var errorJson = JsonSerializer.Serialize(error);
 
                     await output.WriteAsync((errorJson, StreamSource.Error), cancellationToken);
                 }
@@ -259,6 +258,53 @@ internal class ExternalProcessMock : IExternalProcessRunner
 
         /// <inheritdoc />
         public ChannelWriter<string> InputChannel { get; }
+    }
+
+    /// <summary>
+    /// Deserialize a json string into a ConnectionCommand
+    /// </summary>
+    /// <param name="json"></param>
+    /// <returns></returns>
+    public static Result<ConnectionCommand, IErrorBuilder> DeserializeConnectionCommand(string json)
+    {
+        try
+        {
+            var command1 =
+                JsonSerializer.Deserialize<ConnectionCommand>(json, JsonConverters.Options)!;
+
+            if (command1.Arguments == null)
+                return command1;
+
+            var newArguments = new Dictionary<string, object>();
+
+            foreach (var (key, value) in command1.Arguments)
+            {
+                object newValue;
+
+                if (value is JsonElement jElement)
+                {
+                    newValue = JsonConverters.ConvertToObject(jElement);
+                }
+                else
+                    newValue = value;
+
+                newArguments.Add(key, newValue);
+            }
+
+            var command2 = new ConnectionCommand
+            {
+                Arguments          = newArguments,
+                Command            = command1.Command,
+                FunctionDefinition = command1.FunctionDefinition,
+                IsStream           = command1.IsStream
+            };
+
+            return command2;
+        }
+        catch (JsonException e)
+        {
+            return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
+        }
     }
 }
 

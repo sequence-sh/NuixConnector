@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Reductech.EDR.Connectors.Nuix.Errors;
 using Reductech.EDR.Connectors.Nuix.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
@@ -68,7 +67,10 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
         var command = new ConnectionCommand() { Command = "done" };
 
         // ReSharper disable once MethodHasAsyncOverload
-        var commandJson = JsonConvert.SerializeObject(command, Formatting.None, JsonConverters.All);
+        var commandJson = JsonSerializer.Serialize(
+            command,
+            JsonConverters.Options
+        );
 
         await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellation);
 
@@ -102,9 +104,14 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                 break;
             }
             case CasePathParameter.ChangesOpenCase
-                { NewCaseParameter: { HasValue: true } } opensCase:
             {
-                if (parameters.TryGetValue(opensCase.NewCaseParameter.Value, out var cp))
+                NewCaseParameter: { HasValue: true }
+            } opensCase:
+            {
+                if (parameters.TryGetValue(
+                    opensCase.NewCaseParameter.GetValueOrThrow(),
+                    out var cp
+                ))
                 {
                     CurrentCasePath = cp.ToString()!; //This will be the case path for the next step
                     casePath        = null;
@@ -112,7 +119,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                 else
                     return new ErrorBuilder(
                         ErrorCode.MissingParameter,
-                        opensCase.NewCaseParameter.Value.PropertyName
+                        opensCase.NewCaseParameter.GetValueOrThrow().PropertyName
                     );
 
                 break;
@@ -125,7 +132,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                     CurrentCasePath = casePath;
                 }
                 else if (CurrentCasePath.HasValue)
-                    casePath = CurrentCasePath.Value;
+                    casePath = CurrentCasePath.GetValueOrThrow();
                 else
                     return new ErrorBuilder(ErrorCode_Nuix.NoCaseOpen);
 
@@ -153,10 +160,9 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                     };
 
                     // ReSharper disable once MethodHasAsyncOverload
-                    var helperCommandJson = JsonConvert.SerializeObject(
+                    var helperCommandJson = JsonSerializer.Serialize(
                         helperCommand,
-                        Formatting.None,
-                        JsonConverters.All
+                        JsonConverters.Options
                     );
 
                     await ExternalProcess.InputChannel.WriteAsync(
@@ -210,10 +216,9 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
             command.Arguments = commandArguments;
 
             // ReSharper disable once MethodHasAsyncOverload
-            var commandJson = JsonConvert.SerializeObject(
+            var commandJson = JsonSerializer.Serialize(
                 command,
-                Formatting.None,
-                JsonConverters.All
+                JsonConverters.Options
             );
 
             await ExternalProcess.InputChannel.WriteAsync(commandJson, cancellationToken);
@@ -241,10 +246,9 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
 
                 foreach (var entity in entities.Value)
                 {
-                    var entityJson = JsonConvert.SerializeObject(
+                    var entityJson = JsonSerializer.Serialize(
                         entity,
-                        Formatting.None,
-                        JsonConverters.All
+                        JsonConverters.Options
                     );
 
                     await ExternalProcess.InputChannel.WriteAsync(entityJson, cancellationToken);
@@ -295,9 +299,9 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
 
             try
             {
-                connectionOutput = JsonConvert.DeserializeObject<ConnectionOutput>(
+                connectionOutput = JsonSerializer.Deserialize<ConnectionOutput>(
                     jsonString,
-                    JsonConverters.All
+                    JsonConverters.Options
                 )!;
             }
             catch (Exception)
@@ -389,10 +393,20 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                         return typedStringStream;
                 }
 
-                if (typeof(T) == typeof(Entity) && connectionOutput.Result.Data is JObject jo)
+                if (connectionOutput.Result.Data is JsonElement jo)
                 {
-                    if (Entity.Create(jo) is T entity)
-                        return entity;
+                    var v = JsonConverters.ConvertToObject(jo);
+
+                    if (v is T t1)
+                        return t1;
+
+                    var convertedResult = Convert.ChangeType(
+                        v,
+                        typeof(T)
+                    );
+
+                    if (convertedResult is T t2)
+                        return t2;
                 }
                 else
                 {

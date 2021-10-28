@@ -55,6 +55,7 @@ public static class ConnectionTestsHelper
                 console,
                 (ConnectorInjection.FileSystemKey, fileSystem)
             ),
+            null!,
             new Dictionary<string, object>()
         );
 
@@ -68,6 +69,7 @@ public static class ConnectionTestsHelper
                 typeof(IStep).Assembly,
                 typeof(IRubyScriptStep).Assembly
             ),
+            null!,
             null!,
             new Dictionary<string, object>()
         );

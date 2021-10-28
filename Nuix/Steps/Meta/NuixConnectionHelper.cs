@@ -181,7 +181,7 @@ public static class NuixConnectionHelper
         if (nuixSettings.EnvironmentVariables is not null)
         {
             foreach (var ep in nuixSettings.EnvironmentVariables)
-                dict.Add(ep.Name, ep.BestValue.GetPrimitiveString());
+                dict.Add(ep.Name, ep.Value.GetPrimitiveString());
         }
 
         if (nuixSettings.NuixUsername is not null)

@@ -1,5 +1,5 @@
-﻿using CSharpFunctionalExtensions;
-using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
+using CSharpFunctionalExtensions;
 using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
@@ -13,19 +13,19 @@ public class ConnectionOutput
     /// <summary>
     /// The object if this is the result of a function.
     /// </summary>
-    [JsonProperty("result")]
+    [JsonPropertyName("result")]
     public ConnectionOutputResult? Result { get; set; }
 
     /// <summary>
     /// The object if this is a log message.
     /// </summary>
-    [JsonProperty("log")]
+    [JsonPropertyName("log")]
     public ConnectionOutputLog? Log { get; set; }
 
     /// <summary>
     /// The object if this is an error message.
     /// </summary>
-    [JsonProperty("error")]
+    [JsonPropertyName("error")]
     public ConnectionOutputError? Error { get; set; }
 
     /// <summary>

@@ -61,7 +61,7 @@ public class NuixRunScript : CompoundStep<StringStream>
             .ToDictionary(
                 x =>
                     new RubyFunctionParameter(ConvertString(x.Name), x.Name, true),
-                x => x.BestValue.ObjectValue
+                x => x.Value.ObjectValue
             )
             .Where(x => x.Value != null)
             .ToDictionary(x => x.Key, x => x.Value!);

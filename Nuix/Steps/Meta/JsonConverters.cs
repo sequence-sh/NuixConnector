@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
-using CSharpFunctionalExtensions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
-using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -22,111 +17,23 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 public static class JsonConverters
 {
     /// <summary>
-    /// All json converters to use for Reductech Entities
+    /// Json options to use
     /// </summary>
-    public static readonly JsonConverter[] All =
+    public static readonly JsonSerializerOptions Options = new()
     {
-        StringStreamJsonConverter.Instance, EntityJsonConverter.Instance,
-        ArrayJsonConverter.Instance, StringEnumDisplayConverter.Instance
+        Converters =
+        {
+            StringStreamJsonConverter.Instance,
+            EntityJsonConverter.Instance,
+            StringEnumDisplayConverter.Instance,
+            ArrayJsonConverter.Instance
+        }
     };
-
-    /// <summary>
-    /// Deserialize a json string into a ConnectionCommand
-    /// </summary>
-    /// <param name="json"></param>
-    /// <returns></returns>
-    public static Result<ConnectionCommand, IErrorBuilder> DeserializeConnectionCommand(string json)
-    {
-        try
-        {
-            var command1 = JsonConvert.DeserializeObject<ConnectionCommand>(json)!;
-
-            if (command1.Arguments == null)
-                return command1;
-
-            var newArguments = new Dictionary<string, object>();
-
-            foreach (var (key, value) in command1.Arguments)
-            {
-                if (value is JObject jObject)
-                {
-                    var entity = JsonConvert.DeserializeObject<Entity>(
-                        jObject.ToString()!,
-                        EntityJsonConverter.Instance
-                    );
-
-                    newArguments.Add(key, entity!);
-                }
-                else if (!(value is string) && value is IEnumerable enumerable)
-                {
-                    var newValue = enumerable.OfType<object>().Select(x => x.ToString()).ToList();
-                    newArguments.Add(key, newValue);
-                }
-                else
-                    newArguments.Add(key, value);
-            }
-
-            var command2 = new ConnectionCommand
-            {
-                Arguments          = newArguments,
-                Command            = command1.Command,
-                FunctionDefinition = command1.FunctionDefinition,
-                IsStream           = command1.IsStream
-            };
-
-            return command2;
-        }
-        catch (JsonException e)
-        {
-            return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
-        }
-    }
-
-    /// <summary>
-    /// Serializes arrays
-    /// </summary>
-    public class ArrayJsonConverter : JsonConverter
-    {
-        private ArrayJsonConverter() { }
-
-        /// <summary>
-        /// The Instance
-        /// </summary>
-        public static ArrayJsonConverter Instance { get; } = new();
-
-        /// <inheritdoc />
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
-            if (value is IArray array)
-            {
-                var objectsResult = array.GetObjectsAsync(CancellationToken.None).Result;
-
-                if (objectsResult.IsFailure)
-                    throw new ErrorException(objectsResult.Error);
-
-                serializer.Serialize(writer, objectsResult.Value);
-            }
-        }
-
-        /// <inheritdoc />
-        public override object ReadJson(
-            JsonReader reader,
-            Type objectType,
-            object? existingValue,
-            JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public override bool CanConvert(Type objectType) =>
-            objectType.IsAssignableTo(typeof(IArray));
-    }
 
     /// <summary>
     /// Convert StringStreams to Json
     /// </summary>
-    public class StringStreamJsonConverter : JsonConverter
+    public class StringStreamJsonConverter : JsonConverter<StringStream>
     {
         private StringStreamJsonConverter() { }
 
@@ -136,104 +43,133 @@ public static class JsonConverters
         public static StringStreamJsonConverter Instance { get; } = new();
 
         /// <inheritdoc />
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
-            if (value is StringStream ss)
-            {
-                var s = ss.GetString();
-                serializer.Serialize(writer, s);
-            }
-        }
-
-        /// <inheritdoc />
-        public override object ReadJson(
-            JsonReader reader,
-            Type objectType,
-            object? existingValue,
-            JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
         public override bool CanConvert(Type objectType) => objectType == typeof(StringStream);
+
+        /// <inheritdoc />
+        public override StringStream Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options)
+        {
+            return reader.GetString() ?? new StringStream("");
+        }
+
+        /// <inheritdoc />
+        public override void Write(
+            Utf8JsonWriter writer,
+            StringStream value,
+            JsonSerializerOptions options)
+        {
+            var s = value.GetString();
+
+            writer.WriteStringValue(s);
+        }
     }
 
     /// <summary>
-    /// Convert Enums to their display strings
+    /// Converts enums using the enum display property
     /// </summary>
-    public class StringEnumDisplayConverter : JsonConverter
+    public class StringEnumDisplayConverter : JsonConverter<Enum>
     {
         private StringEnumDisplayConverter() { }
 
         /// <summary>
         /// The instance
         /// </summary>
-        public static JsonConverter Instance { get; } = new StringEnumDisplayConverter();
+        public static JsonConverter<Enum> Instance { get; } = new StringEnumDisplayConverter();
 
         /// <inheritdoc />
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        public override bool CanConvert(Type typeToConvert)
         {
-            if (value is Enum e)
-            {
-                var s = e.GetDisplayName();
-                writer.WriteValue(s);
-            }
+            Type t = Nullable.GetUnderlyingType(typeToConvert) ?? typeToConvert;
+            return t.IsEnum;
         }
 
         /// <inheritdoc />
-        public override object? ReadJson(
-            JsonReader reader,
-            Type objectType,
-            object? existingValue,
-            JsonSerializer serializer)
+        public override Enum? Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options)
         {
-            var nullableObjectType = Nullable.GetUnderlyingType(objectType);
+            var  nullableObjectType = Nullable.GetUnderlyingType(typeToConvert);
+            Type t                  = nullableObjectType ?? typeToConvert;
 
-            if (reader.TokenType == JsonToken.Null)
-            {
-                if (nullableObjectType == null)
-                {
-                    throw new JsonSerializationException(
-                        $"Cannot convert null value to {objectType}."
-                    );
-                }
-
-                return null;
-            }
-
-            Type t = nullableObjectType ?? objectType;
+            var enumText = reader.GetString();
 
             try
 
             {
-                var enumText = reader.Value?.ToString();
-
                 if (string.IsNullOrWhiteSpace(enumText) && nullableObjectType != null)
                     return null;
 
-                return Enum.Parse(t, enumText!, true);
+                return (Enum)Enum.Parse(t, enumText!, true);
             }
             catch
             {
-                throw new JsonSerializationException(
-                    $"Error converting value {reader.Value} to type '{{{objectType}}}'."
+                throw new JsonException(
+                    $"Error converting value {enumText} to type '{{{t.Name}}}'."
                 );
             }
         }
 
-        /// <summary>
-        /// Determines whether this instance can convert the specified object type.
-        /// </summary>
-        /// <param name="objectType">Type of the object.</param>
-        /// <returns>
-        /// <c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
-        /// </returns>
-        public override bool CanConvert(Type objectType)
+        /// <inheritdoc />
+        public override void Write(Utf8JsonWriter writer, Enum value, JsonSerializerOptions options)
         {
-            Type t = Nullable.GetUnderlyingType(objectType) ?? objectType;
-            return t.IsEnum;
+            var s = value.GetDisplayName();
+            writer.WriteStringValue(s);
         }
+    }
+
+    /// <summary>
+    /// Serializes arrays
+    /// </summary>
+    public class ArrayJsonConverter : JsonConverter<IArray>
+    {
+        /// <summary>
+        /// The Instance
+        /// </summary>
+        public static ArrayJsonConverter Instance { get; } = new();
+
+        /// <inheritdoc />
+        public override bool CanConvert(Type objectType) =>
+            objectType.IsAssignableTo(typeof(IArray));
+
+        /// <inheritdoc />
+        public override IArray Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override void Write(
+            Utf8JsonWriter writer,
+            IArray value,
+            JsonSerializerOptions options)
+        {
+            var objectsResult = value.GetObjectsAsync(CancellationToken.None).Result;
+
+            if (objectsResult.IsFailure)
+                throw new ErrorException(objectsResult.Error);
+
+            JsonSerializer.Serialize(writer, objectsResult.Value, options);
+        }
+    }
+
+    /// <summary>
+    /// Convert a json element to an object
+    /// </summary>
+    public static object ConvertToObject(JsonElement jElement)
+    {
+        return jElement.ValueKind switch
+        {
+            JsonValueKind.Array  => jElement.EnumerateArray().Select(ConvertToObject).ToList(),
+            JsonValueKind.String => jElement.GetString()!,
+            JsonValueKind.Number => jElement.GetDouble(),
+            _                    => Core.Entity.Create(jElement)
+        };
     }
 }
 
