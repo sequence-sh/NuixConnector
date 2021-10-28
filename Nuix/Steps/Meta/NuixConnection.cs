@@ -393,10 +393,20 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                         return typedStringStream;
                 }
 
-                if (typeof(T) == typeof(Entity) && connectionOutput.Result.Data is JsonElement jo)
+                if (connectionOutput.Result.Data is JsonElement jo)
                 {
-                    if (Entity.Create(jo) is T entity)
-                        return entity;
+                    var v = JsonConverters.ConvertToObject(jo);
+
+                    if (v is T t1)
+                        return t1;
+
+                    var convertedResult = Convert.ChangeType(
+                        v,
+                        typeof(T)
+                    );
+
+                    if (convertedResult is T t2)
+                        return t2;
                 }
                 else
                 {

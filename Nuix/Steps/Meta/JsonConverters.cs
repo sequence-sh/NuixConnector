@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
-using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Util;
-using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {
@@ -34,55 +29,6 @@ public static class JsonConverters
             ArrayJsonConverter.Instance
         }
     };
-
-    /// <summary>
-    /// Deserialize a json string into a ConnectionCommand
-    /// </summary>
-    /// <param name="json"></param>
-    /// <returns></returns>
-    public static Result<ConnectionCommand, IErrorBuilder> DeserializeConnectionCommand(string json)
-    {
-        try
-        {
-            var command1 = JsonSerializer.Deserialize<ConnectionCommand>(json, Options)!;
-
-            if (command1.Arguments == null)
-                return command1;
-
-            var newArguments = new Dictionary<string, object>();
-
-            foreach (var (key, value) in command1.Arguments)
-            {
-                if (value is JsonElement jElement)
-                {
-                    var entity = Entity.Create(jElement);
-
-                    newArguments.Add(key, entity);
-                }
-                else if (value is not string && value is IEnumerable enumerable)
-                {
-                    var newValue = enumerable.OfType<object>().Select(x => x.ToString()).ToList();
-                    newArguments.Add(key, newValue);
-                }
-                else
-                    newArguments.Add(key, value);
-            }
-
-            var command2 = new ConnectionCommand
-            {
-                Arguments          = newArguments,
-                Command            = command1.Command,
-                FunctionDefinition = command1.FunctionDefinition,
-                IsStream           = command1.IsStream
-            };
-
-            return command2;
-        }
-        catch (JsonException e)
-        {
-            return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
-        }
-    }
 
     /// <summary>
     /// Convert StringStreams to Json
@@ -114,7 +60,9 @@ public static class JsonConverters
             StringStream value,
             JsonSerializerOptions options)
         {
-            writer.WriteStringValue(value.GetString());
+            var s = value.GetString();
+
+            writer.WriteStringValue(s);
         }
     }
 
@@ -187,7 +135,7 @@ public static class JsonConverters
             objectType.IsAssignableTo(typeof(IArray));
 
         /// <inheritdoc />
-        public override IArray? Read(
+        public override IArray Read(
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options)
@@ -208,6 +156,20 @@ public static class JsonConverters
 
             JsonSerializer.Serialize(writer, objectsResult.Value, options);
         }
+    }
+
+    /// <summary>
+    /// Convert a json element to an object
+    /// </summary>
+    public static object ConvertToObject(JsonElement jElement)
+    {
+        return jElement.ValueKind switch
+        {
+            JsonValueKind.Array  => jElement.EnumerateArray().Select(ConvertToObject).ToList(),
+            JsonValueKind.String => jElement.GetString()!,
+            JsonValueKind.Number => jElement.GetDouble(),
+            _                    => Core.Entity.Create(jElement)
+        };
     }
 }
 

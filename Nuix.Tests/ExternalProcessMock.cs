@@ -171,7 +171,7 @@ internal class ExternalProcessMock : IExternalProcessRunner
                     if (!externalProcessActions.TryPop(out var expectedAction))
                         throw new XunitException($"Unexpected: '{inputJson}'");
 
-                    var commandResult = JsonConverters.DeserializeConnectionCommand(inputJson);
+                    var commandResult = DeserializeConnectionCommand(inputJson);
                     commandResult.ShouldBeSuccessful();
 
                     commandResult.Value.Should()
@@ -258,6 +258,53 @@ internal class ExternalProcessMock : IExternalProcessRunner
 
         /// <inheritdoc />
         public ChannelWriter<string> InputChannel { get; }
+    }
+
+    /// <summary>
+    /// Deserialize a json string into a ConnectionCommand
+    /// </summary>
+    /// <param name="json"></param>
+    /// <returns></returns>
+    public static Result<ConnectionCommand, IErrorBuilder> DeserializeConnectionCommand(string json)
+    {
+        try
+        {
+            var command1 =
+                JsonSerializer.Deserialize<ConnectionCommand>(json, JsonConverters.Options)!;
+
+            if (command1.Arguments == null)
+                return command1;
+
+            var newArguments = new Dictionary<string, object>();
+
+            foreach (var (key, value) in command1.Arguments)
+            {
+                object newValue;
+
+                if (value is JsonElement jElement)
+                {
+                    newValue = JsonConverters.ConvertToObject(jElement);
+                }
+                else
+                    newValue = value;
+
+                newArguments.Add(key, newValue);
+            }
+
+            var command2 = new ConnectionCommand
+            {
+                Arguments          = newArguments,
+                Command            = command1.Command,
+                FunctionDefinition = command1.FunctionDefinition,
+                IsStream           = command1.IsStream
+            };
+
+            return command2;
+        }
+        catch (JsonException e)
+        {
+            return new ErrorBuilder(e, ErrorCode.ExternalProcessError);
+        }
     }
 }
 
