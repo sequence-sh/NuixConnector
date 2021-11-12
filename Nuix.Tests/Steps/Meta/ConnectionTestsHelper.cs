@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Abstractions.TestingHelpers;
+using System.Threading;
 using MELT;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
@@ -47,15 +48,17 @@ public static class ConnectionTestsHelper
             AppContext.BaseDirectory
         );
 
+        var externalContext = new ExternalContext(
+            externalProcessRunner,
+            null!,
+            console,
+            (ConnectorInjection.FileSystemKey, fileSystem)
+        );
+
         var monad = new StateMonad(
             testLoggerFactory.CreateLogger("Test"),
             sfs,
-            new ExternalContext(
-                externalProcessRunner,
-                console,
-                (ConnectorInjection.FileSystemKey, fileSystem)
-            ),
-            null!,
+            externalContext,
             new Dictionary<string, object>()
         );
 
@@ -65,11 +68,12 @@ public static class ConnectionTestsHelper
     public static IStateMonad GetStateMonadForProcess(ITestLoggerFactory testLoggerFactory) =>
         new StateMonad(
             testLoggerFactory.CreateLogger("NuixProcess"),
-            StepFactoryStore.CreateFromAssemblies(
-                typeof(IStep).Assembly,
-                typeof(IRubyScriptStep).Assembly
-            ),
-            null!,
+            StepFactoryStore.TryCreateFromAssemblies(
+                    null!,
+                    typeof(IStep).Assembly,
+                    typeof(IRubyScriptStep).Assembly
+                )
+                .Value,
             null!,
             new Dictionary<string, object>()
         );
@@ -139,7 +143,8 @@ public static class ConnectionTestsHelper
                 NuixConnectionHelper.NuixVariableName,
                 connection,
                 true,
-                null
+                null,
+                CancellationToken.None
             )
             .Result;
 

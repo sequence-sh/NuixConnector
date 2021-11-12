@@ -12,7 +12,7 @@ public class ExternalProcessAction
         Command       = command;
         DesiredOutput = desiredOutput;
 
-        if (command.IsStream == null || command.IsStream.Value == false)
+        if (command.IsStream is null or false)
             DesiredOutput.Should().NotBeEmpty("If output is empty then the test will hang forever");
     }
 

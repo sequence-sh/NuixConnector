@@ -77,27 +77,27 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
         /// <inheritdoc />
         public override async Task<StateMonad> GetStateMonad(
-            MockRepository mockRepository,
+            IExternalContext externalContext,
             ILogger logger)
         {
-            var baseMonad = await base.GetStateMonad(mockRepository, logger);
-
             var externalProcessMock = new ExternalProcessMock(
                 1,
                 ExternalProcessActions.ToArray()
             );
 
-            var stepClient = RESTClientSetupHelper.GetRESTClient(mockRepository, FinalChecks);
+            var newExternalContext = new ExternalContext(
+                externalProcessMock,
+                externalContext.RestClientFactory,
+                externalContext.Console,
+                externalContext.InjectedContexts
+            );
+
+            var baseMonad = await base.GetStateMonad(newExternalContext, logger);
 
             return new StateMonad(
                 baseMonad.Logger,
                 baseMonad.StepFactoryStore,
-                new ExternalContext(
-                    externalProcessMock,
-                    baseMonad.ExternalContext.Console,
-                    baseMonad.ExternalContext.InjectedContexts
-                ),
-                new SingleRestClientFactory(stepClient),
+                newExternalContext,
                 baseMonad.SequenceMetadata
             );
         }

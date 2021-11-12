@@ -50,7 +50,6 @@ public class ExampleTests
             logger,
             sfs,
             ExternalContext.Default,
-            DefaultRestClientFactory.Instance,
             new Dictionary<string, object>()
         );
 

@@ -123,7 +123,8 @@ public static class NuixConnectionHelper
             NuixVariableName,
             connection,
             true,
-            callingStep
+            callingStep,
+            CancellationToken.None
         );
 
         if (setResult.IsFailure)

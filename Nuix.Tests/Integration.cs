@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 using AutoTheory;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
@@ -43,9 +41,9 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
                 foreach (NuixSettings settings in Constants.NuixSettingsList)
                 {
                     if (IsVersionCompatible(
-                        nuixTestCase.Step,
-                        settings.Version!
-                    ))
+                            nuixTestCase.Step,
+                            settings.Version!
+                        ))
                     {
                         yield return new IntegrationTestCase(
                             // Name needs to have nuix version in parentheses for ci script to build summary
@@ -136,7 +134,9 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
         public IStep<Unit> Steps { get; }
 
         /// <inheritdoc />
-        public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper)
+        public override async Task<IStep> GetStepAsync(
+            IExternalContext externalContext,
+            ITestOutputHelper testOutputHelper)
         {
             await Task.CompletedTask;
             var yaml = Steps.Serialize();
@@ -173,20 +173,15 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
         /// <inheritdoc />
         public override async Task<StateMonad> GetStateMonad(
-            MockRepository mockRepository,
+            IExternalContext externalContext,
             ILogger logger)
         {
-            var baseMonad = await base.GetStateMonad(mockRepository, logger);
+            var baseMonad = await base.GetStateMonad(externalContext, logger);
 
             return new StateMonad(
                 baseMonad.Logger,
                 baseMonad.StepFactoryStore,
-                new ExternalContext(
-                    ExternalProcessRunner.Instance,
-                    baseMonad.ExternalContext.Console,
-                    baseMonad.ExternalContext.InjectedContexts
-                ),
-                DefaultRestClientFactory.Instance,
+                externalContext,
                 baseMonad.SequenceMetadata
             );
         }
