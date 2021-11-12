@@ -7,6 +7,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.ConnectorManagement.Base;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core;
+using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
@@ -180,7 +181,8 @@ public static class SettingsHelpers
             )
         );
 
-        var sfs = StepFactoryStore.Create(cd.ToArray());
+        var sfs = StepFactoryStore.TryCreate(ExternalContext.Default, cd.ToArray())
+            .Value; //TODO inject the external context
 
         return sfs;
     }

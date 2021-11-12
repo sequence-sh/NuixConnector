@@ -7,14 +7,12 @@ using AutoTheory;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Reductech.EDR.Connectors.Nuix.Steps;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Reductech.EDR.Core.Internal.Parser;
@@ -218,7 +216,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
         /// <inheritdoc />
         public override async Task<StateMonad> GetStateMonad(
-            MockRepository mockRepository,
+            IExternalContext externalContext,
             ILogger logger)
         {
             var externalProcessMock = new ExternalProcessMock(
@@ -226,19 +224,19 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
                 ExternalProcessActions.ToArray()
             );
 
-            var baseMonad = await base.GetStateMonad(mockRepository, logger);
+            var newExternalContext = new ExternalContext(
+                externalProcessMock,
+                externalContext.RestClientFactory,
+                externalContext.Console,
+                externalContext.InjectedContexts
+            );
 
-            var restClient = RESTClientSetupHelper.GetRESTClient(mockRepository, FinalChecks);
+            var baseMonad = await base.GetStateMonad(newExternalContext, logger);
 
             return new StateMonad(
                 baseMonad.Logger,
                 baseMonad.StepFactoryStore,
-                new ExternalContext(
-                    externalProcessMock,
-                    baseMonad.ExternalContext.Console,
-                    baseMonad.ExternalContext.InjectedContexts
-                ),
-                new SingleRestClientFactory(restClient),
+                newExternalContext,
                 baseMonad.SequenceMetadata
             );
         }
@@ -291,7 +289,9 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
         public string MyExpectedOutput { get; }
 
         /// <inheritdoc />
-        public override async Task<IStep> GetStepAsync(ITestOutputHelper testOutputHelper)
+        public override async Task<IStep> GetStepAsync(
+            IExternalContext externalContext,
+            ITestOutputHelper testOutputHelper)
         {
             await Task.CompletedTask;
             var yaml = Step.Serialize();
@@ -325,21 +325,15 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
         /// <inheritdoc />
         public override async Task<StateMonad> GetStateMonad(
-            MockRepository mockRepository,
+            IExternalContext externalContext,
             ILogger logger)
         {
-            var baseMonad  = await base.GetStateMonad(mockRepository, logger);
-            var restClient = RESTClientSetupHelper.GetRESTClient(mockRepository, FinalChecks);
+            var baseMonad = await base.GetStateMonad(externalContext, logger);
 
             return new StateMonad(
                 baseMonad.Logger,
                 baseMonad.StepFactoryStore,
-                new ExternalContext(
-                    ExternalProcessRunner.Instance,
-                    baseMonad.ExternalContext.Console,
-                    baseMonad.ExternalContext.InjectedContexts
-                ),
-                new SingleRestClientFactory(restClient),
+                externalContext,
                 baseMonad.SequenceMetadata
             );
         }
