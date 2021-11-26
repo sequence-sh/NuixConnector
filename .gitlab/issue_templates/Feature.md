@@ -1,6 +1,7 @@
 /label ~feature
 /label ~"wf::backlog"
 /label ~"area::connectors"
+/label ~edr
 /label ~nuix
 
 ## Story

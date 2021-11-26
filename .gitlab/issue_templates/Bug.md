@@ -4,6 +4,7 @@
 /label ~"wf::backlog"
 /label ~"area::connectors"
 /label ~nuix
+/label ~edr
 
 ## Summary
 
