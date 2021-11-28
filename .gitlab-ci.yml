@@ -67,7 +67,7 @@ integration short:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
       when: never
-    - if: $CI_COMMIT_BRANCH == 'master'
+    # - if: $CI_COMMIT_BRANCH == 'master'
     - if: &not_release $CI_COMMIT_TAG !~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/i
       when: manual
       allow_failure: true
@@ -96,15 +96,15 @@ integration full:
       when: manual
       allow_failure: true
 
-integration short release:
-  extends:
-    - integration short
-    - .rules_release
-  variables:
-    CONFIG: $CONFIG_RELEASE
-    NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
-    NUGET_USERNAME: $NUGET_USER_PROD
-    NUGET_TOKEN: $NUGET_TOKEN_PROD
+# integration short release:
+#   extends:
+#     - integration short
+#     - .rules_release
+#   variables:
+#     CONFIG: $CONFIG_RELEASE
+#     NUGET_PROJECT_ID: $NUGET_PROJECT_ID_RELEASE
+#     NUGET_USERNAME: $NUGET_USER_PROD
+#     NUGET_TOKEN: $NUGET_TOKEN_PROD
 
 push to nuget dev:
   rules:
