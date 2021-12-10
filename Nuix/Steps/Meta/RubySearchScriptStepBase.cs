@@ -1,13 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Enums;
+﻿using Reductech.EDR.Connectors.Nuix.Enums;
 using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A ruby script step that searches for items. Contains all the
@@ -71,6 +65,4 @@ public abstract class RubySearchStepFactory<TStep, TOutput> : RubyScriptStepFact
     /// </summary>
     public override IReadOnlyCollection<IRubyHelper> RequiredHelpers { get; }
         = new List<IRubyHelper> { NuixSearch.Instance, NuixExpandSearch.Instance };
-}
-
 }

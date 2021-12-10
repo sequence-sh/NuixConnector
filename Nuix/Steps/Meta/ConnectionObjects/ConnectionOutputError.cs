@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// The object if this was an error.
@@ -13,6 +12,4 @@ public class ConnectionOutputError
     /// </summary>
     [JsonPropertyName("message")]
     public string Message { get; set; } = null!;
-}
-
 }

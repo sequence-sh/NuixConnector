@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -8,11 +6,8 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Errors;
 using Reductech.EDR.Connectors.Nuix.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.ExternalProcesses;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Util;
 using Entity = Reductech.EDR.Core.Entity;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
@@ -109,9 +104,9 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
             } opensCase:
             {
                 if (parameters.TryGetValue(
-                    opensCase.NewCaseParameter.GetValueOrThrow(),
-                    out var cp
-                ))
+                        opensCase.NewCaseParameter.GetValueOrThrow(),
+                        out var cp
+                    ))
                 {
                     CurrentCasePath = cp.ToString()!; //This will be the case path for the next step
                     casePath        = null;

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core.Internal;
+﻿using Reductech.EDR.Connectors.FileSystem;
 using Reductech.EDR.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TStep, TOutput>
     where TStep : class, IRubyScriptStep<TOutput>, new()
@@ -51,6 +46,4 @@ public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TS
     }
 
     protected abstract IEnumerable<NuixIntegrationTestCase> NuixTestCases { get; }
-}
-
 }

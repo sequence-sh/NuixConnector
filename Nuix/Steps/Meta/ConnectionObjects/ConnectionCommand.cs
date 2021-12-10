@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// A command that can be sent to nuix.
@@ -49,6 +47,4 @@ public class ConnectionCommand
     /// </summary>
     [JsonPropertyName("ishelper")]
     public bool? IsHelper { get; set; }
-}
-
 }

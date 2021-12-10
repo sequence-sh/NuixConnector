@@ -2,8 +2,7 @@
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// An output object that will be returned from a Nuix Connection
@@ -59,6 +58,4 @@ public class ConnectionOutput
             $"{nameof(ConnectionOutput)} must have at least one property set"
         );
     }
-}
-
 }

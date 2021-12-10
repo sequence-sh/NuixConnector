@@ -1,14 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Util;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Removes particular items from a Nuix production set.
@@ -103,6 +93,4 @@ public sealed class NuixRemoveFromItemSet : RubySearchStepBase<Unit>
     [RubyArgument("removeDuplicatesArg")]
     [DefaultValueExplanation("true")]
     public IStep<bool> RemoveDuplicates { get; set; } = new BoolConstant(true);
-}
-
 }

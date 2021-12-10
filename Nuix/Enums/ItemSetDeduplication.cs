@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// The means of deduplicating items by key and prioritizing originals in a tie-break. 
@@ -48,6 +46,4 @@ public enum ItemSetDeduplication
     [Description("None")]
     [Display(Name = "None")]
     None
-}
-
 }

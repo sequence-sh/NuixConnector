@@ -4,13 +4,10 @@ using System.Text.RegularExpressions;
 using FluentAssertions;
 using MELT;
 using Reductech.EDR.Connectors.Nuix.Logging;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
 using Xunit;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Logging
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests.Logging;
 
 public class LogSituationNuixTests
 {
@@ -60,6 +57,4 @@ public class LogSituationNuixTests
                 );
         }
     }
-}
-
 }

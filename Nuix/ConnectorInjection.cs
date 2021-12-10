@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix
-{
+namespace Reductech.EDR.Connectors.Nuix;
 
 /// <summary>
 /// Provides context information for the nuix connector
@@ -30,6 +28,4 @@ public sealed class ConnectorInjection : IConnectorInjection
             list
         );
     }
-}
-
 }

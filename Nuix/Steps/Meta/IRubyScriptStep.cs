@@ -1,7 +1,4 @@
-﻿using Reductech.EDR.Core.Internal;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A ruby script step.
@@ -23,6 +20,4 @@ public interface IRubyScriptStep<T> : IRubyScriptStep, ICompoundStep<T>
     /// The ruby factory to use for this step.
     /// </summary>
     IRubyScriptStepFactory<T> RubyScriptStepFactory { get; }
-}
-
 }

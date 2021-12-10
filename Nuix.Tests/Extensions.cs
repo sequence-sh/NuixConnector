@@ -2,8 +2,7 @@
 using Moq;
 using Reductech.EDR.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 public static class Extensions
 {
@@ -24,6 +23,4 @@ public static class Extensions
 
         return cws;
     }
-}
-
 }

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A function that can be run within Ruby
@@ -123,6 +120,4 @@ public abstract record RubyFunction
             return indentedText;
         }
     }
-}
-
 }

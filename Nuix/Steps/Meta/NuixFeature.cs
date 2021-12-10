@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A Nuix feature requirement
@@ -22,6 +21,4 @@ public enum NuixFeature
 
     PRODUCTION_SET
     #pragma warning restore 1591
-}
-
 }

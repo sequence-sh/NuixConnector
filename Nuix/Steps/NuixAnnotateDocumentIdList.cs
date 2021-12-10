@@ -1,14 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Util;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Annotates a document ID list to add production set names to it.
@@ -78,6 +68,4 @@ public class NuixAnnotateDocumentIdList : RubyCaseScriptStepBase<Unit>
     [RubyArgument("dataPathArg")]
     [Alias("IdList")]
     public IStep<StringStream> DataPath { get; set; } = null!;
-}
-
 }

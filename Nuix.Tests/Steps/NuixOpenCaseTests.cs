@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Util;
-using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
-
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixOpenCaseTests : NuixStepTestBase<NuixOpenCase, Unit>
 {
@@ -27,6 +21,4 @@ public partial class NuixOpenCaseTests : NuixStepTestBase<NuixOpenCase, Unit>
             );
         }
     }
-}
-
 }

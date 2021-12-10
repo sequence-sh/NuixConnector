@@ -1,7 +1,4 @@
-﻿using System;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Indicates that this argument is to be passed to a ruby function.
@@ -16,6 +13,4 @@ public sealed class RubyArgumentAttribute : Attribute
     /// The name of the argument in Ruby.
     /// </summary>
     public string RubyName { get; }
-}
-
 }

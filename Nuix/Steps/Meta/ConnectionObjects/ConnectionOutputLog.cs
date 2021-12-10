@@ -2,8 +2,7 @@
 using CSharpFunctionalExtensions;
 using Reductech.EDR.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// A Log message from a Nuix connection.
@@ -50,6 +49,4 @@ public class ConnectionOutputLog
             _       => new ErrorBuilder(ErrorCode.CouldNotParse, Severity, nameof(LogSeverity)),
         };
     }
-}
-
 }

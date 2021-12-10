@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Method of deduplication to use for a top-level item export.
@@ -32,6 +30,4 @@ public enum ExportDeduplication
     [Display(Name = "md5_per_custodian")]
     // ReSharper disable once InconsistentNaming
     MD5PerCustodian
-}
-
 }

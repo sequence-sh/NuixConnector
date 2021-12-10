@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// The casePath parameter
@@ -45,6 +44,4 @@ public record CasePathParameter
         /// </summary>
         public RubyFunctionParameter CaseParameter { get; init; } = CaseParameter;
     }
-}
-
 }

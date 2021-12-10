@@ -1,14 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Util;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Open the connection to nuix.
@@ -47,6 +42,4 @@ public sealed class NuixOpenConnectionFactory : SimpleStepFactory<NuixOpenConnec
     /// </summary>
     public static SimpleStepFactory<NuixOpenConnection, Unit> Instance { get; } =
         new NuixOpenConnectionFactory();
-}
-
 }

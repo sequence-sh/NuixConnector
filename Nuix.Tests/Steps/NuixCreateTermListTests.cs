@@ -1,12 +1,6 @@
-﻿using System.Collections.Generic;
-using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core;
-using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
+﻿using Reductech.EDR.Connectors.FileSystem;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, StringStream>
 {
@@ -37,6 +31,4 @@ public partial class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermLi
             );
         }
     }
-}
-
 }

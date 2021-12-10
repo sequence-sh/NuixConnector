@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using Reductech.EDR.ConnectorManagement.Base;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.Entities;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Entity = Reductech.EDR.Core.Entity;
 
-namespace Reductech.EDR.Connectors.Nuix
-{
+namespace Reductech.EDR.Connectors.Nuix;
 
 /// <summary>
 /// Special settings, unique to the Nuix connector
@@ -211,6 +205,4 @@ public static class SettingsHelpers
 
         return settingsObj;
     }
-}
-
 }

@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 public class ExternalProcessAction
 {
@@ -23,6 +21,4 @@ public class ExternalProcessAction
     public string[]? WriteToStdOut { get; set; }
 
     public string[]? WriteToStdErr { get; set; }
-}
-
 }

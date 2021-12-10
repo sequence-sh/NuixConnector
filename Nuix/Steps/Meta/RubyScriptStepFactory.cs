@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Internal;
+﻿using System.Linq;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A step that runs a ruby script against NUIX
@@ -93,6 +88,4 @@ public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<
     /// Any helper functions required for this Step to execute.
     /// </summary>
     public virtual IReadOnlyCollection<IRubyHelper>? RequiredHelpers { get; } = null;
-}
-
 }

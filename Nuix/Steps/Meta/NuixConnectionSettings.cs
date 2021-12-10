@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Settings pertaining to the Nuix Connection
@@ -19,7 +18,7 @@ public sealed record NuixConnectionSettings(Regex JavaWarningRegex, Regex JavaEr
             ? DefaultJavaErrorRegex
             : new Regex(javaErrorRegex, RegexOptions.IgnoreCase | RegexOptions.Compiled)
     ) { }
-    
+
     private static readonly Regex DefaultJavaWarningRegex = new(
         @"\A(?:(?:\(eval\):9: warning)|(?:OpenJDK 64-Bit Server VM warning)|(?:WARNING)):(?<text>.+)\Z",
         RegexOptions.Compiled | RegexOptions.IgnoreCase
@@ -32,6 +31,4 @@ public sealed record NuixConnectionSettings(Regex JavaWarningRegex, Regex JavaEr
     /// </summary>
     public static NuixConnectionSettings Default { get; } =
         new(DefaultJavaWarningRegex, DefaultJavaErrorRegex);
-}
-
 }

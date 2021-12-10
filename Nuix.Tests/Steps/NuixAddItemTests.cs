@@ -1,15 +1,7 @@
-﻿using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core;
+﻿using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.EDR.Core.TestHarness;
-using Reductech.EDR.Core.Util;
-using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
 {
@@ -212,6 +204,4 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
             );
         }
     }
-}
-
 }

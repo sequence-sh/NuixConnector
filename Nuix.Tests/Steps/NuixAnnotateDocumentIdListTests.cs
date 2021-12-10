@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Util;
-
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
 public partial class
     NuixAnnotateDocumentIdListTests : NuixStepTestBase<NuixAnnotateDocumentIdList, Unit>
@@ -22,6 +17,4 @@ public partial class
             yield break;
         }
     }
-}
-
 }

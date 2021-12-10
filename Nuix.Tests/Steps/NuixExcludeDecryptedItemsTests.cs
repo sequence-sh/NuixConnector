@@ -1,12 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.Util;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
-using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
+﻿using System.IO;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
 public partial class
     NuixExcludeDecryptedItemsTests : NuixStepTestBase<NuixExcludeDecryptedItems, Unit>
@@ -42,6 +36,4 @@ public partial class
             );
         }
     }
-}
-
 }

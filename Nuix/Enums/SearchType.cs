@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Defines the type of search that is performed.
@@ -57,6 +55,4 @@ public enum SearchType
     [Description("toplevel_items")]
     [Display(Name = "toplevel_items")]
     TopLevelItems
-}
-
 }
