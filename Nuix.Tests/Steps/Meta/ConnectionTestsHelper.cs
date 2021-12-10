@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading;
 using MELT;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
 using Reductech.EDR.Core.ExternalProcesses;
-using Reductech.EDR.Core.Internal;
 using Xunit.Sdk;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta;
 
 public static class ConnectionTestsHelper
 {
@@ -234,6 +227,4 @@ public static class ConnectionTestsHelper
             { new RubyFunctionParameter("tagArg", nameof(NuixSearchAndTag.Tag), false), tag }
         }
     );
-}
-
 }

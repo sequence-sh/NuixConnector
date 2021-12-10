@@ -1,7 +1,4 @@
-﻿using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps.Helpers
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Helpers;
 
 /// <summary>
 /// Expand a collection of items using one of the expansion methods
@@ -51,6 +48,4 @@ end
     /// An instance of the helper function
     /// </summary>
     public static IRubyHelper Instance => new NuixExpandSearch();
-}
-
 }

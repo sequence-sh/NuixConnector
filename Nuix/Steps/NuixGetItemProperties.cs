@@ -1,13 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps;
 
 /// <summary>
 /// A step that the searches a case for items and outputs the values of item properties.
@@ -101,6 +92,4 @@ public sealed class NuixGetItemProperties : RubySearchStepBase<StringStream>
     [DefaultValueExplanation("All values will be returned")]
     [Alias("ValueFilter")]
     public IStep<StringStream>? ValueRegex { get; set; }
-}
-
 }

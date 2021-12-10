@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Types of files that can be produced when exporting data from Nuix
@@ -52,6 +50,4 @@ public enum ExportProduct
     [Description("thumbnail")]
     [Display(Name = "thumbnail")]
     Thumbnail
-}
-
 }

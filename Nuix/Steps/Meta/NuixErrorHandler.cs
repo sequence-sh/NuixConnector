@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Reductech.EDR.Core.ExternalProcesses;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using Reductech.EDR.Core.Internal;
+﻿using System.Reflection;
 
 namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 {

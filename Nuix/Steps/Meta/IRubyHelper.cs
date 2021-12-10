@@ -1,5 +1,4 @@
-﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A helper function that can be executed in other ruby scripts.
@@ -15,6 +14,4 @@ public interface IRubyHelper
     /// The function definition.
     /// </summary>
     string FunctionText { get; }
-}
-
 }

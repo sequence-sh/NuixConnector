@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// The type of load file to create when running an export.
@@ -105,6 +103,4 @@ public enum LoadFileType
     [Display(Name = "md5_digest")]
     // ReSharper disable once InconsistentNaming
     MD5Digest
-}
-
 }

@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Reductech.EDR.Connectors.Nuix
-{
+namespace Reductech.EDR.Connectors.Nuix;
 
 internal static class RegexExtensions
 {
@@ -10,6 +9,4 @@ internal static class RegexExtensions
         match = r.Match(input);
         return match.Success;
     }
-}
-
 }

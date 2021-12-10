@@ -1,9 +1,7 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// The severity of a log message.
@@ -70,6 +68,4 @@ public static class LogSeverityHelper
 
         return logLevel;
     }
-}
-
 }

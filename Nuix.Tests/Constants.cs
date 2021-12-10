@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.Util;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 public static class Constants
 {
@@ -291,6 +282,4 @@ public static class Constants
         InitialSteps = new IStep<Unit>[] { new NuixCloseConnection() },
         FinalStep    = DeleteCaseFolder
     };
-}
-
 }

@@ -1,17 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Internal.Errors;
 using Entity = Reductech.EDR.Core.Entity;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Run an arbitrary ruby script in nuix.
@@ -174,6 +168,4 @@ public class NuixRunScriptStepFactory : SimpleStepFactory<NuixRunScript, StringS
     /// </summary>
     public static SimpleStepFactory<NuixRunScript, StringStream> Instance { get; } =
         new NuixRunScriptStepFactory();
-}
-
 }

@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.Core;
 using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.Util;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 public abstract partial class NuixStepTestBase<TStep, TOutput>
 {
@@ -76,6 +72,4 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             );
         }
     }
-}
-
 }

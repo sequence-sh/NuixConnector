@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.TestHarness;
 using Xunit;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 public class RequirementsTest
 {
@@ -61,6 +55,4 @@ public class RequirementsTest
         else
             result.MapError(x => x.AsString).ShouldBeFailure(expectedError);
     }
-}
-
 }

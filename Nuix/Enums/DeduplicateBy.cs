@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Whether to deduplicate as a family or individual
@@ -22,6 +20,4 @@ public enum DeduplicateBy
     [Description("FAMILY")]
     [Display(Name = "FAMILY")]
     Family
-}
-
 }

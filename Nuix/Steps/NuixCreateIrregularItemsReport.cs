@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Creates a list of all irregular items in a case.
@@ -82,6 +76,4 @@ public sealed class NuixCreateIrregularItemsReport : RubyCaseScriptStepBase<Stri
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixCreateIrregularItemsReportStepFactory.Instance;
-}
-
 }

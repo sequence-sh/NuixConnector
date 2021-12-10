@@ -2,8 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Core.Internal.Logging;
 
-namespace Reductech.EDR.Connectors.Nuix.Logging
-{
+namespace Reductech.EDR.Connectors.Nuix.Logging;
 
 /// <summary>
 /// Identifying code for a Core log situation.
@@ -28,6 +27,4 @@ public sealed record LogSituationNuix : LogSituationBase
         nameof(HelperExists),
         LogLevel.Trace
     );
-}
-
 }

@@ -1,23 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using AutoTheory;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Connectors.Nuix.Enums;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Internal;
 using Reductech.EDR.Core.Steps;
 using Reductech.EDR.Core.TestHarness;
-using Reductech.EDR.Core.Util;
 using Xunit;
-using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 [Collection("RequiresNuixLicense")]
 public partial class IntegrationShortTests
@@ -338,6 +329,4 @@ public partial class IntegrationShortTests
             yield return stepTest;
         }
     }
-}
-
 }

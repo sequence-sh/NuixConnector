@@ -1,14 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Reductech.EDR.Connectors.Nuix.Enums;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Util;
-using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
+﻿using System.IO;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndExclude, Unit>
 {
@@ -102,6 +94,4 @@ public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndE
             );
         }
     }
-}
-
 }

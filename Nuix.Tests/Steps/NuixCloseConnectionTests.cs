@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core.TestHarness;
-using Reductech.EDR.Core.Util;
+﻿using Reductech.EDR.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection, Unit>
 {
@@ -27,6 +23,4 @@ public partial class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection
             yield break;
         }
     }
-}
-
 }

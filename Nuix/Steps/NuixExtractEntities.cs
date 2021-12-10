@@ -1,14 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Util;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Extract Entities from a Nuix Case.
@@ -95,6 +85,4 @@ public sealed class NuixExtractEntities : RubyCaseScriptStepBase<Unit>
     [RubyArgument("outputFolderPathArg")]
     [Alias("ToDirectory")]
     public IStep<StringStream> OutputFolder { get; set; } = null!;
-}
-
 }

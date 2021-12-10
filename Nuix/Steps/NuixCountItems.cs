@@ -1,13 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Returns the number of items matching a particular search term
@@ -76,6 +67,4 @@ public sealed class NuixCountItems : RubyCaseScriptStepBase<int>
     [RubyArgument("searchOptionsArg")]
     [DefaultValueExplanation("No search options provided")]
     public IStep<Entity>? SearchOptions { get; set; }
-}
-
 }

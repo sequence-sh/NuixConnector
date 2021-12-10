@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
 using Reductech.EDR.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests
-{
+namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 class MetaTests : MetaTestsBase
 {
@@ -12,6 +10,4 @@ class MetaTests : MetaTestsBase
 
     /// <inheritdoc />
     public override Assembly TestAssembly { get; } = Assembly.GetAssembly(typeof(MetaTests))!;
-}
-
 }

@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Traversal strategy that is used when exporting items.
@@ -36,6 +34,4 @@ public enum ExportTraversalStrategy
     [Description("top_level_items_and_descendants")]
     [Display(Name = "top_level_items_and_descendants")]
     TopLevelItemsAndDescendants
-}
-
 }

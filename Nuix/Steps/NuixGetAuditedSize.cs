@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.EDR.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Calculate the total audited size for a case.
@@ -68,6 +60,4 @@ public sealed class NuixGetAuditedSize : RubyCaseScriptStepBase<double>
     [DefaultValueExplanation("flag:audited")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } = new StringConstant("flag:audited");
-}
-
 }

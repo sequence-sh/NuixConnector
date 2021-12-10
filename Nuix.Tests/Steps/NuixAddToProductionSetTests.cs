@@ -1,13 +1,4 @@
-﻿using System.Collections.Generic;
-using Reductech.EDR.Connectors.Nuix.Enums;
-using Reductech.EDR.Connectors.Nuix.Steps;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Util;
-using static Reductech.EDR.Core.TestHarness.StaticHelpers;
-using static Reductech.EDR.Connectors.Nuix.Tests.Constants;
-
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToProductionSet, Unit>
 {
@@ -71,6 +62,4 @@ public partial class NuixAddToProductionSetTests : NuixStepTestBase<NuixAddToPro
             );
         }
     }
-}
-
 }

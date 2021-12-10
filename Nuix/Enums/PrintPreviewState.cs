@@ -1,5 +1,4 @@
-﻿namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// The state of print previews in the production set.
@@ -20,6 +19,4 @@ public enum PrintPreviewState
     /// No documents have a print preview.
     /// </summary>
     None
-}
-
 }

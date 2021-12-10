@@ -1,7 +1,4 @@
-﻿using System;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Helper methods relating to Nuix Versions-
@@ -13,6 +10,4 @@ public static class NuixVersionHelper
     /// 5.0 - this is required to check the nuix features.
     /// </summary>
     public static Version DefaultRequiredVersion { get; } = new(5, 0);
-}
-
 }

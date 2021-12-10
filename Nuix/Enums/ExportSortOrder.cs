@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums
-{
+namespace Reductech.EDR.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Selects the method of sorting a set of items
@@ -47,6 +45,4 @@ public enum ExportSortOrder
     [Description("document_id")]
     [Display(Name = "document_id")]
     DocumentId
-}
-
 }

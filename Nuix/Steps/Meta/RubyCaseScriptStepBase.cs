@@ -1,9 +1,4 @@
-﻿using Reductech.EDR.Core;
-using Reductech.EDR.Core.Attributes;
-using Reductech.EDR.Core.Internal;
-
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A ruby script step that uses a case.
@@ -40,6 +35,4 @@ public abstract class RubyCaseScriptStepBase<T> : RubyScriptStepBase<T>
     [Alias("Directory")]
     [DefaultValueExplanation("Use the current open case")]
     public IStep<StringStream>? CasePath { get; set; }
-}
-
 }
