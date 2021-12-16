@@ -6,7 +6,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 /// A step that runs a ruby script against NUIX
 /// </summary>
 public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<TStep, TOutput>,
-                                                              IRubyScriptStepFactory<TOutput>
+                                                              IRubyScriptStepFactory<TOutput> where TOutput : ISCLObject
     where TStep : IRubyScriptStep<TOutput>, new()
 {
     private static string NuixConnectorName { get; } = typeof(NuixAddItem).Assembly.GetName().Name!;
@@ -23,7 +23,7 @@ public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<
 
             yield return new VersionRequirement(
                 NuixConnectorName,
-                RubyScriptStepBase<TStep>.NuixVersionKey,
+                RubyScriptStepBase<SCLNull>.NuixVersionKey,
                 minVersion
             );
 
@@ -33,7 +33,7 @@ public abstract class RubyScriptStepFactory<TStep, TOutput> : SimpleStepFactory<
             if (requiredFeatures.Any())
                 yield return new FeatureRequirement(
                     NuixConnectorName,
-                    RubyScriptStepBase<TStep>.NuixFeaturesKey,
+                    RubyScriptStepBase<SCLNull>.NuixFeaturesKey,
                     requiredFeatures
                 );
         }

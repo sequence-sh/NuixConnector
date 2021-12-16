@@ -30,7 +30,7 @@ public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
                                 Arguments = new Dictionary<string, object>
                                 {
                                     {
-                                        nameof(RubyCaseScriptStepBase<bool>.CasePath),
+                                        nameof(RubyCaseScriptStepBase<SCLBool>.CasePath),
                                         CasePathString
                                     },
                                     { nameof(NuixAddItem.Container), "New Folder" },

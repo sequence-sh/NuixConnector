@@ -36,7 +36,7 @@ public partial class
                                         PrintPreviewState.All.ToString()
                                     },
                                     {
-                                        nameof(RubyCaseScriptStepBase<bool>.CasePath),
+                                        nameof(RubyCaseScriptStepBase<SCLBool>.CasePath),
                                         CasePathString
                                     }
                                 }

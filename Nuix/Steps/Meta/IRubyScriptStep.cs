@@ -14,7 +14,7 @@ public interface IRubyScriptStep : ICompoundStep
 /// <summary>
 /// A ruby script step
 /// </summary>
-public interface IRubyScriptStep<T> : IRubyScriptStep, ICompoundStep<T>
+public interface IRubyScriptStep<T> : IRubyScriptStep, ICompoundStep<T>where T : ISCLObject
 {
     /// <summary>
     /// The ruby factory to use for this step.

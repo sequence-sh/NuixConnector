@@ -6,6 +6,7 @@ using CSharpFunctionalExtensions;
 using Reductech.EDR.Connectors.Nuix.Errors;
 using Reductech.EDR.Connectors.Nuix.Logging;
 using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.EDR.Core.Entities.Schema;
 using Reductech.EDR.Core.ExternalProcesses;
 using Reductech.EDR.Core.Internal.Errors;
 using Entity = Reductech.EDR.Core.Entity;
@@ -16,7 +17,9 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 /// <summary>
 /// An open connection to our general script running in Nuix
 /// </summary>
-public sealed class NuixConnection : IDisposable, IStateDisposable
+public sealed class
+    NuixConnection : IDisposable, IStateDisposable,
+                     ISCLObject //NuixConnection is an ISCLObject so that it can be stored in the state
 {
     /// <summary>
     /// Create a new NuixConnection
@@ -80,7 +83,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
         IStateMonad stateMonad,
         IStep? step,
         RubyFunction<T> function,
-        IReadOnlyDictionary<RubyFunctionParameter, object> parameters,
+        IReadOnlyDictionary<RubyFunctionParameter, ISCLObject> parameters,
         CasePathParameter casePathParameter,
         CancellationToken cancellationToken)
     {
@@ -108,8 +111,12 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                         out var cp
                     ))
                 {
-                    CurrentCasePath = cp.ToString()!; //This will be the case path for the next step
-                    casePath        = null;
+                    CurrentCasePath =
+                        cp.Serialize(
+                            SerializeOptions.Primitive
+                        ); //This will be the case path for the next step
+
+                    casePath = null;
                 }
                 else
                     return new ErrorBuilder(
@@ -123,7 +130,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
             {
                 if (parameters.TryGetValue(usesCase.CaseParameter, out var cp))
                 {
-                    casePath        = cp.ToString()!;
+                    casePath        = cp.Serialize(SerializeOptions.Primitive);
                     CurrentCasePath = casePath;
                 }
                 else if (CurrentCasePath.HasValue)
@@ -204,7 +211,7 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
                         command.IsStream = true;
                     }
                     else
-                        commandArguments.Add(argument.PropertyName, value);
+                        commandArguments.Add(argument.PropertyName, value.ToCSharpObject());
                 }
             }
 
@@ -446,6 +453,39 @@ public sealed class NuixConnection : IDisposable, IStateDisposable
             ExternalProcess.Dispose();
             IsDisposed = true;
         }
+    }
+
+    string ISCLObject.Serialize(SerializeOptions options)
+    {
+        if (CurrentCasePath.HasValue)
+            return $"{nameof(NuixConnection)}: {CurrentCasePath.Value}";
+
+        return nameof(NuixConnection);
+    }
+
+    TypeReference ISCLObject.GetTypeReference()
+    {
+        return TypeReference.Unknown.Instance;
+    }
+
+    Maybe<T> ISCLObject.MaybeAs<T>()
+    {
+        if (this is T t)
+            return t;
+
+        return Maybe<T>.None;
+    }
+
+    object? ISCLObject.ToCSharpObject()
+    {
+        return this;
+    }
+
+    SchemaNode ISCLObject.ToSchemaNode(
+        string path,
+        SchemaConversionOptions? schemaConversionOptions)
+    {
+        return FalseNode.Instance;
     }
 }
 

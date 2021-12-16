@@ -5,6 +5,7 @@ namespace Reductech.EDR.Connectors.Nuix.Tests;
 
 public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TStep, TOutput>
     where TStep : class, IRubyScriptStep<TOutput>, new()
+    where TOutput : ISCLObject
 {
     public const string TestNuixPath = "TestPath";
 

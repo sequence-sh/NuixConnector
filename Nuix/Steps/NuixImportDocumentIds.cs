@@ -84,7 +84,7 @@ public sealed class NuixImportDocumentIds : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation("false")]
     [RubyArgument("sourceProductionSetsInDataArg")]
     [Alias("SetNameInList")]
-    public IStep<bool> AreSourceProductionSetsInData { get; set; } = new BoolConstant(false);
+    public IStep<SCLBool> AreSourceProductionSetsInData { get; set; } = new SCLConstant<SCLBool>(false.ConvertToSCLObject());
 }
 
 }

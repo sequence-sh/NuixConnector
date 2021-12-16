@@ -285,7 +285,7 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
             ITestOutputHelper testOutputHelper)
         {
             await Task.CompletedTask;
-            var yaml = Step.Serialize();
+            var yaml = Step.Serialize(SerializeOptions.Serialize);
 
             var sfs = SettingsHelpers.CreateStepFactoryStore(null);
 

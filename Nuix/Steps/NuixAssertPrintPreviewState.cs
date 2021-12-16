@@ -73,8 +73,8 @@ public sealed class NuixAssertPrintPreviewState : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation(nameof(PrintPreviewState.All))]
     [RubyArgument("expectedStateArg")]
     [Alias("HasState")]
-    public IStep<PrintPreviewState> ExpectedState { get; set; } =
-        new EnumConstant<PrintPreviewState>(PrintPreviewState.All);
+    public IStep<SCLEnum<PrintPreviewState>> ExpectedState { get; set; } =
+        new SCLConstant<SCLEnum<PrintPreviewState>>(new SCLEnum<PrintPreviewState>(PrintPreviewState.All));
 }
 
 }

@@ -3,7 +3,7 @@
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
 {
 
-public partial class NuixGetAuditedSizeTests : NuixStepTestBase<NuixGetAuditedSize, double>
+public partial class NuixGetAuditedSizeTests : NuixStepTestBase<NuixGetAuditedSize, SCLDouble>
 {
     /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
@@ -23,11 +23,11 @@ public partial class NuixGetAuditedSizeTests : NuixStepTestBase<NuixGetAuditedSi
                 },
                 new AssertTrue
                 {
-                    Boolean = new Equals<double>
+                    Boolean = new Equals<SCLDouble>
                     {
-                        Terms = new ArrayNew<double>
+                        Terms = new ArrayNew<SCLDouble>
                         {
-                            Elements = new List<IStep<double>>
+                            Elements = new List<IStep<SCLDouble>>
                             {
                                 Constant(799.0), new NuixGetAuditedSize()
                             }

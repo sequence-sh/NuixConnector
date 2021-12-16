@@ -174,8 +174,8 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("loadFileTypeArg")]
     [DefaultValueExplanation(nameof(Enums.LoadFileType.Concordance))]
-    public IStep<LoadFileType> LoadFileType { get; set; } =
-        new EnumConstant<LoadFileType>(Enums.LoadFileType.Concordance);
+    public IStep<SCLEnum<LoadFileType>> LoadFileType { get; set; } =
+        new SCLConstant<SCLEnum<LoadFileType>>(new SCLEnum<LoadFileType>(Enums.LoadFileType.Concordance));
 
     /// <summary>
     /// Sets the parallel processing settings to use.
@@ -184,7 +184,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation("Default processing settings used")]
     [RubyArgument("parallelProcessingSettingsArg")]
     [Example("(workerCount: 2 workerMemory: 4096)")]
-    public IStep<Core.Entity>? ParallelProcessingSettings { get; set; }
+    public IStep<Entity>? ParallelProcessingSettings { get; set; }
 
     /// <summary>
     /// The method of selecting which items to export.
@@ -192,7 +192,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("traversalStrategyArg")]
     [DefaultValueExplanation(nameof(ExportTraversalStrategy.Items))]
-    public IStep<ExportTraversalStrategy>? TraversalStrategy { get; set; }
+    public IStep<SCLEnum<ExportTraversalStrategy>>? TraversalStrategy { get; set; }
 
     /// <summary>
     /// Method of deduplication when top-level item export is used.
@@ -200,7 +200,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("deduplicationArg")]
     [DefaultValueExplanation(nameof(ExportDeduplication.None))]
-    public IStep<ExportDeduplication>? Deduplication { get; set; }
+    public IStep<SCLEnum<ExportDeduplication>>? Deduplication { get; set; }
 
     /// <summary>
     /// Method of sorting items during the export.
@@ -208,7 +208,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("sortArg")]
     [DefaultValueExplanation(nameof(ExportSortOrder.None))]
-    public IStep<ExportSortOrder>? SortOrder { get; set; }
+    public IStep<SCLEnum<ExportSortOrder>>? SortOrder { get; set; }
 
     /// <summary>
     /// Export descendant containers.
@@ -217,7 +217,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("exportDescendantContainersArg")]
     [DefaultValueExplanation("false")]
-    public IStep<bool>? ExportDescendantContainers { get; set; }
+    public IStep<SCLBool>? ExportDescendantContainers { get; set; }
 
     /// <summary>
     /// Skip export of slipsheeted items.
@@ -226,7 +226,7 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [RequiredVersion(NuixVersionKey, "7.6")]
     [RubyArgument("skipSlipsheetedItemsArg")]
     [DefaultValueExplanation("false")]
-    public IStep<bool>? SkipSlipsheetedNatives { get; set; }
+    public IStep<SCLBool>? SkipSlipsheetedNatives { get; set; }
 
     /// <summary>
     /// Tag items that fail to export with this tag.

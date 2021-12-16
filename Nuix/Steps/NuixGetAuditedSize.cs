@@ -7,14 +7,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps;
 /// Nuix uses 1000 base for kb/mb/gb, not 1024.
 /// </summary>
 public sealed class
-    NuixGetAuditedSizeStepFactory : RubyScriptStepFactory<NuixGetAuditedSize, double>
+    NuixGetAuditedSizeStepFactory : RubyScriptStepFactory<NuixGetAuditedSize, SCLDouble>
 {
     private NuixGetAuditedSizeStepFactory() { }
 
     /// <summary>
     /// The instance.
     /// </summary>
-    public static RubyScriptStepFactory<NuixGetAuditedSize, double> Instance { get; } =
+    public static RubyScriptStepFactory<NuixGetAuditedSize, SCLDouble> Instance { get; } =
         new NuixGetAuditedSizeStepFactory();
 
     /// <inheritdoc />
@@ -45,10 +45,10 @@ public sealed class
 /// Nuix uses 1000 base for kb/mb/gb, not 1024.
 /// </summary>
 [Alias("NuixCalculateAuditedSize")]
-public sealed class NuixGetAuditedSize : RubyCaseScriptStepBase<double>
+public sealed class NuixGetAuditedSize : RubyCaseScriptStepBase<SCLDouble>
 {
     /// <inheritdoc />
-    public override IRubyScriptStepFactory<double> RubyScriptStepFactory =>
+    public override IRubyScriptStepFactory<SCLDouble> RubyScriptStepFactory =>
         NuixGetAuditedSizeStepFactory.Instance;
 
     /// <summary>
@@ -59,5 +59,5 @@ public sealed class NuixGetAuditedSize : RubyCaseScriptStepBase<double>
     [RubyArgument("searchArg")]
     [DefaultValueExplanation("flag:audited")]
     [Alias("Search")]
-    public IStep<StringStream> SearchTerm { get; set; } = new StringConstant("flag:audited");
+    public IStep<StringStream> SearchTerm { get; set; } = new SCLConstant<StringStream>("flag:audited");
 }

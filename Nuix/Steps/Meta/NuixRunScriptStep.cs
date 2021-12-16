@@ -55,7 +55,7 @@ public class NuixRunScript : CompoundStep<StringStream>
             .ToDictionary(
                 x =>
                     new RubyFunctionParameter(ConvertString(x.Name), x.Name, true),
-                x => x.Value.ObjectValue
+                x => x.Value
             )
             .Where(x => x.Value != null)
             .ToDictionary(x => x.Key, x => x.Value!);
@@ -99,7 +99,9 @@ public class NuixRunScript : CompoundStep<StringStream>
             .Map(x => new StringStream(x));
 
         if (runResult.IsFailure)
-            return runResult.MapError(x => x.WithLocation(this)).ConvertFailure<StringStream>();
+            return runResult
+                               
+                .MapError(error => error.WithLocation(this)).ConvertFailure<StringStream>();
 
         return runResult.Value;
     }
@@ -124,7 +126,7 @@ public class NuixRunScript : CompoundStep<StringStream>
     /// This will have spaces replaced with underscores and the first character will be made lowercase
     /// </summary>
     [StepProperty(1)]
-    [RequiredVersion(RubyScriptStepBase<object>.NuixVersionKey, "8.2")]
+    [RequiredVersion(RubyScriptStepBase<SCLNull>.NuixVersionKey, "8.2")]
     [Required]
     public IStep<StringStream> FunctionName { get; set; } = null!;
 

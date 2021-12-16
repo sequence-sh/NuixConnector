@@ -5,14 +5,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps;
 /// <summary>
 /// Returns whether or not a case exists.
 /// </summary>
-public sealed class NuixDoesCaseExistStepFactory : RubyScriptStepFactory<NuixDoesCaseExist, bool>
+public sealed class NuixDoesCaseExistStepFactory : RubyScriptStepFactory<NuixDoesCaseExist, SCLBool>
 {
     private NuixDoesCaseExistStepFactory() { }
 
     /// <summary>
     /// The instance.
     /// </summary>
-    public static RubyScriptStepFactory<NuixDoesCaseExist, bool> Instance { get; } =
+    public static RubyScriptStepFactory<NuixDoesCaseExist, SCLBool> Instance { get; } =
         new NuixDoesCaseExistStepFactory();
 
     /// <inheritdoc />
@@ -43,10 +43,10 @@ public sealed class NuixDoesCaseExistStepFactory : RubyScriptStepFactory<NuixDoe
 /// <summary>
 /// Returns whether or not a case exists.
 /// </summary>
-public sealed class NuixDoesCaseExist : RubyScriptStepBase<bool>
+public sealed class NuixDoesCaseExist : RubyScriptStepBase<SCLBool>
 {
     /// <inheritdoc />
-    public override IRubyScriptStepFactory<bool> RubyScriptStepFactory =>
+    public override IRubyScriptStepFactory<SCLBool> RubyScriptStepFactory =>
         NuixDoesCaseExistStepFactory.Instance;
 
     /// <inheritdoc />
