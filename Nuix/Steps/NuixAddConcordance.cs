@@ -200,7 +200,7 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("progressIntervalArg")]
     [DefaultValueExplanation("Every 5000 items")]
-    public IStep<int> ProgressInterval { get; set; } = new IntConstant(5000);
+    public IStep<SCLInt> ProgressInterval { get; set; } = new SCLConstant<SCLInt>(5000.ConvertToSCLObject());
 
     /// <summary>
     /// Sets additional metadata on the evidence container.

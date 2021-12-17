@@ -11,7 +11,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
 /// <summary>
 /// The base of a ruby script step.
 /// </summary>
-public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T>
+public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T> where T : ISCLObject
 {
     /// <summary>
     ///The name of the Nuix Connector
@@ -110,10 +110,10 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     internal IReadOnlyDictionary<RubyFunctionParameter, IStep?> GetArgumentValues() =>
         RubyFunctionParameter.GetRubyFunctionArguments(this);
 
-    internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>>
+    internal async Task<Result<IReadOnlyDictionary<RubyFunctionParameter, ISCLObject>, IError>>
         TryGetMethodParameters(IStateMonad stateMonad, CancellationToken cancellationToken)
     {
-        var dict = new Dictionary<RubyFunctionParameter, object>();
+        var dict = new Dictionary<RubyFunctionParameter, ISCLObject>();
 
         var errors = new List<IError>();
 
@@ -136,25 +136,24 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
             {
                 if (errors.Any())
                     return Result
-                        .Failure<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>(
+                        .Failure<IReadOnlyDictionary<RubyFunctionParameter, ISCLObject>, IError>(
                             ErrorList.Combine(errors)
                         );
                 //Don't try to evaluate argument if there are already errors
 
-                var r = await process.Run<object>(stateMonad, cancellationToken);
+                var r = await process.RunUntyped(stateMonad, cancellationToken);
 
                 if (r.IsFailure)
                     errors.Add(r.Error);
                 else
                 {
-                    object v = r.Value;
-                    dict.Add(argument, v);
+                    dict.Add(argument, r.Value);
                 }
             }
         }
 
         if (errors.Any())
-            return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, object>, IError>(
+            return Result.Failure<IReadOnlyDictionary<RubyFunctionParameter, ISCLObject>, IError>(
                 ErrorList.Combine(errors)
             );
 

@@ -212,19 +212,19 @@ public static class ConnectionTestsHelper
             output
         );
 
-    public static ReadOnlyDictionary<RubyFunctionParameter, object>
+    public static ReadOnlyDictionary<RubyFunctionParameter, ISCLObject>
         SearchAndTagParams(string casePath, string search, string tag) => new(
-        new Dictionary<RubyFunctionParameter, object>
+        new Dictionary<RubyFunctionParameter, ISCLObject>
         {
             {
                 new RubyFunctionParameter("pathArg", nameof(NuixSearchAndTag.CasePath), false),
-                casePath
+                new StringStream(casePath)
             },
             {
                 new RubyFunctionParameter("searchArg", nameof(NuixSearchAndTag.SearchTerm), false),
-                search
+                new StringStream(search)
             },
-            { new RubyFunctionParameter("tagArg", nameof(NuixSearchAndTag.Tag), false), tag }
+            { new RubyFunctionParameter("tagArg", nameof(NuixSearchAndTag.Tag), false), new StringStream(tag) }
         }
     );
 }

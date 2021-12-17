@@ -2,7 +2,7 @@
 
 namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
-public partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
+public partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, SCLInt>
 {
     /// <inheritdoc />
     protected override IEnumerable<NuixIntegrationTestCase> NuixTestCases
@@ -14,11 +14,11 @@ public partial class NuixCountItemsTests : NuixStepTestBase<NuixCountItems, int>
                 SetupCase,
                 new AssertTrue
                 {
-                    Boolean = new Equals<int>
+                    Boolean = new Equals<SCLInt>
                     {
-                        Terms = new ArrayNew<int>
+                        Terms = new ArrayNew<SCLInt>
                         {
-                            Elements = new List<IStep<int>>
+                            Elements = new List<IStep<SCLInt>>
                             {
                                 Constant(1),
                                 new NuixCountItems

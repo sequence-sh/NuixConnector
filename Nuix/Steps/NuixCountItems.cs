@@ -3,14 +3,14 @@ namespace Reductech.EDR.Connectors.Nuix.Steps;
 /// <summary>
 /// Returns the number of items matching a particular search term
 /// </summary>
-public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountItems, int>
+public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountItems, SCLInt>
 {
     private NuixCountItemsStepFactory() { }
 
     /// <summary>
     /// The instance.
     /// </summary>
-    public static RubyScriptStepFactory<NuixCountItems, int> Instance { get; } =
+    public static RubyScriptStepFactory<NuixCountItems, SCLInt> Instance { get; } =
         new NuixCountItemsStepFactory();
 
     /// <inheritdoc />
@@ -42,10 +42,10 @@ public sealed class NuixCountItemsStepFactory : RubyScriptStepFactory<NuixCountI
 /// <summary>
 /// Returns the number of items matching a particular search term
 /// </summary>
-public sealed class NuixCountItems : RubyCaseScriptStepBase<int>
+public sealed class NuixCountItems : RubyCaseScriptStepBase<SCLInt>
 {
     /// <inheritdoc />
-    public override IRubyScriptStepFactory<int> RubyScriptStepFactory =>
+    public override IRubyScriptStepFactory<SCLInt> RubyScriptStepFactory =>
         NuixCountItemsStepFactory.Instance;
 
     /// <summary>

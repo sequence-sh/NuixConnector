@@ -131,16 +131,16 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
             ITestOutputHelper testOutputHelper)
         {
             await Task.CompletedTask;
-            var yaml = Steps.Serialize();
+            var scl = Steps.Serialize(SerializeOptions.Serialize);
 
-            testOutputHelper.WriteLine(yaml);
+            testOutputHelper.WriteLine(scl);
 
             var sfs = SettingsHelpers.CreateStepFactoryStore(
                 null,
                 Assembly.GetAssembly(typeof(DeleteItem))!
             );
 
-            var deserializedStep = SCLParsing.TryParseStep(yaml);
+            var deserializedStep = SCLParsing.TryParseStep(scl);
 
             deserializedStep.ShouldBeSuccessful();
 

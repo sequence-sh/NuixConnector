@@ -95,7 +95,7 @@ public sealed class NuixAddToItemSet : RubySearchStepBase<Unit>
     [RubyArgument("deduplicationArg")]
     [DefaultValueExplanation("MD5")]
     [Alias("DeduplicateUsing")]
-    public IStep<ItemSetDeduplication>? ItemSetDeduplication { get; set; }
+    public IStep<SCLEnum<ItemSetDeduplication>>? ItemSetDeduplication { get; set; }
 
     /// <summary>
     /// The description of the item set.
@@ -116,7 +116,7 @@ public sealed class NuixAddToItemSet : RubySearchStepBase<Unit>
     [StepProperty(5)]
     [RubyArgument("deduplicateByArg")]
     [DefaultValueExplanation("Individual")]
-    public IStep<DeduplicateBy>? DeduplicateBy { get; set; }
+    public IStep<SCLEnum<DeduplicateBy>>? DeduplicateBy { get; set; }
 
     /// <summary>
     /// A list of custodian names ordered from highest ranked to lowest ranked.
@@ -137,5 +137,5 @@ public sealed class NuixAddToItemSet : RubySearchStepBase<Unit>
     [DefaultValueExplanation("Unsorted or by relevance. See SortSearch.")]
     [RubyArgument("itemSortOrderArg")]
     [Alias("SortItemsBy")]
-    public IStep<ItemSortOrder>? ItemSortOrder { get; set; }
+    public IStep<SCLEnum<ItemSortOrder>>? ItemSortOrder { get; set; }
 }

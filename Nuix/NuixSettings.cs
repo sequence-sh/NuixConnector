@@ -160,7 +160,7 @@ public static class SettingsHelpers
         var ns = ConnectorSettings.DefaultForAssembly(nuix!);
 
         ns.Settings = nuixSettings?.ConvertToEntity()
-            .Dictionary.ToDictionary(k => k.Key, v => v.Value.Value.ObjectValue!);
+            .Dictionary.ToDictionary(k => k.Key, v => v.Value.Value.ToCSharpObject());
 
         var core = Assembly.GetAssembly(typeof(IStep));
 
@@ -197,11 +197,11 @@ public static class SettingsHelpers
         );
 
         if (nuixConnector.HasNoValue
-         || nuixConnector.GetValueOrThrow() is not EntityValue.NestedEntity ent)
+         || nuixConnector.GetValueOrThrow() is not Entity ent)
             return ErrorCode.MissingStepSettings.ToErrorBuilder(nuixKey);
 
         var settingsObj =
-            EntityConversionHelpers.TryCreateFromEntity<NuixSettings>((ent).Value);
+            EntityConversionHelpers.TryCreateFromEntity<NuixSettings>(ent);
 
         return settingsObj;
     }

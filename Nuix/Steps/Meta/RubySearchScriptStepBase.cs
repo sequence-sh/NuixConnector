@@ -7,7 +7,7 @@ namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
 /// A ruby script step that searches for items. Contains all the
 /// parameters required for searching.
 /// </summary>
-public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T>
+public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T> where T : ISCLObject
 {
     /// <summary>
     /// The Nuix search query. For more details on the supported syntax,
@@ -39,7 +39,7 @@ public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T>
     [StepProperty]
     [RubyArgument("sortArg")]
     [DefaultValueExplanation("false")]
-    public virtual IStep<bool>? SortSearch { get; set; }
+    public virtual IStep<SCLBool>? SortSearch { get; set; }
 
     /// <summary>
     /// Defines the type of search that is done. By default only the items responsive to
@@ -48,8 +48,8 @@ public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T>
     [StepProperty]
     [RubyArgument("searchTypeArg")]
     [DefaultValueExplanation("ItemsOnly")]
-    public virtual IStep<SearchType> SearchType { get; set; } =
-        new EnumConstant<SearchType>(Enums.SearchType.ItemsOnly);
+    public virtual IStep<SCLEnum<SearchType>> SearchType { get; set; } =
+        new SCLConstant<SCLEnum<SearchType>>(new SCLEnum<SearchType>(Enums.SearchType.ItemsOnly));
 }
 
 /// <summary>
@@ -58,6 +58,7 @@ public abstract class RubySearchStepBase<T> : RubyCaseScriptStepBase<T>
 /// </summary>
 public abstract class RubySearchStepFactory<TStep, TOutput> : RubyScriptStepFactory<TStep, TOutput>
     where TStep : RubyCaseScriptStepBase<TOutput>, new()
+    where TOutput : ISCLObject
 {
     /// <summary>
     /// Any helper functions required for this Step to execute. By default the

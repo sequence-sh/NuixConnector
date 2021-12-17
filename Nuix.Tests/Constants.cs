@@ -181,15 +181,15 @@ public static class Constants
         int expected,
         string searchTerm) => new AssertTrue { Boolean = ItemsCountEqual(expected, searchTerm) };
 
-    public static IStep<bool> ItemsCountEqual(
+    public static IStep<SCLBool> ItemsCountEqual(
         int right,
         string searchTerm)
     {
-        return new Equals<int>
+        return new Equals<SCLInt>
         {
-            Terms = new ArrayNew<int>
+            Terms = new ArrayNew<SCLInt>
             {
-                Elements = new List<IStep<int>>
+                Elements = new List<IStep<SCLInt>>
                 {
                     Constant(right),
                     new NuixCountItems { SearchTerm = Constant(searchTerm) }
@@ -199,10 +199,10 @@ public static class Constants
     }
 
     public static IStep<Unit> AssertEquals<T>(IStep<T> expected, IStep<T> actual)
-        where T : IComparable<T> => new AssertEqual<T> { Left = expected, Right = actual };
+        where T : IComparableSCLObject => new AssertEqual<T> { Left = expected, Right = actual };
 
     public static IStep<Unit> AssertPropertyValueEquals<T>(string property, IStep<T> expected)
-        where T : IComparable<T> => AssertPropertyValueEquals(
+        where T : IComparableSCLObject => AssertPropertyValueEquals(
         VariableName.Item.Name,
         property,
         expected
@@ -212,7 +212,7 @@ public static class Constants
         string variable,
         string property,
         IStep<T> expected)
-        where T : IComparable<T> => new AssertEqual<T>
+        where T : IComparableSCLObject => new AssertEqual<T>
     {
         Left = expected,
         Right =

@@ -67,6 +67,6 @@ public sealed class NuixReorderProductionSet : RubyCaseScriptStepBase<Unit>
     [RubyArgument("sortOrderArg")]
     [Alias("Order")]
     [Alias("ItemSort")]
-    public IStep<ItemSortOrder> SortOrder { get; set; } =
-        new EnumConstant<ItemSortOrder>(ItemSortOrder.Position);
+    public IStep<SCLEnum<ItemSortOrder>> SortOrder { get; set; } =
+        new SCLConstant<SCLEnum<ItemSortOrder>>(new SCLEnum<ItemSortOrder>(ItemSortOrder.Position));
 }

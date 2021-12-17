@@ -161,7 +161,7 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
     [DefaultValueExplanation("Unsorted or by relevance. See SortSearch.")]
     [RubyArgument("itemSortOrderArg")]
     [Alias("SortItemsBy")]
-    public IStep<ItemSortOrder>? ItemSortOrder { get; set; }
+    public IStep<SCLEnum<ItemSortOrder>>? ItemSortOrder { get; set; }
 
     /// <summary>
     /// Sets the imaging options for a production set.

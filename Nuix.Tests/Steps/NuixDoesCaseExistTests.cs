@@ -1,6 +1,6 @@
 ﻿namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
 
-public partial class NuixDoesCaseExistTests : NuixStepTestBase<NuixDoesCaseExist, bool>
+public partial class NuixDoesCaseExistTests : NuixStepTestBase<NuixDoesCaseExist, SCLBool>
 {
     /// <inheritdoc />
     protected override IEnumerable<DeserializeCase> DeserializeCases

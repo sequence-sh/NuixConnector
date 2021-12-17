@@ -56,7 +56,7 @@ public class NuixConnectionTests
                 ConnectionTestsHelper.GetStateMonadForProcess(logFactory),
                 null!,
                 null!,
-                new Dictionary<RubyFunctionParameter, object>(),
+                new Dictionary<RubyFunctionParameter, ISCLObject>(),
                 CasePathParameter.IgnoresOpenCase.Instance,
                 ct
             )
@@ -74,13 +74,13 @@ public class NuixConnectionTests
         var stream1 = new List<Entity>().ToAsyncEnumerable().ToSCLArray();
         var stream2 = new List<Entity>().ToAsyncEnumerable().ToSCLArray();
 
-        var dict = new Dictionary<RubyFunctionParameter, object>
+        var dict = new Dictionary<RubyFunctionParameter, ISCLObject>
         {
             { new RubyFunctionParameter("stream1Arg", "Stream1", false), stream1 },
             { new RubyFunctionParameter("stream2Arg", "Stream2", false), stream2 }
         };
 
-        var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
+        var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, ISCLObject>(dict);
 
         var step = new FakeNuixTwoStreamFunction();
 
@@ -125,12 +125,12 @@ public class NuixConnectionTests
 
         var stream1 = entities.ToAsyncEnumerable().ToSCLArray();
 
-        var dict = new Dictionary<RubyFunctionParameter, object>
+        var dict = new Dictionary<RubyFunctionParameter, ISCLObject>
         {
             { new RubyFunctionParameter("entityStream", "EntityStream", false), stream1 }
         };
 
-        var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(dict);
+        var stepParams = new ReadOnlyDictionary<RubyFunctionParameter, ISCLObject>(dict);
 
         var step = new FakeNuixStreamFunction();
 
@@ -279,8 +279,8 @@ public class NuixConnectionTests
 
         var nuixConnection = ConnectionTestsHelper.GetNuixConnection(lf, action);
 
-        var rubyParams = new ReadOnlyDictionary<RubyFunctionParameter, object>(
-            new Dictionary<RubyFunctionParameter, object>()
+        var rubyParams = new ReadOnlyDictionary<RubyFunctionParameter, ISCLObject>(
+            new Dictionary<RubyFunctionParameter, ISCLObject>()
         );
 
         var result = await nuixConnection.RunFunctionAsync(
@@ -297,7 +297,7 @@ public class NuixConnectionTests
 
         Assert.Equal(
             "workstation",
-            result.Value.TryGetValue("Name").GetValueOrThrow().GetPrimitiveString()
+            result.Value.TryGetValue("Name").GetValueOrThrow().Serialize(SerializeOptions.Primitive)
         );
     }
 }

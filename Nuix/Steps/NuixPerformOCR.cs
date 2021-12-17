@@ -96,7 +96,7 @@ public sealed class NuixPerformOCR : RubySearchStepBase<Unit>
     [DefaultValueExplanation(DefaultSearchTerm)]
     [RubyArgument("searchArg")]
     public override IStep<StringStream> SearchTerm { get; set; } =
-        new StringConstant(DefaultSearchTerm);
+        new SCLConstant<StringStream>(DefaultSearchTerm);
 
     /// <summary>
     /// The name of the OCR profile to use.

@@ -3,7 +3,7 @@
 /// <summary>
 /// A ruby script step that uses a case.
 /// </summary>
-public abstract class RubyCaseScriptStepBase<T> : RubyScriptStepBase<T>
+public abstract class RubyCaseScriptStepBase<T> : RubyScriptStepBase<T> where T : ISCLObject
 {
     /// <summary>
     /// The pathArg argument name in Ruby.

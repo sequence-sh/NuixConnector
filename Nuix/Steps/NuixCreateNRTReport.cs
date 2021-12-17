@@ -85,7 +85,7 @@ public sealed class NuixCreateNRTReport : RubyCaseScriptStepBase<Unit>
     [RubyArgument("outputFormatArg")]
     [DefaultValueExplanation("PDF")]
     [Alias("Format")]
-    public IStep<StringStream> OutputFormat { get; set; } = new StringConstant("PDF");
+    public IStep<StringStream> OutputFormat { get; set; } = new SCLConstant<StringStream>("PDF");
 
     /// <summary>
     /// The report title.

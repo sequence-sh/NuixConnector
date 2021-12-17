@@ -70,7 +70,7 @@ public sealed class NuixExcludeDecryptedItems : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation("has-exclusion:0 AND flag:encrypted")]
     [Alias("Search")]
     public IStep<StringStream> SearchTerm { get; set; } =
-        new StringConstant("has-exclusion:0 AND flag:encrypted");
+        new SCLConstant<StringStream>("has-exclusion:0 AND flag:encrypted");
 
     /// <summary>
     /// The exclusion reason.
@@ -79,7 +79,7 @@ public sealed class NuixExcludeDecryptedItems : RubyCaseScriptStepBase<Unit>
     [RubyArgument("exclusionArg")]
     [DefaultValueExplanation("DecryptedItem")]
     [Alias("Exclusion")]
-    public IStep<StringStream> ExclusionReason { get; set; } = new StringConstant("DecryptedItem");
+    public IStep<StringStream> ExclusionReason { get; set; } = new SCLConstant<StringStream>("DecryptedItem");
 }
 
 }
