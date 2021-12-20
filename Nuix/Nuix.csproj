@@ -4,22 +4,22 @@
     <TargetFramework>net6.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <RootNamespace>Reductech.EDR.Connectors.Nuix</RootNamespace>
-    <AssemblyName>Reductech.EDR.Connectors.Nuix</AssemblyName>
+    <RootNamespace>Reductech.Sequence.Connectors.Nuix</RootNamespace>
+    <AssemblyName>Reductech.Sequence.Connectors.Nuix</AssemblyName>
     <Nullable>enable</Nullable>
     <Version>0.13.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Reductech.EDR.Connectors.Nuix</PackageId>
-    <Title>EDR NUIX Connector</Title>
+    <PackageId>Reductech.Sequence.Connectors.Nuix</PackageId>
+    <Title>Sequence® NUIX Connector</Title>
     <Description>Class library for automating Nuix workflows using Steps and Sequences.</Description>
-    <Product>EDR</Product>
+    <Product>Sequence®</Product>
 
-    <PackageProjectUrl>https://gitlab.com/reductech/edr/connectors/nuix</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/edr/connectors/nuix</RepositoryUrl>
-    <PackageReleaseNotes>https://gitlab.com/reductech/edr/connectors/nuix/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
-    <PackageTags>ediscovery;forensics;nuix;automation;orchestration;edrm</PackageTags>
+    <PackageProjectUrl>https://gitlab.com/reductech/sequence/connectors/nuix</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectors/nuix</RepositoryUrl>
+    <PackageReleaseNotes>https://gitlab.com/reductech/sequence/connectors/nuix/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <PackageTags>ediscovery;forensics;nuix;automation;orchestration;edrm;sequence</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 
     <Authors>Reductech</Authors>
@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reductech.EDR.Core" Version="0.13.0-a.main.2112200210">
+    <PackageReference Include="Reductech.Sequence.Core" Version="0.13.0-a.main.2112201532">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />

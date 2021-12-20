@@ -5,12 +5,12 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Reductech.EDR.Connectors.Nuix.Tests</RootNamespace>
+    <RootNamespace>Reductech.Sequence.Connectors.Nuix.Tests</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepositoryUrl>https://gitlab.com/reductech/edr/connectors/nuix</RepositoryUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectors/nuix</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
@@ -29,8 +29,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="MicrosoftExtensions.Logging.Xunit" Version="1.0.0" />
-    <PackageReference Include="Reductech.EDR.Connectors.FileSystem" Version="0.13.0-a.main.2112180515" />
-    <PackageReference Include="Reductech.EDR.Core.TestHarness" Version="0.13.0-a.main.2112200210" />
+    <PackageReference Include="Reductech.Sequence.Connectors.FileSystem" Version="0.13.0-a.main.2112201634" />
+    <PackageReference Include="Reductech.Sequence.Core.TestHarness" Version="0.13.0-a.main.2112201532" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.47" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
