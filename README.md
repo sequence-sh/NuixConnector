@@ -1,9 +1,9 @@
-# EDR Nuix Connector
+# Sequence® Nuix Connector
 
-[Reductech EDR](https://gitlab.com/reductech/edr) is a collection of
+[Reductech Sequence®](https://gitlab.com/reductech/sequence) is a collection of
 libraries that automates cross-application e-discovery and forensic workflows.
 
-The EDR Nuix Connector allows users to automate Forensic workflows using
+The Sequence Nuix Connector allows users to automate Forensic workflows using
 [Nuix Workstation](https://www.nuix.com/products/nuixworkstation)
 
 This connector has `Steps` to:
@@ -16,39 +16,16 @@ This connector has `Steps` to:
 - Generate reports
 - Export concordance or document metadata
 
-### [Try Nuix Connector](https://gitlab.com/reductech/edr/edr/-/releases)
-
-Using [EDR](https://gitlab.com/reductech/edr/edr),
-the command line tool for running Sequences.
-
-## Documentation
-
-- Documentation is available here: https://docs.reductech.io
-- A quick-start is available here: https://docs.reductech.io/edr/how-to/quick-start.html
-
-## E-discovery Reduct
-
-The Nuix Connector is part of a group of projects called
-[E-discovery Reduct](https://gitlab.com/reductech/edr)
-which consists of a collection of [Connectors](https://gitlab.com/reductech/edr/connectors)
-and a command-line application for running Sequences, called
-[EDR](https://gitlab.com/reductech/edr/edr/-/releases).
-
-### SCL
-
-[SCL](https://docs.reductech.io/edr/how-to/scl/sequence-configuration-language.html) stands for
-Sequence Configuration Language, a language for automating e-discovery and forensic workflows.
-
 ## Settings
 
 To use the Nuix Connector you need to add a `settings` block to the `nuix` connector configuration in the `connectors.json` file.
 
-### Using EDR with a license dongle
+### Using a license dongle
 
 ```json
 {
-  "Reductech.EDR.Connectors.Nuix": {
-    "id": "Reductech.EDR.Connectors.Nuix",
+  "Reductech.Sequence.Connectors.Nuix": {
+    "id": "Reductech.Sequence.Connectors.Nuix",
     "version": "0.9.0",
     "enabled": true,
     "settings": {
@@ -68,12 +45,12 @@ To use the Nuix Connector you need to add a `settings` block to the `nuix` conne
 }
 ```
 
-### Using EDR with a license server
+### Using a license server
 
 ```json
 {
-  "Reductech.EDR.Connectors.Nuix": {
-    "id": "Reductech.EDR.Connectors.Nuix",
+  "Reductech.Sequence.Connectors.Nuix": {
+    "id": "Reductech.Sequence.Connectors.Nuix",
     "version": "0.9.0",
     "enabled": true,
     "settings": {
@@ -112,7 +89,7 @@ To use the Nuix Connector you need to add a `settings` block to the `nuix` conne
 | version               | ✔        | `Version`  | The installed version of Nuix.                                                                                                     |
 | consoleArguments      |          | `string[]` | List of console arguments to append to the nuix command.                                                                           |
 | consoleArgumentsPost  |          | `string[]` | List of console arguments to prepend to the nuix command.                                                                          |
-| environmentVariables  |          | `string[]` | Environment variables to set before running EDR.                                                                                   |
+| environmentVariables  |          | `string[]` | Environment variables to set before running Sequence®.                                                                             |
 | ignoreWarningsRegex   |          | `string`   | Regex used to ignore java warnings coming from the Nuix connection. The default values ignores warnings from Nuix Version up to 9. |
 | ignoreErrorsRegex     |          | `string`   | Regex used to ignore java errors coming from the Nuix connection. The default values ignores errors from Nuix Version up to 9.     |
 | licencesourcelocation |          | `string`   | Selects a licence source if multiple are available.                                                                                |
