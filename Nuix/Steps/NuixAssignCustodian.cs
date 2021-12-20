@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Run a search query on a nuix case and assign found items to a custodian.
@@ -54,6 +53,4 @@ public sealed class NuixAssignCustodian : RubySearchStepBase<Unit>
     [StepProperty(2)]
     [RubyArgument("custodianArg")]
     public IStep<StringStream> Custodian { get; set; } = null!;
-}
-
 }

@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Returns the Nuix version
@@ -36,6 +35,4 @@ public sealed class NuixGetVersion : RubyCaseScriptStepBase<StringStream>
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixGetVersionFactory.Instance;
-}
-
 }

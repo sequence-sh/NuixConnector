@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Creates a new case and opens it
@@ -89,6 +88,4 @@ public sealed class NuixCreateCase : RubyScriptStepBase<Unit>
     [RubyArgument("descriptionArg")]
     [DefaultValueExplanation("No Description")]
     public IStep<StringStream>? Description { get; set; }
-}
-
 }

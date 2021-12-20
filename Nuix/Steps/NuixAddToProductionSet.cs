@@ -1,10 +1,9 @@
-using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Enums;
-using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
-using Reductech.EDR.Core.Internal.Errors;
+﻿using CSharpFunctionalExtensions;
+using Reductech.Sequence.Connectors.Nuix.Enums;
+using Reductech.Sequence.Connectors.Nuix.Steps.Helpers;
+using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Run a search query in Nuix and add all items found to a production set.
@@ -240,6 +239,4 @@ public sealed class NuixAddToProductionSet : RubySearchStepBase<Unit>
 
         return base.VerifyThis(stepFactoryStore);
     }
-}
-
 }

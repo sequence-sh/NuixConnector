@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Core.TestHarness;
 using Xunit;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 public class RequirementsTest
 {

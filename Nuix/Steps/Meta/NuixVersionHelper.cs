@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Helper methods relating to Nuix Versions-

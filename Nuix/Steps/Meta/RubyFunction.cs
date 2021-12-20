@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A function that can be run within Ruby

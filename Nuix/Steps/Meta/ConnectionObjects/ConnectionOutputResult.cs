@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// The object if this was a result.
@@ -14,6 +13,4 @@ public class ConnectionOutputResult
     /// </summary>
     [JsonPropertyName("data")]
     public object? Data { get; set; }
-}
-
 }

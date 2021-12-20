@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using CSharpFunctionalExtensions;
 using Moq;
-using Reductech.EDR.Core.ExternalProcesses;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Core.ExternalProcesses;
+using Reductech.Sequence.Core.Internal.Errors;
+using Reductech.Sequence.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
+namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixOpenConnectionTests : StepTestBase<NuixOpenConnection, Unit>
 {

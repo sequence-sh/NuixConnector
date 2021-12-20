@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 class MetaTests : MetaTestsBase
 {

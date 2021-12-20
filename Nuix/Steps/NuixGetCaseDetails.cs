@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Returns an Entity with information about the current case.
@@ -65,6 +64,4 @@ public sealed class NuixGetCaseDetails : RubyCaseScriptStepBase<Entity>
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Entity> RubyScriptStepFactory =>
         NuixGetCaseDetailsFactory.Instance;
-}
-
 }

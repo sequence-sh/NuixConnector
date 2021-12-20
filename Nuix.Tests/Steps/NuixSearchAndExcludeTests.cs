@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
+namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixSearchAndExcludeTests : NuixStepTestBase<NuixSearchAndExclude, Unit>
 {

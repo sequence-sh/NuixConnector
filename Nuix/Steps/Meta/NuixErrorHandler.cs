@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-using Reductech.EDR.Core.ExternalProcesses;
+using Reductech.Sequence.Core.ExternalProcesses;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Error Handler for running Nuix.exe
@@ -35,6 +34,4 @@ public class NuixErrorHandler : IErrorHandler
             "warning: ambiguous Java methods found, using open(java.lang.String)",
             "warning: multiple Java methods found, use -Xjruby.ji.ambiguous.calls.debug for backtrace. Choosing open(java.lang.String)"
         };
-}
-
 }

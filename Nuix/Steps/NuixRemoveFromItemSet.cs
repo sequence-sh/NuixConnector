@@ -1,4 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Removes particular items from a Nuix production set.
@@ -82,7 +82,8 @@ public sealed class NuixRemoveFromItemSet : RubySearchStepBase<Unit>
     [RubyArgument("searchArg")]
     [DefaultValueExplanation("All items will be removed.")]
     [Example("Tag:sushi")]
-    public override IStep<StringStream> SearchTerm { get; set; } = new SCLConstant<StringStream>(string.Empty);
+    public override IStep<StringStream> SearchTerm { get; set; } =
+        new SCLConstant<StringStream>(string.Empty);
 
     /// <summary>
     /// If true (default), duplicates of (top-level and above-top-level) originals are
@@ -92,5 +93,6 @@ public sealed class NuixRemoveFromItemSet : RubySearchStepBase<Unit>
     [StepProperty]
     [RubyArgument("removeDuplicatesArg")]
     [DefaultValueExplanation("true")]
-    public IStep<SCLBool> RemoveDuplicates { get; set; } = new SCLConstant<SCLBool>(true.ConvertToSCLObject());
+    public IStep<SCLBool> RemoveDuplicates { get; set; } =
+        new SCLConstant<SCLBool>(true.ConvertToSCLObject());
 }

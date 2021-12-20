@@ -1,9 +1,9 @@
-﻿using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.TestHarness;
+﻿using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.Sequence.Core.Internal.Errors;
+using Reductech.Sequence.Core.Steps;
+using Reductech.Sequence.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
+namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
 {
@@ -100,7 +100,10 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                     CaseName     = Constant("Error Case"),
                     Investigator = Constant("investigator")
                 },
-                new ErrorBuilder(ErrorCode.MissingStepSettings, "Reductech.EDR.Connectors.Nuix")
+                new ErrorBuilder(
+                    ErrorCode.MissingStepSettings,
+                    "Reductech.Sequence.Connectors.Nuix"
+                )
             );
         }
     }

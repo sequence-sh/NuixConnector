@@ -3,16 +3,15 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Connectors.Nuix.Errors;
-using Reductech.EDR.Connectors.Nuix.Logging;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core.Entities.Schema;
-using Reductech.EDR.Core.ExternalProcesses;
-using Reductech.EDR.Core.Internal.Errors;
-using Entity = Reductech.EDR.Core.Entity;
+using Reductech.Sequence.Connectors.Nuix.Errors;
+using Reductech.Sequence.Connectors.Nuix.Logging;
+using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.Sequence.Core.Entities.Schema;
+using Reductech.Sequence.Core.ExternalProcesses;
+using Reductech.Sequence.Core.Internal.Errors;
+using Entity = Reductech.Sequence.Core.Entity;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// An open connection to our general script running in Nuix
@@ -487,6 +486,4 @@ public sealed class
     {
         return FalseNode.Instance;
     }
-}
-
 }

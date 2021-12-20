@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Adds data from a Concordance file to a NUIX case.
@@ -200,7 +199,8 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("progressIntervalArg")]
     [DefaultValueExplanation("Every 5000 items")]
-    public IStep<SCLInt> ProgressInterval { get; set; } = new SCLConstant<SCLInt>(5000.ConvertToSCLObject());
+    public IStep<SCLInt> ProgressInterval { get; set; } =
+        new SCLConstant<SCLInt>(5000.ConvertToSCLObject());
 
     /// <summary>
     /// Sets additional metadata on the evidence container.
@@ -241,6 +241,4 @@ public sealed class NuixAddConcordance : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation("Default system time zone")]
     [Alias("TimeZone")]
     public IStep<StringStream>? ContainerTimeZone { get; set; }
-}
-
 }

@@ -1,6 +1,6 @@
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Migrates a case to the latest version if necessary.

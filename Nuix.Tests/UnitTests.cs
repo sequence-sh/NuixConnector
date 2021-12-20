@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Core.Abstractions;
+using Reductech.Sequence.Core.Steps;
+using Reductech.Sequence.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 public abstract partial class NuixStepTestBase<TStep, TOutput>
 {

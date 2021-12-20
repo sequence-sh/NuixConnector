@@ -1,7 +1,7 @@
-﻿using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core.TestHarness;
+﻿using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.Sequence.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps;
+namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixAddItemTests : NuixStepTestBase<NuixAddItem, Unit>
 {

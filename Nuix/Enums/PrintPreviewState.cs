@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR.Connectors.Nuix.Enums;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Enums;
 
 /// <summary>
 /// The state of print previews in the production set.

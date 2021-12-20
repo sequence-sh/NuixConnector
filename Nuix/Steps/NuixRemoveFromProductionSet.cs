@@ -1,4 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Removes particular items from a Nuix production set.
@@ -79,5 +79,6 @@ public sealed class NuixRemoveFromProductionSet : RubySearchStepBase<Unit>
     [DefaultValueExplanation("All items removed.")]
     [Example("Tag:sushi")]
     [RubyArgument("searchArg")]
-    public override IStep<StringStream> SearchTerm { get; set; } = new SCLConstant<StringStream>(string.Empty);
+    public override IStep<StringStream> SearchTerm { get; set; } =
+        new SCLConstant<StringStream>(string.Empty);
 }

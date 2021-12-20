@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Creates a report for a Nuix case.
@@ -107,6 +106,4 @@ public sealed class NuixCreateReport : RubyCaseScriptStepBase<StringStream>
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixCreateReportStepFactory.Instance;
-}
-
 }

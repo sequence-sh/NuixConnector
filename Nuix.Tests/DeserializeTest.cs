@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.Core.Abstractions;
+using Reductech.Sequence.Core.Abstractions;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
-public abstract partial class NuixStepTestBase<TStep, TOutput> 
+public abstract partial class NuixStepTestBase<TStep, TOutput>
 {
     public record NuixDeserializeTest : DeserializeCase
     {

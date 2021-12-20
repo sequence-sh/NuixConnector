@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// The casePath parameter

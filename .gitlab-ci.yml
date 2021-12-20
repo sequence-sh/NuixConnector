@@ -20,8 +20,8 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
 
 variables:
-  PACKAGE_NAME_NUGET: Reductech.EDR.Connectors.Nuix
-  PACKAGE_NAME_DLL: Reductech.EDR.Connectors.Nuix
+  PACKAGE_NAME_NUGET: Reductech.Sequence.Connectors.Nuix
+  PACKAGE_NAME_DLL: Reductech.Sequence.Connectors.Nuix
   GIT_SUBMODULE_STRATEGY: normal
   PUBLISH_CONNECTOR: 1
 

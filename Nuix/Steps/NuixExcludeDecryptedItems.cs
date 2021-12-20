@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Excludes password protected items once they have been decrypted.
@@ -79,7 +78,6 @@ public sealed class NuixExcludeDecryptedItems : RubyCaseScriptStepBase<Unit>
     [RubyArgument("exclusionArg")]
     [DefaultValueExplanation("DecryptedItem")]
     [Alias("Exclusion")]
-    public IStep<StringStream> ExclusionReason { get; set; } = new SCLConstant<StringStream>("DecryptedItem");
-}
-
+    public IStep<StringStream> ExclusionReason { get; set; } =
+        new SCLConstant<StringStream>("DecryptedItem");
 }

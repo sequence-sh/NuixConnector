@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A ruby script step that uses a case.

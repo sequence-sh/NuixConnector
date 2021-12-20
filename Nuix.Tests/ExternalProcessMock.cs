@@ -6,13 +6,13 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core.ExternalProcesses;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.Sequence.Core.ExternalProcesses;
+using Reductech.Sequence.Core.Internal.Errors;
+using Reductech.Sequence.Core.TestHarness;
 using Xunit.Sdk;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 internal class ExternalProcessMock : IExternalProcessRunner
 {

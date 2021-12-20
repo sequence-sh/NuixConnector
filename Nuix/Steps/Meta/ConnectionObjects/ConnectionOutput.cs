@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Internal.Errors;
+using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// An output object that will be returned from a Nuix Connection

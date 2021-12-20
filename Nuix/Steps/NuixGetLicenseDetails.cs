@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Returns an Entity with information about the Nuix license currently in use.
@@ -57,6 +56,4 @@ public sealed class NuixGetLicenseDetails : RubyCaseScriptStepBase<Entity>
     /// <inheritdoc />
     public override IRubyScriptStepFactory<Entity> RubyScriptStepFactory =>
         NuixGetLicenseDetailsFactory.Instance;
-}
-
 }

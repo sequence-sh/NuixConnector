@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Imports the given document IDs into this production set. Only works if this production set has imported numbering.
@@ -84,7 +83,6 @@ public sealed class NuixImportDocumentIds : RubyCaseScriptStepBase<Unit>
     [DefaultValueExplanation("false")]
     [RubyArgument("sourceProductionSetsInDataArg")]
     [Alias("SetNameInList")]
-    public IStep<SCLBool> AreSourceProductionSetsInData { get; set; } = new SCLConstant<SCLBool>(false.ConvertToSCLObject());
-}
-
+    public IStep<SCLBool> AreSourceProductionSetsInData { get; set; } =
+        new SCLConstant<SCLBool>(false.ConvertToSCLObject());
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Reductech.EDR.Connectors.Nuix.Enums;
+namespace Reductech.Sequence.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Defines the type of search that is performed.

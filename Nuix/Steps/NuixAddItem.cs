@@ -1,8 +1,7 @@
-using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Internal.Errors;
+﻿using CSharpFunctionalExtensions;
+using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Adds a file or directory to a Nuix Case.
@@ -278,7 +277,8 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
     [StepProperty]
     [RubyArgument("progressIntervalArg")]
     [DefaultValueExplanation("Every 5000 items")]
-    public IStep<SCLInt> ProgressInterval { get; set; } = new SCLConstant<SCLInt>(5000.ConvertToSCLObject());
+    public IStep<SCLInt> ProgressInterval { get; set; } =
+        new SCLConstant<SCLInt>(5000.ConvertToSCLObject());
 
     /// <summary>
     /// Sets additional metadata on the evidence container.
@@ -337,6 +337,4 @@ public sealed class NuixAddItem : RubyCaseScriptStepBase<Unit>
 
         return base.VerifyThis(stepFactoryStore);
     }
-}
-
 }

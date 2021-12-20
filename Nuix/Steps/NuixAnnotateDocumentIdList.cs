@@ -1,4 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Annotates a document ID list to add production set names to it.

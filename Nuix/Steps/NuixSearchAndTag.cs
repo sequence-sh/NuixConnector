@@ -1,5 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Searches a NUIX case with a particular search string and tags all files it finds.
@@ -54,6 +53,4 @@ public sealed class NuixSearchAndTag : RubySearchStepBase<Unit>
     [StepProperty(2)]
     [RubyArgument("tagArg")]
     public IStep<StringStream> Tag { get; set; } = null!;
-}
-
 }

@@ -1,7 +1,6 @@
-﻿using Reductech.EDR.Connectors.FileSystem;
+﻿using Reductech.Sequence.Connectors.FileSystem;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
-{
+namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class
     NuixCreateIrregularItemsReportTests : NuixStepTestBase<NuixCreateIrregularItemsReport,
@@ -37,6 +36,4 @@ public partial class
             );
         }
     }
-}
-
 }

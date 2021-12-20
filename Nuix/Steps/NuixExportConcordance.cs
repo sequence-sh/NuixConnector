@@ -1,6 +1,6 @@
-using Reductech.EDR.Connectors.Nuix.Enums;
+﻿using Reductech.Sequence.Connectors.Nuix.Enums;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Exports Concordance for a particular production set.
@@ -175,7 +175,9 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("loadFileTypeArg")]
     [DefaultValueExplanation(nameof(Enums.LoadFileType.Concordance))]
     public IStep<SCLEnum<LoadFileType>> LoadFileType { get; set; } =
-        new SCLConstant<SCLEnum<LoadFileType>>(new SCLEnum<LoadFileType>(Enums.LoadFileType.Concordance));
+        new SCLConstant<SCLEnum<LoadFileType>>(
+            new SCLEnum<LoadFileType>(Enums.LoadFileType.Concordance)
+        );
 
     /// <summary>
     /// Sets the parallel processing settings to use.
