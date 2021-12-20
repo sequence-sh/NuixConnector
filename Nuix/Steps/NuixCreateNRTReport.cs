@@ -1,5 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Create a case report using an NRT file.
@@ -138,6 +137,4 @@ public sealed class NuixCreateNRTReport : RubyCaseScriptStepBase<Unit>
     [Alias("GlobalResourcesUrl")]
     [Alias("GLOBAL_RESOURCES_URL")]
     public IStep<StringStream>? GlobalResourcesPath { get; set; }
-}
-
 }

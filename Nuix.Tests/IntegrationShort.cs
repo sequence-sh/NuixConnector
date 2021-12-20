@@ -132,7 +132,8 @@ public partial class IntegrationShortTests
                                 Container              = Constant("INT01B0002"),
                                 ContainerEncoding      = Constant("UTF-8")
                             },
-                            AssertCount(3, "custodian:\"Reductech Sequence\""), AssertCount(4, "*.txt"),
+                            AssertCount(3, "custodian:\"Reductech Sequence\""),
+                            AssertCount(4, "*.txt"),
                             // OCR the data
                             AssertCount(1, "deluge"), new NuixPerformOCR
                             {

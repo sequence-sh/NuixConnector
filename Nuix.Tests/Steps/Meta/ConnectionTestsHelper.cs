@@ -224,7 +224,10 @@ public static class ConnectionTestsHelper
                 new RubyFunctionParameter("searchArg", nameof(NuixSearchAndTag.SearchTerm), false),
                 new StringStream(search)
             },
-            { new RubyFunctionParameter("tagArg", nameof(NuixSearchAndTag.Tag), false), new StringStream(tag) }
+            {
+                new RubyFunctionParameter("tagArg", nameof(NuixSearchAndTag.Tag), false),
+                new StringStream(tag)
+            }
         }
     );
 }

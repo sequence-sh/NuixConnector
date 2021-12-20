@@ -1,5 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Run a search query in Nuix and exclude all items found.
@@ -70,6 +69,4 @@ public sealed class NuixSearchAndExclude : RubySearchStepBase<Unit>
     [RubyArgument("tagArg")]
     [DefaultValueExplanation("Items will not be tagged")]
     public IStep<StringStream>? Tag { get; set; }
-}
-
 }

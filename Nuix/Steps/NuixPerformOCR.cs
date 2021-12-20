@@ -1,8 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Performs optical character recognition on items in a NUIX case.
@@ -134,6 +133,4 @@ public sealed class NuixPerformOCR : RubySearchStepBase<Unit>
 
         return base.VerifyThis(stepFactoryStore);
     }
-}
-
 }

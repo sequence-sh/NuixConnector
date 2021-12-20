@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// The base of a ruby script step.
 /// </summary>
-public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T> where T : ISCLObject
+public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T>
+    where T : ISCLObject
 {
     /// <summary>
     ///The name of the Nuix Connector
@@ -159,6 +159,4 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
 
         return dict;
     }
-}
-
 }

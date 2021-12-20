@@ -100,8 +100,8 @@ public class NuixRunScript : CompoundStep<StringStream>
 
         if (runResult.IsFailure)
             return runResult
-                               
-                .MapError(error => error.WithLocation(this)).ConvertFailure<StringStream>();
+                .MapError(error => error.WithLocation(this))
+                .ConvertFailure<StringStream>();
 
         return runResult.Value;
     }

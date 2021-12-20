@@ -5,7 +5,7 @@ using Reductech.Sequence.Core.Abstractions;
 
 namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
-public abstract partial class NuixStepTestBase<TStep, TOutput> 
+public abstract partial class NuixStepTestBase<TStep, TOutput>
 {
     public record NuixDeserializeTest : DeserializeCase
     {

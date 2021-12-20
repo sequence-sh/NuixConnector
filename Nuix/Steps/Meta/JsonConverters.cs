@@ -5,8 +5,7 @@ using System.Threading;
 using Reductech.Sequence.Core.Entities;
 using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Json Converters to use for Reductech Entities
@@ -168,6 +167,4 @@ public static class JsonConverters
             _                    => Core.Entity.Create(jElement)
         };
     }
-}
-
 }

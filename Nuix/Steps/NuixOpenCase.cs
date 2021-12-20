@@ -1,5 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Migrates a case to the latest version if necessary.
@@ -56,6 +55,4 @@ public sealed class NuixOpenCase : RubyScriptStepBase<Unit>
     [RubyArgument(PathArg)]
     [Alias("Case")]
     public IStep<StringStream> CasePath { get; set; } = null!;
-}
-
 }

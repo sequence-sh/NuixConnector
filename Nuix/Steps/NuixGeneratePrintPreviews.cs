@@ -1,5 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Generates print previews for items in a production set.
@@ -59,6 +58,4 @@ public sealed class NuixGeneratePrintPreviews : RubyCaseScriptStepBase<Unit>
     [RubyArgument("productionSetNameArg")]
     [Alias("ProductionSet")]
     public IStep<StringStream> ProductionSetName { get; set; } = null!;
-}
-
 }

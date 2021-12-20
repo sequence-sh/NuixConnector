@@ -1,7 +1,6 @@
 ﻿using Reductech.Sequence.Core.Steps;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps
-{
+namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixGetVersionTests : NuixStepTestBase<NuixGetVersion, StringStream>
 {
@@ -31,6 +30,4 @@ public partial class NuixGetVersionTests : NuixStepTestBase<NuixGetVersion, Stri
             );
         }
     }
-}
-
 }

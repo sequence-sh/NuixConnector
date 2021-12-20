@@ -1,5 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps
-{
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Creates a list of all terms appearing in the case and their frequencies.
@@ -54,6 +53,4 @@ public sealed class NuixCreateTermList : RubyCaseScriptStepBase<StringStream>
     /// <inheritdoc />
     public override IRubyScriptStepFactory<StringStream> RubyScriptStepFactory =>
         NuixCreateTermListStepFactory.Instance;
-}
-
 }

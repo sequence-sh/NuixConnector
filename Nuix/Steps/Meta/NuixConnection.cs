@@ -11,8 +11,7 @@ using Reductech.Sequence.Core.ExternalProcesses;
 using Reductech.Sequence.Core.Internal.Errors;
 using Entity = Reductech.Sequence.Core.Entity;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// An open connection to our general script running in Nuix
@@ -487,6 +486,4 @@ public sealed class
     {
         return FalseNode.Instance;
     }
-}
-
 }

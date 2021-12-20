@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// The argument to a ruby function.
@@ -151,6 +150,4 @@ public readonly struct RubyFunctionParameter : IEquatable<RubyFunctionParameter>
 
         return (false, isOptional);
     }
-}
-
 }

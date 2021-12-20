@@ -100,7 +100,10 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                     CaseName     = Constant("Error Case"),
                     Investigator = Constant("investigator")
                 },
-                new ErrorBuilder(ErrorCode.MissingStepSettings, "Reductech.Sequence.Connectors.Nuix")
+                new ErrorBuilder(
+                    ErrorCode.MissingStepSettings,
+                    "Reductech.Sequence.Connectors.Nuix"
+                )
             );
         }
     }

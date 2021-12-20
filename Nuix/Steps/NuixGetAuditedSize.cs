@@ -59,5 +59,6 @@ public sealed class NuixGetAuditedSize : RubyCaseScriptStepBase<SCLDouble>
     [RubyArgument("searchArg")]
     [DefaultValueExplanation("flag:audited")]
     [Alias("Search")]
-    public IStep<StringStream> SearchTerm { get; set; } = new SCLConstant<StringStream>("flag:audited");
+    public IStep<StringStream> SearchTerm { get; set; } =
+        new SCLConstant<StringStream>("flag:audited");
 }

@@ -175,7 +175,9 @@ public sealed class NuixExportConcordance : RubyCaseScriptStepBase<Unit>
     [RubyArgument("loadFileTypeArg")]
     [DefaultValueExplanation(nameof(Enums.LoadFileType.Concordance))]
     public IStep<SCLEnum<LoadFileType>> LoadFileType { get; set; } =
-        new SCLConstant<SCLEnum<LoadFileType>>(new SCLEnum<LoadFileType>(Enums.LoadFileType.Concordance));
+        new SCLConstant<SCLEnum<LoadFileType>>(
+            new SCLEnum<LoadFileType>(Enums.LoadFileType.Concordance)
+        );
 
     /// <summary>
     /// Sets the parallel processing settings to use.

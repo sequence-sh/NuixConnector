@@ -1,7 +1,6 @@
 ﻿using Reductech.Sequence.Connectors.Nuix.Enums;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps
-{
+namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Checks the print preview state of the production set.
@@ -74,7 +73,7 @@ public sealed class NuixAssertPrintPreviewState : RubyCaseScriptStepBase<Unit>
     [RubyArgument("expectedStateArg")]
     [Alias("HasState")]
     public IStep<SCLEnum<PrintPreviewState>> ExpectedState { get; set; } =
-        new SCLConstant<SCLEnum<PrintPreviewState>>(new SCLEnum<PrintPreviewState>(PrintPreviewState.All));
-}
-
+        new SCLConstant<SCLEnum<PrintPreviewState>>(
+            new SCLEnum<PrintPreviewState>(PrintPreviewState.All)
+        );
 }
