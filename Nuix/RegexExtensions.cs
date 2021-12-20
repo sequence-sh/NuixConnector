@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Reductech.EDR.Connectors.Nuix;
+namespace Reductech.Sequence.Connectors.Nuix;
 
 internal static class RegexExtensions
 {

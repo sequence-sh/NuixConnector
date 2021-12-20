@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
-using Reductech.EDR.Core.Internal.Errors;
+using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Errors;
+namespace Reductech.Sequence.Connectors.Nuix.Errors;
 
 /// <summary>
 /// Error Code for Nuix

@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Internal.Errors;
+using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta
 {
 
 /// <summary>

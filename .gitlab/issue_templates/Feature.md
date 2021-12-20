@@ -1,7 +1,7 @@
 /label ~feature
 /label ~"wf::backlog"
 /label ~"area::connectors"
-/label ~edr
+/label ~sequence
 /label ~nuix
 
 ## Story
@@ -63,7 +63,7 @@ Example:
 ## Help
 
 - [Issues and User Stories](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories)
-- [Roles](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories#roles-for-edr-and-flow)
+- [Roles](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories#roles)
 - [Done Criteria](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories#done-criteria)
 - [Feature Labels](https://gitlab.com/reductech/kb/-/wikis/Development/Labels#features-a9cab9)
 

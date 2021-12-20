@@ -6,10 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.ConnectorManagement.Base;
-using Reductech.EDR.Core.Internal.Errors;
+using Reductech.Sequence.ConnectorManagement.Base;
+using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Helps with connections to nuix.

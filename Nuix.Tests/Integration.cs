@@ -4,19 +4,19 @@ using System.Threading.Tasks;
 using AutoTheory;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Internal.Parser;
-using Reductech.EDR.Core.Internal.Serialization;
-using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Core.Abstractions;
+using Reductech.Sequence.Core.Connectors;
+using Reductech.Sequence.Core.Internal.Errors;
+using Reductech.Sequence.Core.Internal.Parser;
+using Reductech.Sequence.Core.Internal.Serialization;
+using Reductech.Sequence.Core.Steps;
+using Reductech.Sequence.Core.TestHarness;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 [Collection("RequiresNuixLicense")]
 public abstract partial class NuixStepTestBase<TStep, TOutput>

@@ -1,7 +1,7 @@
-﻿using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Core.Steps;
+﻿using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Core.Steps;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps
+namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps
 {
 
 public partial class NuixMigrateCaseTests : NuixStepTestBase<NuixMigrateCase, Unit>

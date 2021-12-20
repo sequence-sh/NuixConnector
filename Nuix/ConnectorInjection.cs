@@ -1,9 +1,9 @@
 ﻿using System.IO.Abstractions;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.Internal.Errors;
+using Reductech.Sequence.Core.Connectors;
+using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix;
+namespace Reductech.Sequence.Connectors.Nuix;
 
 /// <summary>
 /// Provides context information for the nuix connector

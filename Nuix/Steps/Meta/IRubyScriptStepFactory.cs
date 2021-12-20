@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Meta;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// The step factory for a ruby script step.

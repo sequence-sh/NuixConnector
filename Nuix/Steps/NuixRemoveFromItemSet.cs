@@ -1,4 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Removes particular items from a Nuix production set.

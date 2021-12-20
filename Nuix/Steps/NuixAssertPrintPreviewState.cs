@@ -1,6 +1,6 @@
-using Reductech.EDR.Connectors.Nuix.Enums;
+﻿using Reductech.Sequence.Connectors.Nuix.Enums;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps
+namespace Reductech.Sequence.Connectors.Nuix.Steps
 {
 
 /// <summary>

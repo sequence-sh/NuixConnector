@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using MELT;
 using Moq;
-using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Core.Abstractions;
+using Reductech.Sequence.Core.TestHarness;
 using Xunit;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests.Steps.Meta;
+namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps.Meta;
 
 public class NuixConnectionHelperTests
 {

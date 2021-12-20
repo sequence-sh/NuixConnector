@@ -2,13 +2,13 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.ConnectorManagement.Base;
-using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.Entities;
-using Reductech.EDR.Core.Internal.Errors;
-using Entity = Reductech.EDR.Core.Entity;
+using Reductech.Sequence.ConnectorManagement.Base;
+using Reductech.Sequence.Core.Abstractions;
+using Reductech.Sequence.Core.Entities;
+using Reductech.Sequence.Core.Internal.Errors;
+using Entity = Reductech.Sequence.Core.Entity;
 
-namespace Reductech.EDR.Connectors.Nuix;
+namespace Reductech.Sequence.Connectors.Nuix;
 
 /// <summary>
 /// Special settings, unique to the Nuix connector
@@ -186,7 +186,7 @@ public static class SettingsHelpers
     /// </summary>
     public static Result<NuixSettings, IErrorBuilder> TryGetNuixSettings(Entity settings)
     {
-        var nuixKey = "Reductech.EDR.Connectors.Nuix";
+        var nuixKey = "Reductech.Sequence.Connectors.Nuix";
 
         var nuixConnector = settings.TryGetValue(
             new EntityPropertyKey(

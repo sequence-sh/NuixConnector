@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Linq;
-using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.EDR.Core.Steps;
+using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Reductech.Sequence.Core.Steps;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 public static class Constants
 {
@@ -241,7 +241,7 @@ public static class Constants
                 {
                     Entity = new GetSettings(), Property = Constant("Connectors")
                 },
-                Property = Constant("$Reductech.EDR.Connectors.Nuix")
+                Property = Constant("$Reductech.Sequence.Connectors.Nuix")
             },
             Property = Constant("Settings.Version")
         },

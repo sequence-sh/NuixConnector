@@ -4,17 +4,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging.Xunit;
-using Reductech.EDR.Core.Abstractions;
-using Reductech.EDR.Core.Internal.Errors;
-using Reductech.EDR.Core.Internal.Parser;
-using Reductech.EDR.Core.Internal.Serialization;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Core.Abstractions;
+using Reductech.Sequence.Core.Internal.Errors;
+using Reductech.Sequence.Core.Internal.Parser;
+using Reductech.Sequence.Core.Internal.Serialization;
+using Reductech.Sequence.Core.TestHarness;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
-using Entity = Reductech.EDR.Core.Entity;
+using Entity = Reductech.Sequence.Core.Entity;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 /// <summary>
 /// These are not really tests but ways to quickly and easily run steps

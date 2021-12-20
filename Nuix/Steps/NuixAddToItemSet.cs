@@ -1,7 +1,7 @@
-using Reductech.EDR.Connectors.Nuix.Enums;
-using Reductech.EDR.Connectors.Nuix.Steps.Helpers;
+﻿using Reductech.Sequence.Connectors.Nuix.Enums;
+using Reductech.Sequence.Connectors.Nuix.Steps.Helpers;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Run a search query in Nuix and add all items found to an item set.

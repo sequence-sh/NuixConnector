@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// A command that can be sent to nuix.

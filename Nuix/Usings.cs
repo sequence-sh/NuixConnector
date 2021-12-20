@@ -1,8 +1,8 @@
 ﻿global using System;
 global using System.Collections.Generic;
 global using System.ComponentModel.DataAnnotations;
-global using Reductech.EDR.Connectors.Nuix.Steps.Meta;
-global using Reductech.EDR.Core;
-global using Reductech.EDR.Core.Attributes;
-global using Reductech.EDR.Core.Internal;
-global using Reductech.EDR.Core.Util;
+global using Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+global using Reductech.Sequence.Core;
+global using Reductech.Sequence.Core.Attributes;
+global using Reductech.Sequence.Core.Internal;
+global using Reductech.Sequence.Core.Util;

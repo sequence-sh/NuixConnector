@@ -1,7 +1,7 @@
-﻿using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Core.TestHarness;
+﻿using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Core.TestHarness;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TStep, TOutput>
     where TStep : class, IRubyScriptStep<TOutput>, new()

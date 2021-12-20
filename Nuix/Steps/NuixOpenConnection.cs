@@ -1,9 +1,9 @@
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.EDR.Core.Internal.Errors;
+using Reductech.Sequence.Core.Internal.Errors;
 
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Open the connection to nuix.

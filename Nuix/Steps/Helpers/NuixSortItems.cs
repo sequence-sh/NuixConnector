@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR.Connectors.Nuix.Steps.Helpers;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps.Helpers;
 
 /// <summary>
 /// Expand a collection of items using one of the expansion methods

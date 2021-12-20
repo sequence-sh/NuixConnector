@@ -3,12 +3,12 @@ using System.IO;
 using System.Linq;
 using AutoTheory;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.Connectors.FileSystem;
-using Reductech.EDR.Core.Steps;
-using Reductech.EDR.Core.TestHarness;
+using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Core.Steps;
+using Reductech.Sequence.Core.TestHarness;
 using Xunit;
 
-namespace Reductech.EDR.Connectors.Nuix.Tests;
+namespace Reductech.Sequence.Connectors.Nuix.Tests;
 
 [Collection("RequiresNuixLicense")]
 public partial class IntegrationShortTests
@@ -106,7 +106,7 @@ public partial class IntegrationShortTests
                                         new Dictionary<EntityPropertyKey, IStep>
                                         {
                                             {
-                                                new EntityPropertyKey("EDRVersion"),
+                                                new EntityPropertyKey("SequenceVersion"),
                                                 new GetApplicationVersion()
                                             }
                                         }
@@ -119,7 +119,7 @@ public partial class IntegrationShortTests
                                 PasswordFilePath = PasswordFilePath
                             },
                             AssertCount(188, "custodian:\"EDRM Micro\""), AssertCount(2, "*.txt"),
-                            AssertCount(188, "evidence-metadata:\"EDRVersion:*\""),
+                            AssertCount(188, "evidence-metadata:\"SequenceVersion:*\""),
                             // Check audited size
                             AssertEquals(Constant(76924230.0), new NuixGetAuditedSize()),
                             // Add concordance file
@@ -128,11 +128,11 @@ public partial class IntegrationShortTests
                                 ConcordanceProfileName = Constant("IntegrationTestProfile"),
                                 ConcordanceDateFormat  = Constant("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
                                 FilePath               = ConcordancePath,
-                                Custodian              = Constant("Reductech EDR"),
+                                Custodian              = Constant("Reductech Sequence"),
                                 Container              = Constant("INT01B0002"),
                                 ContainerEncoding      = Constant("UTF-8")
                             },
-                            AssertCount(3, "custodian:\"Reductech EDR\""), AssertCount(4, "*.txt"),
+                            AssertCount(3, "custodian:\"Reductech Sequence\""), AssertCount(4, "*.txt"),
                             // OCR the data
                             AssertCount(1, "deluge"), new NuixPerformOCR
                             {
@@ -234,7 +234,7 @@ public partial class IntegrationShortTests
                             AssertFileContains(
                                 ReportPath,
                                 "file-types.txt",
-                                "Reductech EDR\tkind\t*\t3"
+                                "Reductech Sequence\tkind\t*\t3"
                             ),
                             // Write out a term list
                             new FileWrite

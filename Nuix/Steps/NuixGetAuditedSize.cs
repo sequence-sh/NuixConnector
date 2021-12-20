@@ -1,4 +1,4 @@
-namespace Reductech.EDR.Connectors.Nuix.Steps;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Calculate the total audited size for a case.
