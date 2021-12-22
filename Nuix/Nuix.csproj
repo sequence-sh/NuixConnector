@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reductech.Sequence.Core" Version="0.13.0-a.main.2112201532">
+    <PackageReference Include="Reductech.Sequence.Core" Version="0.13.0-a.main.2112210511">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
