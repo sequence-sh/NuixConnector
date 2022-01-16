@@ -1,3 +1,12 @@
+# v0.13.0 (2022-01-16)
+
+## Issues Closed in this Release
+
+### Maintenance
+
+- Rename EDR to Sequence #220
+- Update Core to latest version #217
+
 # v0.12.0 (2021-11-26)
 
 Maintenance release - dependency updates only.
@@ -336,4 +345,5 @@ The yaml specification has changed entirely so yaml from the previous version wi
 - Export concordance load file from NUIX #6
 - Add concordance data to a NUIX case #3
 - Add a File\Folder\Image to a NUIX case #4
+
 
