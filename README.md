@@ -1,9 +1,9 @@
 # Sequence® Nuix Connector
 
-[Reductech Sequence®](https://gitlab.com/reductech/sequence) is a collection of
+[Sequence®](https://gitlab.com/reductech/sequence) is a collection of
 libraries that automates cross-application e-discovery and forensic workflows.
 
-The Sequence Nuix Connector allows users to automate Forensic workflows using
+The Nuix Connector allows users to automate forensic workflows using
 [Nuix Workstation](https://www.nuix.com/products/nuixworkstation)
 
 This connector has `Steps` to:
