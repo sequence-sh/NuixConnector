@@ -467,6 +467,12 @@ public sealed class
         return TypeReference.Unknown.Instance;
     }
 
+    /// <inheritdoc />
+    public IConstantFreezableStep ToConstantFreezableStep(TextLocation location)
+    {
+        throw new NotImplementedException("Cannot convert a nuix connection to a Freezable step");
+    }
+
     Maybe<T> ISCLObject.MaybeAs<T>()
     {
         if (this is T t)
