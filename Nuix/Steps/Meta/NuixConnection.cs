@@ -9,6 +9,7 @@ using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.Sequence.Core.Entities.Schema;
 using Reductech.Sequence.Core.ExternalProcesses;
 using Reductech.Sequence.Core.Internal.Errors;
+using Reductech.Sequence.Core.Internal.Serialization;
 using Entity = Reductech.Sequence.Core.Entity;
 
 namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
@@ -55,7 +56,7 @@ public sealed class
     /// </summary>
     public async Task SendDoneCommand(
         IStateMonad state,
-        IStep? step,
+        IStep step,
         CancellationToken cancellation)
     {
         if (IsDisposed)
@@ -80,13 +81,13 @@ public sealed class
     /// </summary>
     public async Task<Result<T, IErrorBuilder>> RunFunctionAsync<T>(
         IStateMonad stateMonad,
-        IStep? step,
+        IStep step,
         RubyFunction<T> function,
         IReadOnlyDictionary<RubyFunctionParameter, ISCLObject> parameters,
         CasePathParameter casePathParameter,
         CancellationToken cancellationToken)
     {
-        string? casePath;
+        string casePath;
 
         switch (casePathParameter)
         {
@@ -195,7 +196,7 @@ public sealed class
 
             var commandArguments = new Dictionary<string, object>();
 
-            Array<Entity>? entityStream = null;
+            Array<Entity> entityStream = null;
 
             foreach (var argument in function.Arguments)
             {
@@ -274,7 +275,7 @@ public sealed class
 
     private async Task<Result<T, IErrorBuilder>> GetOutputTyped<T>(
         IStateMonad stateMonad,
-        IStep? callingStep,
+        IStep callingStep,
         CancellationToken cancellationToken,
         bool returnOnLog = false)
     {
@@ -454,7 +455,7 @@ public sealed class
         }
     }
 
-    string ISCLObject.Serialize(SerializeOptions options)
+    string ISerializable.Serialize(SerializeOptions options)
     {
         if (CurrentCasePath.HasValue)
             return $"{nameof(NuixConnection)}: {CurrentCasePath.Value}";
@@ -481,14 +482,14 @@ public sealed class
         return Maybe<T>.None;
     }
 
-    object? ISCLObject.ToCSharpObject()
+    object ISCLObject.ToCSharpObject()
     {
         return this;
     }
 
     SchemaNode ISCLObject.ToSchemaNode(
         string path,
-        SchemaConversionOptions? schemaConversionOptions)
+        SchemaConversionOptions schemaConversionOptions)
     {
         return FalseNode.Instance;
     }
