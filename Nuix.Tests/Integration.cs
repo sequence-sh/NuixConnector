@@ -5,6 +5,7 @@ using AutoTheory;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Connectors.FileSystem.Steps;
 using Reductech.Sequence.Core.Abstractions;
 using Reductech.Sequence.Core.Connectors;
 using Reductech.Sequence.Core.Internal.Errors;

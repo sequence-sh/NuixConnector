@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Connectors.FileSystem.Steps;
 using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 using Reductech.Sequence.Core.Steps;
 

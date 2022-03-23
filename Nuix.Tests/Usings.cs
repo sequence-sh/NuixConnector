@@ -10,3 +10,4 @@ global using Reductech.Sequence.Connectors.Nuix.Enums;
 global using Reductech.Sequence.Connectors.Nuix.Steps;
 global using static Reductech.Sequence.Core.TestHarness.StaticHelpers;
 global using static Reductech.Sequence.Connectors.Nuix.Tests.Constants;
+global using Reductech.Sequence.Connectors.FileSystem.Steps;

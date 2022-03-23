@@ -4,6 +4,7 @@ using System.Linq;
 using AutoTheory;
 using Microsoft.Extensions.Logging;
 using Reductech.Sequence.Connectors.FileSystem;
+using Reductech.Sequence.Connectors.FileSystem.Steps;
 using Reductech.Sequence.Core.Steps;
 using Reductech.Sequence.Core.TestHarness;
 using Xunit;
