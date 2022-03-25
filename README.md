@@ -16,6 +16,10 @@ This connector has `Steps` to:
 - Generate reports
 - Export concordance or document metadata
 
+## Documentation
+
+Documentation available at https://sequence.sh
+
 ## Settings
 
 To use the Nuix Connector you need to add a `settings` block to the `nuix` connector configuration in the `connectors.json` file.
