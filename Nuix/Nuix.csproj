@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.Sequence.Connectors.Nuix</RootNamespace>
     <AssemblyName>Reductech.Sequence.Connectors.Nuix</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.14.0$(VersionSuffix)</Version>
+    <Version>0.15.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reductech.Sequence.Core" Version="0.14.0">
+    <PackageReference Include="Reductech.Sequence.Core" Version="0.15.0-a.main.2203251716">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
