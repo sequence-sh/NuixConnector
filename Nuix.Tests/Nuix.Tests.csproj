@@ -29,8 +29,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="MicrosoftExtensions.Logging.Xunit" Version="1.0.0" />
-    <PackageReference Include="Reductech.Sequence.Connectors.FileSystem" Version="0.15.0-a.main.2204280417" />
-    <PackageReference Include="Reductech.Sequence.Core.TestHarness" Version="0.15.0-a.main.2204271340" />
+    <PackageReference Include="Reductech.Sequence.Connectors.FileSystem" Version="0.15.0-a.main.2205112139" />
+    <PackageReference Include="Reductech.Sequence.Core.TestHarness" Version="0.15.0-a.main.2205112137" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="13.2.47" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
