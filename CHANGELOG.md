@@ -1,3 +1,7 @@
+# v0.15.0 (2022-05-27)
+
+Maintenance release - dependency updates only.
+
 # v0.14.0 (2022-03-25)
 
 Maintenance release - dependency updates only.
@@ -360,6 +364,7 @@ The yaml specification has changed entirely so yaml from the previous version wi
 - Export concordance load file from NUIX #6
 - Add concordance data to a NUIX case #3
 - Add a File\Folder\Image to a NUIX case #4
+
 
 
 
