@@ -13,21 +13,46 @@
   <PropertyGroup>
     <PackageId>Reductech.Sequence.Connectors.Nuix</PackageId>
     <Title>Sequence® NUIX Connector</Title>
-    <Description>Class library for automating Nuix workflows using Steps and Sequences.</Description>
+    <Description>Sequence® connector for automating Nuix workflows.</Description>
     <Product>Sequence®</Product>
-
-    <PackageProjectUrl>https://gitlab.com/reductech/sequence/connectors/nuix</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectors/nuix</RepositoryUrl>
-    <PackageReleaseNotes>https://gitlab.com/reductech/sequence/connectors/nuix/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageTags>ediscovery;forensics;nuix;automation;orchestration;edrm;sequence</PackageTags>
+
+    <PackageProjectUrl>https://sequence.sh</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectors/nuix.git</RepositoryUrl>
+    <PackageReleaseNotes>https://gitlab.com/reductech/sequence/connectors/nuix/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(CI)' != ''">
+    <!-- deterministic builds for Source Link -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Source Link and symbols -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
   <ItemGroup>
+    <None Include="../CHANGELOG.md" Pack="true" PackagePath="/" />
+    <None Include="../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../NOTICE" Pack="true" PackagePath="/" />
+    <None Include="../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitLab" Version="1.1.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Reductech.Sequence.Core" Version="0.16.0-a.main.2207111038">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>

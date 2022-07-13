@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectors/nuix</RepositoryUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectors/nuix.git</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
