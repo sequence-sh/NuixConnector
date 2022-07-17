@@ -24,6 +24,7 @@ variables:
   PACKAGE_NAME_DLL: Reductech.Sequence.Connectors.Nuix
   GIT_SUBMODULE_STRATEGY: normal
   PUBLISH_CONNECTOR: 1
+  PUBLISH_NUGETORG: 1
 
 .fix_coverage:
   - &fix_coverage |

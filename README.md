@@ -1,7 +1,7 @@
 # Sequence® Nuix Connector
 
-[Sequence®](https://gitlab.com/reductech/sequence) is a collection of
-libraries that automates cross-application e-discovery and forensic workflows.
+[Sequence®](https://sequence.sh) is a collection of libraries for
+automation of cross-application e-discovery and forensic workflows.
 
 The Nuix Connector allows users to automate forensic workflows using
 [Nuix Workstation](https://www.nuix.com/products/nuixworkstation)
@@ -15,10 +15,6 @@ This connector has `Steps` to:
 - Extract entities
 - Generate reports
 - Export concordance or document metadata
-
-## Documentation
-
-Documentation available at https://sequence.sh
 
 ## Settings
 
@@ -102,3 +98,23 @@ To use the Nuix Connector you need to add a `settings` block to the `nuix` conne
 | licenceworkers        |          | `integer`  | Selects the number of workers to use if the choice is available.                                                                   |
 | release               |          | `bool`     | Releases the semi-offline licence at the end of the execution.                                                                     |
 | signout               |          | `bool`     | Signs the user out at the end of the execution, also releasing the semi-offline licence if present.                                |
+
+# Documentation
+
+https://sequence.sh
+
+# Download
+
+https://sequence.sh/download
+
+# Try SCL and Core
+
+https://sequence.sh/playground
+
+# Package Releases
+
+Can be downloaded from the [Releases page](https://gitlab.com/reductech/sequence/connectors/nuix/-/releases).
+
+# NuGet Packages
+
+Release nuget packages are available from [nuget.org](https://www.nuget.org/profiles/Sequence).
