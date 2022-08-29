@@ -1,3 +1,7 @@
+# v0.17.0 (2022-08-29)
+
+Maintenance release - dependency updates only.
+
 # v0.16.0 (2022-07-13)
 
 - Enabled [Source Link](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
@@ -370,3 +374,4 @@ The yaml specification has changed entirely so yaml from the previous version wi
 - Export concordance load file from NUIX #6
 - Add concordance data to a NUIX case #3
 - Add a File\Folder\Image to a NUIX case #4
+
