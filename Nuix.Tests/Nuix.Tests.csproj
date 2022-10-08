@@ -29,7 +29,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="MicrosoftExtensions.Logging.Xunit" Version="1.0.0" />
-    <PackageReference Include="Reductech.Sequence.Connectors.FileSystem" Version="0.18.0-a.main.2210040411" />
+    <PackageReference Include="Reductech.Sequence.Connectors.FileSystem" Version="0.18.0-a.main.2210070950" />
     <PackageReference Include="Reductech.Sequence.Core.TestHarness" Version="0.18.0-a.main.2210050412" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="17.2.3" />
     <PackageReference Include="xunit" Version="2.4.2" />
