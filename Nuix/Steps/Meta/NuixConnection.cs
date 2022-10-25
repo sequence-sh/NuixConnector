@@ -95,7 +95,7 @@ public sealed class
                 casePath = null;
                 break;
 
-            case CasePathParameter.ChangesOpenCase { NewCaseParameter: { HasNoValue: true } }:
+            case CasePathParameter.ChangesOpenCase { NewCaseParameter.HasNoValue: true }:
             {
                 CurrentCasePath = Maybe<string>.None; //This will be the case path for the next step
                 casePath        = null;
@@ -103,7 +103,7 @@ public sealed class
             }
             case CasePathParameter.ChangesOpenCase
             {
-                NewCaseParameter: { HasValue: true }
+                NewCaseParameter.HasValue: true
             } opensCase:
             {
                 if (parameters.TryGetValue(
@@ -445,7 +445,7 @@ public sealed class
     }
 
     /// <inheritdoc />
-    public async Task DisposeAsync(IStateMonad state)
+    public async ValueTask DisposeAsync(IStateMonad state)
     {
         if (!IsDisposed)
         {

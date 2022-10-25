@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using AutoTheory;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.Connectors.FileSystem;
-using Reductech.Sequence.Connectors.FileSystem.Steps;
 using Reductech.Sequence.Core.Abstractions;
 using Reductech.Sequence.Core.Connectors;
 using Reductech.Sequence.Core.Internal.Errors;
@@ -145,7 +143,11 @@ public abstract partial class NuixStepTestBase<TStep, TOutput>
 
             deserializedStep.ShouldBeSuccessful();
 
-            var unfrozenStep = deserializedStep.Value.TryFreeze(SCLRunner.RootCallerMetadata, sfs);
+            var unfrozenStep = deserializedStep.Value.TryFreeze(
+                SCLRunner.RootCallerMetadata,
+                sfs,
+                new OptimizationSettings(true, true, InjectedVariables)
+            );
 
             unfrozenStep.ShouldBeSuccessful();
 

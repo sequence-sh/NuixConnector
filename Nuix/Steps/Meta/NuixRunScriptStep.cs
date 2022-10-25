@@ -14,7 +14,7 @@ namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
 public class NuixRunScript : CompoundStep<StringStream>
 {
     /// <inheritdoc />
-    protected override async Task<Result<StringStream, IError>> Run(
+    protected override async ValueTask<Result<StringStream, IError>> Run(
         IStateMonad stateMonad,
         CancellationToken cancellationToken)
     {
@@ -47,18 +47,18 @@ public class NuixRunScript : CompoundStep<StringStream>
             return nuixConnection.ConvertFailure<StringStream>()
                 .MapError(x => x.WithLocation(this));
 
-        var rubyFunctionParameters = parameters.Value
-            .Select(x => new RubyFunctionParameter(ConvertString(x.Name), x.Name, true))
+        var rubyFunctionParameters = parameters.Value.Headers
+            .Select(x => new RubyFunctionParameter(ConvertString(x.Inner), x.Inner, true))
             .ToList();
 
         var parameterDict = parameters.Value
             .ToDictionary(
                 x =>
-                    new RubyFunctionParameter(ConvertString(x.Name), x.Name, true),
+                    new RubyFunctionParameter(ConvertString(x.Key.Inner), x.Key.Inner, true),
                 x => x.Value
             )
-            .Where(x => x.Value != null)
-            .ToDictionary(x => x.Key, x => x.Value!);
+            .Where(x => x.Value is not SCLNull)
+            .ToDictionary(x => x.Key, x => x.Value);
 
         if (EntityStreamParameter != null)
         {

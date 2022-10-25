@@ -1,6 +1,4 @@
-﻿using Reductech.Sequence.Connectors.FileSystem;
-
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
+﻿namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixCreateTermListTests : NuixStepTestBase<NuixCreateTermList, StringStream>
 {

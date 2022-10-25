@@ -27,7 +27,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     public string FunctionName => RubyScriptStepFactory.RubyFunction.FunctionName;
 
     /// <inheritdoc />
-    protected override Task<Result<T, IError>> Run(
+    protected override ValueTask<Result<T, IError>> Run(
         IStateMonad stateMonad,
         CancellationToken cancellationToken) => RunAsync(stateMonad, cancellationToken);
 
@@ -54,7 +54,7 @@ public abstract class RubyScriptStepBase<T> : CompoundStep<T>, IRubyScriptStep<T
     /// <summary>
     /// Runs this step asynchronously.
     /// </summary>
-    protected async Task<Result<T, IError>> RunAsync(
+    protected async ValueTask<Result<T, IError>> RunAsync(
         IStateMonad stateMonad,
         CancellationToken cancellationToken)
     {

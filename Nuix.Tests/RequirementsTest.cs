@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using Reductech.Sequence.Connectors.FileSystem;
 using Reductech.Sequence.Core.TestHarness;
 using Xunit;
 

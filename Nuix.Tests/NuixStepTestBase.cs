@@ -1,6 +1,4 @@
-﻿using Reductech.Sequence.Connectors.FileSystem;
-using Reductech.Sequence.Connectors.FileSystem.Steps;
-using Reductech.Sequence.Core.TestHarness;
+﻿using Reductech.Sequence.Core.TestHarness;
 
 namespace Reductech.Sequence.Connectors.Nuix.Tests;
 

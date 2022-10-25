@@ -12,7 +12,7 @@ namespace Reductech.Sequence.Connectors.Nuix.Steps;
 public sealed class NuixOpenConnection : CompoundStep<Unit>
 {
     /// <inheritdoc />
-    protected override async Task<Result<Unit, IError>> Run(
+    protected override async ValueTask<Result<Unit, IError>> Run(
         IStateMonad stateMonad,
         CancellationToken cancellationToken)
     {
