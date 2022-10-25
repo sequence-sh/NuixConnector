@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Reductech.Sequence.Connectors.FileSystem;
 using Reductech.Sequence.Core.Steps;
 
 namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;

@@ -34,7 +34,17 @@ public class ExampleTests
         var logger = new XunitLogger(TestOutputHelper, "Test");
 
         var stepResult = SCLParsing.TryParseStep(yaml)
-            .Bind(x => x.TryFreeze(SCLRunner.RootCallerMetadata, sfs));
+            .Bind(
+                x => x.TryFreeze(
+                    SCLRunner.RootCallerMetadata,
+                    sfs,
+                    new OptimizationSettings(
+                        true,
+                        true,
+                        new Dictionary<VariableName, InjectedVariable>()
+                    )
+                )
+            );
 
         if (stepResult.IsFailure)
             errorAction.Invoke(stepResult);

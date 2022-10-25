@@ -293,7 +293,11 @@ public partial class NuixRunScriptTests : StepTestBase<NuixRunScript, StringStre
 
             deserializedStep.ShouldBeSuccessful();
 
-            var unfrozenStep = deserializedStep.Value.TryFreeze(SCLRunner.RootCallerMetadata, sfs);
+            var unfrozenStep = deserializedStep.Value.TryFreeze(
+                SCLRunner.RootCallerMetadata,
+                sfs,
+                new OptimizationSettings(true, true, InjectedVariables)
+            );
 
             unfrozenStep.ShouldBeSuccessful();
 

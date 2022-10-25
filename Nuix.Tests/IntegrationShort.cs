@@ -3,8 +3,6 @@ using System.IO;
 using System.Linq;
 using AutoTheory;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.Connectors.FileSystem;
-using Reductech.Sequence.Connectors.FileSystem.Steps;
 using Reductech.Sequence.Core.Steps;
 using Reductech.Sequence.Core.TestHarness;
 using Xunit;
@@ -103,11 +101,11 @@ public partial class IntegrationShortTests
                                     )
                                 ),
                                 CustomMetadata = new CreateEntityStep(
-                                    new ReadOnlyDictionary<EntityPropertyKey, IStep>(
-                                        new Dictionary<EntityPropertyKey, IStep>
+                                    new ReadOnlyDictionary<EntityNestedKey, IStep>(
+                                        new Dictionary<EntityNestedKey, IStep>
                                         {
                                             {
-                                                new EntityPropertyKey("SequenceVersion"),
+                                                new EntityNestedKey("SequenceVersion"),
                                                 new GetApplicationVersion()
                                             }
                                         }

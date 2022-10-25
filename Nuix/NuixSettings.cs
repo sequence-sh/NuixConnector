@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using Reductech.Sequence.ConnectorManagement.Base;
 using Reductech.Sequence.Core.Abstractions;
-using Reductech.Sequence.Core.Entities;
 using Reductech.Sequence.Core.Internal.Errors;
 using Entity = Reductech.Sequence.Core.Entity;
 
@@ -160,7 +159,11 @@ public static class SettingsHelpers
         var ns = ConnectorSettings.DefaultForAssembly(nuix!);
 
         ns.Settings = nuixSettings?.ConvertToEntity()
-            .Dictionary.ToDictionary(k => k.Key, v => v.Value.Value.ToCSharpObject());
+            .ToDictionary(
+                k => k.Key.Inner,
+                v => v.Value.ToCSharpObject(),
+                StringComparer.OrdinalIgnoreCase
+            )!;
 
         var core = Assembly.GetAssembly(typeof(IStep));
 
@@ -189,7 +192,7 @@ public static class SettingsHelpers
         var nuixKey = "Reductech.Sequence.Connectors.Nuix";
 
         var nuixConnector = settings.TryGetValue(
-            new EntityPropertyKey(
+            new EntityNestedKey(
                 StateMonad.ConnectorsKey,
                 nuixKey,
                 nameof(ConnectorData.ConnectorSettings.Settings)
