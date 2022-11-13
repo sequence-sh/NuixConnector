@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.Core.Internal.Logging;
+using Sequence.Core.Internal.Logging;
 
-namespace Reductech.Sequence.Connectors.Nuix.Logging;
+namespace Sequence.Connectors.Nuix.Logging;
 
 /// <summary>
 /// Identifying code for a Core log situation.

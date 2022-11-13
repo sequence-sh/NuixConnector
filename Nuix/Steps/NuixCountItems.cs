@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
+﻿namespace Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Returns the number of items matching a particular search term

@@ -5,14 +5,14 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Reductech.Sequence.Connectors.Nuix.Tests</RootNamespace>
+    <RootNamespace>Sequence.Connectors.Nuix.Tests</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectors/nuix.git</RepositoryUrl>
+    <RepositoryUrl>https://gitlab.com/sequence/connectors/nuix.git</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <Authors>Reductech</Authors>
+    <Authors>MarkWainwright;antonyoni</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>
@@ -29,8 +29,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="MicrosoftExtensions.Logging.Xunit" Version="1.0.0" />
-    <PackageReference Include="Reductech.Sequence.Connectors.FileSystem" Version="0.18.0-a.main.2211070209" />
-    <PackageReference Include="Reductech.Sequence.Core.TestHarness" Version="0.18.0-a.main.2211070211" />
+    <PackageReference Include="Sequence.Connectors.FileSystem" Version="0.18.0-a.main.2211131139" />
+    <PackageReference Include="Sequence.Core.TestHarness" Version="0.18.0-a.main.2211102318" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="17.2.3" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">

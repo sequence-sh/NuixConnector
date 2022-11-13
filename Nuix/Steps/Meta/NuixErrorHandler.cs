@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using Reductech.Sequence.Core.ExternalProcesses;
+using Sequence.Core.ExternalProcesses;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Error Handler for running Nuix.exe

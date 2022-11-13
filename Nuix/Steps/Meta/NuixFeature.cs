@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A Nuix feature requirement

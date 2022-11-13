@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
+﻿namespace Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Generates print previews for items in a production set.

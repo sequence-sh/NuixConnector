@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
+﻿namespace Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Create a case report using an NRT file.

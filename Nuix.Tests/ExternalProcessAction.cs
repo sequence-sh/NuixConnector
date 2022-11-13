@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
-using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests;
+namespace Sequence.Connectors.Nuix.Tests;
 
 public class ExternalProcessAction
 {

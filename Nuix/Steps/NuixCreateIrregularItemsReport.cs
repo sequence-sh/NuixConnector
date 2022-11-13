@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
+﻿namespace Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Creates a list of all irregular items in a case.

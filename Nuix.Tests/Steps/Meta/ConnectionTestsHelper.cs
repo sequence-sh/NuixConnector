@@ -2,12 +2,12 @@
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading;
 using MELT;
-using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.Sequence.Core.Abstractions;
-using Reductech.Sequence.Core.ExternalProcesses;
+using Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Sequence.Core.Abstractions;
+using Sequence.Core.ExternalProcesses;
 using Xunit.Sdk;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Tests.Steps.Meta;
 
 public static class ConnectionTestsHelper
 {

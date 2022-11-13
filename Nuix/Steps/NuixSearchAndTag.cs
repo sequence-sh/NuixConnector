@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps;
+﻿namespace Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Searches a NUIX case with a particular search string and tags all files it finds.

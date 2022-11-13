@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+namespace Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// The object if this was an error.

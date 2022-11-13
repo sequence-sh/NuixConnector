@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Reductech.Sequence.Connectors.Nuix.Enums;
+namespace Sequence.Connectors.Nuix.Enums;
 
 /// <summary>
 /// The means of deduplicating items by key and prioritizing originals in a tie-break. 

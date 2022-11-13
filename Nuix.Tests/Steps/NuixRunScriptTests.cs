@@ -5,19 +5,19 @@ using AutoTheory;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.Sequence.Core.Abstractions;
-using Reductech.Sequence.Core.Connectors;
-using Reductech.Sequence.Core.Internal.Errors;
-using Reductech.Sequence.Core.Internal.Parser;
-using Reductech.Sequence.Core.Internal.Serialization;
-using Reductech.Sequence.Core.Steps;
-using Reductech.Sequence.Core.TestHarness;
+using Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Sequence.Core.Abstractions;
+using Sequence.Core.Connectors;
+using Sequence.Core.Internal.Errors;
+using Sequence.Core.Internal.Parser;
+using Sequence.Core.Internal.Serialization;
+using Sequence.Core.Steps;
+using Sequence.Core.TestHarness;
 using Xunit;
 using Xunit.Abstractions;
-using Entity = Reductech.Sequence.Core.Entity;
+using Entity = Sequence.Core.Entity;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
+namespace Sequence.Connectors.Nuix.Tests.Steps;
 
 [UseTestOutputHelper]
 [Collection("RequiresNuixLicense")]

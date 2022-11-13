@@ -3,16 +3,16 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.Sequence.Connectors.Nuix.Errors;
-using Reductech.Sequence.Connectors.Nuix.Logging;
-using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.Sequence.Core.Entities.Schema;
-using Reductech.Sequence.Core.ExternalProcesses;
-using Reductech.Sequence.Core.Internal.Errors;
-using Reductech.Sequence.Core.Internal.Serialization;
-using Entity = Reductech.Sequence.Core.Entity;
+using Sequence.Connectors.Nuix.Errors;
+using Sequence.Connectors.Nuix.Logging;
+using Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Sequence.Core.Entities.Schema;
+using Sequence.Core.ExternalProcesses;
+using Sequence.Core.Internal.Errors;
+using Sequence.Core.Internal.Serialization;
+using Entity = Sequence.Core.Entity;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// An open connection to our general script running in Nuix

@@ -3,11 +3,11 @@ using System.IO;
 using System.Linq;
 using AutoTheory;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.Core.Steps;
-using Reductech.Sequence.Core.TestHarness;
+using Sequence.Core.Steps;
+using Sequence.Core.TestHarness;
 using Xunit;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests;
+namespace Sequence.Connectors.Nuix.Tests;
 
 [Collection("RequiresNuixLicense")]
 public partial class IntegrationShortTests

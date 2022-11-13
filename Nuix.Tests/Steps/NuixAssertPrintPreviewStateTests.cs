@@ -1,7 +1,7 @@
-﻿using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.Sequence.Core.TestHarness;
+﻿using Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Sequence.Core.TestHarness;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
+namespace Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class
     NuixAssertPrintPreviewStateTests : NuixStepTestBase<NuixAssertPrintPreviewState, Unit>

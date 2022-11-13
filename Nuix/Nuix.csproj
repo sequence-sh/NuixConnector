@@ -4,26 +4,26 @@
     <TargetFramework>net6.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <RootNamespace>Reductech.Sequence.Connectors.Nuix</RootNamespace>
-    <AssemblyName>Reductech.Sequence.Connectors.Nuix</AssemblyName>
+    <RootNamespace>Sequence.Connectors.Nuix</RootNamespace>
+    <AssemblyName>Sequence.Connectors.Nuix</AssemblyName>
     <Nullable>enable</Nullable>
     <Version>0.18.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Reductech.Sequence.Connectors.Nuix</PackageId>
-    <Title>Sequence® NUIX Connector</Title>
-    <Description>Sequence® connector for automating Nuix workflows.</Description>
+    <PackageId>Sequence.Connectors.Nuix</PackageId>
+    <Title>Sequence NUIX Connector</Title>
+    <Description>Sequence connector for automating Nuix workflows.</Description>
     <Product>Sequence®</Product>
     <PackageTags>ediscovery;forensics;nuix;automation;orchestration;edrm;sequence</PackageTags>
 
     <PackageProjectUrl>https://sequence.sh</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectors/nuix.git</RepositoryUrl>
-    <PackageReleaseNotes>https://gitlab.com/reductech/sequence/connectors/nuix/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <RepositoryUrl>https://gitlab.com/sequence/connectors/nuix.git</RepositoryUrl>
+    <PackageReleaseNotes>https://gitlab.com/sequence/connectors/nuix/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <Authors>Reductech</Authors>
+    <Authors>MarkWainwright;antonyoni</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>
@@ -53,7 +53,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Reductech.Sequence.Core" Version="0.18.0-a.main.2211070211">
+    <PackageReference Include="Sequence.Core" Version="0.18.0-a.main.2211102318">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.1" />

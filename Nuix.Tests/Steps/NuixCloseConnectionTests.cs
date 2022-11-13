@@ -1,6 +1,6 @@
-﻿using Reductech.Sequence.Core.TestHarness;
+﻿using Sequence.Core.TestHarness;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
+namespace Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixCloseConnectionTests : StepTestBase<NuixCloseConnection, Unit>
 {

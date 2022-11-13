@@ -1,5 +1,5 @@
 include:
-  - project: reductech/templates/cicd/dotnet
+  - project: sequence/templates/cicd
     file: .gitlab-ci.windows.yml
 
 stages:
@@ -20,26 +20,17 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
 
 variables:
-  PACKAGE_NAME_NUGET: Reductech.Sequence.Connectors.Nuix
-  PACKAGE_NAME_DLL: Reductech.Sequence.Connectors.Nuix
+  PACKAGE_NAME_NUGET: Sequence.Connectors.Nuix
+  PACKAGE_NAME_DLL: Sequence.Connectors.Nuix
   GIT_SUBMODULE_STRATEGY: normal
   PUBLISH_CONNECTOR: 1
   PUBLISH_NUGETORG: 1
-
-.fix_coverage:
-  - &fix_coverage |
-    $report = Get-Content -Path "*/coverage.cobertura.xml" -Raw
-    $fixPaths = $report -replace "filename=`".+?${env:CI_PROJECT_NAME}(/|\\)", "filename=`""
-    $fixPaths = $fixPaths -replace '\\', '/'
-    $outPath = Join-Path (Get-Location) "coverage.$($env:CI_JOB_NAME -replace "[^\w]+", "-").xml"
-    [System.IO.File]::WriteAllText($outPath, $fixPaths)
 
 test dev:
   script:
     - dotnet test --no-build --configuration $CONFIG -v normal
       --filter "Category!=Integration&Category!=IntegrationShort"
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
-    - *fix_coverage
 
 integration short:
   stage: integration
@@ -54,16 +45,15 @@ integration short:
     NUGET_USERNAME: $NUGET_USER_DEV
     NUGET_TOKEN: $NUGET_TOKEN_DEV
   after_script:
-    - dotnet nuget remove source reductech
+    - dotnet nuget remove source sequence
   script:
     - dotnet restore --packages ./packages
     - dotnet test --no-restore --configuration $CONFIG -v normal
       --filter "Category!=Integration"
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
-    - *fix_coverage
   artifacts:
     paths:
-      - 'coverage.*.xml'
+      - '*/coverage.cobertura.xml'
     expire_in: 2 hours
   rules:
     - if: $CI_PIPELINE_SOURCE == 'schedule'
@@ -80,7 +70,6 @@ integration full:
     - dotnet restore --packages ./packages
     - dotnet test --no-restore --configuration $CONFIG -v normal
       --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory ./
-    - *fix_coverage
     - |
       dotnet test --no-restore --configuration $CONFIG --list-tests |
         ForEach-Object {

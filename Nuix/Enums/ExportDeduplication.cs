@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Reductech.Sequence.Connectors.Nuix.Enums;
+namespace Sequence.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Method of deduplication to use for a top-level item export.

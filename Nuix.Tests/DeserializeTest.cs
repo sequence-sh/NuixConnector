@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.Core.Abstractions;
+using Sequence.Core.Abstractions;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests;
+namespace Sequence.Connectors.Nuix.Tests;
 
 public abstract partial class NuixStepTestBase<TStep, TOutput>
 {

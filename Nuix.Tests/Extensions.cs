@@ -1,8 +1,8 @@
 ﻿using System.IO.Abstractions;
 using Moq;
-using Reductech.Sequence.Core.TestHarness;
+using Sequence.Core.TestHarness;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests;
+namespace Sequence.Connectors.Nuix.Tests;
 
 public static class Extensions
 {

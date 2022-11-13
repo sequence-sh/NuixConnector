@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Reductech.Sequence.Connectors.Nuix.Enums;
+namespace Sequence.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Types of files that can be produced when exporting data from Nuix

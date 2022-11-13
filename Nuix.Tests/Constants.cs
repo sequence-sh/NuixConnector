@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
-using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.Sequence.Core.Steps;
+using Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Sequence.Core.Steps;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests;
+namespace Sequence.Connectors.Nuix.Tests;
 
 public static class Constants
 {
@@ -240,7 +240,7 @@ public static class Constants
                 {
                     Entity = new GetSettings(), Property = Constant("Connectors")
                 },
-                Property = Constant("$Reductech.Sequence.Connectors.Nuix")
+                Property = Constant("$Sequence.Connectors.Nuix")
             },
             Property = Constant("Settings.Version")
         },

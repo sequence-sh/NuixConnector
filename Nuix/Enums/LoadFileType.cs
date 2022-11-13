@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Reductech.Sequence.Connectors.Nuix.Enums;
+namespace Sequence.Connectors.Nuix.Enums;
 
 /// <summary>
 /// The type of load file to create when running an export.

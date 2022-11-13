@@ -1,4 +1,4 @@
-# Sequence® Nuix Connector
+# Sequence Nuix Connector
 
 [Sequence®](https://sequence.sh) is a collection of libraries for
 automation of cross-application e-discovery and forensic workflows.
@@ -24,9 +24,9 @@ To use the Nuix Connector you need to add a `settings` block to the `nuix` conne
 
 ```json
 {
-  "Reductech.Sequence.Connectors.Nuix": {
-    "id": "Reductech.Sequence.Connectors.Nuix",
-    "version": "0.9.0",
+  "Sequence.Connectors.Nuix": {
+    "id": "Sequence.Connectors.Nuix",
+    "version": "0.18.0",
     "enabled": true,
     "settings": {
       "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
@@ -49,9 +49,9 @@ To use the Nuix Connector you need to add a `settings` block to the `nuix` conne
 
 ```json
 {
-  "Reductech.Sequence.Connectors.Nuix": {
-    "id": "Reductech.Sequence.Connectors.Nuix",
-    "version": "0.9.0",
+  "Sequence.Connectors.Nuix": {
+    "id": "Sequence.Connectors.Nuix",
+    "version": "0.18.0",
     "enabled": true,
     "settings": {
       "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
@@ -113,7 +113,7 @@ https://sequence.sh/playground
 
 # Package Releases
 
-Can be downloaded from the [Releases page](https://gitlab.com/reductech/sequence/connectors/nuix/-/releases).
+Can be downloaded from the [Releases page](https://gitlab.com/sequence/connectors/nuix/-/releases).
 
 # NuGet Packages
 

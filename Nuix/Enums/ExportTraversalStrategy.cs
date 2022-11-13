@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Reductech.Sequence.Connectors.Nuix.Enums;
+namespace Sequence.Connectors.Nuix.Enums;
 
 /// <summary>
 /// Traversal strategy that is used when exporting items.

@@ -3,11 +3,11 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using FluentAssertions;
 using MELT;
-using Reductech.Sequence.Connectors.Nuix.Logging;
-using Reductech.Sequence.Core.Steps;
+using Sequence.Connectors.Nuix.Logging;
+using Sequence.Core.Steps;
 using Xunit;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Logging;
+namespace Sequence.Connectors.Nuix.Tests.Logging;
 
 public class LogSituationNuixTests
 {

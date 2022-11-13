@@ -1,6 +1,6 @@
-﻿using Reductech.Sequence.Connectors.Nuix.Enums;
+﻿using Sequence.Connectors.Nuix.Enums;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps;
+namespace Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Exports Concordance for a particular production set.

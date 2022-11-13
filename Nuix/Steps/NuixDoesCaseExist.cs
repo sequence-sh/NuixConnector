@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps;
+namespace Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Returns whether or not a case exists.

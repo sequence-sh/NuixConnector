@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
+namespace Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixCreateNRTReportTests : NuixStepTestBase<NuixCreateNRTReport, Unit>
 {

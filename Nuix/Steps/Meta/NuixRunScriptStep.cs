@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Reductech.Sequence.Core.Internal.Errors;
-using Entity = Reductech.Sequence.Core.Entity;
+using Sequence.Core.Internal.Errors;
+using Entity = Sequence.Core.Entity;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Run an arbitrary ruby script in nuix.

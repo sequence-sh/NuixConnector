@@ -5,9 +5,8 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>cobertura</Format>
-          <UseSourceLink>true</UseSourceLink>
           <IncludeTestAssembly>false</IncludeTestAssembly>
-          <ExcludeByFile>**/*.Designer.cs,**/*.Generated.cs</ExcludeByFile>
+          <ExcludeByFile>**/*.Designer.cs,**/*.Generated.cs,**/Generator.Equals/**/*.cs</ExcludeByFile>
         </Configuration>
       </DataCollector>
     </DataCollectors>
