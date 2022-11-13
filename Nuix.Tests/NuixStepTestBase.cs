@@ -1,6 +1,6 @@
-﻿using Reductech.Sequence.Core.TestHarness;
+﻿using Sequence.Core.TestHarness;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests;
+namespace Sequence.Connectors.Nuix.Tests;
 
 public abstract partial class NuixStepTestBase<TStep, TOutput> : StepTestBase<TStep, TOutput>
     where TStep : class, IRubyScriptStep<TOutput>, new()

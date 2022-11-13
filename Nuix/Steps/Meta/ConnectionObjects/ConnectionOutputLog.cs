@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
-using Reductech.Sequence.Core.Internal.Errors;
+using Sequence.Core.Internal.Errors;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+namespace Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
 
 /// <summary>
 /// A Log message from a Nuix connection.

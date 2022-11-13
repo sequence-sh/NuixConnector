@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+﻿namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Indicates that this argument is to be passed to a ruby function.

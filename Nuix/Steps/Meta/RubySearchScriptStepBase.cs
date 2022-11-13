@@ -1,7 +1,7 @@
-﻿using Reductech.Sequence.Connectors.Nuix.Enums;
-using Reductech.Sequence.Connectors.Nuix.Steps.Helpers;
+﻿using Sequence.Connectors.Nuix.Enums;
+using Sequence.Connectors.Nuix.Steps.Helpers;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A ruby script step that searches for items. Contains all the

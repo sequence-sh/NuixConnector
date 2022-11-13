@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps.Meta;
+﻿namespace Sequence.Connectors.Nuix.Tests.Steps.Meta;
 
 public class
     FakeNuixStreamFunctionFactory : RubyScriptStepFactory<FakeNuixStreamFunction, StringStream>

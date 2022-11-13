@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using Reductech.Sequence.Core.Steps;
+using Sequence.Core.Steps;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
+namespace Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixExportConcordanceTests : NuixStepTestBase<NuixExportConcordance, Unit>
 {

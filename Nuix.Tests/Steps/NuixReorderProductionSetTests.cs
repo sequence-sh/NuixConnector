@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
+﻿namespace Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class
     NuixReorderProductionSetTests : NuixStepTestBase<NuixReorderProductionSet, Unit>

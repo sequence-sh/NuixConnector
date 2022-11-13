@@ -1,0 +1,6 @@
+codecov:
+  bot: sq-bot
+ignore:
+  - '**/*.Designer.cs'
+  - '**/*.Generated.cs'
+  - '**/Generator.Equals/**/*.cs'

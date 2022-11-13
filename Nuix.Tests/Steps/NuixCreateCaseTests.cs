@@ -1,9 +1,9 @@
-﻿using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.Sequence.Core.Internal.Errors;
-using Reductech.Sequence.Core.Steps;
-using Reductech.Sequence.Core.TestHarness;
+﻿using Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Sequence.Core.Internal.Errors;
+using Sequence.Core.Steps;
+using Sequence.Core.TestHarness;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps;
+namespace Sequence.Connectors.Nuix.Tests.Steps;
 
 public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit>
 {
@@ -102,7 +102,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
                 },
                 new ErrorBuilder(
                     ErrorCode.MissingStepSettings,
-                    "Reductech.Sequence.Connectors.Nuix"
+                    "Sequence.Connectors.Nuix"
                 )
             );
         }
@@ -119,7 +119,7 @@ public partial class NuixCreateCaseTests : NuixStepTestBase<NuixCreateCase, Unit
             var folderName   = @"New Folder";
 
             var dataPath =
-                @"C:\Users\wainw\source\repos\Reductech\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data";
+                @"C:\dev\Sequence\connectors\nuix\Nuix.Tests\bin\Debug\netcoreapp3.1\AllData\data";
 
             yield return new NuixDeserializeTest(
                     "Create Case then add item",

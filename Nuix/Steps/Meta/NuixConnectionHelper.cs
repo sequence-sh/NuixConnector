@@ -6,10 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.ConnectorManagement.Base;
-using Reductech.Sequence.Core.Internal.Errors;
+using Sequence.ConnectorManagement.Base;
+using Sequence.Core.Internal.Errors;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Helps with connections to nuix.
@@ -25,7 +25,7 @@ public static class NuixConnectionHelper
     /// The name of the Nuix Variable in the SCL state
     /// </summary>
     internal static readonly VariableName NuixVariableName =
-        new("ReductechNuixConnection");
+        new("SequenceNuixConnection");
 
     /// <summary>
     /// Gets or creates a connection to nuix.

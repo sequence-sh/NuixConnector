@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// Settings pertaining to the Nuix Connection

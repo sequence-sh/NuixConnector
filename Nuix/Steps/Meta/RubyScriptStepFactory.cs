@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A step that runs a ruby script against NUIX

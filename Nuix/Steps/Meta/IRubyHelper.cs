@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+﻿namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
 /// A helper function that can be executed in other ruby scripts.

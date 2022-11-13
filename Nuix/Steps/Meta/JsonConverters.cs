@@ -2,13 +2,13 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
-using Reductech.Sequence.Core.Entities;
-using Reductech.Sequence.Core.Internal.Errors;
+using Sequence.Core.Entities;
+using Sequence.Core.Internal.Errors;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Steps.Meta;
 
 /// <summary>
-/// Json Converters to use for Reductech Entities
+/// Json Converters to use for Sequence Entities
 /// </summary>
 public static class JsonConverters
 {

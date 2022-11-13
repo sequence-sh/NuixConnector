@@ -6,13 +6,13 @@ using CSharpFunctionalExtensions;
 using FluentAssertions;
 using MELT;
 using Microsoft.Extensions.Logging;
-using Reductech.Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
-using Reductech.Sequence.Core.Internal.Errors;
-using Reductech.Sequence.Core.TestHarness;
+using Sequence.Connectors.Nuix.Steps.Meta.ConnectionObjects;
+using Sequence.Core.Internal.Errors;
+using Sequence.Core.TestHarness;
 using Xunit;
-using Entity = Reductech.Sequence.Core.Entity;
+using Entity = Sequence.Core.Entity;
 
-namespace Reductech.Sequence.Connectors.Nuix.Tests.Steps.Meta;
+namespace Sequence.Connectors.Nuix.Tests.Steps.Meta;
 
 public class NuixConnectionTests
 {

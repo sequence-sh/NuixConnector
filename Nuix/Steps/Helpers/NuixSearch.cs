@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.Connectors.Nuix.Steps.Helpers;
+﻿namespace Sequence.Connectors.Nuix.Steps.Helpers;
 
 /// <summary>
 /// Search a case and return a collection of items.

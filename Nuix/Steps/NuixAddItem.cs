@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using Reductech.Sequence.Core.Internal.Errors;
+using Sequence.Core.Internal.Errors;
 
-namespace Reductech.Sequence.Connectors.Nuix.Steps;
+namespace Sequence.Connectors.Nuix.Steps;
 
 /// <summary>
 /// Adds a file or directory to a Nuix Case.
