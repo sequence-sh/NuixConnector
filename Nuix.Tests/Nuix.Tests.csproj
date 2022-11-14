@@ -27,7 +27,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     <PackageReference Include="MicrosoftExtensions.Logging.Xunit" Version="1.0.0" />
     <PackageReference Include="Sequence.Connectors.FileSystem" Version="0.18.0-a.main.2211131139" />
     <PackageReference Include="Sequence.Core.TestHarness" Version="0.18.0-a.main.2211102318" />
