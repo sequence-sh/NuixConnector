@@ -1,5 +1,10 @@
 # v0.18.0 (2022-11-14)
 
+## Summary of Changes
+
+- Sequence has a new home: https://gitlab.com/sequence
+- The namespace has been updated from `Reductech.Sequence` to `Sequence`
+
 ## Issues Closed in this Release
 
 ### Other
@@ -382,5 +387,3 @@ The yaml specification has changed entirely so yaml from the previous version wi
 - Export concordance load file from NUIX #6
 - Add concordance data to a NUIX case #3
 - Add a File\Folder\Image to a NUIX case #4
-
-
