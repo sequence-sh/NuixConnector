@@ -378,3 +378,4 @@ nupkg/
 **/StrykerOutput/
 version.env
 /NuixClient/log.txt
+Cobertura.xml
